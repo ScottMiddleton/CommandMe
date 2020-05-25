@@ -12,19 +12,11 @@ data class Workout constructor(
     @ColumnInfo(name = "round_duration_secs")
     var round_duration_secs: Int,
     @ColumnInfo(name = "rest_duration_secs")
-    var rest_duration_secs: Int): BaseDbModel()
+    var rest_duration_secs: Int
+) : BaseDbModel()
+
 
 data class WorkoutWithExercises(
-    @Embedded val workout: Workout,
-    @Relation(
-        parentColumn = "workoutId",
-        entityColumn = "exerciseId",
-        associateBy = Junction(WorkoutExerciseCrossRef::class)
-    )
-    val exercises: List<Exercise>
-)
-
-data class CourseInstructorPair(
     @Embedded
     var workout: Workout,
     @Relation(
