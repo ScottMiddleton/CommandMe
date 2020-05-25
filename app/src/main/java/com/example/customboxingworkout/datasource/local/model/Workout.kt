@@ -23,3 +23,19 @@ data class WorkoutWithExercises(
     )
     val exercises: List<Exercise>
 )
+
+data class CourseInstructorPair(
+    @Embedded
+    var workout: Workout,
+    @Relation(
+        parentColumn = "_id",
+        entity = Workout::class,
+        entityColumn = "_id",
+        associateBy = Junction(
+            value = WorkoutExerciseCrossRef::class,
+            parentColumn = "workoutId",
+            entityColumn = "exerciseId"
+        )
+    )
+    var exercises: List<Exercise>
+)
