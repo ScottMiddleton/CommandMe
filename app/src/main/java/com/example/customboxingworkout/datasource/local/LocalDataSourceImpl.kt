@@ -2,23 +2,30 @@ package com.example.customboxingworkout.datasource.local
 
 import com.example.customboxingworkout.datasource.local.model.Exercise
 import com.example.customboxingworkout.datasource.local.model.Workout
-import com.example.customboxingworkout.datasource.local.model.WorkoutExerciseCrossRef
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import com.example.customboxingworkout.datasource.local.model.WorkoutExercises
+import com.example.customboxingworkout.datasource.local.model.WorkoutWithExercises
 
-@ExperimentalCoroutinesApi
 class LocalDataSourceImpl(
     private val database: AppDatabase
 ) : LocalDataSource {
 
-    override fun upsertWorkout(workout: Workout, exercises: List<Exercise>) {
+    override fun getWorkoutById(id: Long): Workout {
+        return database.workoutDao().getWorkoutWithId(id)
+    }
+
+    override fun upsertWorkout(workout: Workout, exerciseIds: List<Long>) {
         val id = database.workoutDao().upsert(workout)
-        for(exercise in exercises){
-            database.workoutWithExercisesDao().insert(WorkoutExerciseCrossRef(id, exercise.id))
+        for (exerciseId in exerciseIds) {
+            database.workoutExercisesDao().upsert(WorkoutExercises(id, exerciseId))
         }
     }
 
     override fun upsertExercise(exercise: Exercise): Long {
         return database.exerciseDao().upsert(exercise)
+    }
+
+    override fun getWorkoutsWithExercises(): List<WorkoutWithExercises> {
+        return database.workoutDao().getWorkoutsWithExercises()
     }
 
 

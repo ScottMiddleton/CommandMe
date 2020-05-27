@@ -1,4 +1,4 @@
-package com.example.customboxingworkout.datasource.local.model.dao
+package com.example.customboxingworkout.datasource.local.dao
 
 import androidx.room.*
 import com.example.customboxingworkout.datasource.local.model.BaseDbModel
@@ -11,10 +11,10 @@ abstract class BaseDao<T: BaseDbModel> {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     abstract fun insert(obj: List<T>): List<Long>
 
-    @Update
+    @Update(onConflict = OnConflictStrategy.REPLACE)
     abstract fun update(obj: T)
 
-    @Update
+    @Update(onConflict = OnConflictStrategy.REPLACE)
     abstract fun update(obj: List<T>)
 
     @Delete
