@@ -5,7 +5,7 @@ import com.example.customboxingworkout.datasource.local.model.Workout
 import com.example.customboxingworkout.datasource.local.model.WorkoutWithExercises
 
 interface LocalDataSource {
-    fun getWorkoutById(id: Long): Workout
+    fun getWorkoutById(id: Long): Workout?
     fun upsertWorkout(workout: Workout, exerciseIds: List<Long>)
     fun upsertExercise(exercise: Exercise): Long
     fun getWorkoutsWithExercises(): List<WorkoutWithExercises>

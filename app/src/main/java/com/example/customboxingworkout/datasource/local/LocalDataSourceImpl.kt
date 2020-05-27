@@ -9,7 +9,7 @@ class LocalDataSourceImpl(
     private val database: AppDatabase
 ) : LocalDataSource {
 
-    override fun getWorkoutById(id: Long): Workout {
+    override fun getWorkoutById(id: Long): Workout? {
         return database.workoutDao().getWorkoutWithId(id)
     }
 
