@@ -1,20 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/privacy_policy"
-        android:title="privacy_policy" />
-    <item
-        android:id="@+id/terms_and_conditions"
-        android:title="terms_and_conditions" />
-    <item
-        android:id="@+id/app_license"
-        android:title="app_license_details" />
-
-    <item
-        android:id="@+id/close_btn"
-        android:icon="@drawable/ic_close_white_24dp"
-        android:title="@string/close"
-        android:visible="false"
-        app:showAsAction="always" />
+        android:title="Privacy Policy" />
 </menu>

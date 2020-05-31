@@ -3,23 +3,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_quickstart">
-
-
+    app:startDestination="@+id/workoutsScreen">
     <fragment
-        android:id="@+id/navigation_workouts"
-        android:name="com.example.customboxingworkout.ui.dashboard.DashboardFragment"
-        android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        android:id="@+id/workoutsScreen"
+        android:name="com.middleton.scott.customboxingworkout.ui.workouts.WorkoutsScreen"
+        tools:layout="@layout/fragment_combinations_screen" />
     <fragment
-        android:id="@+id/navigation_quickstart"
-        android:name="com.example.customboxingworkout.ui.home.HomeFragment"
-        android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" />
-
+        android:id="@+id/combinationsScreen"
+        android:name="com.middleton.scott.customboxingworkout.ui.combinations.CombinationsScreen"
+        tools:layout="@layout/fragment_workouts" />
     <fragment
-        android:id="@+id/navigation_stats"
-        android:name="com.example.customboxingworkout.ui.notifications.NotificationsFragment"
-        android:label="@string/title_notifications"
+        android:id="@+id/statsScreen"
+        android:name="com.middleton.scott.customboxingworkout.ui.stats.StatsScreen"
         tools:layout="@layout/fragment_notifications" />
+    <fragment
+        android:id="@+id/createWorkoutScreen"
+        android:name="com.middleton.scott.customboxingworkout.ui.createworkout.CreateWorkoutScreen"
+        android:label="fragment_create_workout_screen"
+        tools:layout="@layout/fragment_create_workout_screen" />
 </navigation>

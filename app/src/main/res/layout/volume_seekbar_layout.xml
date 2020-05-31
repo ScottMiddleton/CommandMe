@@ -9,12 +9,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:src="@drawable/ic_volume_up_24"/>
+        android:src="@drawable/ic_volume_up_24"
+        android:layout_gravity="center_vertical"/>
 
     <SeekBar
+        style="@style/SliderStyle"
         android:id="@+id/volume_SB"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:max="1000"
         android:layout_gravity="center_vertical" />
 
 </LinearLayout>

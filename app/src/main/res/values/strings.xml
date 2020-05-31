@@ -3,10 +3,12 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
-    <string name="quickstart">Quickstart</string>
+    <string name="combinations">Combinations</string>
     <string name="workouts">Workouts</string>
     <string name="close">Close</string>
     <string name="stats">Stats</string>
     <string name="add_workout">Add Workout</string>
     <string name="your_presets">Your presets</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
