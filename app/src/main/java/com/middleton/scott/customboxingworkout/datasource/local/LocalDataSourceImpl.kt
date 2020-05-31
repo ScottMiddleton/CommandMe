@@ -1,5 +1,6 @@
 package com.middleton.scott.customboxingworkout.datasource.local
 
+import androidx.lifecycle.LiveData
 import com.middleton.scott.customboxingworkout.datasource.local.model.Exercise
 import com.middleton.scott.customboxingworkout.datasource.local.model.Workout
 import com.middleton.scott.customboxingworkout.datasource.local.model.WorkoutExercises
@@ -11,6 +12,10 @@ class LocalDataSourceImpl(
 
     override fun getWorkoutById(id: Long): Workout? {
         return database.workoutDao().getWorkoutWithId(id)
+    }
+
+    override fun getWorkouts(): LiveData<List<Workout>> {
+        return database.workoutDao().getWorkouts()
     }
 
     override fun upsertWorkout(workout: Workout, exerciseIds: List<Long>) {

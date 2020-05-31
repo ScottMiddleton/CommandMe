@@ -4,12 +4,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.middleton.scott.commandMeBoxing.R
 import com.middleton.scott.customboxingworkout.base.BaseFragment
 import kotlinx.android.synthetic.main.fragment_workouts.*
+import org.koin.android.ext.android.inject
 
 class WorkoutsScreen : BaseFragment() {
+
+    private val vieWModel: WorkoutsViewModel by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -22,8 +26,16 @@ class WorkoutsScreen : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        subscribeUI()
+
         add_workout_BTN.setOnClickListener {
             findNavController().navigate(R.id.createWorkoutScreen)
         }
+    }
+
+    private fun subscribeUI() {
+        vieWModel.getWorkoutsLD().observe(viewLifecycleOwner, Observer {
+            workout_RV.adapter = WorkoutsAdapter(it)
+        })
     }
 }

@@ -1,15 +1,17 @@
 package com.middleton.scott.customboxingworkout.ui.createworkout
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.app.ActivityCompat.invalidateOptionsMenu
 import com.middleton.scott.commandMeBoxing.R
 import com.middleton.scott.customboxingworkout.base.BaseFragment
+import kotlinx.android.synthetic.main.fragment_create_workout_screen.*
+import org.koin.android.ext.android.inject
 
 class CreateWorkoutScreen : BaseFragment() {
+
+    private val viewModel: CreateWorkoutViewModel by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -22,6 +24,8 @@ class CreateWorkoutScreen : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        requireActivity().invalidateOptionsMenu()
+        create_workout_BTN.setOnClickListener {
+            viewModel.upsertWorkout()
+        }
     }
 }
