@@ -68,6 +68,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return super.onSupportNavigateUp()
+    }
+
     private fun setupCustomAppBar() {
         // Control the media volume
         volumeControlStream = AudioManager.STREAM_MUSIC
