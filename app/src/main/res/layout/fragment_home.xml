@@ -7,26 +7,37 @@
     tools:context=".ui.home.HomeFragment">
 
     <TextView
-        android:id="@+id/text_home"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_margin="24dp"
+        android:text="@string/your_presets"
+        android:textAllCaps="true"
+        android:textSize="20dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/get_BTN"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="GET WORKOUTS"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/workout_RV"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="24dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_home" />
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        style="@style/PrimaryButton"
+        android:id="@+id/add_elephant_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_gravity="bottom|end"
+        android:backgroundTint="@color/accent"
+        android:elevation="5dp"
+        android:text="@string/add_workout"
+        android:textColor="@android:color/white"
+        app:icon="@android:drawable/ic_input_add"
+        android:layout_margin="24dp"
+        app:iconPadding="5dp"
+        app:iconTint="@android:color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

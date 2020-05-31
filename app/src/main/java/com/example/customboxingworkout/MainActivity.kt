@@ -1,17 +1,24 @@
 package com.example.customboxingworkout
 
+import android.app.ActionBar
+import android.content.Context
+import android.media.AudioManager
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import android.view.View
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import kotlinx.android.synthetic.main.volume_seekbar_layout.*
+
 
 class MainActivity : AppCompatActivity() {
     private val closeBtnDestinations =
@@ -33,6 +40,9 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
+        actionBar?.setCustomView(R.layout.volume_seekbar_layout)
+        setupVolumeSlider()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -68,4 +78,36 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun setupVolumeSlider() {
+        // Control the media volume
+
+        // Control the media volume
+        volumeControlStream = AudioManager.STREAM_MUSIC
+        // Initialize the AudioManager
+        // Initialize the AudioManager
+        val mAudioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
+
+        // Inflate the custom ActionBar View
+
+        // Inflate the custom ActionBar View
+        val view: View = layoutInflater.inflate(R.layout.volume_seekbar_layout, null)
+        // Set the max range of the SeekBar to the max volume stream type
+        // Set the max range of the SeekBar to the max volume stream type
+        volume_seekbar.max = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
+        // Bind the OnSeekBarChangeListener
+
+        volume_seekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, progress, 0);
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+        })
+
+        // Apply the custom View to the ActionBar
+
+        // Apply the custom View to the ActionBar
+        actionBar!!.setCustomView(view, ActionBar.LayoutParams(MATCH_PARENT, MATCH_PARENT))
+    }
 }

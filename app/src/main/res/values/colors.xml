@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#6200EE</color>
-    <color name="colorPrimaryDark">#3700B3</color>
-    <color name="colorAccent">#03DAC5</color>
+    <color name="colorPrimary">#7A9E9F</color>
+    <color name="colorPrimaryDark">#4F6367</color>
+    <color name="colorPrimaryLight">#B8D8D8</color>
+    <color name="accent">#FE5F55</color>
+
+    <color name="accent_faded_40">#65FE5F55</color>
+    <color name="primary_faded_40">#667A9E9F</color>
+    <color name="primary_faded_20">#327A9E9F</color>
+    <color name="divider">#1F000000</color>
+    <color name="background">#EEF5DB</color>
+    <color name="radio_button_text_colour">#464646</color>
+    <color name="dark_gray">#B9B8B8</color>
+    <color name="edit_text_hint">#4D000000</color>
+    <color name="black">#000000</color>
+    <color name="black_faded">#CC000000</color>
+
 </resources>

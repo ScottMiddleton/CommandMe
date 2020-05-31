@@ -7,4 +7,6 @@
     <string name="workouts">Workouts</string>
     <string name="close">Close</string>
     <string name="stats">Stats</string>
+    <string name="add_workout">Add Workout</string>
+    <string name="your_presets">Your presets</string>
 </resources>

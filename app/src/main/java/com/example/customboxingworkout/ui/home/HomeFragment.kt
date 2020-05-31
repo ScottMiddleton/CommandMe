@@ -23,9 +23,5 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         viewModel.upsertWorkout()
-
-        get_BTN.setOnClickListener {
-            viewModel.getWorkouts()
-        }
     }
 }
