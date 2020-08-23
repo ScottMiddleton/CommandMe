@@ -1,10 +1,10 @@
 package com.middleton.scott.customboxingworkout.datasource.local.dao
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
 import com.middleton.scott.customboxingworkout.datasource.local.model.Workout
 import com.middleton.scott.customboxingworkout.datasource.local.model.WorkoutWithExercises
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 abstract class WorkoutDao: BaseDao<Workout>() {
@@ -12,9 +12,9 @@ abstract class WorkoutDao: BaseDao<Workout>() {
     abstract fun getWorkoutsWithExercises(): List<WorkoutWithExercises>
 
     @Query("SELECT * FROM workout")
-    abstract fun getWorkouts(): LiveData<List<Workout>>
+    abstract fun getWorkouts(): Flow<List<Workout>>
 
     @Query("SELECT * FROM workout WHERE _id = :id")
-    abstract fun getWorkoutWithId(id: Long) : Workout?
+    abstract fun getWorkoutWithId(id: Long) : Flow<Workout?>
 }
 

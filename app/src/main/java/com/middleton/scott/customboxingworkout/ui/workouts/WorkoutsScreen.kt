@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.middleton.scott.commandMeBoxing.R
@@ -35,7 +36,9 @@ class WorkoutsScreen : BaseFragment() {
 
     private fun subscribeUI() {
         vieWModel.getWorkoutsLD().observe(viewLifecycleOwner, Observer {
-            workout_RV.adapter = WorkoutsAdapter(it)
+            workout_RV.adapter = WorkoutsAdapter(it) {workoutId ->
+                findNavController().navigate(R.id.createWorkoutScreen, bundleOf("workoutId" to workoutId))
+            }
         })
     }
 }

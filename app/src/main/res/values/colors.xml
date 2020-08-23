@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#7A9E9F</color>
-    <color name="colorPrimaryDark">#4F6367</color>
-    <color name="colorPrimaryLight">#B8D8D8</color>
-    <color name="accent">#FE5F55</color>
+    <color name="colorPrimary">#3282E0</color>
+    <color name="colorPrimaryDark">#2C4D90</color>
+    <color name="colorPrimaryLight">#DFE0E0</color>
+    <color name="accent">#3282E0</color>
 
     <color name="accent_faded_40">#65FE5F55</color>
     <color name="primary_faded_40">#667A9E9F</color>

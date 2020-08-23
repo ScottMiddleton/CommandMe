@@ -15,7 +15,7 @@
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
+c
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/workout_RV"
         android:layout_width="match_parent"
