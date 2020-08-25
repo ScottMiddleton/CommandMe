@@ -10,7 +10,7 @@ import androidx.room.*
             childColumns = ["workout_id"],
             onDelete = ForeignKey.CASCADE
         ), ForeignKey(
-            entity = Exercise::class,
+            entity = Combination::class,
             parentColumns = ["_id"],
             childColumns = ["exercise_id"],
             onDelete = ForeignKey.CASCADE
@@ -18,26 +18,26 @@ import androidx.room.*
     ]
 )
 
-data class WorkoutExercises constructor(
+data class WorkoutCombinations constructor(
     @ColumnInfo
     val workout_id: Long,
     @ColumnInfo
     val exercise_id: Long
 ) : BaseDbModel()
 
-class WorkoutWithExercises {
+class WorkoutWithCombinations {
     @Embedded
     var workout: Workout? = null
 
     @Relation(
         parentColumn = "_id",
         entityColumn = "_id",
-        entity = Exercise::class,
+        entity = Combination::class,
         associateBy = Junction(
-            value = WorkoutExercises::class,
+            value = WorkoutCombinations::class,
             parentColumn = "workout_id",
             entityColumn = "exercise_id"
         )
     )
-    lateinit var exercises: List<Exercise>
+    lateinit var exercises: List<Combination>
 }
