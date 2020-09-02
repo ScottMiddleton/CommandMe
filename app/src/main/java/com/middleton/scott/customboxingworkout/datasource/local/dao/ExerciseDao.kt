@@ -1,8 +1,14 @@
 package com.middleton.scott.customboxingworkout.datasource.local.dao
 
 import androidx.room.Dao
-import com.middleton.scott.customboxingworkout.datasource.local.model.Exercise
+import androidx.room.Query
+import com.middleton.scott.customboxingworkout.datasource.local.model.Combination
+import kotlinx.coroutines.flow.Flow
 
 @Dao
-abstract class ExerciseDao: BaseDao<Exercise>() {}
+abstract class ExerciseDao: BaseDao<Combination>() {
+
+    @Query("SELECT * FROM combination")
+    abstract fun getCombinations(): Flow<List<Combination>>
+}
 

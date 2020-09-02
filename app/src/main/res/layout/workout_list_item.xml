@@ -10,7 +10,8 @@
         android:id="@+id/name_TV"
         tools:text="Workout Name"
         android:textSize="20sp"
-        android:gravity="center"
+        android:gravity="center_vertical"
+        android:padding="20dp"
         android:layout_width="match_parent"
         android:layout_height="100dp"/>
 

@@ -13,7 +13,7 @@ data class Workout constructor(
 ) : BaseDbModel()
 
 @Entity()
-data class Exercise constructor(
+data class Combination constructor(
     var name: String,
     var allocatedTimeSecs: Int,
     var file_name: String

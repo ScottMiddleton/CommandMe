@@ -5,7 +5,7 @@
     <color name="colorPrimaryLight">#DFE0E0</color>
     <color name="accent">#3282E0</color>
 
-    <color name="accent_faded_40">#65FE5F55</color>
+    <color name="accent_faded_40">#653282E0</color>
     <color name="primary_faded_40">#667A9E9F</color>
     <color name="primary_faded_20">#327A9E9F</color>
     <color name="divider">#1F000000</color>
