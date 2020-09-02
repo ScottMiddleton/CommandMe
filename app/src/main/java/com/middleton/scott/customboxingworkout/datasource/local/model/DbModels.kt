@@ -4,10 +4,12 @@ import androidx.room.*
 
 @Entity()
 data class Workout constructor(
-    var name: String,
-    var numberOfRounds: Int,
-    var round_duration_secs: Int,
-    var rest_duration_secs: Int
+    var name: String = "",
+    var preparation_time_secs: Int = 10,
+    var numberOfRounds: Int = 5,
+    var round_duration_secs: Int = 180,
+    var rest_duration_secs: Int = 60,
+    var intensity: Int = 50
 ) : BaseDbModel()
 
 @Entity()

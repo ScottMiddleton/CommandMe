@@ -20,8 +20,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.middleton.scott.commandMeBoxing.R
 
 class MainActivity : AppCompatActivity() {
-    private val closeBtnDestinations =
-        setOf(R.id.createWorkoutScreen)
     private lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
