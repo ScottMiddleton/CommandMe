@@ -1,17 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/parent_cardview"
-    android:layout_margin="8dp"
+    android:id="@+id/parent_cl"
+    android:layout_marginStart="12dp"
+    android:layout_marginEnd="12dp"
+    android:layout_marginBottom="6dp"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_marginTop="10dp">
 
-    <TextView
-        android:id="@+id/name_TV"
-        tools:text="Workout Name"
-        android:textSize="20sp"
-        android:gravity="center"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"/>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/list_item_collections_layout"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:background="@drawable/list_item_workout_layout"
+        android:padding="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
-</androidx.cardview.widget.CardView>
+        <ImageView
+            android:id="@+id/forward_arrow_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_arrow_forward"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/name_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAllCaps="true"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="WORKOUT 1234" />
+
+        <TextView
+            android:id="@+id/date_created_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@+id/name_tv"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/name_tv"
+            tools:text="24/12/2020" />
+
+        <TextView
+            android:id="@+id/rounds_and_combos_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toStartOf="@+id/name_tv"
+            app:layout_constraintTop_toBottomOf="@+id/name_tv"
+            tools:text="6 Rounds · 20 Combos" />
+
+        <Button
+            android:id="@+id/edit_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/colorPrimary"
+            android:text="@string/edit"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:padding="0dp"
+            android:textSize="12sp"
+            android:layout_marginTop="12dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rounds_and_combos_tv" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

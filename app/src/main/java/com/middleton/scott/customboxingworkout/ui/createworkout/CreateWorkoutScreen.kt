@@ -10,7 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.middleton.scott.commandMeBoxing.R
-import com.middleton.scott.customboxingworkout.base.BaseFragment
+import com.middleton.scott.customboxingworkout.ui.base.BaseFragment
 import kotlinx.android.synthetic.main.counter_layout.view.*
 import kotlinx.android.synthetic.main.fragment_create_workout_screen.*
 import org.koin.android.ext.android.inject
@@ -35,7 +35,7 @@ class CreateWorkoutScreen : BaseFragment() {
         } else {
             complete_btn.text = getString(R.string.save)
         }
-
+//        toolbar_title_tv.text = getString(R.string.create_workout)
         subscribeUI()
         setListeners()
     }

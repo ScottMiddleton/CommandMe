@@ -10,5 +10,5 @@ interface LocalDataSource {
     fun getWorkouts(): Flow<List<Workout>>
     fun upsertWorkout(workout: Workout, exerciseIds: List<Long>? = null)
     fun upsertExercise(exercise: Exercise): Long
-    fun getWorkoutsWithExercises(): List<WorkoutWithExercises>
+    fun getWorkoutsWithExercises(): Flow<List<WorkoutWithExercises>>
 }

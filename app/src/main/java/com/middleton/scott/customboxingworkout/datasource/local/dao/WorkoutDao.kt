@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 abstract class WorkoutDao: BaseDao<Workout>() {
     @Query("SELECT * FROM workout")
-    abstract fun getWorkoutsWithExercises(): List<WorkoutWithExercises>
+    abstract fun getWorkoutsWithExercises(): Flow<List<WorkoutWithExercises>>
 
     @Query("SELECT * FROM workout")
     abstract fun getWorkouts(): Flow<List<Workout>>

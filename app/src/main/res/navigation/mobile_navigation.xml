@@ -7,18 +7,22 @@
     <fragment
         android:id="@+id/workoutsScreen"
         android:name="com.middleton.scott.customboxingworkout.ui.workouts.WorkoutsScreen"
+        android:label="@string/workouts"
         tools:layout="@layout/fragment_combinations_screen" />
     <fragment
         android:id="@+id/combinationsScreen"
         android:name="com.middleton.scott.customboxingworkout.ui.combinations.CombinationsScreen"
+        android:label="@string/combinations"
         tools:layout="@layout/fragment_workouts" />
     <fragment
         android:id="@+id/statsScreen"
         android:name="com.middleton.scott.customboxingworkout.ui.stats.StatsScreen"
+        android:label="@string/stats"
         tools:layout="@layout/fragment_notifications" />
     <fragment
         android:id="@+id/createWorkoutScreen"
         android:name="com.middleton.scott.customboxingworkout.ui.createworkout.CreateWorkoutScreen"
+        android:label="@string/create_workout"
         tools:layout="@layout/fragment_create_workout_screen">
         <argument
             android:name="workoutId"

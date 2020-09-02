@@ -31,7 +31,7 @@ class LocalDataSourceImpl(
         return database.exerciseDao().upsert(exercise)
     }
 
-    override fun getWorkoutsWithExercises(): List<WorkoutWithExercises> {
+    override fun getWorkoutsWithExercises(): Flow<List<WorkoutWithExercises>> {
         return database.workoutDao().getWorkoutsWithExercises()
     }
 

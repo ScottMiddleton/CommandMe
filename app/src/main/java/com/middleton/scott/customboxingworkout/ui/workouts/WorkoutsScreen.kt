@@ -8,12 +8,11 @@ import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.middleton.scott.commandMeBoxing.R
-import com.middleton.scott.customboxingworkout.base.BaseFragment
+import com.middleton.scott.customboxingworkout.ui.base.BaseFragment
 import kotlinx.android.synthetic.main.fragment_workouts.*
 import org.koin.android.ext.android.inject
 
 class WorkoutsScreen : BaseFragment() {
-
     private val vieWModel: WorkoutsViewModel by inject()
 
     override fun onCreateView(
@@ -26,12 +25,11 @@ class WorkoutsScreen : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         subscribeUI()
-
         add_workout_BTN.setOnClickListener {
             findNavController().navigate(R.id.createWorkoutScreen)
         }
+//        toolbar_title_tv.text = getString(R.string.workouts)
     }
 
     private fun subscribeUI() {

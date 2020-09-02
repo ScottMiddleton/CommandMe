@@ -1,6 +1,7 @@
 package com.middleton.scott.customboxingworkout.datasource.local.model
 
 import androidx.room.*
+import java.util.*
 
 @Entity()
 data class Workout constructor(
@@ -9,7 +10,8 @@ data class Workout constructor(
     var numberOfRounds: Int = 5,
     var round_duration_secs: Int = 180,
     var rest_duration_secs: Int = 60,
-    var intensity: Int = 50
+    var intensity: Int = 50,
+    var dateCreated: Date = Date()
 ) : BaseDbModel()
 
 @Entity()
