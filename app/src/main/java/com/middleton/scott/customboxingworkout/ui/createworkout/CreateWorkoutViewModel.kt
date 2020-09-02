@@ -7,7 +7,7 @@ import com.middleton.scott.customboxingworkout.datasource.local.LocalDataSource
 import com.middleton.scott.customboxingworkout.datasource.local.model.Workout
 import kotlinx.coroutines.flow.map
 
-class CreateWorkoutViewModel(val localDataSource: LocalDataSource, workoutId: Long) : ViewModel() {
+class CreateWorkoutViewModel(private val localDataSource: LocalDataSource, workoutId: Long) : ViewModel() {
 
     var workout = Workout()
 

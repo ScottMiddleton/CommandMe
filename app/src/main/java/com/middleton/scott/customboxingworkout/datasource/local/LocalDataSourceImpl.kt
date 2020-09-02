@@ -1,9 +1,9 @@
 package com.middleton.scott.customboxingworkout.datasource.local
 
-import com.middleton.scott.customboxingworkout.datasource.local.model.Exercise
+import com.middleton.scott.customboxingworkout.datasource.local.model.Combination
 import com.middleton.scott.customboxingworkout.datasource.local.model.Workout
-import com.middleton.scott.customboxingworkout.datasource.local.model.WorkoutExercises
-import com.middleton.scott.customboxingworkout.datasource.local.model.WorkoutWithExercises
+import com.middleton.scott.customboxingworkout.datasource.local.model.WorkoutCombinations
+import com.middleton.scott.customboxingworkout.datasource.local.model.WorkoutWithCombinations
 import kotlinx.coroutines.flow.Flow
 
 class LocalDataSourceImpl(
@@ -18,22 +18,27 @@ class LocalDataSourceImpl(
         return database.workoutDao().getWorkouts()
     }
 
-    override fun upsertWorkout(workout: Workout, exerciseIds: List<Long>?) {
+    override fun getCombinations(): Flow<List<Combination>> {
+        return database.CombinationDao().getCombinations()
+    }
+
+    override fun getWorkoutWithCombinations(): Flow<WorkoutWithCombinations> {
+        return database.workoutDao().getWorkoutsWithCombinations()
+    }
+
+    override fun upsertWorkout(workout: Workout, combinationIds: List<Long>?) {
         val id = database.workoutDao().upsert(workout)
-        if (exerciseIds != null) {
-            for (exerciseId in exerciseIds) {
-                database.workoutExercisesDao().upsert(WorkoutExercises(id, exerciseId))
+        if (combinationIds != null) {
+            for (exerciseId in combinationIds) {
+                database.workoutCombinationsDao().upsert(WorkoutCombinations(id, exerciseId))
             }
         }
     }
 
-    override fun upsertExercise(exercise: Exercise): Long {
-        return database.exerciseDao().upsert(exercise)
-    }
-
     override fun getWorkoutsWithExercises(): Flow<List<WorkoutWithExercises>> {
         return database.workoutDao().getWorkoutsWithExercises()
+    override fun upsertCombination(exercise: Combination): Long {
+        return database.CombinationDao().upsert(exercise)
     }
-
 
 }

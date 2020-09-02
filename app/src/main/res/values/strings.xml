@@ -18,6 +18,9 @@
     <string name="rounds">Rounds</string>
     <string name="complete">Complete</string>
     <string name="save">Save</string>
+    <string name="add_combination">Add Combination</string>
+    <string name="your_combinations">Your combinations</string>
+    <string name="new_combination">New combination</string>
     <string name="create_workout">Create Workout</string>
     <string name="edit">Edit</string>
     <string name="rounds_combos">%1$s rounds - %2$s combos </string>
