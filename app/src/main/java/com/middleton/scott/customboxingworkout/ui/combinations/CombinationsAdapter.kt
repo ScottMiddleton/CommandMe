@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.middleton.scott.commandMeBoxing.R
 import com.middleton.scott.customboxingworkout.datasource.local.model.Combination
@@ -35,8 +36,8 @@ class CombinationsAdapter(
         }
     }
 
-    inner class CombinationsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val nameTV: TextView = view.findViewById(R.id.name_TV)
-        val parent: CardView = view.findViewById(R.id.parent_cardview)
+    class CombinationsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val nameTV: TextView = view.findViewById(R.id.combination_name_tv)
+        val parent: ConstraintLayout = view.findViewById(R.id.parent_cl)
     }
 }

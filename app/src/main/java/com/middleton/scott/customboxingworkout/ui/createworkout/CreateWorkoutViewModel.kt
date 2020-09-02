@@ -7,13 +7,17 @@ import com.middleton.scott.customboxingworkout.datasource.local.LocalDataSource
 import com.middleton.scott.customboxingworkout.datasource.local.model.Workout
 import kotlinx.coroutines.flow.map
 
-class CreateWorkoutViewModel(private val localDataSource: LocalDataSource, workoutId: Long) : ViewModel() {
-
+class CreateWorkoutViewModel(private val localDataSource: LocalDataSource, workoutId: Long) :
+    ViewModel() {
     var workout = Workout()
+    var selectedCombinationIds = mutableListOf<Long>()
 
-    val workoutLD = localDataSource.getWorkoutById(workoutId).map {
-        it?.let { workout = it }
-        it
+    val workoutWithCombinationsLD = localDataSource.getWorkoutWithCombinations(workoutId).map {workoutWithCombinations ->
+        workoutWithCombinations?.workout?.let { workout ->  this.workout = workout }
+        workoutWithCombinations?.combinations?.forEach { combination ->
+            selectedCombinationIds.add(combination.id)
+        }
+        workoutWithCombinations
     }.asLiveData()
 
     val preparationDurationSecsLD = MutableLiveData<Int>()
@@ -25,18 +29,19 @@ class CreateWorkoutViewModel(private val localDataSource: LocalDataSource, worko
     val dbUpdateLD = MutableLiveData<Boolean>()
 
     fun upsertWorkout() {
-//        val id = localDataSource.upsertExercise(Exercise("Exercise 111", 10, "test"))
-//        val id1 = localDataSource.upsertExercise(Exercise("Exercise 200", 10, "test"))
-//        val id2 = localDataSource.upsertExercise(Exercise("Exercise 300", 10, "test"))
-//        val id3 = localDataSource.upsertExercise(Exercise("Exercise 400", 10, "test"))
-//        val id4 = localDataSource.upsertExercise(Exercise("Exercise 500", 10, "test"))
 
-        localDataSource.upsertWorkout(workout)
+
+        workout.let {
+            localDataSource.upsertWorkout(
+                it,
+                selectedCombinationIds
+            )
+        }
         dbUpdateLD.value = true
     }
 
-    fun setWorkoutName(name: String){
-        if(name.isNotEmpty()){
+    fun setWorkoutName(name: String) {
+        if (name.isNotEmpty()) {
             workout.name = name
         }
     }

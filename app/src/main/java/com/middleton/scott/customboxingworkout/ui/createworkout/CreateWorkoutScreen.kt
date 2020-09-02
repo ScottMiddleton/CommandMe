@@ -61,8 +61,8 @@ class CreateWorkoutScreen : BaseFragment() {
             intensity_seekBar.progress = it
         })
 
-        viewModel.workoutLD.observe(viewLifecycleOwner, Observer {
-            workout_name_ET.setText(it?.name)
+        viewModel.workoutWithCombinationsLD.observe(viewLifecycleOwner, Observer {
+            workout_name_ET.setText(it?.workout?.name)
             populateFields()
         })
 

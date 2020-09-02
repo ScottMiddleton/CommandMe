@@ -8,7 +8,6 @@ import com.middleton.scott.customboxingworkout.datasource.local.dao.WorkoutDao
 import com.middleton.scott.customboxingworkout.datasource.local.dao.WorkoutCombinationsDao
 import com.middleton.scott.customboxingworkout.datasource.local.model.Combination
 import com.middleton.scott.customboxingworkout.datasource.local.model.Workout
-import com.middleton.scott.customboxingworkout.datasource.local.model.WorkoutExercises
 import com.middleton.scott.customboxingworkout.datasource.local.typeconverters.DateConverter
 import com.middleton.scott.customboxingworkout.datasource.local.model.WorkoutCombinations
 

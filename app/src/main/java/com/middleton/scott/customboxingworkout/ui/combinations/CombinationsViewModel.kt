@@ -8,6 +8,18 @@ import com.middleton.scott.customboxingworkout.datasource.local.model.Combinatio
 
 class CombinationsViewModel(private val localDataSource: LocalDataSource) : ViewModel() {
 
+    init {
+        upsertCombinations()
+    }
+
+    private fun upsertCombinations(){
+        localDataSource.upsertCombination(Combination("Exercise 111", 10, "test"))
+        localDataSource.upsertCombination(Combination("Exercise 200", 10, "test"))
+        localDataSource.upsertCombination(Combination("Exercise 300", 10, "test"))
+        localDataSource.upsertCombination(Combination("Exercise 400", 10, "test"))
+        localDataSource.upsertCombination(Combination("Exercise 500", 10, "test"))
+    }
+
     fun getCombinationsLD(): LiveData<List<Combination>> {
         return localDataSource.getCombinations().asLiveData()
     }

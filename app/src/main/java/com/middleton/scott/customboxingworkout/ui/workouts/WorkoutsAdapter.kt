@@ -9,11 +9,11 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.middleton.scott.commandMeBoxing.R
-import com.middleton.scott.customboxingworkout.datasource.local.model.WorkoutWithExercises
+import com.middleton.scott.customboxingworkout.datasource.local.model.WorkoutWithCombinations
 import com.middleton.scott.customboxingworkout.utils.DateUtils
 
 class WorkoutsAdapter(
-    private val workoutsWithExercises: List<WorkoutWithExercises>,
+    private val workoutsWithExercises: List<WorkoutWithCombinations>,
     private val onClickWorkout: ((Long) -> Unit)
 ) : RecyclerView.Adapter<WorkoutsAdapter.WorkoutsViewHolder>() {
 
@@ -36,7 +36,7 @@ class WorkoutsAdapter(
 
     override fun onBindViewHolder(holder: WorkoutsViewHolder, position: Int) {
         val workout = workoutsWithExercises[position].workout
-        val exercises = workoutsWithExercises[position].exercises
+        val exercises = workoutsWithExercises[position].combinations
         holder.nameTV.text = workout?.name
         holder.editButton.setOnClickListener {
             workout?.id?.let { id -> onClickWorkout(id) }

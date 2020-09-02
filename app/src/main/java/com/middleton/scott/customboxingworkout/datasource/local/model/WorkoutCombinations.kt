@@ -39,5 +39,5 @@ class WorkoutWithCombinations {
             entityColumn = "exercise_id"
         )
     )
-    lateinit var exercises: List<Combination>
+    lateinit var combinations: List<Combination>
 }
