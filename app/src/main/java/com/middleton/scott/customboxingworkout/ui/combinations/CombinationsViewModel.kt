@@ -8,6 +8,8 @@ import com.middleton.scott.customboxingworkout.datasource.local.model.Combinatio
 
 class CombinationsViewModel(private val localDataSource: LocalDataSource) : ViewModel() {
 
+    var filename = ""
+
     init {
         upsertCombinations()
     }
