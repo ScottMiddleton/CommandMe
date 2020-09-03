@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import androidx.lifecycle.Observer
 import com.middleton.scott.commandMeBoxing.R
 import com.middleton.scott.customboxingworkout.ui.base.BaseFragment
@@ -32,6 +33,10 @@ class CombinationsScreen : BaseFragment() {
             combinations_RV.adapter = CombinationsAdapter(it) { combinationId ->
 
             }
+            val controller = AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_fall_down)
+            combinations_RV.layoutAnimation = controller
+            combinations_RV.adapter?.notifyDataSetChanged()
+            combinations_RV.scheduleLayoutAnimation()
         })
     }
 }

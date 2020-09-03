@@ -1,29 +1,26 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents">
         <!-- Customize your theme here. -->
+        <item name="android:actionBarStyle">@style/MyActionBar</item>
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/accent</item>
         <item name="colorSecondary">@color/accent</item>
+        <item name="android:fontFamily">@string/font_default_roboto_regular</item>
         <item name="chipStyle">@style/Widget.MaterialComponents.Chip.Filter</item>
         <item name="sliderStyle">@style/SliderStyle</item>
-        <item name="textInputStyle">@style/TextInputStyle</item>
         <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/white</item>
     </style>
 
     <style name="SliderStyle" parent="Widget.MaterialComponents.Slider">
         <item name="labelBehavior">gone</item>
     </style>
 
-    <style name="PrimaryButton" parent="@style/Widget.MaterialComponents.Button">
-        <item name="android:backgroundTint">@color/selector_color_primary</item>
-        <item name="android:textColor">@android:color/white</item>
-    </style>
-
-    <style name="TextInputStyle" parent="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense">
-        <item name="android:textColorHint">@color/edit_text_hint</item>
+    <style name="MyActionBar" parent="@android:style/Widget.Holo.Light.ActionBar">
+        <item name="android:background">@color/colorPrimaryDark</item>
     </style>
 
 </resources>

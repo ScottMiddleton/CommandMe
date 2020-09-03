@@ -4,7 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
@@ -48,7 +48,7 @@ class WorkoutsAdapter(
     class WorkoutsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val nameTV: TextView = view.findViewById(R.id.name_tv)
         val parent: ConstraintLayout = view.findViewById(R.id.parent_cl)
-        val editButton: Button = view.findViewById(R.id.edit_btn)
+        val editButton: ImageButton = view.findViewById(R.id.edit_btn)
         val dateTV: TextView = view.findViewById(R.id.date_created_tv)
         val roundsCombosTV: TextView = view.findViewById(R.id.rounds_and_combos_tv)
     }
