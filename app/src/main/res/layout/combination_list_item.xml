@@ -5,7 +5,7 @@
     android:id="@+id/parent_cl"
     android:layout_marginStart="12dp"
     android:layout_marginEnd="12dp"
-    android:layout_marginBottom="6dp"
+    android:layout_marginTop="6dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/list_item_background"
@@ -26,8 +26,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:layout_marginStart="-8dp"
-        android:layout_marginEnd="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/appCompatCheckBox">
@@ -39,17 +37,19 @@
             android:src="@drawable/ic_play_arrow"
             android:scaleY="1.4"
             android:scaleX="1.4"
+            android:padding="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:tint="@color/colorPrimaryDark" />
+            app:tint="@color/white" />
 
         <ProgressBar
             android:id="@+id/audio_playback_pb"
             style="@style/Widget.AppCompat.ProgressBar.Horizontal"
             android:layout_width="0dp"
-            android:layout_height="2dp"
-            android:layout_marginStart="12dp"
+            android:layout_height="3dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="20dp"
             android:max="60"
             android:progress="1"
             app:layout_constraintBottom_toBottomOf="@+id/play_audio_btn"
@@ -63,6 +63,7 @@
             android:layout_height="wrap_content"
             android:text="00:00"
             android:textSize="12sp"
+            android:layout_marginTop="2dp"
             app:layout_constraintStart_toStartOf="@+id/audio_playback_pb"
             app:layout_constraintTop_toBottomOf="@+id/audio_playback_pb" />
 
@@ -71,6 +72,7 @@
             android:layout_height="wrap_content"
             android:text="00:00"
             android:textSize="12sp"
+            android:layout_marginTop="2dp"
             app:layout_constraintEnd_toEndOf="@+id/audio_playback_pb"
             app:layout_constraintTop_toBottomOf="@+id/audio_playback_pb" />
 
