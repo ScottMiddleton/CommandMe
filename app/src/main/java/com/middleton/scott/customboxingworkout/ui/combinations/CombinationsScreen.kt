@@ -1,5 +1,6 @@
 package com.middleton.scott.customboxingworkout.ui.combinations
 
+import SaveCombinationDialog
 import android.Manifest
 import android.content.pm.PackageManager
 import android.media.MediaRecorder
@@ -102,9 +103,19 @@ class CombinationsScreen : BaseFragment() {
             mediaRecorder.stop()
             mediaRecorder.release()
             recording = false
+           showSaveCombinationDialog()
             Toast.makeText(context, "Recording stopped!", Toast.LENGTH_SHORT).show()
         }else{
             Toast.makeText(context, "You are not recording right now!", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun showSaveCombinationDialog(){
+        SaveCombinationDialog({name ->
+            viewModel.upsertCombination(name)
+        }, {
+            viewModel.filename = ""
+            // TODO delete storage of recording
+        }).show(childFragmentManager, null)
     }
 }

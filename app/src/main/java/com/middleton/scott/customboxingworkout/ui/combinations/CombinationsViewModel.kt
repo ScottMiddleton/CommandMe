@@ -10,16 +10,8 @@ class CombinationsViewModel(private val localDataSource: LocalDataSource) : View
 
     var filename = ""
 
-    init {
-        upsertCombinations()
-    }
-
-    private fun upsertCombinations(){
-        localDataSource.upsertCombination(Combination("Exercise 111", 10, "test"))
-        localDataSource.upsertCombination(Combination("Exercise 200", 10, "test"))
-        localDataSource.upsertCombination(Combination("Exercise 300", 10, "test"))
-        localDataSource.upsertCombination(Combination("Exercise 400", 10, "test"))
-        localDataSource.upsertCombination(Combination("Exercise 500", 10, "test"))
+    fun upsertCombination(name: String){
+        localDataSource.upsertCombination(Combination(name, 10, filename))
     }
 
     fun getCombinationsLD(): LiveData<List<Combination>> {
