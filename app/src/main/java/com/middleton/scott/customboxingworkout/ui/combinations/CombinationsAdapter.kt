@@ -11,6 +11,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
+import com.airbnb.lottie.LottieAnimationView
 import com.middleton.scott.commandMeBoxing.R
 import com.middleton.scott.customboxingworkout.datasource.local.model.Combination
 import java.io.IOException
@@ -43,26 +44,20 @@ class CombinationsAdapter(
 
     override fun onBindViewHolder(holder: CombinationsViewHolder, position: Int) {
         holder.nameTV.text = combinations[position].name
-        holder.parent.setOnClickListener {
-            onCheckWorkout(combinations[position].id)
-        }
 
         holder.checkBox.setOnCheckedChangeListener { _, isChecked ->
             onCheckWorkout(combinations[position].id)
         }
 
-        mediaPlayer = MediaPlayer().apply {
-            try {
-                setDataSource(audioFileDirectory + combinations[position].file_name)
-                prepare()
-            } catch (e: IOException) {
-                Log.e("LOG_TAG", "prepare() failed")
-            }
-        }
+        holder.playAudioLottie.speed = 3f
+        holder.playAudioLottie.setMinAndMaxFrame(30, 60)
 
-        holder.audioProgressBar.max = mediaPlayer.duration
-        holder.playAudioBtn.setOnClickListener {
-            startPlaying(combinations[position].file_name, holder.audioProgressBar)
+        holder.playAudioLottie.setOnClickListener {
+            if (!mediaPlayer.isPlaying) {
+                holder.playAudioLottie.setMinAndMaxFrame(30, 60)
+                holder.playAudioLottie.playAnimation()
+                startPlaying(combinations[position].file_name, holder.playAudioLottie)
+            }
         }
 
     }
@@ -70,21 +65,19 @@ class CombinationsAdapter(
     class CombinationsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val nameTV: TextView = view.findViewById(R.id.combination_name_tv)
         val parent: ConstraintLayout = view.findViewById(R.id.parent_cl)
-        val playAudioBtn: ImageButton = view.findViewById(R.id.play_audio_btn)
+        val playAudioLottie: LottieAnimationView = view.findViewById(R.id.play_audio_lottie)
         val checkBox: CheckBox = view.findViewById(R.id.checkbox)
-        val audioProgressBar: ProgressBar = view.findViewById(R.id.audio_playback_pb)
     }
 
-    private fun startPlaying(fileName: String, audioProgressBar: ProgressBar) {
+    private fun startPlaying(fileName: String, playAudioLottie: LottieAnimationView) {
         mediaPlayer = MediaPlayer().apply {
             try {
                 setDataSource(audioFileDirectory + fileName)
                 prepare()
-                timer.scheduleAtFixedRate(object : TimerTask() {
-                    override fun run() {
-                        Runnable { audioProgressBar.progress = mediaPlayer.currentPosition }
-                    }
-                }, 0, 100)
+                this.setOnCompletionListener {
+                    playAudioLottie.setMinAndMaxFrame(0, 30)
+                    playAudioLottie.playAnimation()
+                }
                 start()
             } catch (e: IOException) {
                 Log.e("LOG_TAG", "prepare() failed")

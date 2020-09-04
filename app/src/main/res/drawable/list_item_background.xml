@@ -14,8 +14,8 @@
             <solid android:color="@color/white" />
             <corners android:radius="8dp" />
             <gradient
-                android:startColor="#1AFFFFFF"
-                android:endColor="#0AFFFFFF"
+                android:startColor="#40FFFFFF"
+                android:endColor="#14FFFFFF"
                 android:useLevel="true"/>
         </shape>
     </item>
