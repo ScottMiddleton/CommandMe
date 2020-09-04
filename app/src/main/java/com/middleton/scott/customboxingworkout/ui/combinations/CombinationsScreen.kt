@@ -9,6 +9,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.Toast
@@ -85,11 +87,21 @@ class CombinationsScreen : BaseFragment() {
                                     )
                                 }
                             } else {
+                                lottie_anim_left.playAnimation()
+                                lottie_anim_right.playAnimation()
+                                lottie_anim_left.visibility = VISIBLE
+                                lottie_anim_right.visibility = VISIBLE
                                 startRecording()
                             }
                         }
                     }
-                    MotionEvent.ACTION_UP -> stopRecording()
+                    MotionEvent.ACTION_UP -> {
+                        stopRecording()
+                        lottie_anim_left.pauseAnimation()
+                        lottie_anim_right.pauseAnimation()
+                        lottie_anim_left.visibility = GONE
+                        lottie_anim_right.visibility = GONE
+                    }
                 }
                 return v?.onTouchEvent(event) ?: true
             }
@@ -109,7 +121,6 @@ class CombinationsScreen : BaseFragment() {
             mediaRecorder.prepare()
             mediaRecorder.start()
             recording = true
-            Toast.makeText(context, "Recording started!", Toast.LENGTH_SHORT).show()
         } catch (e: IllegalStateException) {
             e.printStackTrace()
         } catch (e: IOException) {
@@ -123,7 +134,6 @@ class CombinationsScreen : BaseFragment() {
             mediaRecorder.release()
             recording = false
             showSaveCombinationDialog()
-            Toast.makeText(context, "Recording stopped!", Toast.LENGTH_SHORT).show()
         } else {
             Toast.makeText(context, "You are not recording right now!", Toast.LENGTH_SHORT).show()
         }
