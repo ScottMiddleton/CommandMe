@@ -21,13 +21,13 @@ import com.middleton.scott.commandMeBoxing.R
 import com.middleton.scott.customboxingworkout.ui.base.BaseFragment
 import kotlinx.android.synthetic.main.fragment_combinations_screen.*
 import org.koin.android.ext.android.inject
+import java.io.File
 import java.io.IOException
 
 class CombinationsScreen : BaseFragment() {
     private val viewModel: CombinationsViewModel by inject()
     private var mediaRecorder = MediaRecorder()
-    private var output = ""
-    private var recording = false
+    private var audioFileoutput = ""
 
     private var audioFileDirectory = ""
 
@@ -110,17 +110,17 @@ class CombinationsScreen : BaseFragment() {
 
     private fun startRecording() {
         try {
+            viewModel.recording = true
             val filename = "audio_" + System.currentTimeMillis().toString() + ".mp3"
             viewModel.filename = filename
-            output = audioFileDirectory + filename
+            audioFileoutput = audioFileDirectory + filename
             mediaRecorder = MediaRecorder()
             mediaRecorder.setAudioSource(MIC)
             mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
             mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_WB)
-            mediaRecorder.setOutputFile(output)
+            mediaRecorder.setOutputFile(audioFileoutput)
             mediaRecorder.prepare()
             mediaRecorder.start()
-            recording = true
         } catch (e: IllegalStateException) {
             e.printStackTrace()
         } catch (e: IOException) {
@@ -129,11 +129,15 @@ class CombinationsScreen : BaseFragment() {
     }
 
     private fun stopRecording() {
-        if (recording) {
-            mediaRecorder.stop()
-            mediaRecorder.release()
-            recording = false
-            showSaveCombinationDialog()
+        if (viewModel.recording ) {
+            try {
+                mediaRecorder.stop()
+                mediaRecorder.release()
+                showSaveCombinationDialog()
+            } catch (stopException: RuntimeException) {
+                Toast.makeText(context, "Recording too short", Toast.LENGTH_SHORT).show()
+            }
+            viewModel.recording  = false
         } else {
             Toast.makeText(context, "You are not recording right now!", Toast.LENGTH_SHORT).show()
         }
@@ -144,7 +148,13 @@ class CombinationsScreen : BaseFragment() {
             viewModel.upsertCombination(name)
         }, {
             viewModel.filename = ""
-            // TODO delete storage of recording
+            val file = File(audioFileoutput)
+            file.delete()
         }).show(childFragmentManager, null)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        stopRecording()
     }
 }

@@ -37,7 +37,7 @@ class SaveCombinationDialog(
         }
 
         delete_btn.setOnClickListener {
-            onDelete
+            onDelete()
             dismiss()
         }
     }

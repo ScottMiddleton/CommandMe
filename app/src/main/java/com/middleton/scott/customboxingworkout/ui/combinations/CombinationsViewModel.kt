@@ -9,6 +9,7 @@ import com.middleton.scott.customboxingworkout.datasource.local.model.Combinatio
 class CombinationsViewModel(private val localDataSource: LocalDataSource) : ViewModel() {
 
     var filename = ""
+    var recording = false
 
     fun upsertCombination(name: String){
         localDataSource.upsertCombination(Combination(name, 10, filename))
