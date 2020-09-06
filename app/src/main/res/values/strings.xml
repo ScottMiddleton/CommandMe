@@ -24,4 +24,7 @@
     <string name="create_workout">Create Workout</string>
     <string name="edit">Edit</string>
     <string name="rounds_combos">%1$s rounds - %2$s combos </string>
+    <string name="name_and_save">Name and save</string>
+    <string name="combination_name">Combination name</string>
+    <string name="delete">Delete</string>
 </resources>
