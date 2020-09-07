@@ -31,7 +31,7 @@ class CombinationsAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CombinationsViewHolder {
         return CombinationsViewHolder(
             LayoutInflater.from(parent.context).inflate(
-                R.layout.combination_list_item,
+                R.layout.list_item_combination,
                 parent,
                 false
             )
