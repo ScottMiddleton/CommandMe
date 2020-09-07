@@ -9,6 +9,6 @@ import com.middleton.scott.customboxingworkout.datasource.local.model.WorkoutWit
 class WorkoutsViewModel(private val localDataSource: LocalDataSource) : ViewModel() {
 
     fun getWorkoutsWithCombinationsLD(): LiveData<List<WorkoutWithCombinations>> {
-       return localDataSource.getAllWorkoutsWithCombnations().asLiveData()
+       return localDataSource.getAllWorkoutsWithCombinations().asLiveData()
     }
 }

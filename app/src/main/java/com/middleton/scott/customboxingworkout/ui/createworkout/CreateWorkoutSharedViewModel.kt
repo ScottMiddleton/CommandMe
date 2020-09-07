@@ -1,43 +1,61 @@
 package com.middleton.scott.customboxingworkout.ui.createworkout
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import com.middleton.scott.customboxingworkout.datasource.local.LocalDataSource
+import com.middleton.scott.customboxingworkout.datasource.local.model.Combination
 import com.middleton.scott.customboxingworkout.datasource.local.model.Workout
 import kotlinx.coroutines.flow.map
 
-class CreateWorkoutViewModel(private val localDataSource: LocalDataSource, workoutId: Long) :
-    ViewModel() {
+class CreateWorkoutSharedViewModel(
+    private val localDataSource: LocalDataSource,
+    val workoutId: Long
+) : ViewModel() {
+    var audioFileOutput = ""
+    var audioFileDirectory = ""
+    var filename = ""
+    var recording = false
     var workout = Workout()
-    var selectedCombinationIds = mutableListOf<Long>()
+    val combinations = mutableListOf<Combination>()
 
-    val workoutWithCombinationsLD = localDataSource.getWorkoutWithCombinations(workoutId).map {workoutWithCombinations ->
-        workoutWithCombinations?.workout?.let { workout ->  this.workout = workout }
-        workoutWithCombinations?.combinations?.forEach { combination ->
-            selectedCombinationIds.add(combination.id)
-        }
-        workoutWithCombinations
-    }.asLiveData()
+    val workoutWithCombinationsLD =
+        localDataSource.getWorkoutWithCombinations(workoutId).map { workoutWithCombinations ->
+            workoutWithCombinations?.workout?.let { workout -> this.workout = workout }
+            workoutWithCombinations?.combinations?.forEach { combination ->
+                combinations.add(combination)
+            }
+            workoutWithCombinations
+        }.asLiveData()
 
     val preparationDurationSecsLD = MutableLiveData<Int>()
     val numberOfRoundsLD = MutableLiveData<Int>()
     val roundDurationSecsLD = MutableLiveData<Int>()
     val restDurationSecsLD = MutableLiveData<Int>()
     val intensityLD = MutableLiveData<Int>()
-
     val dbUpdateLD = MutableLiveData<Boolean>()
 
     fun upsertWorkout() {
-
-
         workout.let {
             localDataSource.upsertWorkout(
                 it,
-                selectedCombinationIds
+                combinations
             )
         }
         dbUpdateLD.value = true
+    }
+
+    fun getAllCombinations(): LiveData<List<Combination>> {
+        return localDataSource.getCombinations().asLiveData()
+    }
+
+    fun setCombination(combination: Combination, checked: Boolean) {
+        if (checked) {
+            combinations.add(combination)
+        } else {
+            combinations.remove(combination)
+        }
     }
 
     fun setWorkoutName(name: String) {
@@ -75,5 +93,9 @@ class CreateWorkoutViewModel(private val localDataSource: LocalDataSource, worko
     fun setIntensity(intensity: Int) {
         workout.intensity = intensity
         intensityLD.value = intensity
+    }
+
+    fun upsertCombination(name: String) {
+        localDataSource.upsertCombination(Combination(name, 10, filename))
     }
 }

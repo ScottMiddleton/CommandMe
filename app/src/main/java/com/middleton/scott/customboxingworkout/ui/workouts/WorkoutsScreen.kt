@@ -29,7 +29,6 @@ class WorkoutsScreen : BaseFragment() {
         add_workout_BTN.setOnClickListener {
             findNavController().navigate(R.id.createWorkoutScreen)
         }
-//        toolbar_title_tv.text = getString(R.string.workouts)
     }
 
     private fun subscribeUI() {

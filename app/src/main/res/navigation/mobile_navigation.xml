@@ -22,7 +22,6 @@
     <fragment
         android:id="@+id/createWorkoutScreen"
         android:name="com.middleton.scott.customboxingworkout.ui.createworkout.CreateWorkoutScreen"
-        android:label="@string/create_workout"
         tools:layout="@layout/fragment_create_workout_screen">
         <argument
             android:name="workoutId"
