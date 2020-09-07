@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.TextView
@@ -20,7 +21,7 @@ class CombinationsAdapter(
     private val onCheckWorkout: ((Combination: Combination, checked: Boolean) -> Unit)? = null
 ) : RecyclerView.Adapter<CombinationsAdapter.CombinationsViewHolder>() {
 
-    private var checkedCombinations = emptyList<Combination>()
+    private var checkedCombinations = mutableListOf<Combination>()
     private var allCombinations = mutableListOf<Combination>()
     private var mediaPlayer = MediaPlayer()
 
@@ -48,6 +49,7 @@ class CombinationsAdapter(
         if (onCheckWorkout == null) {
             holder.checkBox.visibility = GONE
         } else {
+            holder.checkBox.visibility = VISIBLE
             holder.checkBox.setOnCheckedChangeListener { _, isChecked ->
                 onCheckWorkout.invoke(allCombinations[position], isChecked)
             }
@@ -116,14 +118,9 @@ class CombinationsAdapter(
         }
     }
 
-    fun setCheckedCombinations(combinations: List<Combination>) {
-        checkedCombinations = combinations
-        this.notifyDataSetChanged()
-    }
-
-    fun setAdapter(combinations: List<Combination>) {
-        this.allCombinations.clear()
-        this.allCombinations.addAll(combinations)
+    fun setAdapter(allCombinations: List<Combination>, checkedCombinations: List<Combination>?) {
+        this.allCombinations = allCombinations as MutableList<Combination>
+        checkedCombinations?.let{this.checkedCombinations = checkedCombinations as MutableList<Combination>}
         this.notifyDataSetChanged()
     }
 

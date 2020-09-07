@@ -53,12 +53,12 @@ class CreateWorkoutCombinationsFragment : BaseFragment() {
     }
 
     private fun subscribeUI() {
-        viewModel.workoutWithCombinationsLD.observe(viewLifecycleOwner, Observer {
-            it?.combinations?.let { it1 -> adapter.setCheckedCombinations(it1) }
-        })
+//        viewModel.workoutWithCombinationsLD.observe(viewLifecycleOwner, Observer {
+//            it?.combinations?.let { it1 -> adapter.setCheckedCombinations(it1) }
+//        })
 
         viewModel.getAllCombinationsLD().observe(viewLifecycleOwner, Observer {
-            adapter.setAdapter(it)
+            adapter.setAdapter(it, viewModel.checkedCombinations)
         })
     }
 

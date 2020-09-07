@@ -12,14 +12,15 @@ class CreateWorkoutSharedViewModel(
     private val localDataSource: LocalDataSource,
     val workoutId: Long
 ) : CombinationsViewModel(localDataSource) {
+
     var workout = Workout()
-    val combinations = mutableListOf<Combination>()
+    val checkedCombinations = mutableListOf<Combination>()
 
     val workoutWithCombinationsLD =
         localDataSource.getWorkoutWithCombinations(workoutId).map { workoutWithCombinations ->
             workoutWithCombinations?.workout?.let { workout -> this.workout = workout }
             workoutWithCombinations?.combinations?.forEach { combination ->
-                combinations.add(combination)
+                checkedCombinations.add(combination)
             }
             workoutWithCombinations
         }.asLiveData()
@@ -35,7 +36,7 @@ class CreateWorkoutSharedViewModel(
         workout.let {
             localDataSource.upsertWorkout(
                 it,
-                combinations
+                checkedCombinations
             )
         }
         dbUpdateLD.value = true
@@ -43,9 +44,9 @@ class CreateWorkoutSharedViewModel(
 
     fun setCombination(combination: Combination, checked: Boolean) {
         if (checked) {
-            combinations.add(combination)
+            checkedCombinations.add(combination)
         } else {
-            combinations.remove(combination)
+            checkedCombinations.remove(combination)
         }
     }
 

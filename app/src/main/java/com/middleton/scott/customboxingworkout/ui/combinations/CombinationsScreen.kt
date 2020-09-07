@@ -48,7 +48,7 @@ class CombinationsScreen : BaseFragment() {
 
     private fun subscribeUI() {
         viewModel.getAllCombinationsLD().observe(viewLifecycleOwner, Observer {
-            adapter.setAdapter(it)
+            adapter.setAdapter(it, null)
             val controller =
                 AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_fall_down)
             combinations_RV.layoutAnimation = controller
