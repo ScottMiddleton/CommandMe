@@ -1,22 +1,17 @@
 package com.middleton.scott.customboxingworkout.ui.createworkout
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import com.middleton.scott.customboxingworkout.datasource.local.LocalDataSource
 import com.middleton.scott.customboxingworkout.datasource.local.model.Combination
 import com.middleton.scott.customboxingworkout.datasource.local.model.Workout
+import com.middleton.scott.customboxingworkout.ui.combinations.CombinationsViewModel
 import kotlinx.coroutines.flow.map
 
 class CreateWorkoutSharedViewModel(
     private val localDataSource: LocalDataSource,
     val workoutId: Long
-) : ViewModel() {
-    var audioFileOutput = ""
-    var audioFileDirectory = ""
-    var filename = ""
-    var recording = false
+) : CombinationsViewModel(localDataSource) {
     var workout = Workout()
     val combinations = mutableListOf<Combination>()
 
@@ -44,10 +39,6 @@ class CreateWorkoutSharedViewModel(
             )
         }
         dbUpdateLD.value = true
-    }
-
-    fun getAllCombinations(): LiveData<List<Combination>> {
-        return localDataSource.getCombinations().asLiveData()
     }
 
     fun setCombination(combination: Combination, checked: Boolean) {
@@ -93,9 +84,5 @@ class CreateWorkoutSharedViewModel(
     fun setIntensity(intensity: Int) {
         workout.intensity = intensity
         intensityLD.value = intensity
-    }
-
-    fun upsertCombination(name: String) {
-        localDataSource.upsertCombination(Combination(name, 10, filename))
     }
 }

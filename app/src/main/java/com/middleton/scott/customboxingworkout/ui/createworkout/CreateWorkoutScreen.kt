@@ -21,6 +21,11 @@ class CreateWorkoutScreen : BaseFragment() {
     private val args: CreateWorkoutScreenArgs by navArgs()
     private val viewModel: CreateWorkoutSharedViewModel by viewModel { parametersOf(args.workoutId) }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel.audioFileBaseDirectory = context?.getExternalFilesDir(null)?.absolutePath + "/"
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
