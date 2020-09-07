@@ -44,7 +44,7 @@ class CreateWorkoutScreen : BaseFragment() {
             if (it != null) {
                 (activity as MainActivity).supportActionBar?.title = viewModel.workout.name
             } else {
-                (activity as MainActivity).supportActionBar?.title = "Create Workout"
+                (activity as MainActivity).supportActionBar?.title = getString(R.string.create_workout)
             }
         })
     }
@@ -57,9 +57,9 @@ class CreateWorkoutScreen : BaseFragment() {
 
             override fun createFragment(position: Int): Fragment {
                 return when (position) {
-                    0 -> WorkoutTabFragment.newInstance()
-                    1 -> CombinationsTabFragment.newInstance()
-                    else -> WorkoutTabFragment.newInstance()
+                    0 -> CreateWorkoutSummaryFragment.newInstance()
+                    1 -> CreateWorkoutCombinationsFragment.newInstance()
+                    else -> CreateWorkoutSummaryFragment.newInstance()
                 }
             }
         }
@@ -67,7 +67,7 @@ class CreateWorkoutScreen : BaseFragment() {
         TabLayoutMediator(tab_layout, create_workout_vp) { tab, position ->
             var title = ""
             when (position) {
-                0 -> title = getString(R.string.workout)
+                0 -> title = getString(R.string.summary)
                 1 -> title = getString(R.string.combos)
             }
             tab.text = title

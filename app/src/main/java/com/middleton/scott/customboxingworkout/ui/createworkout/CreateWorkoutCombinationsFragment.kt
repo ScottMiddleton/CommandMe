@@ -18,14 +18,15 @@ import kotlinx.android.synthetic.main.fragment_combinations_screen.*
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import java.io.File
 
-class CombinationsTabFragment : BaseFragment() {
+class CreateWorkoutCombinationsFragment : BaseFragment() {
     private val viewModel by lazy { requireParentFragment().getViewModel<CreateWorkoutSharedViewModel>() }
     private var mediaRecorder = MediaRecorder()
+
     private lateinit var adapter: CombinationsAdapter
 
     companion object {
         fun newInstance() =
-            CombinationsTabFragment()
+            CreateWorkoutCombinationsFragment()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,6 +46,7 @@ class CombinationsTabFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        adapter = CombinationsAdapter(viewModel.audioFileBaseDirectory)
         combinations_RV.adapter = adapter
         subscribeUI()
         setClickListeners()

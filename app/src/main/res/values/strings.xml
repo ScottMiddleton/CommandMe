@@ -21,7 +21,6 @@
     <string name="add_combination">Add Combination</string>
     <string name="your_combinations">Your combinations</string>
     <string name="new_combination">New combination</string>
-    <string name="create_workout">Create Workout</string>
     <string name="edit">Edit</string>
     <string name="rounds_combos">%1$s rounds - %2$s combos </string>
     <string name="name_and_save">Name and save</string>
@@ -29,4 +28,6 @@
     <string name="delete">Delete</string>
     <string name="workout">Workout</string>
     <string name="combos">Combos</string>
+    <string name="create_workout">Create Workout</string>
+    <string name="summary">Summary</string>
 </resources>

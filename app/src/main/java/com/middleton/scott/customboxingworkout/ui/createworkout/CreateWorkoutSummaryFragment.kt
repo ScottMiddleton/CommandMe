@@ -14,12 +14,12 @@ import kotlinx.android.synthetic.main.counter_layout.view.*
 import kotlinx.android.synthetic.main.fragment_workout_tab.*
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
-class WorkoutTabFragment : BaseFragment() {
+class CreateWorkoutSummaryFragment : BaseFragment() {
     private val viewModel by lazy { requireParentFragment().getViewModel<CreateWorkoutSharedViewModel>() }
 
     companion object {
         fun newInstance() =
-            WorkoutTabFragment()
+            CreateWorkoutSummaryFragment()
     }
 
     override fun onCreateView(
