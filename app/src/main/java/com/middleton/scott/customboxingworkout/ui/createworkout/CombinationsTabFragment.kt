@@ -34,6 +34,7 @@ class CombinationsTabFragment : BaseFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        viewModel.audioFileDirectory = context?.getExternalFilesDir(null)?.absolutePath + "/"
         adapter = CombinationsAdapter(viewModel.audioFileDirectory) { combination, checked ->
             viewModel.setCombination(combination, checked)
         }
@@ -49,7 +50,6 @@ class CombinationsTabFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.audioFileDirectory = context?.getExternalFilesDir(null)?.absolutePath + "/"
         combinations_RV.adapter = adapter
         subscribeUI()
         setClickListeners()
