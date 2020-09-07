@@ -3,7 +3,7 @@ package com.middleton.scott.customboxingworkout.datasource.local.model
 import androidx.room.*
 
 @Entity(
-    tableName = "workout_exercises", primaryKeys = ["workout_id", "exercise_id"], foreignKeys = [
+    tableName = "workout_combinations", primaryKeys = ["workout_id", "combination_id"], foreignKeys = [
         ForeignKey(
             entity = Workout::class,
             parentColumns = ["_id"],
@@ -12,7 +12,7 @@ import androidx.room.*
         ), ForeignKey(
             entity = Combination::class,
             parentColumns = ["_id"],
-            childColumns = ["exercise_id"],
+            childColumns = ["combination_id"],
             onDelete = ForeignKey.CASCADE
         )
     ]
@@ -22,7 +22,7 @@ data class WorkoutCombinations constructor(
     @ColumnInfo
     val workout_id: Long,
     @ColumnInfo
-    val exercise_id: Long
+    val combination_id: Long
 ) : BaseDbModel()
 
 class WorkoutWithCombinations {
@@ -36,7 +36,7 @@ class WorkoutWithCombinations {
         associateBy = Junction(
             value = WorkoutCombinations::class,
             parentColumn = "workout_id",
-            entityColumn = "exercise_id"
+            entityColumn = "combination_id"
         )
     )
     lateinit var combinations: List<Combination>

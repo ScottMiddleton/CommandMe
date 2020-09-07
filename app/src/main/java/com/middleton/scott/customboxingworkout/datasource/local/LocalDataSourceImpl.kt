@@ -22,17 +22,23 @@ class LocalDataSourceImpl(
         return database.CombinationDao().getCombinations()
     }
 
-    override fun getAllWorkoutsWithCombnations(): Flow<List<WorkoutWithCombinations>> {
+    override fun getAllWorkoutsWithCombinations(): Flow<List<WorkoutWithCombinations>> {
         return database.workoutDao().getAllWorkoutsWithCombinations()
     }
 
-    override fun upsertWorkout(workout: Workout, combinationIds: List<Long>?) {
+    override fun upsertWorkout(workout: Workout, combinations: List<Combination>?) {
         val id = database.workoutDao().upsert(workout)
-        if (combinationIds != null) {
-            for (combinationIds in combinationIds) {
-                database.workoutCombinationsDao().upsert(WorkoutCombinations(id, combinationIds))
+        database.workoutCombinationsDao().deleteByWorkoutId(workout.id)
+
+        combinations?.let {
+            for (combination in combinations) {
+                upsertWorkoutCombination(id, combination.id)
             }
         }
+    }
+
+    override fun upsertWorkoutCombination(workoutId: Long, combinationId: Long) {
+        database.workoutCombinationsDao().upsert(WorkoutCombinations(workoutId, combinationId))
     }
 
     override fun upsertCombination(exercise: Combination): Long {
