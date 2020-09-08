@@ -3,16 +3,14 @@ package com.middleton.scott.customboxingworkout.ui.createworkout
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
-import android.widget.SeekBar
 import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.middleton.scott.commandMeBoxing.R
 import com.middleton.scott.customboxingworkout.ui.base.BaseFragment
-import com.middleton.scott.customboxingworkout.ui.combinations.CombinationsAdapter
-import kotlinx.android.synthetic.main.counter_layout.view.*
-import kotlinx.android.synthetic.main.fragment_combinations.*
 import kotlinx.android.synthetic.main.fragment_workout_tab.*
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
@@ -72,7 +70,19 @@ class CreateWorkoutSummaryFragment : BaseFragment() {
 //        })
 
         viewModel.workoutWithCombinationsLD.observe(viewLifecycleOwner, Observer {
-            it?.combinations?.let { it1 -> adapter.setCombinations(it1) }
+            val combinations = it?.combinations
+            if (!combinations.isNullOrEmpty()) {
+                adapter.setCombinations(combinations)
+                weighting_label_tv.visibility = VISIBLE
+                name_label_tv.visibility = VISIBLE
+                combinations_summary_rv.visibility = VISIBLE
+            } else {
+                weighting_label_tv.visibility = GONE
+                name_label_tv.visibility = GONE
+                add_combination_tv.visibility = VISIBLE
+                combinations_summary_rv.visibility = GONE
+            }
+
             workout_name_et.setText(it?.workout?.name)
             populateFields()
         })

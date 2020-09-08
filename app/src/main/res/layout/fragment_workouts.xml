@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:src="@drawable/ic_boxer"
-        app:tint="@color/black_faded_15"
+        app:tint="@color/black_faded_20"
         android:scaleType="centerCrop" />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -24,7 +24,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/workout_list_item"
+        tools:listitem="@layout/list_item_workout"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

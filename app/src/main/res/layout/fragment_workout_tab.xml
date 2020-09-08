@@ -13,7 +13,10 @@
             android:id="@+id/parent_cl"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="20dp">
+            android:paddingBottom="100dp"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            >
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/workout_name_til"
@@ -22,6 +25,7 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/name"
                 app:endIconDrawable="@drawable/ic_edit"
+                android:layout_marginTop="8dp"
                 app:endIconMode="custom"
                 app:hintTextColor="@color/white"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -42,7 +46,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/preparation"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="8dp"
                 app:endIconDrawable="@drawable/ic_time"
                 app:endIconMode="custom"
                 app:hintTextColor="@color/white"
@@ -65,7 +69,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/rounds"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="8dp"
                 app:endIconDrawable="@drawable/ic_edit"
                 app:endIconMode="custom"
                 app:hintTextColor="@color/white"
@@ -87,7 +91,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="8dp"
                 android:hint="@string/round_length"
                 app:endIconDrawable="@drawable/ic_boxer_24dp"
                 app:endIconMode="custom"
@@ -110,7 +114,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="8dp"
                 android:hint="@string/rest_length"
                 app:endIconDrawable="@drawable/ic_stool"
                 app:endIconMode="custom"
@@ -134,7 +138,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/intensity"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="8dp"
                 app:endIconDrawable="@drawable/ic_intensity"
                 app:endIconMode="custom"
                 app:hintTextColor="@color/white"
@@ -152,7 +156,7 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <View
-                android:id="@+id/view2"
+                android:id="@+id/divider"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@color/white_faded_20"
@@ -160,41 +164,88 @@
                 app:layout_constraintTop_toBottomOf="@+id/intensity_til"
                 tools:layout_editor_absoluteX="20dp" />
 
+<!--            <TextView-->
+<!--                android:id="@+id/combinations_label_tv"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginStart="14dp"-->
+<!--                android:fontFamily="@string/font_roboto_medium"-->
+<!--                android:text="@string/combinations"-->
+<!--                android:textSize="17sp"-->
+<!--                app:layout_constraintBottom_toBottomOf="@+id/add_combination_tv"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintTop_toTopOf="@+id/add_combination_tv" />-->
+
             <TextView
-                android:id="@+id/combinations_label_tv"
+                android:id="@+id/combination_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:layout_marginTop="20dp"
-                android:fontFamily="@string/font_roboto_medium"
+                android:layout_marginTop="12dp"
+                android:textSize="18sp"
+                android:drawablePadding="10dp"
+                app:layout_goneMarginTop="12dp"
+                android:gravity="center"
                 android:text="@string/combinations"
-                android:textColor="@color/primary_text_color_faded"
+                app:drawableTint="@color/primary_text_color_faded"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/view2" />
+                app:layout_constraintTop_toBottomOf="@+id/divider" />
 
             <TextView
                 android:id="@+id/add_combination_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="@string/add_combinations"
-                android:padding="8dp"
-                android:drawablePadding="10dp"
-                app:drawableEndCompat="@drawable/ic_add_circle"
-                app:drawableTint="@color/primary_text_color_faded"
+                android:drawablePadding="8dp"
+                app:drawableTint="@color/white_faded_60"
+                android:text="@string/add_combinations_to_workout"
                 android:background="@drawable/list_item_combination_summary_background"
-                app:layout_constraintBottom_toBottomOf="@+id/combinations_label_tv"
+                android:visibility="gone"
+                android:layout_marginTop="8dp"
+                android:textSize="16sp"
+                android:padding="11dp"
+                android:textColor="@color/primary_text_color_faded"
+                app:layout_constraintStart_toStartOf="@+id/combination_tv"
+                app:layout_constraintTop_toBottomOf="@+id/combination_tv"
+                app:drawableEndCompat="@drawable/ic_add_circle" />
+
+            <TextView
+                android:id="@+id/name_label_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="12dp"
+                android:layout_marginStart="13dp"
+                android:text="@string/name"
+                android:visibility="invisible"
+                android:textColor="@color/primary_text_color_faded"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/combination_tv" />
+
+            <TextView
+                android:id="@+id/weighting_label_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginEnd="17dp"
+                android:text="@string/weighting"
+                android:visibility="invisible"
+                android:textColor="@color/primary_text_color_faded"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="@+id/name_label_tv"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/combinations_label_tv" />
+                app:layout_constraintTop_toTopOf="@+id/name_label_tv" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/combinations_summary_rv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:background="@drawable/list_item_combination_summary_background"
+                android:visibility="gone"
                 android:nestedScrollingEnabled="false"
+                android:layout_marginTop="4dp"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:layout_constraintTop_toBottomOf="@+id/add_combination_tv"
+                app:layout_constraintTop_toBottomOf="@+id/name_label_tv"
+                android:paddingBottom="6dp"
                 tools:listitem="@layout/list_item_combination_summary" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

@@ -8,6 +8,7 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.CheckBox
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
@@ -48,8 +49,10 @@ class CombinationsAdapter(
 
         if (onCheckWorkout == null) {
             holder.checkBox.visibility = GONE
+            holder.editButton.visibility = VISIBLE
         } else {
             holder.checkBox.visibility = VISIBLE
+            holder.editButton.visibility = GONE
             holder.checkBox.setOnCheckedChangeListener { _, isChecked ->
                 onCheckWorkout.invoke(allCombinations[position], isChecked)
             }
@@ -76,6 +79,7 @@ class CombinationsAdapter(
         val parent: ConstraintLayout = view.findViewById(R.id.parent_cl)
         val playAudioLottie: LottieAnimationView = view.findViewById(R.id.play_audio_lottie)
         val checkBox: CheckBox = view.findViewById(R.id.checkbox)
+        val editButton: ImageButton = view.findViewById(R.id.edit_btn)
     }
 
     private fun startPlaying(fileName: String, playAudioLottie: LottieAnimationView) {

@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:src="@drawable/ic_punch_bag"
-        app:tint="@color/black_faded_15"
+        app:tint="@color/black_faded_20"
         android:scaleType="centerCrop" />
 
     <androidx.recyclerview.widget.RecyclerView

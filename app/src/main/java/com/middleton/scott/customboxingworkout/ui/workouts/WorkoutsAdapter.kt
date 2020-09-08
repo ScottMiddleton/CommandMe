@@ -24,7 +24,7 @@ class WorkoutsAdapter(
         context = parent.context
         return WorkoutsViewHolder(
             LayoutInflater.from(parent.context).inflate(
-                R.layout.workout_list_item,
+                R.layout.list_item_workout,
                 parent,
                 false
             )

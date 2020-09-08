@@ -5,8 +5,7 @@
     android:id="@+id/parent_cl"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="6dp"
-    android:background="@drawable/list_item_combination_summary_background"
+    android:layout_marginTop="3dp"
     android:padding="8dp">
 
     <TextView
@@ -26,16 +25,8 @@
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:layout_marginEnd="12dp"
-            android:textColor="@color/primary_text_color_faded"
-            android:layout_gravity="center_horizontal"
-            android:text="@string/weighting"/>
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginEnd="2dp">
 
         <include layout="@layout/counter_layout" />
 
