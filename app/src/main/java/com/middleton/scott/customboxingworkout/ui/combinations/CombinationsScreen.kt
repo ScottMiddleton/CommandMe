@@ -15,7 +15,7 @@ import com.middleton.scott.commandMeBoxing.R
 import com.middleton.scott.customboxingworkout.ui.base.BaseFragment
 import com.middleton.scott.customboxingworkout.utils.MediaRecorderManager
 import com.middleton.scott.customboxingworkout.utils.PermissionsDialogManager
-import kotlinx.android.synthetic.main.fragment_combinations_screen.*
+import kotlinx.android.synthetic.main.fragment_combinations.*
 import org.koin.android.ext.android.inject
 import java.io.File
 
@@ -30,7 +30,7 @@ class CombinationsScreen : BaseFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_combinations_screen, container, false)
+        return inflater.inflate(R.layout.fragment_combinations, container, false)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

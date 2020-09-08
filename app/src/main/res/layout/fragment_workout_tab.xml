@@ -1,160 +1,211 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/parent_cl"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/create_workout_vp"
-        android:padding="20dp"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/workout_name_TIL"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/workout_name"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="20dp">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/workout_name_ET"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/parent_cl"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:imeOptions="actionDone"
-            android:inputType="textCapWords"
-            android:singleLine="true" />
+            android:padding="20dp">
 
-    </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/workout_name_til"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/name"
+                app:endIconDrawable="@drawable/ic_edit"
+                app:endIconMode="custom"
+                app:hintTextColor="@color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-    <TextView
-        android:id="@+id/preparation_TV"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:textSize="20sp"
-        android:drawableEnd="@drawable/ic_info_outline_24dp"
-        android:drawablePadding="10dp"
-        android:text="@string/preparation"
-        android:textAlignment="center"
-        app:layout_constraintEnd_toEndOf="@+id/preparation_counter"
-        app:layout_constraintStart_toStartOf="@+id/preparation_counter"
-        app:layout_constraintTop_toBottomOf="@+id/workout_name_TIL" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/workout_name_et"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textCapWords" />
 
+            </com.google.android.material.textfield.TextInputLayout>
 
-    <com.middleton.scott.customboxingworkout.utils.customviews.CounterView
-        android:id="@+id/preparation_counter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/preparation_TV" />
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/preparation_time_til"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/preparation"
+                android:layout_marginTop="10dp"
+                app:endIconDrawable="@drawable/ic_time"
+                app:endIconMode="custom"
+                app:hintTextColor="@color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/workout_name_til">
 
-    <TextView
-        android:id="@+id/rounds_TV"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:textSize="20sp"
-        android:drawableEnd="@drawable/ic_info_outline_24dp"
-        android:drawablePadding="10dp"
-        android:text="@string/rounds"
-        app:layout_constraintEnd_toEndOf="@+id/number_of_rounds_counter"
-        app:layout_constraintStart_toStartOf="@+id/number_of_rounds_counter"
-        app:layout_constraintTop_toBottomOf="@+id/preparation_counter" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/preparation_time_et"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:enabled="false"
+                    android:inputType="text" />
 
-    <com.middleton.scott.customboxingworkout.utils.customviews.CounterView
-        android:id="@+id/number_of_rounds_counter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rounds_TV" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-    <TextView
-        android:id="@+id/round_length_TV"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:textSize="20sp"
-        android:drawableEnd="@drawable/ic_info_outline_24dp"
-        android:drawablePadding="10dp"
-        android:text="@string/round_length"
-        app:layout_constraintEnd_toEndOf="@+id/round_duration_counter"
-        app:layout_constraintStart_toStartOf="@+id/round_duration_counter"
-        app:layout_constraintTop_toBottomOf="@+id/number_of_rounds_counter" />
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/number_of_rounds_til"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/rounds"
+                android:layout_marginTop="10dp"
+                app:endIconDrawable="@drawable/ic_edit"
+                app:endIconMode="custom"
+                app:hintTextColor="@color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/preparation_time_til">
 
-    <com.middleton.scott.customboxingworkout.utils.customviews.CounterView
-        android:id="@+id/round_duration_counter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/round_length_TV" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/number_of_rounds_et"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:enabled="false"
+                    android:inputType="text" />
 
-    <TextView
-        android:id="@+id/rest_length_TV"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:textSize="20sp"
-        android:drawableEnd="@drawable/ic_info_outline_24dp"
-        android:drawablePadding="10dp"
-        android:text="@string/rest_length"
-        app:layout_constraintEnd_toEndOf="@+id/rest_duration_counter"
-        app:layout_constraintStart_toStartOf="@+id/rest_duration_counter"
-        app:layout_constraintTop_toBottomOf="@+id/round_duration_counter" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-    <com.middleton.scott.customboxingworkout.utils.customviews.CounterView
-        android:id="@+id/rest_duration_counter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rest_length_TV" />
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/round_length_til"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:hint="@string/round_length"
+                app:endIconDrawable="@drawable/ic_boxer_24dp"
+                app:endIconMode="custom"
+                app:hintTextColor="@color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/number_of_rounds_til">
 
-    <TextView
-        android:id="@+id/intensity_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="20sp"
-        android:layout_marginTop="20dp"
-        android:drawableEnd="@drawable/ic_info_outline_24dp"
-        android:drawablePadding="10dp"
-        android:text="@string/intensity"
-        app:layout_constraintEnd_toEndOf="@+id/intensity_seekBar"
-        app:layout_constraintStart_toStartOf="@+id/intensity_seekBar"
-        app:layout_constraintTop_toBottomOf="@+id/rest_duration_counter" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/round_length_et"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:enabled="false"
+                    android:inputType="text" />
 
-    <SeekBar
-        android:id="@+id/intensity_seekBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:max="10"
-        android:progress="5"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/intensity_tv" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/rest_length_til"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:hint="@string/rest_length"
+                app:endIconDrawable="@drawable/ic_stool"
+                app:endIconMode="custom"
+                app:hintTextColor="@color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/round_length_til">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/rest_length_et"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:enabled="false"
+                    android:inputType="text" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/intensity_til"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/intensity"
+                android:layout_marginTop="10dp"
+                app:endIconDrawable="@drawable/ic_intensity"
+                app:endIconMode="custom"
+                app:hintTextColor="@color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/rest_length_til">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/intensity_et"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:enabled="false"
+                    android:inputType="text" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <View
+                android:id="@+id/view2"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/white_faded_20"
+                android:layout_marginTop="20dp"
+                app:layout_constraintTop_toBottomOf="@+id/intensity_til"
+                tools:layout_editor_absoluteX="20dp" />
+
+            <TextView
+                android:id="@+id/combinations_label_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@string/font_roboto_medium"
+                android:text="@string/combinations"
+                android:textColor="@color/primary_text_color_faded"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/view2" />
+
+            <TextView
+                android:id="@+id/add_combination_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/add_combinations"
+                android:padding="8dp"
+                android:drawablePadding="10dp"
+                app:drawableEndCompat="@drawable/ic_add_circle"
+                app:drawableTint="@color/primary_text_color_faded"
+                android:background="@drawable/list_item_combination_summary_background"
+                app:layout_constraintBottom_toBottomOf="@+id/combinations_label_tv"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/combinations_label_tv" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/combinations_summary_rv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:nestedScrollingEnabled="false"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintTop_toBottomOf="@+id/add_combination_tv"
+                tools:listitem="@layout/list_item_combination_summary" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
 
     <Button
         android:id="@+id/complete_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:text="@string/complete"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/intensity_seekBar" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:layout_gravity="bottom|center"
+        android:layout_marginBottom="20dp"
+        android:text="@string/complete" />
+</FrameLayout>

@@ -4,14 +4,21 @@
     <color name="colorPrimaryDark">#080C1C</color>
     <color name="accent">#2d72a2</color>
     <color name="accent_faded_40">#662D72A2</color>
+    <color name="accent_faded_20">#332D72A2</color>
+    <color name="accent_faded_5">#0D2D72A2</color>
     <color name="black">#000000</color>
+    <color name="black_faded_20">#33000000</color>
+    <color name="black_faded_15">#26000000</color>
     <color name="white">#FFF</color>
     <color name="white_faded_40">#66FFFFFF</color>
+    <color name="white_faded_15">#4DFFFFFF</color>
     <color name="white_faded_20">#33FFFFFF</color>
     <color name="white_faded_5">#0DFFFFFF</color>
     <color name="primary_text_color">#FFF</color>
     <color name="primary_text_color_faded">#99FFFFFF</color>
 
-    <color name="list_item_color">#1AFFFFFF</color>
+    <color name="list_item_color">#12FFFFFF</color>
+    <color name="edit_item_color">#34000000</color>
+    <color name="dialog_background">#272727</color>
 
 </resources>

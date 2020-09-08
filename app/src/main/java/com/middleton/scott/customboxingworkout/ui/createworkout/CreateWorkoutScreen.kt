@@ -13,7 +13,6 @@ import com.middleton.scott.commandMeBoxing.R
 import com.middleton.scott.customboxingworkout.MainActivity
 import com.middleton.scott.customboxingworkout.ui.base.BaseFragment
 import kotlinx.android.synthetic.main.fragment_create_workout_screen.*
-import kotlinx.android.synthetic.main.fragment_workout_tab.create_workout_vp
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 

@@ -8,7 +8,7 @@
         android:id="@+id/workoutsScreen"
         android:name="com.middleton.scott.customboxingworkout.ui.workouts.WorkoutsScreen"
         android:label="@string/workouts"
-        tools:layout="@layout/fragment_combinations_screen" />
+        tools:layout="@layout/fragment_combinations" />
     <fragment
         android:id="@+id/combinationsScreen"
         android:name="com.middleton.scott.customboxingworkout.ui.combinations.CombinationsScreen"

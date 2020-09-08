@@ -14,7 +14,7 @@ import com.middleton.scott.customboxingworkout.ui.base.BaseFragment
 import com.middleton.scott.customboxingworkout.ui.combinations.CombinationsAdapter
 import com.middleton.scott.customboxingworkout.utils.MediaRecorderManager
 import com.middleton.scott.customboxingworkout.utils.PermissionsDialogManager
-import kotlinx.android.synthetic.main.fragment_combinations_screen.*
+import kotlinx.android.synthetic.main.fragment_combinations.*
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import java.io.File
 
@@ -41,12 +41,11 @@ class CreateWorkoutCombinationsFragment : BaseFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_combinations_screen, container, false)
+        return inflater.inflate(R.layout.fragment_combinations, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        adapter = CombinationsAdapter(viewModel.audioFileBaseDirectory)
         combinations_RV.adapter = adapter
         subscribeUI()
         setClickListeners()

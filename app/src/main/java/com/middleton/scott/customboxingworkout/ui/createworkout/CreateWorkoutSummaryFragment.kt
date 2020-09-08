@@ -10,16 +10,25 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.middleton.scott.commandMeBoxing.R
 import com.middleton.scott.customboxingworkout.ui.base.BaseFragment
+import com.middleton.scott.customboxingworkout.ui.combinations.CombinationsAdapter
 import kotlinx.android.synthetic.main.counter_layout.view.*
+import kotlinx.android.synthetic.main.fragment_combinations.*
 import kotlinx.android.synthetic.main.fragment_workout_tab.*
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 class CreateWorkoutSummaryFragment : BaseFragment() {
     private val viewModel by lazy { requireParentFragment().getViewModel<CreateWorkoutSharedViewModel>() }
+    private lateinit var adapter: CombinationsSummaryAdapter
 
     companion object {
         fun newInstance() =
             CreateWorkoutSummaryFragment()
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        adapter = CombinationsSummaryAdapter { combination, checked ->
+        }
     }
 
     override fun onCreateView(
@@ -31,7 +40,7 @@ class CreateWorkoutSummaryFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        combinations_summary_rv.adapter = adapter
         if (viewModel.workoutId == -1L) {
             complete_btn.text = getString(R.string.complete)
         } else {
@@ -42,28 +51,29 @@ class CreateWorkoutSummaryFragment : BaseFragment() {
     }
 
     private fun subscribeUI() {
-        viewModel.preparationDurationSecsLD.observe(viewLifecycleOwner, Observer {
-            preparation_counter.setTime(it)
-        })
+//        viewModel.preparationDurationSecsLD.observe(viewLifecycleOwner, Observer {
+//            preparation_counter.setTime(it)
+//        })
+//
+//        viewModel.numberOfRoundsLD.observe(viewLifecycleOwner, Observer {
+//            number_of_rounds_counter.setCount(it)
+//        })
+//
+//        viewModel.roundDurationSecsLD.observe(viewLifecycleOwner, Observer {
+//            round_duration_counter.setTime(it)
+//        })
+//
+//        viewModel.restDurationSecsLD.observe(viewLifecycleOwner, Observer {
+//            rest_duration_counter.setTime(it)
+//        })
 
-        viewModel.numberOfRoundsLD.observe(viewLifecycleOwner, Observer {
-            number_of_rounds_counter.setCount(it)
-        })
-
-        viewModel.roundDurationSecsLD.observe(viewLifecycleOwner, Observer {
-            round_duration_counter.setTime(it)
-        })
-
-        viewModel.restDurationSecsLD.observe(viewLifecycleOwner, Observer {
-            rest_duration_counter.setTime(it)
-        })
-
-        viewModel.intensityLD.observe(viewLifecycleOwner, Observer {
-            intensity_seekBar.progress = it
-        })
+//        viewModel.intensityLD.observe(viewLifecycleOwner, Observer {
+//            intensity_seekBar.progress = it
+//        })
 
         viewModel.workoutWithCombinationsLD.observe(viewLifecycleOwner, Observer {
-            workout_name_ET.setText(it?.workout?.name)
+            it?.combinations?.let { it1 -> adapter.setCombinations(it1) }
+            workout_name_et.setText(it?.workout?.name)
             populateFields()
         })
 
@@ -73,51 +83,51 @@ class CreateWorkoutSummaryFragment : BaseFragment() {
     }
 
     private fun setListeners() {
-        workout_name_ET.doAfterTextChanged {
+        workout_name_et.doAfterTextChanged {
             viewModel.setWorkoutName(it.toString())
         }
 
-        preparation_counter.plus_BTN.setOnClickListener {
-            viewModel.setPreparationTime(viewModel.workout.preparation_time_secs + 5)
-        }
-        preparation_counter.minus_BTN.setOnClickListener {
-            viewModel.setPreparationTime(viewModel.workout.preparation_time_secs - 5)
-        }
+//        preparation_counter.plus_BTN.setOnClickListener {
+//            viewModel.setPreparationTime(viewModel.workout.preparation_time_secs + 5)
+//        }
+//        preparation_counter.minus_BTN.setOnClickListener {
+//            viewModel.setPreparationTime(viewModel.workout.preparation_time_secs - 5)
+//        }
+//
+//        number_of_rounds_counter.plus_BTN.setOnClickListener {
+//            viewModel.setNumberOfRounds(viewModel.workout.numberOfRounds + 1)
+//        }
+//        number_of_rounds_counter.minus_BTN.setOnClickListener {
+//            viewModel.setNumberOfRounds(viewModel.workout.numberOfRounds - 1)
+//        }
+//
+//        round_duration_counter.plus_BTN.setOnClickListener {
+//            viewModel.setRoundDuration(viewModel.workout.round_duration_secs + 10)
+//        }
+//
+//        round_duration_counter.minus_BTN.setOnClickListener {
+//            viewModel.setRoundDuration(viewModel.workout.round_duration_secs - 10)
+//        }
+//
+//        rest_duration_counter.plus_BTN.setOnClickListener {
+//            viewModel.setRestDuration(viewModel.workout.rest_duration_secs + 10)
+//        }
+//
+//        rest_duration_counter.minus_BTN.setOnClickListener {
+//            viewModel.setRestDuration(viewModel.workout.rest_duration_secs - 10)
+//        }
 
-        number_of_rounds_counter.plus_BTN.setOnClickListener {
-            viewModel.setNumberOfRounds(viewModel.workout.numberOfRounds + 1)
-        }
-        number_of_rounds_counter.minus_BTN.setOnClickListener {
-            viewModel.setNumberOfRounds(viewModel.workout.numberOfRounds - 1)
-        }
-
-        round_duration_counter.plus_BTN.setOnClickListener {
-            viewModel.setRoundDuration(viewModel.workout.round_duration_secs + 10)
-        }
-
-        round_duration_counter.minus_BTN.setOnClickListener {
-            viewModel.setRoundDuration(viewModel.workout.round_duration_secs - 10)
-        }
-
-        rest_duration_counter.plus_BTN.setOnClickListener {
-            viewModel.setRestDuration(viewModel.workout.rest_duration_secs + 10)
-        }
-
-        rest_duration_counter.minus_BTN.setOnClickListener {
-            viewModel.setRestDuration(viewModel.workout.rest_duration_secs - 10)
-        }
-
-        intensity_seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                viewModel.setIntensity(progress)
-            }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {
-            }
-
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {
-            }
-        })
+//        intensity_seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+//            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+//                viewModel.setIntensity(progress)
+//            }
+//
+//            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+//            }
+//
+//            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+//            }
+//        })
 
         complete_btn.setOnClickListener {
             viewModel.upsertWorkout()

@@ -30,4 +30,7 @@
     <string name="combos">Combos</string>
     <string name="create_workout">Create Workout</string>
     <string name="summary">Summary</string>
+    <string name="name">Name</string>
+    <string name="weighting">Weighting</string>
+    <string name="add_combinations">Add combinations</string>
 </resources>

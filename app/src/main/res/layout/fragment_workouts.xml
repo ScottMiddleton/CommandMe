@@ -12,6 +12,13 @@
         android:background="@color/white_faded_20"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/ic_boxer"
+        app:tint="@color/black_faded_15"
+        android:scaleType="centerCrop" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/workout_RV"
         android:layout_width="match_parent"
