@@ -1,3 +1,5 @@
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -22,6 +24,7 @@ class SaveCombinationDialog(
 
     override fun onViewCreated(view: View, @Nullable savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         // Show soft keyboard automatically and request focus to field
         name_et!!.requestFocus()
         dialog?.window?.setSoftInputMode(
