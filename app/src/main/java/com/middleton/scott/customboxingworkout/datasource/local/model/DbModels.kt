@@ -21,3 +21,10 @@ data class Combination constructor(
     var file_name: String
 ) : BaseDbModel()
 
+@Entity()
+data class CombinationFrequency constructor(
+    var workout_id: Long,
+    var combination_id: Long,
+    var frequency: Long
+) : BaseDbModel()
+

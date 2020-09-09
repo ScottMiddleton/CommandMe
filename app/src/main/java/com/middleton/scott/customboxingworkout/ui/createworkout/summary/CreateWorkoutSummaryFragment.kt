@@ -30,7 +30,8 @@ class CreateWorkoutSummaryFragment : BaseFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        adapter = CombinationsSummaryAdapter { combination, checked ->
+        adapter = CombinationsSummaryAdapter { combinationId, frequency ->
+            viewModel.setCombinationFrequency(combinationId, frequency)
         }
     }
 
@@ -90,6 +91,10 @@ class CreateWorkoutSummaryFragment : BaseFragment() {
 
             workout_name_et.setText(it?.workout?.name)
             populateFields()
+        })
+
+        viewModel.getCombinationFrequencyListLD().observe(viewLifecycleOwner, Observer {
+            adapter.setCombinationFrequencyList(it)
         })
 
         viewModel.dbUpdateLD.observe(viewLifecycleOwner, Observer {

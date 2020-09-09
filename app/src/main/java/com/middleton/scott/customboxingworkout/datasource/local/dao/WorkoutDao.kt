@@ -7,7 +7,7 @@ import com.middleton.scott.customboxingworkout.datasource.local.model.WorkoutWit
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-abstract class WorkoutDao: BaseDao<Workout>() {
+abstract class WorkoutDao : BaseDao<Workout>() {
     @Query("SELECT * FROM workout")
     abstract fun getAllWorkoutsWithCombinations(): Flow<List<WorkoutWithCombinations>>
 
@@ -15,6 +15,6 @@ abstract class WorkoutDao: BaseDao<Workout>() {
     abstract fun getWorkouts(): Flow<List<Workout>>
 
     @Query("SELECT * FROM workout WHERE _id = :id")
-    abstract fun getWorkoutWithCombinations(id: Long) : Flow<WorkoutWithCombinations?>
+    abstract fun getWorkoutWithCombinations(id: Long): Flow<WorkoutWithCombinations?>
 }
 

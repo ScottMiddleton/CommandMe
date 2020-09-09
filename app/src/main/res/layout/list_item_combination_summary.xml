@@ -18,18 +18,14 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Combination 1234" />
 
-    <LinearLayout
-        android:id="@+id/checkbox_fl"
+    <EditText
+        android:id="@+id/frequency_et"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:imeOptions="actionDone"
+        android:inputType="number"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginEnd="2dp">
-
-        <include layout="@layout/counter_layout" />
-
-    </LinearLayout>
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

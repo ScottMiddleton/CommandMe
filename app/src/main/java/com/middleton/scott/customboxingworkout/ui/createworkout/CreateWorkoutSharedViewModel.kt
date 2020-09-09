@@ -1,12 +1,16 @@
 package com.middleton.scott.customboxingworkout.ui.createworkout
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asLiveData
 import com.middleton.scott.customboxingworkout.datasource.local.LocalDataSource
 import com.middleton.scott.customboxingworkout.datasource.local.model.Combination
+import com.middleton.scott.customboxingworkout.datasource.local.model.CombinationFrequency
 import com.middleton.scott.customboxingworkout.datasource.local.model.Workout
 import com.middleton.scott.customboxingworkout.ui.combinations.CombinationsViewModel
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 
 class CreateWorkoutSharedViewModel(
     private val localDataSource: LocalDataSource,
@@ -15,6 +19,7 @@ class CreateWorkoutSharedViewModel(
 
     var workout = Workout()
     val checkedCombinations = mutableListOf<Combination>()
+    val combinationFrequencyList = mutableListOf<CombinationFrequency>()
 
     val workoutWithCombinationsLD =
         localDataSource.getWorkoutWithCombinations(workoutId).map { workoutWithCombinations ->
@@ -33,11 +38,14 @@ class CreateWorkoutSharedViewModel(
     val dbUpdateLD = MutableLiveData<Boolean>()
 
     fun upsertWorkout() {
-        workout.let {
-            localDataSource.upsertWorkout(
-                it,
-                checkedCombinations
-            )
+        GlobalScope.launch {
+            workout.let {
+                localDataSource.upsertWorkout(
+                    it,
+                    checkedCombinations,
+                    combinationFrequencyList
+                )
+            }
         }
         dbUpdateLD.value = true
     }
@@ -48,6 +56,16 @@ class CreateWorkoutSharedViewModel(
         } else {
             checkedCombinations.remove(combination)
         }
+    }
+
+    fun setCombinationFrequency(combinationId: Long, frequency: Long) {
+        val combinationFrequency = CombinationFrequency(workoutId, combinationId, frequency)
+
+        combinationFrequencyList.filterNot {
+            it.id == combinationId
+        }
+
+        combinationFrequencyList.add(combinationFrequency)
     }
 
     fun setWorkoutName(name: String) {
@@ -85,5 +103,9 @@ class CreateWorkoutSharedViewModel(
     fun setIntensity(intensity: Int) {
         workout.intensity = intensity
         intensityLD.value = intensity
+    }
+
+    fun getCombinationFrequencyListLD(): LiveData<List<CombinationFrequency>> {
+        return localDataSource.getCombinationFrequencyList(workoutId).asLiveData()
     }
 }
