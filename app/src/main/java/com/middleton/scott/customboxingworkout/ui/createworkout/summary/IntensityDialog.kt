@@ -30,7 +30,6 @@ class IntensityDialog(
         intensity_value_pb.progress = intensityProgress
         intensity_value_tv.text = intensityProgress.toString()
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        // Show soft keyboard automatically and request focus to field
         dialog?.window?.setSoftInputMode(
             WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE
         )

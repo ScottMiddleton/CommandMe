@@ -30,10 +30,9 @@ class NumberPickerRoundsDialog(
         super.onViewCreated(view, savedInstanceState)
         title_tv.text = view.context.getString(R.string.rounds)
         rounds_np.maxValue = 99
-        rounds_np.minValue = 0
+        rounds_np.minValue = 1
         rounds_np.value = numberOfRounds
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        // Show soft keyboard automatically and request focus to field
         dialog?.window?.setSoftInputMode(
             WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE
         )
