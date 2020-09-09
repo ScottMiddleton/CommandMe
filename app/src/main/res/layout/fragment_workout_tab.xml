@@ -45,7 +45,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/preparation"
+                android:hint="@string/preparation_time"
                 android:layout_marginTop="8dp"
                 app:endIconDrawable="@drawable/ic_time"
                 app:endIconMode="custom"
@@ -58,7 +58,8 @@
                     android:id="@+id/preparation_time_et"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:enabled="false"
+                    android:clickable="true"
+                    android:focusable="false"
                     android:inputType="text" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -70,7 +71,7 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/rounds"
                 android:layout_marginTop="8dp"
-                app:endIconDrawable="@drawable/ic_edit"
+                app:endIconDrawable="@drawable/ic_bell"
                 app:endIconMode="custom"
                 app:hintTextColor="@color/white"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -81,18 +82,19 @@
                     android:id="@+id/number_of_rounds_et"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:enabled="false"
+                    android:clickable="true"
+                    android:focusable="false"
                     android:inputType="text" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/round_length_til"
+                android:id="@+id/work_time_til"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:hint="@string/round_length"
+                android:hint="@string/work_time"
                 app:endIconDrawable="@drawable/ic_boxer_24dp"
                 app:endIconMode="custom"
                 app:hintTextColor="@color/white"
@@ -101,33 +103,35 @@
                 app:layout_constraintTop_toBottomOf="@+id/number_of_rounds_til">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/round_length_et"
+                    android:id="@+id/work_time_et"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:enabled="false"
+                    android:clickable="true"
+                    android:focusable="false"
                     android:inputType="text" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/rest_length_til"
+                android:id="@+id/rest_time_til"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:hint="@string/rest_length"
+                android:hint="@string/rest_time"
                 app:endIconDrawable="@drawable/ic_stool"
                 app:endIconMode="custom"
                 app:hintTextColor="@color/white"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/round_length_til">
+                app:layout_constraintTop_toBottomOf="@+id/work_time_til">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/rest_length_et"
+                    android:id="@+id/rest_time_et"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:enabled="false"
+                    android:clickable="true"
+                    android:focusable="false"
                     android:inputType="text" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -144,13 +148,14 @@
                 app:hintTextColor="@color/white"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/rest_length_til">
+                app:layout_constraintTop_toBottomOf="@+id/rest_time_til">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/intensity_et"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:enabled="false"
+                    android:clickable="true"
+                    android:focusable="false"
                     android:inputType="text" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -238,10 +243,9 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/combinations_summary_rv"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="180dp"
                 android:background="@drawable/list_item_combination_summary_background"
                 android:visibility="gone"
-                android:nestedScrollingEnabled="false"
                 android:layout_marginTop="4dp"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintTop_toBottomOf="@+id/name_label_tv"

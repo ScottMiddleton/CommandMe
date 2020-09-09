@@ -11,7 +11,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.middleton.scott.commandMeBoxing.R
 import com.middleton.scott.customboxingworkout.datasource.local.model.WorkoutWithCombinations
-import com.middleton.scott.customboxingworkout.utils.DateUtils
+import com.middleton.scott.customboxingworkout.utils.DateTimeUtils
 
 class WorkoutsAdapter(
     private val workoutsWithExercises: List<WorkoutWithCombinations>,
@@ -42,7 +42,7 @@ class WorkoutsAdapter(
         holder.editButton.setOnClickListener {
             workout?.id?.let { id -> onClickWorkout(id) }
         }
-        holder.dateTV.text = workout?.dateCreated?.let { DateUtils.toDayMonthYear(it) }
+        holder.dateTV.text = workout?.dateCreated?.let { DateTimeUtils.toDayMonthYear(it) }
         holder.roundsCombosTV.text = context.getString(R.string.rounds_combos, workout?.numberOfRounds.toString(), exercises.size.toString())
         workout?.intensity?.let {
             holder.intensityPB.progress = it
@@ -56,7 +56,7 @@ class WorkoutsAdapter(
         val editButton: ImageButton = view.findViewById(R.id.edit_btn)
         val dateTV: TextView = view.findViewById(R.id.date_created_tv)
         val roundsCombosTV: TextView = view.findViewById(R.id.rounds_and_combos_tv)
-        val intensityPB: ProgressBar = view.findViewById(R.id.intensity_progress_bar)
+        val intensityPB: ProgressBar = view.findViewById(R.id.intensity_seekbar)
         val intensityTV: TextView = view.findViewById(R.id.intensity_tv)
     }
 }

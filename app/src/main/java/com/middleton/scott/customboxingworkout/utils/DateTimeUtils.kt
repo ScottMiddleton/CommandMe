@@ -3,7 +3,7 @@ package com.middleton.scott.customboxingworkout.utils
 import java.text.SimpleDateFormat
 import java.util.*
 
-object DateUtils {
+object DateTimeUtils {
 
     private val dayMonthYearFormat = SimpleDateFormat("dd/MM/yyyy", Locale.UK)
     private val dayMonthYearTimeFormat = SimpleDateFormat("dd/MM/yyyy hh:mm", Locale.UK)
@@ -12,6 +12,7 @@ object DateUtils {
     private val dayFormat = SimpleDateFormat("d", Locale.UK)
     private val dayOfWeekFormat = SimpleDateFormat("EE", Locale.UK)
     private val monthFormat = SimpleDateFormat("MMM", Locale.UK)
+    private val minutesSecondsFormat = SimpleDateFormat("mm:ss", Locale.UK)
 
     fun fromDayMonthYear(date: String): Date? {
         return dayMonthYearFormat.parse(date)
@@ -45,17 +46,7 @@ object DateUtils {
         return monthFormat.format(date)
     }
 
-    fun getDaysUntilCollection(todaysDate: Date, collectionDate: Date): Int {
-        val collectionDateCal = Calendar.getInstance()
-        val todaysDateCal = Calendar.getInstance()
-        collectionDateCal.time = collectionDate
-        todaysDateCal.time = todaysDate
-
-        var numberOfDays = 0
-        while (todaysDateCal.before(collectionDateCal)) {
-            numberOfDays++
-            todaysDateCal.add(Calendar.DATE, 1)
-        }
-        return numberOfDays
+    fun toMinuteSeconds(seconds: Int): String {
+        return minutesSecondsFormat.format(seconds * 1000)
     }
 }

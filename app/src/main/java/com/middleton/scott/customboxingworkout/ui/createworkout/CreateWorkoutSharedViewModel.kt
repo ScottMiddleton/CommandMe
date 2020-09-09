@@ -25,10 +25,10 @@ class CreateWorkoutSharedViewModel(
             workoutWithCombinations
         }.asLiveData()
 
-    val preparationDurationSecsLD = MutableLiveData<Int>()
+    val preparationTimeLD = MutableLiveData<Int>()
     val numberOfRoundsLD = MutableLiveData<Int>()
-    val roundDurationSecsLD = MutableLiveData<Int>()
-    val restDurationSecsLD = MutableLiveData<Int>()
+    val workTimeSecsLD = MutableLiveData<Int>()
+    val restTimeSecsLD = MutableLiveData<Int>()
     val intensityLD = MutableLiveData<Int>()
     val dbUpdateLD = MutableLiveData<Boolean>()
 
@@ -59,7 +59,7 @@ class CreateWorkoutSharedViewModel(
     fun setPreparationTime(preparationDurationSecs: Int) {
         if (preparationDurationSecs >= 0) {
             workout.preparation_time_secs = preparationDurationSecs
-            preparationDurationSecsLD.value = preparationDurationSecs
+            preparationTimeLD.value = preparationDurationSecs
         }
     }
 
@@ -68,17 +68,17 @@ class CreateWorkoutSharedViewModel(
         numberOfRoundsLD.value = numberOfRounds
     }
 
-    fun setRoundDuration(roundDurationSecs: Int) {
-        if (roundDurationSecs >= 0) {
-            workout.round_duration_secs = roundDurationSecs
-            roundDurationSecsLD.value = roundDurationSecs
+    fun setWorkTime(workTimeSecs: Int) {
+        if (workTimeSecs >= 0) {
+            workout.work_time_secs = workTimeSecs
+            workTimeSecsLD.value = workTimeSecs
         }
     }
 
-    fun setRestDuration(restDurationSecs: Int) {
-        if (restDurationSecs >= 0) {
-            workout.rest_duration_secs = restDurationSecs
-            restDurationSecsLD.value = restDurationSecs
+    fun setRestTime(restTimeSecs: Int) {
+        if (restTimeSecs >= 0) {
+            workout.rest_time_secs = restTimeSecs
+            restTimeSecsLD.value = restTimeSecs
         }
     }
 

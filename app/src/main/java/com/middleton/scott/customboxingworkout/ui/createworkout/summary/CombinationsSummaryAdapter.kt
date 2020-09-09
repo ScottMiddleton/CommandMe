@@ -1,20 +1,12 @@
-package com.middleton.scott.customboxingworkout.ui.createworkout
+package com.middleton.scott.customboxingworkout.ui.createworkout.summary
 
-import android.media.MediaPlayer
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.GONE
-import android.view.View.VISIBLE
 import android.view.ViewGroup
-import android.widget.CheckBox
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
-import com.airbnb.lottie.LottieAnimationView
 import com.middleton.scott.commandMeBoxing.R
 import com.middleton.scott.customboxingworkout.datasource.local.model.Combination
-import java.io.IOException
 
 class CombinationsSummaryAdapter(
     private val onEditWeighting: ((Combination: Combination, checked: Boolean) -> Unit)

@@ -11,10 +11,10 @@
     <string name="your_presets">Your presets</string>
     <string name="workout_information">Workout Information</string>
     <string name="workout_name">Workout Name</string>
-    <string name="preparation">Preparation Length</string>
-    <string name="round_length">Round Length</string>
+    <string name="preparation_time">Preparation Time</string>
+    <string name="work_time">Work Time</string>
     <string name="intensity">Intensity</string>
-    <string name="rest_length">Rest Length</string>
+    <string name="rest_time">Rest Time</string>
     <string name="rounds">Rounds</string>
     <string name="complete">Complete</string>
     <string name="save">Save</string>
@@ -34,4 +34,7 @@
     <string name="add_combinations">Add combinations</string>
     <string name="name">Name</string>
     <string name="add_combinations_to_workout">Add combinations to workout</string>
+    <string name="minutes">Minutes</string>
+    <string name="seconds">Seconds</string>
+    <string name="cancel">Cancel</string>
 </resources>

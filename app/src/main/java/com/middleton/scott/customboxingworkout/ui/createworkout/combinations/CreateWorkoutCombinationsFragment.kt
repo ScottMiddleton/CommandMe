@@ -1,4 +1,4 @@
-package com.middleton.scott.customboxingworkout.ui.createworkout
+package com.middleton.scott.customboxingworkout.ui.createworkout.combinations
 
 import SaveCombinationDialog
 import android.media.MediaRecorder
@@ -12,6 +12,7 @@ import androidx.lifecycle.Observer
 import com.middleton.scott.commandMeBoxing.R
 import com.middleton.scott.customboxingworkout.ui.base.BaseFragment
 import com.middleton.scott.customboxingworkout.ui.combinations.CombinationsAdapter
+import com.middleton.scott.customboxingworkout.ui.createworkout.CreateWorkoutSharedViewModel
 import com.middleton.scott.customboxingworkout.utils.MediaRecorderManager
 import com.middleton.scott.customboxingworkout.utils.PermissionsDialogManager
 import kotlinx.android.synthetic.main.fragment_combinations.*
