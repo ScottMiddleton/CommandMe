@@ -38,4 +38,20 @@
     <string name="seconds">Seconds</string>
     <string name="cancel">Cancel</string>
     <string name="frequency">Frequency</string>
+
+    <string-array name="frequency_spinner_array">
+        <item>Choose Frequency</item>
+        <item>Very Often</item>
+        <item>Often</item>
+        <item>Average</item>
+        <item>Rare</item>
+        <item>Very Rare</item>
+    </string-array>
+
+    <string name="very_often">Very Often</string>
+    <string name="often">Often</string>
+    <string name="average">Average</string>
+    <string name="rare">Rare</string>
+    <string name="very_rare">Very Rare</string>
+
 </resources>

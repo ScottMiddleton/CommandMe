@@ -30,8 +30,8 @@ class CreateWorkoutSummaryFragment : BaseFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        adapter = CombinationsSummaryAdapter { combinationId, frequency ->
-            viewModel.setCombinationFrequency(combinationId, frequency)
+        adapter = CombinationsSummaryAdapter(viewModel.workoutId) { combinationFrequency ->
+            viewModel.setCombinationFrequency(combinationFrequency)
         }
     }
 
@@ -75,26 +75,25 @@ class CreateWorkoutSummaryFragment : BaseFragment() {
             intensity_et.setText(it.toString())
         })
 
-        viewModel.workoutWithCombinationsLD.observe(viewLifecycleOwner, Observer {
-            val combinations = it?.combinations
-            if (!combinations.isNullOrEmpty()) {
-                adapter.setCombinations(combinations)
-                weighting_label_tv.visibility = VISIBLE
-                name_label_tv.visibility = VISIBLE
-                combinations_summary_rv.visibility = VISIBLE
-            } else {
-                weighting_label_tv.visibility = GONE
-                name_label_tv.visibility = GONE
-                add_combination_tv.visibility = VISIBLE
-                combinations_summary_rv.visibility = GONE
+        viewModel.workoutWithCombinationsAndFrequenciesLD.observe(viewLifecycleOwner, Observer {
+            if (viewModel.subscribe) {
+                val combinations = it?.workoutWithCombinations?.combinations
+                if (!combinations.isNullOrEmpty()) {
+                    val combinationFrequencies = it.combinationsFrequencies
+                    adapter.setAdapter(combinations, combinationFrequencies)
+                    weighting_label_tv.visibility = VISIBLE
+                    name_label_tv.visibility = VISIBLE
+                    combinations_summary_rv.visibility = VISIBLE
+                } else {
+                    weighting_label_tv.visibility = GONE
+                    name_label_tv.visibility = GONE
+                    add_combination_tv.visibility = VISIBLE
+                    combinations_summary_rv.visibility = GONE
+                }
+
+                workout_name_et.setText(it?.workoutWithCombinations?.workout?.name)
+                populateFields()
             }
-
-            workout_name_et.setText(it?.workout?.name)
-            populateFields()
-        })
-
-        viewModel.getCombinationFrequencyListLD().observe(viewLifecycleOwner, Observer {
-            adapter.setCombinationFrequencyList(it)
         })
 
         viewModel.dbUpdateLD.observe(viewLifecycleOwner, Observer {
@@ -108,30 +107,42 @@ class CreateWorkoutSummaryFragment : BaseFragment() {
         }
 
         preparation_time_et.setOnClickListener {
-            NumberPickerMinutesSecondsDialog(getString(R.string.preparation_time), viewModel.workout.preparation_time_secs, { seconds ->
-                viewModel.setPreparationTime(seconds)
-                preparation_time_et.setText(DateTimeUtils.toMinuteSeconds(seconds))
-            }, {}).show(
+            NumberPickerMinutesSecondsDialog(
+                getString(R.string.preparation_time),
+                viewModel.workout.preparation_time_secs,
+                { seconds ->
+                    viewModel.setPreparationTime(seconds)
+                    preparation_time_et.setText(DateTimeUtils.toMinuteSeconds(seconds))
+                },
+                {}).show(
                 childFragmentManager,
                 null
             )
         }
 
         work_time_et.setOnClickListener {
-            NumberPickerMinutesSecondsDialog(getString(R.string.work_time), viewModel.workout.work_time_secs, { seconds ->
-                viewModel.setWorkTime(seconds)
-                work_time_et.setText(DateTimeUtils.toMinuteSeconds(seconds))
-            }, {}).show(
+            NumberPickerMinutesSecondsDialog(
+                getString(R.string.work_time),
+                viewModel.workout.work_time_secs,
+                { seconds ->
+                    viewModel.setWorkTime(seconds)
+                    work_time_et.setText(DateTimeUtils.toMinuteSeconds(seconds))
+                },
+                {}).show(
                 childFragmentManager,
                 null
             )
         }
 
         rest_time_et.setOnClickListener {
-            NumberPickerMinutesSecondsDialog(getString(R.string.rest_time), viewModel.workout.rest_time_secs, { seconds ->
-                viewModel.setRestTime(seconds)
-                rest_time_et.setText(DateTimeUtils.toMinuteSeconds(seconds))
-            }, {}).show(
+            NumberPickerMinutesSecondsDialog(
+                getString(R.string.rest_time),
+                viewModel.workout.rest_time_secs,
+                { seconds ->
+                    viewModel.setRestTime(seconds)
+                    rest_time_et.setText(DateTimeUtils.toMinuteSeconds(seconds))
+                },
+                {}).show(
                 childFragmentManager,
                 null
             )

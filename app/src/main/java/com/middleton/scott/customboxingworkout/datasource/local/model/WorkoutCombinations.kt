@@ -20,7 +20,7 @@ import androidx.room.*
 
 data class WorkoutCombinations constructor(
     @ColumnInfo
-    val workout_id: Long,
+    var workout_id: Long,
     @ColumnInfo
     val combination_id: Long
 ) : BaseDbModel()

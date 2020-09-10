@@ -23,40 +23,34 @@ class LocalDataSourceImpl(
         return database.workoutDao().getAllWorkoutsWithCombinations()
     }
 
-    override suspend fun upsertCombinationFrequency(combinationFrequency: CombinationFrequency) {
-        database.combinationFrequencyDao().upsert(combinationFrequency)
-    }
-
     override fun getCombinationFrequencyList(workoutId: Long): Flow<List<CombinationFrequency>> {
         return database.combinationFrequencyDao().getCombinationFrequencyList(workoutId)
     }
 
-    override suspend fun upsertWorkout(
-        workout: Workout,
-        combinations: List<Combination>?,
-        combinationFrequencyList: List<CombinationFrequency>?
-    ) {
-        val id = database.workoutDao().upsert(workout)
-
-        database.workoutCombinationsDao().deleteByWorkoutId(workout.id)
-
-        combinations?.let {
-            for (combination in combinations) {
-                upsertWorkoutCombination(id, combination.id)
-            }
-        }
-
-        database.combinationFrequencyDao().deleteByWorkoutId(workout.id)
-
-        combinationFrequencyList?.let {
-            it.forEach {combinationFrequency ->
-                upsertCombinationFrequency(combinationFrequency)
-            }
-        }
+    override fun getWorkoutCombinations(workoutId: Long): List<WorkoutCombinations> {
+        return database.workoutCombinationsDao().getWorkoutCombinations(workoutId)
     }
 
-    override suspend fun upsertWorkoutCombination(workoutId: Long, combinationId: Long) {
-        database.workoutCombinationsDao().upsert(WorkoutCombinations(workoutId, combinationId))
+    override suspend fun upsertWorkout(
+        workout: Workout
+    ): Long {
+        return database.workoutDao().upsert(workout)
+    }
+
+    override suspend fun upsertWorkoutCombinations(workoutCombinations: List<WorkoutCombinations>) {
+        database.workoutCombinationsDao().upsert(workoutCombinations)
+    }
+
+    override suspend fun upsertCombinationFrequencies(combinationFrequency: List<CombinationFrequency>) {
+        database.combinationFrequencyDao().upsert(combinationFrequency)
+    }
+
+    override suspend fun deleteWorkoutCombinations(workoutId: Long) {
+        database.workoutCombinationsDao().deleteByWorkoutId(workoutId)
+    }
+
+    override suspend fun deleteCombinationFrequencies(workoutId: Long) {
+        database.combinationFrequencyDao().deleteByWorkoutId(workoutId)
     }
 
     override suspend fun upsertCombination(exercise: Combination): Long {

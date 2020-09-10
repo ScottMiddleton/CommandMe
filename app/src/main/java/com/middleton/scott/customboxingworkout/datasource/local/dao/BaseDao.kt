@@ -3,25 +3,24 @@ package com.middleton.scott.customboxingworkout.datasource.local.dao
 import androidx.room.*
 import com.middleton.scott.customboxingworkout.datasource.local.model.BaseDbModel
 
-abstract class BaseDao<T: BaseDbModel> {
+abstract class BaseDao<T : BaseDbModel> {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    abstract fun insert(obj: T): Long
+    abstract suspend fun insert(obj: T): Long
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    abstract fun insert(obj: List<T>): List<Long>
+    abstract suspend fun insert(obj: List<T>): List<Long>
 
-    @Update(onConflict = OnConflictStrategy.REPLACE)
-    abstract fun update(obj: T)
+    @Update
+    abstract suspend fun update(obj: T)
 
-    @Update(onConflict = OnConflictStrategy.REPLACE)
-    abstract fun update(obj: List<T>)
+    @Update
+    abstract suspend fun update(obj: List<T>)
 
     @Delete
-    abstract fun delete(obj: T)
+    abstract suspend fun delete(obj: T)
 
-    @Transaction
-    open fun upsert(obj: T): Long {
+    open suspend fun upsert(obj: T): Long {
         var id = insert(obj)
         if (id == -1L) {
             update(obj)
@@ -30,8 +29,7 @@ abstract class BaseDao<T: BaseDbModel> {
         return id
     }
 
-    @Transaction
-    open fun upsert(objList: List<T>) {
+    open suspend fun upsert(objList: List<T>) {
         val insertResult = insert(objList)
         val updateList = ArrayList<T>()
 

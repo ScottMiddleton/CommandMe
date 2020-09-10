@@ -15,14 +15,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
 import com.middleton.scott.commandMeBoxing.R
 import com.middleton.scott.customboxingworkout.datasource.local.model.Combination
+import com.middleton.scott.customboxingworkout.datasource.local.model.WorkoutCombinations
 import java.io.IOException
 
 class CombinationsAdapter(
     private val audioFileDirectory: String,
-    private val onCheckWorkout: ((Combination: Combination, checked: Boolean) -> Unit)? = null
+    private val workoutId: Long = -1,
+    private val onCheckWorkout: ((workoutCombination: WorkoutCombinations, isChecked: Boolean) -> Unit)? = null
 ) : RecyclerView.Adapter<CombinationsAdapter.CombinationsViewHolder>() {
 
-    private var checkedCombinations = mutableListOf<Combination>()
+    private var workoutCombinations = mutableListOf<WorkoutCombinations>()
     private var allCombinations = mutableListOf<Combination>()
     private var mediaPlayer = MediaPlayer()
 
@@ -45,7 +47,16 @@ class CombinationsAdapter(
 
     override fun onBindViewHolder(holder: CombinationsViewHolder, position: Int) {
         holder.nameTV.text = allCombinations[position].name
-        holder.checkBox.isChecked = checkedCombinations.contains(allCombinations[position])
+
+        var isChecked = false
+
+        val workoutCombination = workoutCombinations.filter {
+            it.combination_id == allCombinations[position].id
+        }.firstOrNull()
+
+        isChecked = workoutCombination != null
+
+        holder.checkBox.isChecked = isChecked
 
         if (onCheckWorkout == null) {
             holder.checkBox.visibility = GONE
@@ -54,7 +65,12 @@ class CombinationsAdapter(
             holder.checkBox.visibility = VISIBLE
             holder.editButton.visibility = GONE
             holder.checkBox.setOnCheckedChangeListener { _, isChecked ->
-                onCheckWorkout.invoke(allCombinations[position], isChecked)
+                onCheckWorkout.invoke(
+                    workoutCombination ?: WorkoutCombinations(
+                        workoutId,
+                        allCombinations[position].id
+                    ), isChecked
+                )
             }
         }
 
@@ -122,9 +138,14 @@ class CombinationsAdapter(
         }
     }
 
-    fun setAdapter(allCombinations: List<Combination>, checkedCombinations: List<Combination>?) {
+    fun setAdapter(
+        allCombinations: List<Combination>,
+        workoutCombinations: List<WorkoutCombinations>?
+    ) {
         this.allCombinations = allCombinations as MutableList<Combination>
-        checkedCombinations?.let{this.checkedCombinations = checkedCombinations as MutableList<Combination>}
+        workoutCombinations?.let {
+            this.workoutCombinations = workoutCombinations as MutableList<WorkoutCombinations>
+        }
         this.notifyDataSetChanged()
     }
 

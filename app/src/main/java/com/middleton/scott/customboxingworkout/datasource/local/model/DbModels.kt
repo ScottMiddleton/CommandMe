@@ -1,6 +1,7 @@
 package com.middleton.scott.customboxingworkout.datasource.local.model
 
 import androidx.room.Entity
+import com.middleton.scott.customboxingworkout.datasource.local.enums.CombinationFrequencyType
 import java.util.*
 
 @Entity()
@@ -25,6 +26,6 @@ data class Combination constructor(
 data class CombinationFrequency constructor(
     var workout_id: Long,
     var combination_id: Long,
-    var frequency: Long
+    var frequency: CombinationFrequencyType
 ) : BaseDbModel()
 

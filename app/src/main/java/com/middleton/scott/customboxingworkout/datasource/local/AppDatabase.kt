@@ -11,6 +11,7 @@ import com.middleton.scott.customboxingworkout.datasource.local.model.Combinatio
 import com.middleton.scott.customboxingworkout.datasource.local.model.CombinationFrequency
 import com.middleton.scott.customboxingworkout.datasource.local.model.Workout
 import com.middleton.scott.customboxingworkout.datasource.local.model.WorkoutCombinations
+import com.middleton.scott.customboxingworkout.datasource.local.typeconverters.CombinationFrequencyTypeConverter
 import com.middleton.scott.customboxingworkout.datasource.local.typeconverters.DateConverter
 
 @Database(
@@ -20,7 +21,8 @@ import com.middleton.scott.customboxingworkout.datasource.local.typeconverters.D
 )
 
 @TypeConverters(
-    DateConverter::class
+    DateConverter::class,
+    CombinationFrequencyTypeConverter::class
 )
 
 abstract class AppDatabase : RoomDatabase() {

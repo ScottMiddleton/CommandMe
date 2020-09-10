@@ -18,12 +18,11 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Combination 1234" />
 
-    <EditText
-        android:id="@+id/frequency_et"
+    <Spinner
+        android:id="@+id/frequency_spinner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:imeOptions="actionDone"
-        android:inputType="number"
+        android:background="@drawable/list_item_combination_summary_background"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
