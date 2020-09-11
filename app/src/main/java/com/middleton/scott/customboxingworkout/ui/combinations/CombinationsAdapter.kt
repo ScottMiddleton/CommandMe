@@ -21,7 +21,7 @@ import java.io.IOException
 class CombinationsAdapter(
     private val audioFileDirectory: String,
     private val workoutId: Long = -1,
-    private val onCheckWorkout: ((workoutCombination: WorkoutCombinations, isChecked: Boolean) -> Unit)? = null
+    private val onCheckCombination: ((workoutCombination: WorkoutCombinations, isChecked: Boolean) -> Unit)? = null
 ) : RecyclerView.Adapter<CombinationsAdapter.CombinationsViewHolder>() {
 
     private var workoutCombinations = mutableListOf<WorkoutCombinations>()
@@ -58,14 +58,14 @@ class CombinationsAdapter(
 
         holder.checkBox.isChecked = isChecked
 
-        if (onCheckWorkout == null) {
+        if (onCheckCombination == null) {
             holder.checkBox.visibility = GONE
             holder.editButton.visibility = VISIBLE
         } else {
             holder.checkBox.visibility = VISIBLE
             holder.editButton.visibility = GONE
             holder.checkBox.setOnCheckedChangeListener { _, isChecked ->
-                onCheckWorkout.invoke(
+                onCheckCombination.invoke(
                     workoutCombination ?: WorkoutCombinations(
                         workoutId,
                         allCombinations[position].id

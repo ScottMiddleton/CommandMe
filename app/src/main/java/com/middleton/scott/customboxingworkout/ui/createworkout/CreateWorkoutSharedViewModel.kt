@@ -5,7 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.middleton.scott.customboxingworkout.datasource.local.LocalDataSource
-import com.middleton.scott.customboxingworkout.datasource.local.model.*
+import com.middleton.scott.customboxingworkout.datasource.local.model.CombinationFrequency
+import com.middleton.scott.customboxingworkout.datasource.local.model.Workout
+import com.middleton.scott.customboxingworkout.datasource.local.model.WorkoutCombinations
+import com.middleton.scott.customboxingworkout.datasource.local.model.WorkoutWithCombinations
 import com.middleton.scott.customboxingworkout.ui.combinations.CombinationsViewModel
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
@@ -19,7 +22,7 @@ class CreateWorkoutSharedViewModel(
     var workout = Workout()
 
     var workoutCombinations = mutableListOf<WorkoutCombinations>()
-    private var combinationFrequencyList = mutableListOf<CombinationFrequency>()
+    private var combinationFrequencyList = ArrayList<CombinationFrequency>()
 
     var addedWorkoutCombinations = mutableListOf<WorkoutCombinations>()
     var addedCombinationFrequenciesList = mutableListOf<CombinationFrequency>()
@@ -32,7 +35,7 @@ class CreateWorkoutSharedViewModel(
         workoutWithCombinationsFlow.combine(combinationFrequencyListFlow) { workoutWithCombinations, combinationFrequencies ->
             workoutWithCombinations?.workout?.let { workout = it }
 
-            combinationFrequencyList = combinationFrequencies as MutableList<CombinationFrequency>
+            combinationFrequencyList = combinationFrequencies as ArrayList<CombinationFrequency>
             workoutCombinations =
                 localDataSource.getWorkoutCombinations(workoutId) as MutableList<WorkoutCombinations>
 
@@ -48,7 +51,7 @@ class CreateWorkoutSharedViewModel(
 
     data class WorkoutCombinationsAndFrequencies(
         val workoutWithCombinations: WorkoutWithCombinations,
-        val combinationsFrequencies: List<CombinationFrequency>
+        val combinationsFrequencies: ArrayList<CombinationFrequency>
     )
 
     val preparationTimeLD = MutableLiveData<Int>()
@@ -96,11 +99,17 @@ class CreateWorkoutSharedViewModel(
             addedWorkoutCombinations.remove(workoutCombination)
             workoutCombinations.remove(workoutCombination)
         }
+        val totalWorkoutCombinations = mutableListOf<WorkoutCombinations>()
+        totalWorkoutCombinations.addAll(workoutCombinations)
+        totalWorkoutCombinations.addAll(addedWorkoutCombinations)
+        viewModelScope.launch {
+            localDataSource.deleteWorkoutCombinations(workoutId)
+            localDataSource.upsertWorkoutCombinations(totalWorkoutCombinations)
+        }
     }
 
-    fun setCombinationFrequency(combinationFrequency: CombinationFrequency) {
-        combinationFrequencyList.remove(combinationFrequency)
-        addedCombinationFrequenciesList.add(combinationFrequency)
+    fun setCombinationFrequencyList(combinationFrequencyList: ArrayList<CombinationFrequency>) {
+        this.combinationFrequencyList = combinationFrequencyList
     }
 
     fun setWorkoutName(name: String) {

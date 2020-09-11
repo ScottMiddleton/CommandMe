@@ -40,7 +40,6 @@
     <string name="frequency">Frequency</string>
 
     <string-array name="frequency_spinner_array">
-        <item>Choose Frequency</item>
         <item>Very Often</item>
         <item>Often</item>
         <item>Average</item>

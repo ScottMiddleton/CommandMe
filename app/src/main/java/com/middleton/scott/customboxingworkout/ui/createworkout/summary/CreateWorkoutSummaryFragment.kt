@@ -16,7 +16,7 @@ import com.middleton.scott.commandMeBoxing.R
 import com.middleton.scott.customboxingworkout.ui.base.BaseFragment
 import com.middleton.scott.customboxingworkout.ui.createworkout.CreateWorkoutSharedViewModel
 import com.middleton.scott.customboxingworkout.utils.DateTimeUtils
-import kotlinx.android.synthetic.main.fragment_workout_tab.*
+import kotlinx.android.synthetic.main.fragment_summary_tab.*
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 class CreateWorkoutSummaryFragment : BaseFragment() {
@@ -31,7 +31,7 @@ class CreateWorkoutSummaryFragment : BaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         adapter = CombinationsSummaryAdapter(viewModel.workoutId) { combinationFrequency ->
-            viewModel.setCombinationFrequency(combinationFrequency)
+            viewModel.setCombinationFrequencyList(combinationFrequency)
         }
     }
 
@@ -39,7 +39,7 @@ class CreateWorkoutSummaryFragment : BaseFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_workout_tab, container, false)
+        return inflater.inflate(R.layout.fragment_summary_tab, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -84,6 +84,7 @@ class CreateWorkoutSummaryFragment : BaseFragment() {
                     weighting_label_tv.visibility = VISIBLE
                     name_label_tv.visibility = VISIBLE
                     combinations_summary_rv.visibility = VISIBLE
+                    add_combination_tv.visibility = GONE
                 } else {
                     weighting_label_tv.visibility = GONE
                     name_label_tv.visibility = GONE

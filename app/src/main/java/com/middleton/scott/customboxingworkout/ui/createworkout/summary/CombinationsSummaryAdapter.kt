@@ -4,9 +4,8 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.Spinner
+import android.widget.AutoCompleteTextView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.middleton.scott.commandMeBoxing.R
@@ -16,13 +15,13 @@ import com.middleton.scott.customboxingworkout.datasource.local.model.Combinatio
 
 class CombinationsSummaryAdapter(
     private val workoutId: Long,
-    private val onEditFrequency: ((combinationFrequency: CombinationFrequency) -> Unit)
+    private val onEditFrequency: ((combinationFrequency: ArrayList<CombinationFrequency>) -> Unit)
 ) : RecyclerView.Adapter<CombinationsSummaryAdapter.CombinationsViewHolder>() {
 
     lateinit var context: Context
 
     private var combinations = mutableListOf<Combination>()
-    private var combinationFrequencyList = mutableListOf<CombinationFrequency>()
+    private var combinationFrequencyList = ArrayList<CombinationFrequency>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CombinationsViewHolder {
         context = parent.context
@@ -40,58 +39,58 @@ class CombinationsSummaryAdapter(
     }
 
     override fun onBindViewHolder(holder: CombinationsViewHolder, position: Int) {
+        val combination = combinations[position]
         holder.nameTV.text = combinations[position].name
 
-
-        ArrayAdapter.createFromResource(
-            context, R.array.frequency_spinner_array, android.R.layout.simple_spinner_item
-        ).also { adapter ->
-            // Specify the layout to use when the list of choices appears
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            // Apply the adapter to the spinner
-            holder.frequencySpinner.adapter = adapter
+        val relationshipTypes = CombinationFrequencyType.values().map {
+            context.getString(it.textResId)
         }
 
-        val combinationFrequency = combinationFrequencyList.firstOrNull {
-            it.combination_id == combinations[position].id
+        val adapter: ArrayAdapter<String?> = ArrayAdapter(
+            context,
+            R.layout.frequency_dropdown_menu_popup_item,
+            relationshipTypes
+        )
+
+        holder.frequencyTV.setAdapter(adapter)
+        holder.frequencyTV.setOnClickListener {
+            holder.frequencyTV.showDropDown()
         }
 
-        combinationFrequency?.let { holder.frequencySpinner.setSelection(it.frequency.position) }
+        // Callback when a dropdown menu item is selected
+        holder.frequencyTV.setOnItemClickListener { _, _, itemIndex, _ ->
+            val combinationFrequency = CombinationFrequency(
+                workoutId,
+                combination.id,
+                CombinationFrequencyType.fromPosition(itemIndex)
+            )
 
-        holder.frequencySpinner.onItemSelectedListener = object :
-            AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                adapterView: AdapterView<*>?,
-                view: View?,
-                adapterPosition: Int,
-                id: Long
-            ) {
-                val selectionStr = adapterView?.getItemAtPosition(adapterPosition).toString()
-
-                CombinationFrequencyType.fromString(selectionStr)?.let { frequencyType ->
-                    combinationFrequency?.frequency = frequencyType
-
-                    if (selectionStr!= "Choose Frequency") {
-                        onEditFrequency(
-                            combinationFrequency ?: CombinationFrequency(
-                                workoutId,
-                                combinations[position].id,
-                                frequencyType
-                            )
-                        )
-                    }
-                }
+            combinationFrequencyList.removeIf {
+                it.combination_id == combination.id
             }
 
-            override fun onNothingSelected(p0: AdapterView<*>?) {
-                TODO("Not yet implemented")
+            combinationFrequencyList.add(combinationFrequency)
+
+            onEditFrequency(combinationFrequencyList)
+        }
+
+        for (combinationFrequency in combinationFrequencyList) {
+            if (combinationFrequency.combination_id == combination.id){
+                // This is the frequency for this combination
+                val combinationFrequencyType = combinationFrequency.frequency
+
+                holder.frequencyTV.setText(
+                    context.getString(combinationFrequencyType.textResId),
+                    false
+                )
             }
         }
     }
 
     class CombinationsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val nameTV: TextView = view.findViewById(R.id.combination_name_tv)
-        val frequencySpinner: Spinner = view.findViewById(R.id.frequency_spinner)
+//        val frequencyDropdown = view.findViewById(R.id.frequency_dropdown_menu) as TextInputLayout
+        val frequencyTV = view.findViewById(R.id.frequency_TV) as AutoCompleteTextView
     }
 
     override fun getItemId(position: Int): Long {
@@ -104,10 +103,10 @@ class CombinationsSummaryAdapter(
 
     fun setAdapter(
         combinations: List<Combination>,
-        combinationFrequencyList: List<CombinationFrequency>
+        combinationFrequencyList: ArrayList<CombinationFrequency>
     ) {
         this.combinations = combinations as MutableList<Combination>
-        this.combinationFrequencyList = combinationFrequencyList as MutableList<CombinationFrequency>
+        this.combinationFrequencyList = combinationFrequencyList
         notifyDataSetChanged()
     }
 }

@@ -1,20 +1,22 @@
 package com.middleton.scott.customboxingworkout.datasource.local.enums
 
-enum class CombinationFrequencyType(val label: String, val position: Int) {
-    VERY_OFTEN("Very Often", 1),
-    OFTEN("Often", 2),
-    AVERAGE("Average", 3),
-    RARE("Rare", 4),
-    VERY_RARE("Very Rare", 5);
+import com.middleton.scott.commandMeBoxing.R
+
+enum class CombinationFrequencyType(val textResId: Int, val position: Int) {
+    VERY_OFTEN(R.string.very_often, 0),
+    OFTEN(R.string.often, 1),
+    AVERAGE(R.string.average, 2),
+    RARE(R.string.rare, 3),
+    VERY_RARE(R.string.very_rare, 4);
 
     companion object {
-        fun fromString(label: String?): CombinationFrequencyType? {
+        fun fromPosition(position: Int): CombinationFrequencyType {
             for (combinationFrequencyType in values()) {
-                if (combinationFrequencyType.label.equals(label, ignoreCase = true)) {
+                if (combinationFrequencyType.position == position) {
                     return combinationFrequencyType
                 }
             }
-            return null
+            return AVERAGE
         }
     }
 }
