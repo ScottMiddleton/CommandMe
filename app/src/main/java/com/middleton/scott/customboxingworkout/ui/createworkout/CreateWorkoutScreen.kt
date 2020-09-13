@@ -41,15 +41,13 @@ class CreateWorkoutScreen : BaseFragment() {
     }
 
     private fun subscribeUI() {
-        viewModel.workoutWithCombinationsAndWorkoutCombinationsLD.observe(viewLifecycleOwner, Observer {
+        viewModel.workoutLD.observe(viewLifecycleOwner, Observer {
             if (it != null) {
                 (activity as MainActivity).supportActionBar?.title = viewModel.workout.name
             } else {
                 (activity as MainActivity).supportActionBar?.title = getString(R.string.create_workout)
             }
         })
-
-        viewModel.getAllCombinationsLD().observe(viewLifecycleOwner, Observer {})
     }
 
     private fun setupViewPagerAndTabLayout() {

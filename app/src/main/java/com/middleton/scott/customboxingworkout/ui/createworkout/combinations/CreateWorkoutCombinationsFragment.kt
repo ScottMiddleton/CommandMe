@@ -32,8 +32,8 @@ class CreateWorkoutCombinationsFragment : BaseFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        adapter = CombinationsAdapter(viewModel.audioFileBaseDirectory, viewModel.workoutId) { workoutCombination, isChecked ->
-            viewModel.setCombination(workoutCombination, isChecked)
+        adapter = CombinationsAdapter(viewModel.audioFileBaseDirectory) { selectedCombinationCrossRef, isChecked ->
+            viewModel.setCombination(selectedCombinationCrossRef, isChecked)
         }
     }
 
@@ -54,7 +54,7 @@ class CreateWorkoutCombinationsFragment : BaseFragment() {
 
     private fun subscribeUI() {
         viewModel.getAllCombinationsLD().observe(viewLifecycleOwner, Observer {
-            adapter.setAdapter(it, viewModel.workoutCombinations)
+            adapter.setAdapter(it, viewModel.selectedCombinations)
         })
     }
 

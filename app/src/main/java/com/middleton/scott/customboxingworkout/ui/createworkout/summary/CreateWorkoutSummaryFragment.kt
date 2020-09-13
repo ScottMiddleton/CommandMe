@@ -30,8 +30,8 @@ class CreateWorkoutSummaryFragment : BaseFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        adapter = CombinationsSummaryAdapter(viewModel.workoutId) { workoutCombinations ->
-            viewModel.setCombination(workoutCombinations, true)
+        adapter = CombinationsSummaryAdapter { selectedCombinationCrossRef ->
+            viewModel.setCombination(selectedCombinationCrossRef, true)
         }
     }
 
@@ -75,10 +75,10 @@ class CreateWorkoutSummaryFragment : BaseFragment() {
             intensity_et.setText(it.toString())
         })
 
-        viewModel.workoutWithCombinationsAndWorkoutCombinationsLD.observe(viewLifecycleOwner, Observer {
+        viewModel.selectedCombinationsLD.observe(viewLifecycleOwner, Observer {
             if (viewModel.subscribe) {
-                if (!viewModel.combinations.isNullOrEmpty()) {
-                    adapter.setAdapter(viewModel.combinations, viewModel.workoutCombinations)
+                if (!viewModel.selectedCombinations.isNullOrEmpty()) {
+                    adapter.setAdapter(it, viewModel.selectedCombinationsCrossRefs)
                     weighting_label_tv.visibility = VISIBLE
                     name_label_tv.visibility = VISIBLE
                     combinations_summary_rv.visibility = VISIBLE
@@ -89,7 +89,6 @@ class CreateWorkoutSummaryFragment : BaseFragment() {
                     add_combination_tv.visibility = VISIBLE
                     combinations_summary_rv.visibility = GONE
                 }
-
                 populateFields()
             }
         })

@@ -1,8 +1,8 @@
 package com.middleton.scott.customboxingworkout.datasource.local
 
 import com.middleton.scott.customboxingworkout.datasource.local.model.Combination
+import com.middleton.scott.customboxingworkout.datasource.local.model.SelectedCombinationsCrossRef
 import com.middleton.scott.customboxingworkout.datasource.local.model.Workout
-import com.middleton.scott.customboxingworkout.datasource.local.model.WorkoutCombinations
 import com.middleton.scott.customboxingworkout.datasource.local.model.WorkoutWithCombinations
 import kotlinx.coroutines.flow.Flow
 
@@ -26,8 +26,8 @@ class LocalDataSourceImpl(
         return database.workoutDao().getAllWorkoutsWithCombinations()
     }
 
-    override fun getWorkoutCombinations(workoutId: Long): Flow<List<WorkoutCombinations>> {
-        return database.workoutCombinationsDao().getWorkoutCombinations(workoutId)
+    override fun getSelectedCombinationCrossRefs(workoutId: Long): Flow<List<SelectedCombinationsCrossRef>> {
+        return database.workoutCombinationsDao().getSelectedCombinationCrossRefs(workoutId)
     }
 
     override suspend fun upsertWorkout(
@@ -36,8 +36,8 @@ class LocalDataSourceImpl(
         return database.workoutDao().upsert(workout)
     }
 
-    override suspend fun upsertWorkoutCombinations(workoutCombinations: List<WorkoutCombinations>) {
-        database.workoutCombinationsDao().upsert(workoutCombinations)
+    override suspend fun upsertWorkoutCombinations(selectedCombinationCrossRefs: List<SelectedCombinationsCrossRef>) {
+        database.workoutCombinationsDao().upsert(selectedCombinationCrossRefs)
     }
 
     override suspend fun deleteWorkoutCombinations(workoutId: Long) {

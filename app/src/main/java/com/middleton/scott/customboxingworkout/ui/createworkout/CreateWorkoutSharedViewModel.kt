@@ -6,9 +6,8 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.middleton.scott.customboxingworkout.datasource.local.LocalDataSource
 import com.middleton.scott.customboxingworkout.datasource.local.model.Combination
+import com.middleton.scott.customboxingworkout.datasource.local.model.SelectedCombinationsCrossRef
 import com.middleton.scott.customboxingworkout.datasource.local.model.Workout
-import com.middleton.scott.customboxingworkout.datasource.local.model.WorkoutCombinations
-import com.middleton.scott.customboxingworkout.datasource.local.model.WorkoutWithCombinations
 import com.middleton.scott.customboxingworkout.ui.combinations.CombinationsViewModel
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
@@ -22,44 +21,37 @@ class CreateWorkoutSharedViewModel(
     var subscribe = true
     var workout = Workout()
 
-    var combinations = ArrayList<Combination>()
-    var workoutCombinations = ArrayList<WorkoutCombinations>()
+    var selectedCombinations = ArrayList<Combination>()
+    var selectedCombinationsCrossRefs = ArrayList<SelectedCombinationsCrossRef>()
 
-    private val workoutWithCombinationsFlow = localDataSource.getWorkoutWithCombinations(workoutId)
-    private val workoutCombinationsFlow = localDataSource.getWorkoutCombinations(workoutId)
+    private val combinationsFlow = localDataSource.getCombinations()
+    private val selectedCombinationCrossRefsFlow =
+        localDataSource.getSelectedCombinationCrossRefs(workoutId)
 
     val workoutLD = localDataSource.getWorkoutById(workoutId).map {
         it?.let {
             this.workout = it
         }
-    }
+        this.workout
+    }.asLiveData()
 
-    val combinationsAndWorkoutCombinationsLD: LiveData<WorkoutWithCombinationsAndWorkoutCombinations?> =
-        workoutWithCombinationsFlow.combine(workoutCombinationsFlow) { workoutWithCombinations, workoutCombinations ->
-
-            workoutWithCombinations?.workout?.let {
-                workout = it
-            }
-
+    val selectedCombinationsLD: LiveData<List<Combination>> =
+        combinationsFlow.combine(selectedCombinationCrossRefsFlow) { combinations, selectedCombinationsCrossRefs ->
+            selectedCombinations.clear()
             if (workoutId != -1L) {
-                this.combinations = workoutWithCombinations?.combinations as ArrayList<Combination>
-                this.workoutCombinations = workoutCombinations as ArrayList<WorkoutCombinations>
+                this.selectedCombinationsCrossRefs = selectedCombinationsCrossRefs as ArrayList<SelectedCombinationsCrossRef>
             }
 
-            val combined = workoutWithCombinations?.let {
-                WorkoutWithCombinationsAndWorkoutCombinations(
-                    it,
-                    workoutCombinations as ArrayList<WorkoutCombinations>
-                )
+            combinations.forEach { combination ->
+                this.selectedCombinationsCrossRefs.forEach { selectedCombinationsCrossRef ->
+                    if (combination.id == selectedCombinationsCrossRef.combination_id) {
+                        this.selectedCombinations.add(combination)
+                    }
+                }
             }
-            combined
+
+            this.selectedCombinations
         }.asLiveData()
-
-
-    data class WorkoutWithCombinationsAndWorkoutCombinations(
-        val workoutWithCombinations: WorkoutWithCombinations,
-        val workoutCombinations: ArrayList<WorkoutCombinations>
-    )
 
     val preparationTimeLD = MutableLiveData<Int>()
     val numberOfRoundsLD = MutableLiveData<Int>()
@@ -76,35 +68,33 @@ class CreateWorkoutSharedViewModel(
         }
     }
 
-    fun setCombination(workoutCombination: WorkoutCombinations, isChecked: Boolean) {
-        combinations.removeIf {
-            it.id == workoutCombination.combination_id
+    fun setCombination(
+        selectedCombinationsCrossRef: SelectedCombinationsCrossRef,
+        isChecked: Boolean
+    ) {
+        selectedCombinationsCrossRefs.removeIf {
+            it.combination_id == selectedCombinationsCrossRef.combination_id
         }
 
-        workoutCombinations.removeIf {
-            it.combination_id == workoutCombination.combination_id
-        }
+        selectedCombinations.clear()
 
         if (isChecked) {
-            workoutCombinations.add(workoutCombination)
-            allCombinations.forEach {
-                if (it.id == workoutCombination.combination_id) {
-                    combinations.add(it)
-                }
-            }
+            selectedCombinationsCrossRef.workout_id = workoutId
+            selectedCombinationsCrossRefs.add(selectedCombinationsCrossRef)
         }
 
         viewModelScope.launch {
-            localDataSource.deleteWorkoutCombinations(workoutId)
             if (workoutId == -1L) {
                 val newWorkoutId = localDataSource.upsertWorkout(workout)
                 workout.id = newWorkoutId
-                workoutCombinations.forEach {
+                localDataSource.deleteWorkoutCombinations(newWorkoutId)
+                selectedCombinationsCrossRefs.forEach {
                     it.workout_id = newWorkoutId
                 }
-                localDataSource.upsertWorkoutCombinations(workoutCombinations)
+                localDataSource.upsertWorkoutCombinations(selectedCombinationsCrossRefs)
             } else {
-                localDataSource.upsertWorkoutCombinations(workoutCombinations)
+                localDataSource.deleteWorkoutCombinations(workoutId)
+                localDataSource.upsertWorkoutCombinations(selectedCombinationsCrossRefs)
             }
         }
     }

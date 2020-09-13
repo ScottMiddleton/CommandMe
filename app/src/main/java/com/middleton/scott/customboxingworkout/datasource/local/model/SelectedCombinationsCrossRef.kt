@@ -19,7 +19,7 @@ import com.middleton.scott.customboxingworkout.datasource.local.enums.Combinatio
     ]
 )
 
-data class WorkoutCombinations constructor(
+data class SelectedCombinationsCrossRef constructor(
     @ColumnInfo
     var workout_id: Long,
     @ColumnInfo
@@ -37,7 +37,7 @@ class WorkoutWithCombinations {
         entityColumn = "_id",
         entity = Combination::class,
         associateBy = Junction(
-            value = WorkoutCombinations::class,
+            value = SelectedCombinationsCrossRef::class,
             parentColumn = "workout_id",
             entityColumn = "combination_id"
         )

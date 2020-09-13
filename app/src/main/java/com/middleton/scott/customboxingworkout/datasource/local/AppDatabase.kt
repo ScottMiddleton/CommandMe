@@ -7,13 +7,13 @@ import com.middleton.scott.customboxingworkout.datasource.local.dao.ExerciseDao
 import com.middleton.scott.customboxingworkout.datasource.local.dao.WorkoutCombinationsDao
 import com.middleton.scott.customboxingworkout.datasource.local.dao.WorkoutDao
 import com.middleton.scott.customboxingworkout.datasource.local.model.Combination
+import com.middleton.scott.customboxingworkout.datasource.local.model.SelectedCombinationsCrossRef
 import com.middleton.scott.customboxingworkout.datasource.local.model.Workout
-import com.middleton.scott.customboxingworkout.datasource.local.model.WorkoutCombinations
 import com.middleton.scott.customboxingworkout.datasource.local.typeconverters.CombinationFrequencyTypeConverter
 import com.middleton.scott.customboxingworkout.datasource.local.typeconverters.DateConverter
 
 @Database(
-    entities = [Workout::class, Combination::class, WorkoutCombinations::class],
+    entities = [Workout::class, Combination::class, SelectedCombinationsCrossRef::class],
     version = 1,
     exportSchema = false
 )

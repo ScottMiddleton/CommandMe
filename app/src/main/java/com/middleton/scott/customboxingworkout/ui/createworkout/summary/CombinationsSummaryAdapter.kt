@@ -11,17 +11,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.middleton.scott.commandMeBoxing.R
 import com.middleton.scott.customboxingworkout.datasource.local.enums.CombinationFrequencyType
 import com.middleton.scott.customboxingworkout.datasource.local.model.Combination
-import com.middleton.scott.customboxingworkout.datasource.local.model.WorkoutCombinations
+import com.middleton.scott.customboxingworkout.datasource.local.model.SelectedCombinationsCrossRef
 
 class CombinationsSummaryAdapter(
-    private val workoutId: Long,
-    private val onEditFrequency: ((workoutCombination: WorkoutCombinations) -> Unit)
+    private val onEditFrequency: ((selectedCombinationsCrossRef: SelectedCombinationsCrossRef) -> Unit)
 ) : RecyclerView.Adapter<CombinationsSummaryAdapter.CombinationsViewHolder>() {
 
     lateinit var context: Context
 
     private var combinations = mutableListOf<Combination>()
-    private var workoutCombinations = ArrayList<WorkoutCombinations>()
+    private var selectedCombinationCrossRefs = ArrayList<SelectedCombinationsCrossRef>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CombinationsViewHolder {
         context = parent.context
@@ -59,22 +58,16 @@ class CombinationsSummaryAdapter(
 
         // Callback when a dropdown menu item is selected
         holder.frequencyTV.setOnItemClickListener { _, _, itemIndex, _ ->
-            val workoutCombination = WorkoutCombinations(
-                workoutId,
-                combination.id,
-                CombinationFrequencyType.fromPosition(itemIndex)
+            val selectedCombinationsCrossRef = SelectedCombinationsCrossRef(
+                workout_id = -1,
+                combination_id = combination.id,
+                frequency = CombinationFrequencyType.fromPosition(itemIndex)
             )
 
-//            workoutCombinations.removeIf {
-//                it.combination_id == combination.id
-//            }
-//
-//            workoutCombinations.add(workoutCombination)
-
-            onEditFrequency(workoutCombination)
+            onEditFrequency(selectedCombinationsCrossRef)
         }
 
-        for (workoutCombinations in workoutCombinations) {
+        for (workoutCombinations in selectedCombinationCrossRefs) {
             if (workoutCombinations.combination_id == combination.id){
                 // This is the frequency for this combination
                 val combinationFrequencyType = workoutCombinations.frequency
@@ -89,7 +82,6 @@ class CombinationsSummaryAdapter(
 
     class CombinationsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val nameTV: TextView = view.findViewById(R.id.combination_name_tv)
-//        val frequencyDropdown = view.findViewById(R.id.frequency_dropdown_menu) as TextInputLayout
         val frequencyTV = view.findViewById(R.id.frequency_TV) as AutoCompleteTextView
     }
 
@@ -103,10 +95,10 @@ class CombinationsSummaryAdapter(
 
     fun setAdapter(
         combinations: List<Combination>,
-        workoutCombinations: ArrayList<WorkoutCombinations>
+        selectedCombinationCrossRefs: ArrayList<SelectedCombinationsCrossRef>
     ) {
         this.combinations = combinations as MutableList<Combination>
-        this.workoutCombinations = workoutCombinations
+        this.selectedCombinationCrossRefs = selectedCombinationCrossRefs
         notifyDataSetChanged()
     }
 }
