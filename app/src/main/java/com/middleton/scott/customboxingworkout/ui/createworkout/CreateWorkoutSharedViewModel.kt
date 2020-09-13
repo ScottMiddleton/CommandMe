@@ -30,7 +30,9 @@ class CreateWorkoutSharedViewModel(
     val workoutWithCombinationsAndWorkoutCombinationsLD: LiveData<WorkoutWithCombinationsAndWorkoutCombinations?> =
         workoutWithCombinationsFlow.combine(workoutCombinationsFlow) { workoutWithCombinations, workoutCombinations ->
 
-            workoutWithCombinations?.workout?.let { workout = it }
+            workoutWithCombinations?.workout?.let {
+                workout = it
+            }
 
             if (workoutId != -1L) {
                 this.combinations = workoutWithCombinations?.combinations as ArrayList<Combination>
@@ -62,20 +64,7 @@ class CreateWorkoutSharedViewModel(
     fun upsertWorkout() {
         viewModelScope.launch {
             subscribe = false
-            val totalWorkoutCombinations = mutableListOf<WorkoutCombinations>()
-            totalWorkoutCombinations.addAll(workoutCombinations)
-
-            val id = localDataSource.upsertWorkout(workout)
-            workoutId = id
-
-
-            totalWorkoutCombinations.forEach {
-                it.workout_id = id
-            }
-
-            localDataSource.deleteWorkoutCombinations(id)
-            localDataSource.upsertWorkoutCombinations(totalWorkoutCombinations)
-
+            localDataSource.upsertWorkout(workout)
             dbUpdateLD.value = true
         }
     }
@@ -85,14 +74,14 @@ class CreateWorkoutSharedViewModel(
             it.id == workoutCombination.combination_id
         }
 
-        workoutCombinations.removeIf{
+        workoutCombinations.removeIf {
             it.combination_id == workoutCombination.combination_id
         }
 
         if (isChecked) {
             workoutCombinations.add(workoutCombination)
             allCombinations.forEach {
-                if(it.id == workoutCombination.combination_id){
+                if (it.id == workoutCombination.combination_id) {
                     combinations.add(it)
                 }
             }
@@ -100,12 +89,11 @@ class CreateWorkoutSharedViewModel(
 
         viewModelScope.launch {
             localDataSource.deleteWorkoutCombinations(workoutId)
-
-            if(workoutId == -1L){
-                val workoutId = localDataSource.upsertWorkout(workout)
-                workout.id = workoutId
+            if (workoutId == -1L) {
+                val newWorkoutId = localDataSource.upsertWorkout(workout)
+                workout.id = newWorkoutId
                 workoutCombinations.forEach {
-                    it.workout_id = workoutId
+                    it.workout_id = newWorkoutId
                 }
                 localDataSource.upsertWorkoutCombinations(workoutCombinations)
             } else {

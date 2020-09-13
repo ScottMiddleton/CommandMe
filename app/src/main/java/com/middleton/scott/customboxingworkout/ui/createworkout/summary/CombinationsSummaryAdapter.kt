@@ -15,7 +15,7 @@ import com.middleton.scott.customboxingworkout.datasource.local.model.WorkoutCom
 
 class CombinationsSummaryAdapter(
     private val workoutId: Long,
-    private val onEditFrequency: ((workoutCombinations: ArrayList<WorkoutCombinations>) -> Unit)
+    private val onEditFrequency: ((workoutCombination: WorkoutCombinations) -> Unit)
 ) : RecyclerView.Adapter<CombinationsSummaryAdapter.CombinationsViewHolder>() {
 
     lateinit var context: Context
@@ -59,25 +59,25 @@ class CombinationsSummaryAdapter(
 
         // Callback when a dropdown menu item is selected
         holder.frequencyTV.setOnItemClickListener { _, _, itemIndex, _ ->
-            val combinationFrequency = WorkoutCombinations(
+            val workoutCombination = WorkoutCombinations(
                 workoutId,
                 combination.id,
                 CombinationFrequencyType.fromPosition(itemIndex)
             )
 
-            workoutCombinations.removeIf {
-                it.combination_id == combination.id
-            }
+//            workoutCombinations.removeIf {
+//                it.combination_id == combination.id
+//            }
+//
+//            workoutCombinations.add(workoutCombination)
 
-            workoutCombinations.add(combinationFrequency)
-
-            onEditFrequency(workoutCombinations)
+            onEditFrequency(workoutCombination)
         }
 
-        for (combinationFrequency in workoutCombinations) {
-            if (combinationFrequency.combination_id == combination.id){
+        for (workoutCombinations in workoutCombinations) {
+            if (workoutCombinations.combination_id == combination.id){
                 // This is the frequency for this combination
-                val combinationFrequencyType = combinationFrequency.frequency
+                val combinationFrequencyType = workoutCombinations.frequency
 
                 holder.frequencyTV.setText(
                     context.getString(combinationFrequencyType.textResId),

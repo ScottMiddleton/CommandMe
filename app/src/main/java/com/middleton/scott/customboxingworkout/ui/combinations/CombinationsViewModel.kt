@@ -17,6 +17,7 @@ open class CombinationsViewModel(private val localDataSource: LocalDataSource) :
 
     lateinit var allCombinations: List<Combination>
 
+
     fun upsertCombination(name: String) {
         GlobalScope.launch {
             localDataSource.upsertCombination(Combination(name, 10, audioFileName))

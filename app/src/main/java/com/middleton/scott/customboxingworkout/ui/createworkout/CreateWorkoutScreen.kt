@@ -48,6 +48,8 @@ class CreateWorkoutScreen : BaseFragment() {
                 (activity as MainActivity).supportActionBar?.title = getString(R.string.create_workout)
             }
         })
+
+        viewModel.getAllCombinationsLD().observe(viewLifecycleOwner, Observer {})
     }
 
     private fun setupViewPagerAndTabLayout() {

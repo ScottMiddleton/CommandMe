@@ -31,7 +31,7 @@ class CreateWorkoutSummaryFragment : BaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         adapter = CombinationsSummaryAdapter(viewModel.workoutId) { workoutCombinations ->
-            viewModel.workoutCombinations = workoutCombinations
+            viewModel.setCombination(workoutCombinations, true)
         }
     }
 
@@ -77,9 +77,8 @@ class CreateWorkoutSummaryFragment : BaseFragment() {
 
         viewModel.workoutWithCombinationsAndWorkoutCombinationsLD.observe(viewLifecycleOwner, Observer {
             if (viewModel.subscribe) {
-                val combinations = it?.workoutWithCombinations?.combinations
-                if (!combinations.isNullOrEmpty()) {
-                    adapter.setAdapter(combinations, viewModel.workoutCombinations)
+                if (!viewModel.combinations.isNullOrEmpty()) {
+                    adapter.setAdapter(viewModel.combinations, viewModel.workoutCombinations)
                     weighting_label_tv.visibility = VISIBLE
                     name_label_tv.visibility = VISIBLE
                     combinations_summary_rv.visibility = VISIBLE
@@ -91,7 +90,6 @@ class CreateWorkoutSummaryFragment : BaseFragment() {
                     combinations_summary_rv.visibility = GONE
                 }
 
-                workout_name_et.setText(it?.workoutWithCombinations?.workout?.name)
                 populateFields()
             }
         })
@@ -178,7 +176,7 @@ class CreateWorkoutSummaryFragment : BaseFragment() {
     }
 
     private fun populateFields() {
-        viewModel.setWorkoutName(viewModel.workout.name)
+            workout_name_et.setText(viewModel.workout.name)
         viewModel.setPreparationTime(viewModel.workout.preparation_time_secs)
         viewModel.setNumberOfRounds(viewModel.workout.numberOfRounds)
         viewModel.setWorkTime(viewModel.workout.work_time_secs)
