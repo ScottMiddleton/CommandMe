@@ -11,6 +11,7 @@ import com.middleton.scott.customboxingworkout.datasource.local.model.WorkoutCom
 import com.middleton.scott.customboxingworkout.datasource.local.model.WorkoutWithCombinations
 import com.middleton.scott.customboxingworkout.ui.combinations.CombinationsViewModel
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 class CreateWorkoutSharedViewModel(
@@ -27,7 +28,13 @@ class CreateWorkoutSharedViewModel(
     private val workoutWithCombinationsFlow = localDataSource.getWorkoutWithCombinations(workoutId)
     private val workoutCombinationsFlow = localDataSource.getWorkoutCombinations(workoutId)
 
-    val workoutWithCombinationsAndWorkoutCombinationsLD: LiveData<WorkoutWithCombinationsAndWorkoutCombinations?> =
+    val workoutLD = localDataSource.getWorkoutById(workoutId).map {
+        it?.let {
+            this.workout = it
+        }
+    }
+
+    val combinationsAndWorkoutCombinationsLD: LiveData<WorkoutWithCombinationsAndWorkoutCombinations?> =
         workoutWithCombinationsFlow.combine(workoutCombinationsFlow) { workoutWithCombinations, workoutCombinations ->
 
             workoutWithCombinations?.workout?.let {
@@ -99,7 +106,6 @@ class CreateWorkoutSharedViewModel(
             } else {
                 localDataSource.upsertWorkoutCombinations(workoutCombinations)
             }
-
         }
     }
 

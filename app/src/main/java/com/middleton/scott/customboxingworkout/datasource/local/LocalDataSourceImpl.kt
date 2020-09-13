@@ -44,6 +44,10 @@ class LocalDataSourceImpl(
         database.workoutCombinationsDao().deleteByWorkoutId(workoutId)
     }
 
+    override fun getWorkoutById(workoutId: Long): Flow<Workout?> {
+        return database.workoutDao().getWorkoutById(workoutId)
+    }
+
     override suspend fun upsertCombination(exercise: Combination): Long {
         return database.combinationDao().upsert(exercise)
     }

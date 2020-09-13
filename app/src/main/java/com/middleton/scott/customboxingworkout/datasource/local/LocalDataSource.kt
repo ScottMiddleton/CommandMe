@@ -13,6 +13,7 @@ interface LocalDataSource {
     suspend fun upsertCombination(exercise: Combination): Long
     suspend fun upsertWorkoutCombinations(workoutCombinations: List<WorkoutCombinations>)
     suspend fun deleteWorkoutCombinations(workoutId: Long)
+    fun getWorkoutById(workoutId: Long): Flow<Workout?>
     fun getWorkoutWithCombinations(workoutId: Long): Flow<WorkoutWithCombinations?>
     fun getAllWorkoutsWithCombinations(): Flow<List<WorkoutWithCombinations>>
     fun getWorkoutCombinations(workoutId: Long): Flow<List<WorkoutCombinations>>
