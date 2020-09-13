@@ -30,8 +30,8 @@ class CreateWorkoutSummaryFragment : BaseFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        adapter = CombinationsSummaryAdapter(viewModel.workoutId) { combinationFrequency ->
-            viewModel.setCombinationFrequencyList(combinationFrequency)
+        adapter = CombinationsSummaryAdapter(viewModel.workoutId) { workoutCombinations ->
+            viewModel.workoutCombinations = workoutCombinations
         }
     }
 
@@ -75,12 +75,11 @@ class CreateWorkoutSummaryFragment : BaseFragment() {
             intensity_et.setText(it.toString())
         })
 
-        viewModel.workoutWithCombinationsAndFrequenciesLD.observe(viewLifecycleOwner, Observer {
+        viewModel.workoutWithCombinationsAndWorkoutCombinationsLD.observe(viewLifecycleOwner, Observer {
             if (viewModel.subscribe) {
                 val combinations = it?.workoutWithCombinations?.combinations
                 if (!combinations.isNullOrEmpty()) {
-                    val combinationFrequencies = it.combinationsFrequencies
-                    adapter.setAdapter(combinations, combinationFrequencies)
+                    adapter.setAdapter(combinations, viewModel.workoutCombinations)
                     weighting_label_tv.visibility = VISIBLE
                     name_label_tv.visibility = VISIBLE
                     combinations_summary_rv.visibility = VISIBLE

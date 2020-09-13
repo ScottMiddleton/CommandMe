@@ -1,6 +1,9 @@
 package com.middleton.scott.customboxingworkout.datasource.local
 
-import com.middleton.scott.customboxingworkout.datasource.local.model.*
+import com.middleton.scott.customboxingworkout.datasource.local.model.Combination
+import com.middleton.scott.customboxingworkout.datasource.local.model.Workout
+import com.middleton.scott.customboxingworkout.datasource.local.model.WorkoutCombinations
+import com.middleton.scott.customboxingworkout.datasource.local.model.WorkoutWithCombinations
 import kotlinx.coroutines.flow.Flow
 
 class LocalDataSourceImpl(
@@ -16,18 +19,14 @@ class LocalDataSourceImpl(
     }
 
     override fun getCombinations(): Flow<List<Combination>> {
-        return database.CombinationDao().getCombinations()
+        return database.combinationDao().getCombinations()
     }
 
     override fun getAllWorkoutsWithCombinations(): Flow<List<WorkoutWithCombinations>> {
         return database.workoutDao().getAllWorkoutsWithCombinations()
     }
 
-    override fun getCombinationFrequencyList(workoutId: Long): Flow<List<CombinationFrequency>> {
-        return database.combinationFrequencyDao().getCombinationFrequencyList(workoutId)
-    }
-
-    override fun getWorkoutCombinations(workoutId: Long): List<WorkoutCombinations> {
+    override fun getWorkoutCombinations(workoutId: Long): Flow<List<WorkoutCombinations>> {
         return database.workoutCombinationsDao().getWorkoutCombinations(workoutId)
     }
 
@@ -41,19 +40,11 @@ class LocalDataSourceImpl(
         database.workoutCombinationsDao().upsert(workoutCombinations)
     }
 
-    override suspend fun upsertCombinationFrequencies(combinationFrequency: List<CombinationFrequency>) {
-        database.combinationFrequencyDao().upsert(combinationFrequency)
-    }
-
     override suspend fun deleteWorkoutCombinations(workoutId: Long) {
         database.workoutCombinationsDao().deleteByWorkoutId(workoutId)
     }
 
-    override suspend fun deleteCombinationFrequencies(workoutId: Long) {
-        database.combinationFrequencyDao().deleteByWorkoutId(workoutId)
-    }
-
     override suspend fun upsertCombination(exercise: Combination): Long {
-        return database.CombinationDao().upsert(exercise)
+        return database.combinationDao().upsert(exercise)
     }
 }

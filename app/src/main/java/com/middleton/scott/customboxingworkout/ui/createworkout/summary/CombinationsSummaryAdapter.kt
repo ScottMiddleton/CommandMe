@@ -11,17 +11,17 @@ import androidx.recyclerview.widget.RecyclerView
 import com.middleton.scott.commandMeBoxing.R
 import com.middleton.scott.customboxingworkout.datasource.local.enums.CombinationFrequencyType
 import com.middleton.scott.customboxingworkout.datasource.local.model.Combination
-import com.middleton.scott.customboxingworkout.datasource.local.model.CombinationFrequency
+import com.middleton.scott.customboxingworkout.datasource.local.model.WorkoutCombinations
 
 class CombinationsSummaryAdapter(
     private val workoutId: Long,
-    private val onEditFrequency: ((combinationFrequency: ArrayList<CombinationFrequency>) -> Unit)
+    private val onEditFrequency: ((workoutCombinations: ArrayList<WorkoutCombinations>) -> Unit)
 ) : RecyclerView.Adapter<CombinationsSummaryAdapter.CombinationsViewHolder>() {
 
     lateinit var context: Context
 
     private var combinations = mutableListOf<Combination>()
-    private var combinationFrequencyList = ArrayList<CombinationFrequency>()
+    private var workoutCombinations = ArrayList<WorkoutCombinations>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CombinationsViewHolder {
         context = parent.context
@@ -59,22 +59,22 @@ class CombinationsSummaryAdapter(
 
         // Callback when a dropdown menu item is selected
         holder.frequencyTV.setOnItemClickListener { _, _, itemIndex, _ ->
-            val combinationFrequency = CombinationFrequency(
+            val combinationFrequency = WorkoutCombinations(
                 workoutId,
                 combination.id,
                 CombinationFrequencyType.fromPosition(itemIndex)
             )
 
-            combinationFrequencyList.removeIf {
+            workoutCombinations.removeIf {
                 it.combination_id == combination.id
             }
 
-            combinationFrequencyList.add(combinationFrequency)
+            workoutCombinations.add(combinationFrequency)
 
-            onEditFrequency(combinationFrequencyList)
+            onEditFrequency(workoutCombinations)
         }
 
-        for (combinationFrequency in combinationFrequencyList) {
+        for (combinationFrequency in workoutCombinations) {
             if (combinationFrequency.combination_id == combination.id){
                 // This is the frequency for this combination
                 val combinationFrequencyType = combinationFrequency.frequency
@@ -103,10 +103,10 @@ class CombinationsSummaryAdapter(
 
     fun setAdapter(
         combinations: List<Combination>,
-        combinationFrequencyList: ArrayList<CombinationFrequency>
+        workoutCombinations: ArrayList<WorkoutCombinations>
     ) {
         this.combinations = combinations as MutableList<Combination>
-        this.combinationFrequencyList = combinationFrequencyList
+        this.workoutCombinations = workoutCombinations
         notifyDataSetChanged()
     }
 }

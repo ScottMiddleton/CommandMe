@@ -1,6 +1,7 @@
 package com.middleton.scott.customboxingworkout.datasource.local.model
 
 import androidx.room.*
+import com.middleton.scott.customboxingworkout.datasource.local.enums.CombinationFrequencyType
 
 @Entity(
     tableName = "workout_combinations", primaryKeys = ["workout_id", "combination_id"], foreignKeys = [
@@ -22,7 +23,9 @@ data class WorkoutCombinations constructor(
     @ColumnInfo
     var workout_id: Long,
     @ColumnInfo
-    val combination_id: Long
+    val combination_id: Long,
+    @ColumnInfo
+    var frequency: CombinationFrequencyType = CombinationFrequencyType.AVERAGE
 ) : BaseDbModel()
 
 class WorkoutWithCombinations {

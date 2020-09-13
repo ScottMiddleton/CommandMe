@@ -6,6 +6,7 @@ import androidx.lifecycle.asLiveData
 import com.middleton.scott.customboxingworkout.datasource.local.LocalDataSource
 import com.middleton.scott.customboxingworkout.datasource.local.model.Combination
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 open class CombinationsViewModel(private val localDataSource: LocalDataSource) : ViewModel() {
@@ -13,6 +14,8 @@ open class CombinationsViewModel(private val localDataSource: LocalDataSource) :
     var audioFileName = ""
     var audioFileCompleteDirectory = ""
     var recording = false
+
+    lateinit var allCombinations: List<Combination>
 
     fun upsertCombination(name: String) {
         GlobalScope.launch {
@@ -22,7 +25,10 @@ open class CombinationsViewModel(private val localDataSource: LocalDataSource) :
     }
 
     fun getAllCombinationsLD(): LiveData<List<Combination>> {
-        return localDataSource.getCombinations().asLiveData()
+        return localDataSource.getCombinations().map {
+            allCombinations = it
+            it
+        }.asLiveData()
     }
 
     fun setAudioFileOutput(timeInMillis: Long) {

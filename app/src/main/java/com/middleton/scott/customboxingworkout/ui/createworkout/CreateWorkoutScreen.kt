@@ -15,7 +15,6 @@ import com.middleton.scott.customboxingworkout.ui.base.BaseFragment
 import com.middleton.scott.customboxingworkout.ui.createworkout.combinations.CreateWorkoutCombinationsFragment
 import com.middleton.scott.customboxingworkout.ui.createworkout.summary.CreateWorkoutSummaryFragment
 import kotlinx.android.synthetic.main.fragment_create_workout_screen.*
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -42,7 +41,7 @@ class CreateWorkoutScreen : BaseFragment() {
     }
 
     private fun subscribeUI() {
-        viewModel.workoutWithCombinationsAndFrequenciesLD.observe(viewLifecycleOwner, Observer {
+        viewModel.workoutWithCombinationsAndWorkoutCombinationsLD.observe(viewLifecycleOwner, Observer {
             if (it != null) {
                 (activity as MainActivity).supportActionBar?.title = viewModel.workout.name
             } else {

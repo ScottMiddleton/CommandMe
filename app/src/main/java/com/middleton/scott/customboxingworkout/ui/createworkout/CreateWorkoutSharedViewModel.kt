@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.middleton.scott.customboxingworkout.datasource.local.LocalDataSource
-import com.middleton.scott.customboxingworkout.datasource.local.model.CombinationFrequency
+import com.middleton.scott.customboxingworkout.datasource.local.model.Combination
 import com.middleton.scott.customboxingworkout.datasource.local.model.Workout
 import com.middleton.scott.customboxingworkout.datasource.local.model.WorkoutCombinations
 import com.middleton.scott.customboxingworkout.datasource.local.model.WorkoutWithCombinations
@@ -21,37 +21,35 @@ class CreateWorkoutSharedViewModel(
     var subscribe = true
     var workout = Workout()
 
-    var workoutCombinations = mutableListOf<WorkoutCombinations>()
-    private var combinationFrequencyList = ArrayList<CombinationFrequency>()
-
-    var addedWorkoutCombinations = mutableListOf<WorkoutCombinations>()
-    var addedCombinationFrequenciesList = mutableListOf<CombinationFrequency>()
+    var combinations = ArrayList<Combination>()
+    var workoutCombinations = ArrayList<WorkoutCombinations>()
 
     private val workoutWithCombinationsFlow = localDataSource.getWorkoutWithCombinations(workoutId)
-    private val combinationFrequencyListFlow =
-        localDataSource.getCombinationFrequencyList(workoutId)
+    private val workoutCombinationsFlow = localDataSource.getWorkoutCombinations(workoutId)
 
-    val workoutWithCombinationsAndFrequenciesLD: LiveData<WorkoutCombinationsAndFrequencies?> =
-        workoutWithCombinationsFlow.combine(combinationFrequencyListFlow) { workoutWithCombinations, combinationFrequencies ->
+    val workoutWithCombinationsAndWorkoutCombinationsLD: LiveData<WorkoutWithCombinationsAndWorkoutCombinations?> =
+        workoutWithCombinationsFlow.combine(workoutCombinationsFlow) { workoutWithCombinations, workoutCombinations ->
+
             workoutWithCombinations?.workout?.let { workout = it }
 
-            combinationFrequencyList = combinationFrequencies as ArrayList<CombinationFrequency>
-            workoutCombinations =
-                localDataSource.getWorkoutCombinations(workoutId) as MutableList<WorkoutCombinations>
+            if (workoutId != -1L) {
+                this.combinations = workoutWithCombinations?.combinations as ArrayList<Combination>
+                this.workoutCombinations = workoutCombinations as ArrayList<WorkoutCombinations>
+            }
 
             val combined = workoutWithCombinations?.let {
-                WorkoutCombinationsAndFrequencies(
+                WorkoutWithCombinationsAndWorkoutCombinations(
                     it,
-                    combinationFrequencyList
+                    workoutCombinations as ArrayList<WorkoutCombinations>
                 )
             }
             combined
         }.asLiveData()
 
 
-    data class WorkoutCombinationsAndFrequencies(
+    data class WorkoutWithCombinationsAndWorkoutCombinations(
         val workoutWithCombinations: WorkoutWithCombinations,
-        val combinationsFrequencies: ArrayList<CombinationFrequency>
+        val workoutCombinations: ArrayList<WorkoutCombinations>
     )
 
     val preparationTimeLD = MutableLiveData<Int>()
@@ -66,17 +64,10 @@ class CreateWorkoutSharedViewModel(
             subscribe = false
             val totalWorkoutCombinations = mutableListOf<WorkoutCombinations>()
             totalWorkoutCombinations.addAll(workoutCombinations)
-            totalWorkoutCombinations.addAll(addedWorkoutCombinations)
-            val totalCombinationFrequencies = mutableListOf<CombinationFrequency>()
-            totalCombinationFrequencies.addAll(combinationFrequencyList)
-            totalCombinationFrequencies.addAll(addedCombinationFrequenciesList)
 
             val id = localDataSource.upsertWorkout(workout)
             workoutId = id
 
-            totalCombinationFrequencies.forEach {
-                it.workout_id = id
-            }
 
             totalWorkoutCombinations.forEach {
                 it.workout_id = id
@@ -84,32 +75,44 @@ class CreateWorkoutSharedViewModel(
 
             localDataSource.deleteWorkoutCombinations(id)
             localDataSource.upsertWorkoutCombinations(totalWorkoutCombinations)
-            localDataSource.deleteCombinationFrequencies(id)
-            localDataSource.upsertCombinationFrequencies(totalCombinationFrequencies)
 
             dbUpdateLD.value = true
         }
     }
 
     fun setCombination(workoutCombination: WorkoutCombinations, isChecked: Boolean) {
-        if (isChecked) {
-            addedWorkoutCombinations.add(workoutCombination)
-            workoutCombinations.remove(workoutCombination)
-        } else {
-            addedWorkoutCombinations.remove(workoutCombination)
-            workoutCombinations.remove(workoutCombination)
+        combinations.removeIf {
+            it.id == workoutCombination.combination_id
         }
-        val totalWorkoutCombinations = mutableListOf<WorkoutCombinations>()
-        totalWorkoutCombinations.addAll(workoutCombinations)
-        totalWorkoutCombinations.addAll(addedWorkoutCombinations)
+
+        workoutCombinations.removeIf{
+            it.combination_id == workoutCombination.combination_id
+        }
+
+        if (isChecked) {
+            workoutCombinations.add(workoutCombination)
+            allCombinations.forEach {
+                if(it.id == workoutCombination.combination_id){
+                    combinations.add(it)
+                }
+            }
+        }
+
         viewModelScope.launch {
             localDataSource.deleteWorkoutCombinations(workoutId)
-            localDataSource.upsertWorkoutCombinations(totalWorkoutCombinations)
-        }
-    }
 
-    fun setCombinationFrequencyList(combinationFrequencyList: ArrayList<CombinationFrequency>) {
-        this.combinationFrequencyList = combinationFrequencyList
+            if(workoutId == -1L){
+                val workoutId = localDataSource.upsertWorkout(workout)
+                workout.id = workoutId
+                workoutCombinations.forEach {
+                    it.workout_id = workoutId
+                }
+                localDataSource.upsertWorkoutCombinations(workoutCombinations)
+            } else {
+                localDataSource.upsertWorkoutCombinations(workoutCombinations)
+            }
+
+        }
     }
 
     fun setWorkoutName(name: String) {
