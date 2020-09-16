@@ -17,8 +17,8 @@ val appModule = module {
         Room.databaseBuilder(androidContext(), AppDatabase::class.java, "cm_boxing.db")
             .allowMainThreadQueries().build()
     }
-    single<LocalDataSource> { LocalDataSourceImpl(get()) }
 
+    single<LocalDataSource> { LocalDataSourceImpl(get()) }
     viewModel { CombinationsViewModel(get()) }
     viewModel { WorkoutsViewModel(get()) }
     viewModel { StatsViewModel(get()) }

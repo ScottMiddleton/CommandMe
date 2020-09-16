@@ -35,7 +35,6 @@ class CombinationsScreen : BaseFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.audioFileBaseDirectory = context?.getExternalFilesDir(null)?.absolutePath + "/"
         adapter = CombinationsAdapter(viewModel.audioFileBaseDirectory)
     }
 
@@ -43,6 +42,7 @@ class CombinationsScreen : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
         combinations_RV.adapter = adapter
         subscribeUI()
+        viewModel.audioFileBaseDirectory = view.context.getExternalFilesDir(null)?.absolutePath + "/"
         setClickListeners()
     }
 
@@ -70,6 +70,7 @@ class CombinationsScreen : BaseFragment() {
                                 ) { permissionsGranted ->
                                     if (permissionsGranted) {
                                         handleRecordAudioAnimations(true)
+                                        viewModel.audioFileBaseDirectory = context.getExternalFilesDir(null)?.absolutePath + "/"
                                         startRecording()
                                     }
                                 }
