@@ -52,5 +52,7 @@
     <string name="average">Average</string>
     <string name="rare">Rare</string>
     <string name="very_rare">Very Rare</string>
+    <string name="round">Round</string>
+    <string name="of">of</string>
 
 </resources>

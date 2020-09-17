@@ -14,7 +14,8 @@ interface LocalDataSource {
     suspend fun upsertWorkoutCombinations(selectedCombinationCrossRefs: List<SelectedCombinationsCrossRef>)
     suspend fun deleteWorkoutCombinations(workoutId: Long)
     fun getWorkoutById(workoutId: Long): Flow<Workout?>
-    fun getWorkoutWithCombinations(workoutId: Long): Flow<WorkoutWithCombinations?>
+    fun getWorkoutWithCombinationsFlow(workoutId: Long): Flow<WorkoutWithCombinations?>
+    fun getWorkoutWithCombinations(workoutId: Long): WorkoutWithCombinations?
     fun getAllWorkoutsWithCombinations(): Flow<List<WorkoutWithCombinations>>
     fun getSelectedCombinationCrossRefs(workoutId: Long): Flow<List<SelectedCombinationsCrossRef>>
 }

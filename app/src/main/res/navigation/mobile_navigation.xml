@@ -28,4 +28,14 @@
             android:defaultValue="-1L"
             app:argType="long" />
     </fragment>
+    <fragment
+        android:id="@+id/workoutScreen3"
+        android:name="com.middleton.scott.customboxingworkout.ui.workout.WorkoutScreen"
+        android:label="fragment_workout_screen"
+        tools:layout="@layout/fragment_workout_screen">
+        <argument
+            android:name="workoutId"
+            android:defaultValue="-1L"
+            app:argType="long" />
+    </fragment>
 </navigation>

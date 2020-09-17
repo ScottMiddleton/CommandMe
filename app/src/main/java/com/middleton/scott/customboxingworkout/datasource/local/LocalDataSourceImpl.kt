@@ -10,7 +10,11 @@ class LocalDataSourceImpl(
     private val database: AppDatabase
 ) : LocalDataSource {
 
-    override fun getWorkoutWithCombinations(workoutId: Long): Flow<WorkoutWithCombinations?> {
+    override fun getWorkoutWithCombinationsFlow(workoutId: Long): Flow<WorkoutWithCombinations?> {
+        return database.workoutDao().getWorkoutWithCombinationsFlow(workoutId)
+    }
+
+    override fun getWorkoutWithCombinations(workoutId: Long): WorkoutWithCombinations? {
         return database.workoutDao().getWorkoutWithCombinations(workoutId)
     }
 

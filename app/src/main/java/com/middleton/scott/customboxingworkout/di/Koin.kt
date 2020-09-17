@@ -7,6 +7,7 @@ import com.middleton.scott.customboxingworkout.datasource.local.LocalDataSourceI
 import com.middleton.scott.customboxingworkout.ui.combinations.CombinationsViewModel
 import com.middleton.scott.customboxingworkout.ui.createworkout.CreateWorkoutSharedViewModel
 import com.middleton.scott.customboxingworkout.ui.stats.StatsViewModel
+import com.middleton.scott.customboxingworkout.ui.workout.WorkoutScreenViewModel
 import com.middleton.scott.customboxingworkout.ui.workouts.WorkoutsViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -23,4 +24,5 @@ val appModule = module {
     viewModel { WorkoutsViewModel(get()) }
     viewModel { StatsViewModel(get()) }
     viewModel {(workoutId: Long) -> CreateWorkoutSharedViewModel(get(), workoutId) }
+    viewModel {(workoutId: Long) -> WorkoutScreenViewModel(get(), workoutId) }
 }
