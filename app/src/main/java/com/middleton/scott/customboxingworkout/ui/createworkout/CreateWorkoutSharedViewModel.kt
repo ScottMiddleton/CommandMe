@@ -26,7 +26,7 @@ class CreateWorkoutSharedViewModel(
 
     private val combinationsFlow = localDataSource.getCombinations()
     private val selectedCombinationCrossRefsFlow =
-        localDataSource.getSelectedCombinationCrossRefs(workoutId)
+        localDataSource.getSelectedCombinationCrossRefsFlow(workoutId)
 
     val workoutLD = localDataSource.getWorkoutById(workoutId).map {
         it?.let {

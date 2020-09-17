@@ -30,8 +30,12 @@ class LocalDataSourceImpl(
         return database.workoutDao().getAllWorkoutsWithCombinations()
     }
 
-    override fun getSelectedCombinationCrossRefs(workoutId: Long): Flow<List<SelectedCombinationsCrossRef>> {
-        return database.workoutCombinationsDao().getSelectedCombinationCrossRefs(workoutId)
+    override fun getSelectedCombinationCrossRefsFlow(workoutId: Long): Flow<List<SelectedCombinationsCrossRef>> {
+        return database.selectedCombinationsCrossRefDao().getSelectedCombinationCrossRefsFlow(workoutId)
+    }
+
+    override fun getSelectedCombinationCrossRefs(workoutId: Long): List<SelectedCombinationsCrossRef> {
+        return database.selectedCombinationsCrossRefDao().getSelectedCombinationCrossRefs(workoutId)
     }
 
     override suspend fun upsertWorkout(
@@ -41,11 +45,11 @@ class LocalDataSourceImpl(
     }
 
     override suspend fun upsertWorkoutCombinations(selectedCombinationCrossRefs: List<SelectedCombinationsCrossRef>) {
-        database.workoutCombinationsDao().upsert(selectedCombinationCrossRefs)
+        database.selectedCombinationsCrossRefDao().upsert(selectedCombinationCrossRefs)
     }
 
     override suspend fun deleteWorkoutCombinations(workoutId: Long) {
-        database.workoutCombinationsDao().deleteByWorkoutId(workoutId)
+        database.selectedCombinationsCrossRefDao().deleteByWorkoutId(workoutId)
     }
 
     override fun getWorkoutById(workoutId: Long): Flow<Workout?> {

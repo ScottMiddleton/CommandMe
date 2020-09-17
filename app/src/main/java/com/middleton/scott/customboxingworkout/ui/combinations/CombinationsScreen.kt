@@ -42,7 +42,6 @@ class CombinationsScreen : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
         combinations_RV.adapter = adapter
         subscribeUI()
-        viewModel.audioFileBaseDirectory = view.context.getExternalFilesDir(null)?.absolutePath + "/"
         setClickListeners()
     }
 

@@ -17,5 +17,6 @@ interface LocalDataSource {
     fun getWorkoutWithCombinationsFlow(workoutId: Long): Flow<WorkoutWithCombinations?>
     fun getWorkoutWithCombinations(workoutId: Long): WorkoutWithCombinations?
     fun getAllWorkoutsWithCombinations(): Flow<List<WorkoutWithCombinations>>
-    fun getSelectedCombinationCrossRefs(workoutId: Long): Flow<List<SelectedCombinationsCrossRef>>
+    fun getSelectedCombinationCrossRefsFlow(workoutId: Long): Flow<List<SelectedCombinationsCrossRef>>
+    fun getSelectedCombinationCrossRefs(workoutId: Long): List<SelectedCombinationsCrossRef>
 }

@@ -46,8 +46,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-//        setupCustomAppBar()
-//        supportActionBar?.setDisplayShowTitleEnabled(false)
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
     }
