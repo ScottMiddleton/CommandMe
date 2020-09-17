@@ -33,8 +33,18 @@ class WorkoutsScreen : BaseFragment() {
 
     private fun subscribeUI() {
         vieWModel.getWorkoutsWithCombinationsLD().observe(viewLifecycleOwner, Observer {
-            workout_RV.adapter = WorkoutsAdapter(it) {workoutId ->
-                findNavController().navigate(R.id.createWorkoutScreen, bundleOf("workoutId" to workoutId))
+            workout_RV.adapter = WorkoutsAdapter(
+                it,
+                { workoutId ->
+                    findNavController().navigate(
+                        R.id.createWorkoutScreen,
+                        bundleOf("workoutId" to workoutId)
+                    )
+                }) { workoutId ->
+                findNavController().navigate(
+                    R.id.workoutScreen,
+                    bundleOf("workoutId" to workoutId)
+                )
             }
         })
     }

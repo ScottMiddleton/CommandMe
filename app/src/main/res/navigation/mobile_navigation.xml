@@ -29,7 +29,7 @@
             app:argType="long" />
     </fragment>
     <fragment
-        android:id="@+id/workoutScreen3"
+        android:id="@+id/workoutScreen"
         android:name="com.middleton.scott.customboxingworkout.ui.workout.WorkoutScreen"
         android:label="fragment_workout_screen"
         tools:layout="@layout/fragment_workout_screen">

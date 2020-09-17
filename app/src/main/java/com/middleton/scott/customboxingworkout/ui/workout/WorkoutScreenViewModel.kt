@@ -20,7 +20,6 @@ class WorkoutScreenViewModel(
     private val numberOfRounds = workoutWithCombinations?.workout?.numberOfRounds
     private val intensity = workoutWithCombinations?.workout?.intensity
 
-
     private val _countdownSecondsLD = MutableLiveData<String>()
     val countdownSecondsLD: LiveData<String>
         get() = _countdownSecondsLD
@@ -32,7 +31,6 @@ class WorkoutScreenViewModel(
     private val _workoutStateLD = MutableLiveData<WorkoutState>()
     val workoutStateLD: LiveData<WorkoutState>
         get() = _workoutStateLD
-
 
     private var prepareCountDownTimer =
         object : CountDownTimer(preparationTimeSecs * 1000L, 1_000) {
@@ -50,7 +48,7 @@ class WorkoutScreenViewModel(
         object : CountDownTimer(workTimeSecs * 1000L, 1_000) {
             override fun onFinish() {
                 _countdownSecondsLD.value = "0"
-                _workoutStateLD.value = WorkoutState.REST
+                startRest()
             }
 
             override fun onTick(millisUntilFinished: Long) {
@@ -62,12 +60,38 @@ class WorkoutScreenViewModel(
         object : CountDownTimer(restTimeSecs * 1000L, 1_000) {
             override fun onFinish() {
                 _countdownSecondsLD.value = "0"
-                _workoutStateLD.value = WorkoutState.WORK
+                startNextRound()
             }
 
             override fun onTick(millisUntilFinished: Long) {
                 _countdownSecondsLD.value = (millisUntilFinished / 1000 + 1).toString()
             }
         }
+
+    init {
+        _currentRoundLD.value = 0
+        if (preparationTimeSecs > 0) {
+            _workoutStateLD.value = WorkoutState.PREPARE
+            prepareCountDownTimer.start()
+        } else {
+            _workoutStateLD.value = WorkoutState.WORK
+            workCountDownTimer.start()
+        }
+    }
+
+    fun getTotalRounds(): String {
+        return numberOfRounds.toString()
+    }
+
+    private fun startNextRound() {
+        _workoutStateLD.value = WorkoutState.WORK
+        _currentRoundLD.value = _currentRoundLD.value?.plus(1)
+        workCountDownTimer.start()
+    }
+
+    private fun startRest() {
+        _workoutStateLD.value = WorkoutState.REST
+        restCountDownTimer.start()
+    }
 
 }
