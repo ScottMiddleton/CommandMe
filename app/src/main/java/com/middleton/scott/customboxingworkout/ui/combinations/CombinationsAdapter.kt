@@ -1,5 +1,7 @@
 package com.middleton.scott.customboxingworkout.ui.combinations
 
+import SaveCombinationDialog
+import android.content.Context
 import android.media.MediaPlayer
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,6 +13,7 @@ import android.widget.CheckBox
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
 import com.middleton.scott.commandMeBoxing.R
@@ -20,8 +23,12 @@ import java.io.IOException
 
 class CombinationsAdapter(
     private val audioFileDirectory: String,
-    private val onCheckCombination: ((selectedCombinationCrossRef: SelectedCombinationsCrossRef, isChecked: Boolean) -> Unit)? = null
+    private val fragmentManager: FragmentManager,
+    private val onCheckCombination: ((selectedCombinationCrossRef: SelectedCombinationsCrossRef, isChecked: Boolean) -> Unit)? = null,
+    private val onEditCombination: ((Combination) -> Unit)
 ) : RecyclerView.Adapter<CombinationsAdapter.CombinationsViewHolder>() {
+
+    lateinit var context: Context
 
     private var selectedCombinations = mutableListOf<Combination>()
     private var allCombinations = mutableListOf<Combination>()
@@ -31,6 +38,7 @@ class CombinationsAdapter(
     private var currentPlayingAudioLottie: LottieAnimationView? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CombinationsViewHolder {
+        context = parent.context
         return CombinationsViewHolder(
             LayoutInflater.from(parent.context).inflate(
                 R.layout.list_item_combination,
@@ -60,13 +68,12 @@ class CombinationsAdapter(
 
         if (onCheckCombination == null) {
             holder.checkBox.visibility = GONE
-            holder.editButton.visibility = VISIBLE
         } else {
             holder.checkBox.visibility = VISIBLE
-            holder.editButton.visibility = GONE
-            holder.checkBox.setOnCheckedChangeListener { _, isChecked ->
+            holder.checkBox.setOnCheckedChangeListener { _, checked ->
                 onCheckCombination.invoke(
-                    SelectedCombinationsCrossRef(workout_id = -1, combination_id = combination.id), isChecked
+                    SelectedCombinationsCrossRef(workout_id = -1, combination_id = combination.id),
+                    checked
                 )
             }
         }
@@ -84,6 +91,18 @@ class CombinationsAdapter(
             } else {
                 stopPlaying(playAudioLottie)
             }
+        }
+
+        holder.editButton.setOnClickListener {
+            SaveCombinationDialog(
+                true,
+                combination,
+                { combination ->
+                    onEditCombination(combination)
+                }, {
+//                    val file = File(viewModel.audioFileCompleteDirectory)
+//                    file.delete()
+                }).show(fragmentManager, "")
         }
     }
 

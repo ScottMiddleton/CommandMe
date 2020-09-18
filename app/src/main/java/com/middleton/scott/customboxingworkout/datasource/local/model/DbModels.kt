@@ -17,6 +17,6 @@ data class Workout constructor(
 @Entity()
 data class Combination constructor(
     var name: String,
-    var allocatedTimeSecs: Int,
+    var timeToCompleteMillis: Long,
     var file_name: String
 ) : BaseDbModel()

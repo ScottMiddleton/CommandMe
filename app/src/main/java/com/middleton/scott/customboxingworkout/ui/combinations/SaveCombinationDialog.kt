@@ -10,12 +10,13 @@ import android.view.inputmethod.InputMethodManager
 import androidx.annotation.Nullable
 import androidx.fragment.app.DialogFragment
 import com.middleton.scott.commandMeBoxing.R
+import com.middleton.scott.customboxingworkout.datasource.local.model.Combination
 import kotlinx.android.synthetic.main.dialog_save_combination.*
 
 class SaveCombinationDialog(
-    private val name: String? = null,
-    private val timeToComplete: Int? = null,
-    private val onSave: ((name: String, timeToComplete: Int) -> Unit),
+    private val isEditMode: Boolean,
+    private val combination: Combination,
+    private val onSave: ((Combination) -> Unit),
     private val onDelete: (() -> Unit)
 ) : DialogFragment() {
     override fun onCreateView(
@@ -24,6 +25,8 @@ class SaveCombinationDialog(
     ): View {
         return inflater.inflate(R.layout.dialog_save_combination, container)
     }
+
+    private var timeToCompleteMillis: Long = 0L
 
     override fun onViewCreated(view: View, @Nullable savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -34,14 +37,20 @@ class SaveCombinationDialog(
             WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE
         )
 
-        name?.let { name_et.setText(it) }
-        timeToComplete?.let { time_to_complete_et.setText(it.toString()) }
+        timeToCompleteMillis = combination.timeToCompleteMillis
+
+        if (isEditMode) {
+            name_et.setText(combination.name)
+            time_to_complete_et.setText(getSecondsTextFromMillis(timeToCompleteMillis))
+        }
         setClickListeners()
     }
 
     private fun setClickListeners() {
         save_btn.setOnClickListener {
-            onSave(name_et.text.toString(), time_to_complete_et.text.toString().toInt())
+                combination.name = name_et.text.toString()
+                combination.timeToCompleteMillis = timeToCompleteMillis
+                onSave(combination)
             dismiss()
         }
 
@@ -54,21 +63,28 @@ class SaveCombinationDialog(
             val imm: InputMethodManager =
                 requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(requireView().windowToken, 0)
+
             var millis = 0L
             if (!time_to_complete_et.text.isNullOrBlank()) {
-                millis = (time_to_complete_et.text.toString().toDouble() * 1000L).toLong()
+                millis = timeToCompleteMillis
             }
+
             NumberPickerSecondsDialog(millis, { newMillis ->
-                var secondsText: String = if((newMillis % 1000) == 0L){
-                    (newMillis / 1000).toString()
-                } else {
-                    (newMillis / 1000.0).toString()
-                }
-                time_to_complete_et.setText(secondsText)
+                timeToCompleteMillis = newMillis
+
+                time_to_complete_et.setText(getSecondsTextFromMillis(newMillis))
                 name_et.clearFocus()
             }, {
 
             }).show(childFragmentManager, "")
+        }
+    }
+
+    private fun getSecondsTextFromMillis(millis: Long): String{
+        return if ((millis % 1000) == 0L) {
+            (millis / 1000).toString()
+        } else {
+            (millis / 1000.0).toString()
         }
     }
 }

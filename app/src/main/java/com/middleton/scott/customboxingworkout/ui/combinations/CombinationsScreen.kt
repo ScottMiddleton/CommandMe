@@ -12,6 +12,7 @@ import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import com.middleton.scott.commandMeBoxing.R
+import com.middleton.scott.customboxingworkout.datasource.local.model.Combination
 import com.middleton.scott.customboxingworkout.ui.base.BaseFragment
 import com.middleton.scott.customboxingworkout.utils.MediaRecorderManager
 import com.middleton.scott.customboxingworkout.utils.PermissionsDialogManager
@@ -37,7 +38,9 @@ class CombinationsScreen : BaseFragment() {
         super.onCreate(savedInstanceState)
         viewModel.audioFileBaseDirectory =
             context?.getExternalFilesDir(null)?.absolutePath + "/"
-        adapter = CombinationsAdapter(viewModel.audioFileBaseDirectory)
+        adapter = CombinationsAdapter(viewModel.audioFileBaseDirectory, parentFragmentManager) {
+            viewModel.upsertCombination(it)
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -109,12 +112,15 @@ class CombinationsScreen : BaseFragment() {
     }
 
     private fun showSaveCombinationDialog() {
-        SaveCombinationDialog(onSave = { name, timeToComplete ->
-            viewModel.upsertCombination(name, timeToComplete)
-        }, onDelete = {
-            val file = File(viewModel.audioFileCompleteDirectory)
-            file.delete()
-        }).show(childFragmentManager, null)
+        SaveCombinationDialog(
+            false,
+            Combination("", 0, viewModel.audioFileBaseDirectory),
+            { combination ->
+                viewModel.upsertCombination(combination)
+            }, {
+                val file = File(viewModel.audioFileCompleteDirectory)
+                file.delete()
+            }).show(childFragmentManager, "")
     }
 
     private fun handleRecordAudioAnimations(recording: Boolean) {

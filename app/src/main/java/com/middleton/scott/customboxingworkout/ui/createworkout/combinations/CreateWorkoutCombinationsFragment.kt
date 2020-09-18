@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import com.middleton.scott.commandMeBoxing.R
+import com.middleton.scott.customboxingworkout.datasource.local.model.Combination
 import com.middleton.scott.customboxingworkout.ui.base.BaseFragment
 import com.middleton.scott.customboxingworkout.ui.combinations.CombinationsAdapter
 import com.middleton.scott.customboxingworkout.ui.createworkout.CreateWorkoutSharedViewModel
@@ -32,10 +33,15 @@ class CreateWorkoutCombinationsFragment : BaseFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        adapter =
-            CombinationsAdapter(viewModel.audioFileBaseDirectory) { selectedCombinationCrossRef, isChecked ->
-                viewModel.setCombination(selectedCombinationCrossRef, isChecked)
-            }
+        adapter = CombinationsAdapter(
+                viewModel.audioFileBaseDirectory,
+            parentFragmentManager,
+                { selectedCombinationCrossRef, isChecked ->
+                    viewModel.setCombination(selectedCombinationCrossRef, isChecked)
+                },
+                {
+                    viewModel.upsertCombination(it)
+                })
     }
 
     override fun onCreateView(
@@ -108,12 +114,15 @@ class CreateWorkoutCombinationsFragment : BaseFragment() {
     }
 
     private fun showSaveCombinationDialog() {
-        SaveCombinationDialog(onSave = { name, timeToComplete ->
-            viewModel.upsertCombination(name, timeToComplete)
-        }, onDelete = {
-            val file = File(viewModel.audioFileCompleteDirectory)
-            file.delete()
-        }).show(childFragmentManager, null)
+        SaveCombinationDialog(
+            false,
+            Combination("", 0, viewModel.audioFileBaseDirectory),
+            { combination ->
+                viewModel.upsertCombination(combination)
+            }, {
+                val file = File(viewModel.audioFileCompleteDirectory)
+                file.delete()
+            }).show(childFragmentManager, "")
     }
 
     private fun handleRecordAudioAnimations(recording: Boolean) {
