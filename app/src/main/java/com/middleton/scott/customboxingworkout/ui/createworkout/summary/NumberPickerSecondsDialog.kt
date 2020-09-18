@@ -8,12 +8,12 @@ import android.view.WindowManager
 import androidx.annotation.Nullable
 import androidx.fragment.app.DialogFragment
 import com.middleton.scott.commandMeBoxing.R
-import kotlinx.android.synthetic.main.dialog_number_picker_mins_secs.*
+import kotlinx.android.synthetic.main.dialog_number_picker_secs.*
 import kotlinx.android.synthetic.main.dialog_save_combination.save_btn
 
 class NumberPickerSecondsDialog(
-    private val seconds: Int,
-    private val onSave: ((Int) -> Unit),
+    private val millis: Long = 0,
+    private val onSave: ((millis: Long) -> Unit),
     private val onCancel: (() -> Unit)
 ) : DialogFragment() {
     override fun onCreateView(
@@ -27,7 +27,20 @@ class NumberPickerSecondsDialog(
         super.onViewCreated(view, savedInstanceState)
         secs_np.maxValue = 59
         secs_np.minValue = 0
-        secs_np.value = seconds
+
+        val decimalValues = arrayOf("0", "5")
+        decimal_np.maxValue = 1
+        decimal_np.minValue = 0
+        decimal_np.wrapSelectorWheel = true
+
+        decimal_np.displayedValues = decimalValues
+
+        secs_np.value = (millis / 1000).toInt()
+
+        if(millis % 1000 == 500L){
+            decimal_np.value = 1
+        }
+
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog?.window?.setSoftInputMode(
             WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE
@@ -37,7 +50,14 @@ class NumberPickerSecondsDialog(
 
     private fun setClickListeners() {
         save_btn.setOnClickListener {
-            onSave(secs_np.value)
+            var millis = secs_np.value * 1000L
+            val decimalIndexValue: Int = decimal_np.value
+
+            if(decimalIndexValue == 1) {
+                millis += 500
+            }
+
+            onSave(millis)
             dismiss()
         }
 

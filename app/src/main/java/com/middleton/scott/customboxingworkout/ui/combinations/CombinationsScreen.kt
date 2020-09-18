@@ -35,6 +35,8 @@ class CombinationsScreen : BaseFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        viewModel.audioFileBaseDirectory =
+            context?.getExternalFilesDir(null)?.absolutePath + "/"
         adapter = CombinationsAdapter(viewModel.audioFileBaseDirectory)
     }
 
@@ -69,7 +71,8 @@ class CombinationsScreen : BaseFragment() {
                                 ) { permissionsGranted ->
                                     if (permissionsGranted) {
                                         handleRecordAudioAnimations(true)
-                                        viewModel.audioFileBaseDirectory = context.getExternalFilesDir(null)?.absolutePath + "/"
+                                        viewModel.audioFileBaseDirectory =
+                                            context.getExternalFilesDir(null)?.absolutePath + "/"
                                         startRecording()
                                     }
                                 }
@@ -106,16 +109,16 @@ class CombinationsScreen : BaseFragment() {
     }
 
     private fun showSaveCombinationDialog() {
-        SaveCombinationDialog({ name ->
-            viewModel.upsertCombination(name)
-        }, {
+        SaveCombinationDialog(onSave = { name, timeToComplete ->
+            viewModel.upsertCombination(name, timeToComplete)
+        }, onDelete = {
             val file = File(viewModel.audioFileCompleteDirectory)
             file.delete()
         }).show(childFragmentManager, null)
     }
 
-    private fun handleRecordAudioAnimations(recording: Boolean){
-        if(recording){
+    private fun handleRecordAudioAnimations(recording: Boolean) {
+        if (recording) {
             lottie_anim_left.playAnimation()
             lottie_anim_right.playAnimation()
             lottie_anim_left.visibility = View.VISIBLE

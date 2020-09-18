@@ -50,8 +50,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/timer_FL"
-        android:layout_width="240dp"
-        android:layout_height="240dp"
+        android:layout_width="280dp"
+        android:layout_height="280dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="60dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -106,7 +106,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/record_cl"
         android:layout_width="match_parent"
-        android:layout_height="120dp"
+        android:layout_height="140dp"
         app:layout_constraintBottom_toBottomOf="parent">
 
         <View

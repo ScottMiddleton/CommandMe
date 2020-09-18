@@ -38,10 +38,10 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="@string/time_to_complete"
-        app:endIconDrawable="@drawable/ic_time"
         android:layout_marginTop="10dp"
-        app:endIconMode="custom"
         app:hintTextColor="@color/white"
+        app:suffixText="Seconds"
+        app:suffixTextColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_input_layout">

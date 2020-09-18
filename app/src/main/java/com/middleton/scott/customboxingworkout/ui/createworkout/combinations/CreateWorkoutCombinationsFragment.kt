@@ -32,9 +32,10 @@ class CreateWorkoutCombinationsFragment : BaseFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        adapter = CombinationsAdapter(viewModel.audioFileBaseDirectory) { selectedCombinationCrossRef, isChecked ->
-            viewModel.setCombination(selectedCombinationCrossRef, isChecked)
-        }
+        adapter =
+            CombinationsAdapter(viewModel.audioFileBaseDirectory) { selectedCombinationCrossRef, isChecked ->
+                viewModel.setCombination(selectedCombinationCrossRef, isChecked)
+            }
     }
 
     override fun onCreateView(
@@ -107,16 +108,16 @@ class CreateWorkoutCombinationsFragment : BaseFragment() {
     }
 
     private fun showSaveCombinationDialog() {
-        SaveCombinationDialog({ name ->
-            viewModel.upsertCombination(name)
-        }, {
+        SaveCombinationDialog(onSave = { name, timeToComplete ->
+            viewModel.upsertCombination(name, timeToComplete)
+        }, onDelete = {
             val file = File(viewModel.audioFileCompleteDirectory)
             file.delete()
         }).show(childFragmentManager, null)
     }
 
-    private fun handleRecordAudioAnimations(recording: Boolean){
-        if(recording){
+    private fun handleRecordAudioAnimations(recording: Boolean) {
+        if (recording) {
             lottie_anim_left.playAnimation()
             lottie_anim_right.playAnimation()
             lottie_anim_left.visibility = View.VISIBLE
