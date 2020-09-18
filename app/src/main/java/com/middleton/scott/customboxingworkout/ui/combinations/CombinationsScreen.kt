@@ -52,12 +52,13 @@ class CombinationsScreen : BaseFragment() {
 
     private fun subscribeUI() {
         viewModel.getAllCombinationsLD().observe(viewLifecycleOwner, Observer {
+            if (!viewModel.listAnimationShownOnce) {
+                val controller =
+                    AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_fall_down)
+                combinations_RV.layoutAnimation = controller
+                viewModel.listAnimationShownOnce = true
+            }
             adapter.setAdapter(it, null)
-            val controller =
-                AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_fall_down)
-            combinations_RV.layoutAnimation = controller
-            combinations_RV.adapter?.notifyDataSetChanged()
-            combinations_RV.scheduleLayoutAnimation()
         })
     }
 
@@ -95,7 +96,10 @@ class CombinationsScreen : BaseFragment() {
     private fun startRecording() {
         viewModel.recording = true
         viewModel.setAudioFileOutput(System.currentTimeMillis())
-        MediaRecorderManager.startRecording(mediaRecorder, viewModel.audioFileCompleteDirectory)
+        MediaRecorderManager.startRecording(
+            mediaRecorder,
+            viewModel.audioFileCompleteDirectory
+        )
     }
 
     private fun stopRecording() {

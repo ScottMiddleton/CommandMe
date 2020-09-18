@@ -50,6 +50,7 @@
                 android:layout_marginTop="8dp"
                 app:endIconDrawable="@drawable/ic_time"
                 app:endIconMode="custom"
+                app:hintAnimationEnabled="false"
                 app:hintTextColor="@color/white"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -75,6 +76,7 @@
                 android:layout_marginTop="8dp"
                 app:endIconDrawable="@drawable/ic_bell"
                 app:endIconMode="custom"
+                app:hintAnimationEnabled="false"
                 app:hintTextColor="@color/white"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -98,6 +100,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:hint="@string/work_time"
+                app:hintAnimationEnabled="false"
                 app:endIconDrawable="@drawable/ic_boxer_24dp"
                 app:endIconMode="custom"
                 app:hintTextColor="@color/white"
@@ -123,6 +126,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:hint="@string/rest_time"
+                app:hintAnimationEnabled="false"
                 app:endIconDrawable="@drawable/ic_stool"
                 app:endIconMode="custom"
                 app:hintTextColor="@color/white"
@@ -151,6 +155,7 @@
                 app:endIconDrawable="@drawable/ic_intensity"
                 app:endIconMode="custom"
                 app:hintTextColor="@color/white"
+                app:hintAnimationEnabled="false"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/rest_time_til">
@@ -269,6 +274,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center"
+        android:textColor="@color/white"
         android:layout_marginBottom="20dp"
         android:text="@string/complete" />
 </FrameLayout>

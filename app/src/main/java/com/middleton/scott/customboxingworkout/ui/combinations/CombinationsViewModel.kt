@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 open class CombinationsViewModel(private val localDataSource: LocalDataSource) : ViewModel() {
+    var listAnimationShownOnce = false
     var audioFileBaseDirectory = ""
     var audioFileName = ""
     var audioFileCompleteDirectory = ""

@@ -42,21 +42,26 @@ class SaveCombinationDialog(
         if (isEditMode) {
             name_et.setText(combination.name)
             time_to_complete_et.setText(getSecondsTextFromMillis(timeToCompleteMillis))
+            delete_btn.text = view.context.getString(R.string.cancel)
         }
         setClickListeners()
     }
 
     private fun setClickListeners() {
         save_btn.setOnClickListener {
-                combination.name = name_et.text.toString()
-                combination.timeToCompleteMillis = timeToCompleteMillis
-                onSave(combination)
+            combination.name = name_et.text.toString()
+            combination.timeToCompleteMillis = timeToCompleteMillis
+            onSave(combination)
             dismiss()
         }
 
         delete_btn.setOnClickListener {
-            onDelete()
-            dismiss()
+            if (isEditMode) {
+                dismiss()
+            } else {
+                onDelete()
+                dismiss()
+            }
         }
 
         time_to_complete_et.setOnClickListener {
@@ -80,7 +85,7 @@ class SaveCombinationDialog(
         }
     }
 
-    private fun getSecondsTextFromMillis(millis: Long): String{
+    private fun getSecondsTextFromMillis(millis: Long): String {
         return if ((millis % 1000) == 0L) {
             (millis / 1000).toString()
         } else {
