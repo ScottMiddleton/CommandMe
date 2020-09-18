@@ -36,8 +36,7 @@ class CombinationsScreen : BaseFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.audioFileBaseDirectory =
-            context?.getExternalFilesDir(null)?.absolutePath + "/"
+        viewModel.audioFileBaseDirectory = context?.getExternalFilesDir(null)?.absolutePath + "/"
         adapter = CombinationsAdapter(viewModel.audioFileBaseDirectory, parentFragmentManager) {
             viewModel.upsertCombination(it)
         }
@@ -118,7 +117,7 @@ class CombinationsScreen : BaseFragment() {
     private fun showSaveCombinationDialog() {
         SaveCombinationDialog(
             false,
-            Combination("", 0, viewModel.audioFileBaseDirectory),
+            Combination("", 0, viewModel.audioFileName),
             { combination ->
                 viewModel.upsertCombination(combination)
             }, {
