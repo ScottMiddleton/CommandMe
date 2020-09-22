@@ -46,6 +46,14 @@ class WorkoutScreenViewModel(
     val currentCombinationLD: LiveData<Combination>
         get() = _currentCombinationLD
 
+    private val _playStartBellLD = MutableLiveData<Boolean>()
+    val playStartBellLD: LiveData<Boolean>
+        get() = _playStartBellLD
+
+    private val _playEndBellLD = MutableLiveData<Boolean>()
+    val playEndBellLD: LiveData<Boolean>
+        get() = _playEndBellLD
+
     private lateinit var countDownTimer: CountDownTimer
 
     init {
@@ -58,6 +66,7 @@ class WorkoutScreenViewModel(
         } else {
             _workoutStateLD.value = WorkoutState.WORK
             _countdownSecondsLD.value = workTimeSecs
+            currentRound = 1
             _currentRoundLD.value = 1
         }
     }
@@ -76,7 +85,10 @@ class WorkoutScreenViewModel(
                     millisUntilNextCombination = 0L
                     when (workoutStateLD.value) {
                         WorkoutState.PREPARE -> startNextRound()
-                        WorkoutState.WORK -> startRest()
+                        WorkoutState.WORK -> {
+                            startRest()
+                            _playEndBellLD.value = true
+                        }
                         WorkoutState.REST -> startNextRound()
                     }
                 }
@@ -106,6 +118,7 @@ class WorkoutScreenViewModel(
         _workoutStateLD.value = WorkoutState.WORK
         currentRound++
         _currentRoundLD.value = currentRound
+        _playStartBellLD.value = true
         initCountdown(workTimeSecs * 1000L)
     }
 
@@ -128,6 +141,7 @@ class WorkoutScreenViewModel(
                 WorkoutState.WORK -> timeSecs = workTimeSecs
                 WorkoutState.REST -> timeSecs = restTimeSecs
             }
+            _playStartBellLD.value = true
             initCountdown(timeSecs * 1000L)
             workoutHasBegun = true
         }
