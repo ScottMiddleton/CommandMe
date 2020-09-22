@@ -25,7 +25,8 @@ class CombinationsAdapter(
     private val audioFileDirectory: String,
     private val fragmentManager: FragmentManager,
     private val onCheckCombination: ((selectedCombinationCrossRef: SelectedCombinationsCrossRef, isChecked: Boolean) -> Unit)? = null,
-    private val onEditCombination: ((Combination) -> Unit)
+    private val onEditCombination: ((Combination) -> Unit),
+    private val onDeleteCombination: ((Combination) -> Unit)
 ) : RecyclerView.Adapter<CombinationsAdapter.CombinationsViewHolder>() {
 
     lateinit var context: Context
@@ -100,8 +101,7 @@ class CombinationsAdapter(
                 { combination ->
                     onEditCombination(combination)
                 }, {
-//                    val file = File(viewModel.audioFileCompleteDirectory)
-//                    file.delete()
+                    onDeleteCombination(combination)
                 }).show(fragmentManager, "")
         }
     }
