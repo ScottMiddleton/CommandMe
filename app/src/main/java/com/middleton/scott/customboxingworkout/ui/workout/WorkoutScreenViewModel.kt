@@ -27,7 +27,7 @@ class WorkoutScreenViewModel(
     private val intensity = workoutWithCombinations?.workout?.intensity
 
     private var millisRemaining: Long = 0
-    private var secondsUntilNextCombination = 0
+    private var millisUntilNextCombination: Long = 0
 
     private val _countdownSecondsLD = MutableLiveData<Int>()
     val countdownSecondsLD: LiveData<Int>
@@ -71,8 +71,9 @@ class WorkoutScreenViewModel(
     private fun initCountdown(timeRemainingMillis: Long) {
         millisRemaining = timeRemainingMillis
         countDownTimer =
-            object : CountDownTimer(timeRemainingMillis, 1_000) {
+            object : CountDownTimer(timeRemainingMillis, 1000) {
                 override fun onFinish() {
+                    millisUntilNextCombination = 0L
                     when (workoutStateLD.value) {
                         WorkoutState.PREPARE -> startNextRound()
                         WorkoutState.WORK -> startRest()
@@ -85,11 +86,15 @@ class WorkoutScreenViewModel(
                     millisRemaining = millisUntilFinished
 
                     if (workoutStateLD.value == WorkoutState.WORK) {
-                        if (secondsUntilNextCombination == 0) {
-                            _currentCombinationLD.value = getRandomCombination()
-                            secondsUntilNextCombination = 2
+                        if (millisUntilNextCombination <= 0L) {
+                            val currentCombination: Combination? = getRandomCombination()
+                            _currentCombinationLD.value = currentCombination
+
+                            val timeToCompleteCombination = currentCombination?.timeToCompleteMillis ?: 2000
+
+                            millisUntilNextCombination = getTimeUntilNextCombination(timeToCompleteCombination)
                         } else {
-                            secondsUntilNextCombination -= 1
+                            millisUntilNextCombination -= 1000
                         }
                     }
 
@@ -148,7 +153,8 @@ class WorkoutScreenViewModel(
                 localDataSource.getSelectedCombinationCrossRefs(workoutId)
 
             combinations?.forEach { combination ->
-                val frequencyType = selectedCombinationsCrossRefs.firstOrNull { combination.id == it.combination_id }?.frequency
+                val frequencyType =
+                    selectedCombinationsCrossRefs.firstOrNull { combination.id == it.combination_id }?.frequency
                 frequencyType?.multiplicationValue?.let {
                     repeat(it) {
                         multipliedCombinationsList.add(combination)
@@ -163,6 +169,45 @@ class WorkoutScreenViewModel(
         var randomCombination: Combination? = null
         combinations?.let { randomCombination = it.shuffled().take(1)[0] }
         return randomCombination
+    }
+
+    private fun getTimeUntilNextCombination(timeToCompleteCombinationMillis: Long): Long {
+        var amountToAdjustMillis = 0L
+
+        when (intensity) {
+            10 -> amountToAdjustMillis = -(timeToCompleteCombinationMillis / 100) * 40
+            9 -> amountToAdjustMillis = -(timeToCompleteCombinationMillis / 100) * 30
+            8 -> amountToAdjustMillis = -(timeToCompleteCombinationMillis / 100) * 20
+            7 -> amountToAdjustMillis = -(timeToCompleteCombinationMillis / 100) * 10
+            6 -> amountToAdjustMillis = -(timeToCompleteCombinationMillis / 100) * 5
+            5 -> amountToAdjustMillis = 0
+            4 -> amountToAdjustMillis = (timeToCompleteCombinationMillis / 100) * 10
+            3 -> amountToAdjustMillis = (timeToCompleteCombinationMillis / 100) * 20
+            2 -> amountToAdjustMillis = (timeToCompleteCombinationMillis / 100) * 30
+            1 -> amountToAdjustMillis = (timeToCompleteCombinationMillis / 100) * 40
+
+        }
+
+        val adjustedTimeToCompleteCombination = timeToCompleteCombinationMillis + amountToAdjustMillis
+        return adjustedTimeToCompleteCombination + calculateCommandTimeBufferMillis()
+    }
+
+    private fun calculateCommandTimeBufferMillis(): Long {
+        var timeBuffer = 3000L
+        when (intensity) {
+            10 -> timeBuffer = 1.times(500).minus(500).toLong()
+            9 -> timeBuffer = 2.times(500).minus(500).toLong()
+            8 -> timeBuffer = 3.times(500).minus(500).toLong()
+            7 -> timeBuffer = 4.times(500).minus(500).toLong()
+            6 -> timeBuffer = 5.times(500).minus(500).toLong()
+            5 -> timeBuffer = 6.times(500).minus(500).toLong()
+            4 -> timeBuffer = 7.times(500).minus(500).toLong()
+            3 -> timeBuffer = 8.times(500).minus(500).toLong()
+            2 -> timeBuffer = 9.times(500).minus(500).toLong()
+            1 -> timeBuffer = 10.times(500).minus(500).toLong()
+        }
+
+        return timeBuffer
     }
 
 }

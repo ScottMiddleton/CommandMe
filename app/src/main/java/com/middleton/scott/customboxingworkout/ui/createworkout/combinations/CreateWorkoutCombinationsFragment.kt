@@ -116,7 +116,7 @@ class CreateWorkoutCombinationsFragment : BaseFragment() {
     private fun showSaveCombinationDialog() {
         SaveCombinationDialog(
             false,
-            Combination("", 0, viewModel.audioFileBaseDirectory),
+            Combination("", 0, viewModel.audioFileName),
             { combination ->
                 viewModel.upsertCombination(combination)
             }, {
