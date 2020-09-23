@@ -34,14 +34,17 @@ class CreateWorkoutCombinationsFragment : BaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         adapter = CombinationsAdapter(
-                viewModel.audioFileBaseDirectory,
+            viewModel.audioFileBaseDirectory,
             parentFragmentManager,
-                { selectedCombinationCrossRef, isChecked ->
-                    viewModel.setCombination(selectedCombinationCrossRef, isChecked)
-                },
-                {
-                    viewModel.upsertCombination(it)
-                })
+            { selectedCombinationCrossRef, isChecked ->
+                viewModel.setCombination(selectedCombinationCrossRef, isChecked)
+            },
+            {
+                viewModel.upsertCombination(it)
+            }, {
+                val file = File(viewModel.audioFileCompleteDirectory)
+                file.delete()
+            })
     }
 
     override fun onCreateView(
