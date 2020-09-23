@@ -15,6 +15,8 @@ class WorkoutScreenViewModel(
     val workoutId: Long
 ) : ViewModel() {
 
+    var workoutInProgress = false
+
     var audioFileBaseDirectory = ""
     private val workoutWithCombinations: WorkoutWithCombinations? =
         localDataSource.getWorkoutWithCombinations(workoutId)
@@ -28,6 +30,12 @@ class WorkoutScreenViewModel(
 
     private var millisRemaining: Long = 0
     private var millisUntilNextCombination: Long = 0
+    private var totalSecondsElapsed: Int = 0
+    var totalWorkoutSecs = getTotalWorkoutLengthSecs()
+
+    private val _totalSecondsElapsedLD = MutableLiveData<Int>()
+    val totalSecondsElapsedLD: LiveData<Int>
+        get() = _totalSecondsElapsedLD
 
     private val _countdownSecondsLD = MutableLiveData<Int>()
     val countdownSecondsLD: LiveData<Int>
@@ -78,10 +86,16 @@ class WorkoutScreenViewModel(
     }
 
     private fun initCountdown(timeRemainingMillis: Long) {
+        if (workoutStateLD.value != WorkoutState.PREPARE) {
+        totalSecondsElapsed --}
         millisRemaining = timeRemainingMillis
         countDownTimer =
             object : CountDownTimer(timeRemainingMillis, 1000) {
                 override fun onFinish() {
+                    if (workoutStateLD.value != WorkoutState.PREPARE) {
+                        totalSecondsElapsed ++
+                        _totalSecondsElapsedLD.value = totalSecondsElapsed
+                    }
                     millisUntilNextCombination = 0L
                     when (workoutStateLD.value) {
                         WorkoutState.PREPARE -> startNextRound()
@@ -96,15 +110,21 @@ class WorkoutScreenViewModel(
                 override fun onTick(millisUntilFinished: Long) {
                     _countdownSecondsLD.value = (millisUntilFinished / 1000 + 1).toInt()
                     millisRemaining = millisUntilFinished
+                    if (workoutStateLD.value != WorkoutState.PREPARE) {
+                        totalSecondsElapsed ++
+                        _totalSecondsElapsedLD.value = totalSecondsElapsed
+                    }
 
                     if (workoutStateLD.value == WorkoutState.WORK) {
                         if (millisUntilNextCombination <= 0L) {
                             val currentCombination: Combination? = getRandomCombination()
                             _currentCombinationLD.value = currentCombination
 
-                            val timeToCompleteCombination = currentCombination?.timeToCompleteMillis ?: 2000
+                            val timeToCompleteCombination =
+                                currentCombination?.timeToCompleteMillis ?: 2000
 
-                            millisUntilNextCombination = getTimeUntilNextCombination(timeToCompleteCombination)
+                            millisUntilNextCombination =
+                                getTimeUntilNextCombination(timeToCompleteCombination)
                         } else {
                             millisUntilNextCombination -= 1000
                         }
@@ -123,6 +143,7 @@ class WorkoutScreenViewModel(
     }
 
     private fun startRest() {
+        workoutInProgress = true
         if (currentRound >= numberOfRounds) {
             countDownTimer.cancel()
         } else {
@@ -132,6 +153,7 @@ class WorkoutScreenViewModel(
     }
 
     fun onStart() {
+        workoutInProgress = true
         if (workoutHasBegun) {
             initCountdown(millisRemaining)
         } else {
@@ -148,6 +170,7 @@ class WorkoutScreenViewModel(
     }
 
     fun onPause() {
+        workoutInProgress = false
         countDownTimer.cancel()
     }
 
@@ -202,7 +225,8 @@ class WorkoutScreenViewModel(
 
         }
 
-        val adjustedTimeToCompleteCombination = timeToCompleteCombinationMillis + amountToAdjustMillis
+        val adjustedTimeToCompleteCombination =
+            timeToCompleteCombinationMillis + amountToAdjustMillis
         return adjustedTimeToCompleteCombination + calculateCommandTimeBufferMillis()
     }
 
@@ -222,6 +246,10 @@ class WorkoutScreenViewModel(
         }
 
         return timeBuffer
+    }
+
+    private fun getTotalWorkoutLengthSecs(): Int {
+        return (workTimeSecs * numberOfRounds) + (restTimeSecs * numberOfRounds) - restTimeSecs
     }
 
 }
