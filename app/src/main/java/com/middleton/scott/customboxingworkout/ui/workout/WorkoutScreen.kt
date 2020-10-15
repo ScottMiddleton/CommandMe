@@ -24,7 +24,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import java.io.IOException
 
-
 class WorkoutScreen : BaseFragment() {
     private val args: WorkoutScreenArgs by navArgs()
     private val viewModel: WorkoutScreenViewModel by viewModel { parametersOf(args.workoutId) }
@@ -74,7 +73,7 @@ class WorkoutScreen : BaseFragment() {
 
             when (it) {
                 WorkoutState.PREPARE -> {
-//                    round_count_ll.visibility = INVISIBLE
+                    round_count_ll.visibility = INVISIBLE
                     play_command_lottie.visibility = GONE
                     countdown_pb.progressTintList = ColorStateList.valueOf(Color.YELLOW)
                 }
@@ -89,6 +88,15 @@ class WorkoutScreen : BaseFragment() {
                     round_count_ll.visibility = VISIBLE
                     play_command_lottie.visibility = VISIBLE
                     countdown_pb.progressTintList = ColorStateList.valueOf(Color.GREEN)
+                }
+                WorkoutState.COMPLETE -> {
+                    handlePlayAnimationLottie(true)
+                    mediaPlayer.stop()
+                    WorkoutCompleteDialog(
+                        viewModel.totalWorkoutSecs,
+                        viewModel.combinationsThrown,
+                        {viewModel.onRestart()},
+                        {}).show(childFragmentManager, null)
                 }
             }
         })
@@ -156,6 +164,13 @@ class WorkoutScreen : BaseFragment() {
                 mediaPlayer.stop()
                 viewModel.onPause()
             }
+        }
+        next_btn.setOnClickListener {
+            viewModel.onNext()
+        }
+
+        previous_btn.setOnClickListener {
+            viewModel.onPrevious()
         }
     }
 

@@ -37,7 +37,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:text="of"
+            android:text="@string/of"
             android:textSize="32sp" />
 
         <TextView
@@ -55,10 +55,10 @@
         android:id="@+id/elapsed_label_ll"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Elapsed"
+        android:text="@string/elapsed"
         android:textAllCaps="true"
         android:textColor="@color/primary_text_color_faded"
-        android:textSize="16sp"
+        android:textSize="14sp"
         android:layout_marginStart="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -67,7 +67,7 @@
         android:id="@+id/elapsed_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="@+id/elapsed_label_ll"
         app:layout_constraintStart_toStartOf="@+id/elapsed_label_ll"
         app:layout_constraintTop_toBottomOf="@+id/elapsed_label_ll"
@@ -77,11 +77,11 @@
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="remaining"
+        android:text="@string/remaining"
         android:textAllCaps="true"
         android:textColor="@color/primary_text_color_faded"
         android:layout_marginEnd="8dp"
-        android:textSize="16sp"
+        android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -89,7 +89,7 @@
         android:id="@+id/remaining_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="@+id/textView2"
         app:layout_constraintStart_toStartOf="@+id/textView2"
         app:layout_constraintTop_toBottomOf="@+id/textView2"
@@ -147,7 +147,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayout"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="60dp"
             android:layout_marginTop="16dp"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
@@ -235,6 +235,7 @@
     </FrameLayout>
 
     <ImageView
+        android:id="@+id/next_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_skip_next"
@@ -244,6 +245,7 @@
         app:layout_constraintTop_toTopOf="@+id/play_fl" />
 
     <ImageView
+        android:id="@+id/previous_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_skip_previous"
@@ -264,6 +266,7 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <ProgressBar
+            android:id="@+id/round_1_pb"
             style="@style/Widget.AppCompat.ProgressBar.Horizontal"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
