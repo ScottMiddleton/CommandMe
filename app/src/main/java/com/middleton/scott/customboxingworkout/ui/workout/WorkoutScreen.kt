@@ -14,6 +14,7 @@ import android.view.View
 import android.view.View.*
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.middleton.scott.commandMeBoxing.R
 import com.middleton.scott.customboxingworkout.MainActivity
@@ -96,7 +97,7 @@ class WorkoutScreen : BaseFragment() {
                         viewModel.totalWorkoutSecs,
                         viewModel.combinationsThrown,
                         {viewModel.onRestart()},
-                        {}).show(childFragmentManager, null)
+                        {findNavController().popBackStack()}).show(childFragmentManager, null)
                 }
             }
         })
@@ -158,7 +159,7 @@ class WorkoutScreen : BaseFragment() {
             if (!viewModel.workoutInProgress) {
                 handlePlayAnimationLottie(true)
                 handlePlayAnimationLottie(false)
-                viewModel.onStart()
+                viewModel.onPlay()
             } else {
                 handlePlayAnimationLottie(true)
                 mediaPlayer.stop()

@@ -39,13 +39,12 @@ class WorkoutCompleteDialog(
 
     private fun setClickListeners() {
         restart_btn.setOnClickListener {
-            onRestart()
             dismiss()
+            onRestart()
         }
 
         exit_btn.setOnClickListener {
             onExit()
-            dismiss()
         }
     }
 }

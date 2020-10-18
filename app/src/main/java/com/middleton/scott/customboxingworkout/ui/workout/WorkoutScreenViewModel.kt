@@ -15,6 +15,9 @@ class WorkoutScreenViewModel(
     val workoutId: Long
 ) : ViewModel() {
 
+    private var restartOnPrevious = false
+    private var workoutHasPreparation = false
+    private var workoutHasBegun = false
     var workoutInProgress = false
     var combinationsThrown = 0
 
@@ -29,7 +32,7 @@ class WorkoutScreenViewModel(
     private val numberOfRounds = workoutWithCombinations?.workout?.numberOfRounds ?: 0
     private val intensity = workoutWithCombinations?.workout?.intensity
 
-    private var millisRemaining: Long = 0
+    private var millisRemainingAtPause: Long = 0
     private var millisUntilNextCombination: Long = 0
     private var totalSecondsElapsed: Int = 0
     var totalWorkoutSecs = getTotalWorkoutLengthSecs()
@@ -66,76 +69,112 @@ class WorkoutScreenViewModel(
     private lateinit var countDownTimer: CountDownTimer
 
     init {
+        workoutHasPreparation = preparationTimeSecs > 0
+        combinations = workoutWithCombinations?.combinations
+        handleCombinationFrequencies()
         initWorkout()
     }
-
-    private var workoutHasBegun = false
 
     fun getTotalRounds(): String {
         return numberOfRounds.toString()
     }
 
     private fun initWorkout() {
-        combinations = workoutWithCombinations?.combinations
-        handleCombinationFrequencies()
-        currentRound = 0
-        _currentRoundLD.value = 0
-        if (preparationTimeSecs > 0) {
-            _workoutStateLD.value = WorkoutState.PREPARE
-            _countdownSecondsLD.value = preparationTimeSecs
+        if (workoutHasPreparation) {
+            setCurrentRound(0)
+            initWorkoutState(WorkoutState.PREPARE)
         } else {
-            _workoutStateLD.value = WorkoutState.WORK
-            _countdownSecondsLD.value = workTimeSecs
-            currentRound = 1
-            _currentRoundLD.value = 1
+            setCurrentRound(1)
+            initWorkoutState(WorkoutState.WORK)
         }
     }
 
-    private fun initCountdown(timeRemainingMillis: Long) {
-        workoutInProgress = true
-        if (workoutStateLD.value != WorkoutState.PREPARE) {
-            totalSecondsElapsed--
+    private fun initWorkoutState(state: WorkoutState) {
+        _workoutStateLD.value = state
+
+        // If is last round
+        if (currentRound >= numberOfRounds) {
+            onComplete()
+        } else {
+            when (state) {
+                WorkoutState.PREPARE -> {
+                    _countdownSecondsLD.value = preparationTimeSecs
+                    millisRemainingAtPause = preparationTimeSecs * 1000L
+                }
+                WorkoutState.WORK -> {
+                    _countdownSecondsLD.value = workTimeSecs
+                    millisRemainingAtPause = workTimeSecs * 1000L
+                }
+                WorkoutState.REST -> {
+                    _countdownSecondsLD.value = restTimeSecs
+                    millisRemainingAtPause = restTimeSecs * 1000L
+                }
+            }
+
+            if (workoutInProgress) {
+                when (state) {
+                    WorkoutState.PREPARE -> initCountdown(preparationTimeSecs * 1000L)
+                    WorkoutState.WORK -> initCountdown(workTimeSecs * 1000L)
+                    WorkoutState.REST -> initCountdown(restTimeSecs * 1000L)
+                }
+            }
         }
-        millisRemaining = timeRemainingMillis
+    }
+
+    private fun setCurrentRound(round: Int) {
+        currentRound = round
+        _currentRoundLD.value = round
+    }
+
+    private fun initCountdown(countdownMillis: Long) {
+        workoutInProgress = true
+
+        if (workoutStateLD.value == WorkoutState.WORK) {
+            _playStartBellLD.value = true
+        }
+
+        millisRemainingAtPause = countdownMillis
+
         countDownTimer =
-            object : CountDownTimer(timeRemainingMillis, 1000) {
+            object : CountDownTimer(countdownMillis, 1000) {
                 override fun onFinish() {
                     if (workoutStateLD.value != WorkoutState.PREPARE) {
-                        totalSecondsElapsed++
-                        _totalSecondsElapsedLD.value = totalSecondsElapsed
+                        onSecondElapsed()
                     }
+
                     millisUntilNextCombination = 0L
+
                     when (workoutStateLD.value) {
                         WorkoutState.PREPARE -> {
-                            currentRound++
-                            startRound(currentRound)}
+                            setCurrentRound(currentRound + 1)
+                            initWorkoutState(WorkoutState.WORK)
+                        }
+
                         WorkoutState.WORK -> {
-                            startRest()
+                            initWorkoutState(WorkoutState.REST)
                             _playEndBellLD.value = true
                         }
-                        WorkoutState.REST -> startRound(currentRound++)
+
+                        WorkoutState.REST -> {
+                            setCurrentRound(currentRound + 1)
+                            initWorkoutState(WorkoutState.WORK)
+                        }
                     }
                 }
 
                 override fun onTick(millisUntilFinished: Long) {
                     _countdownSecondsLD.value = (millisUntilFinished / 1000 + 1).toInt()
-                    millisRemaining = millisUntilFinished
+                    millisRemainingAtPause = millisUntilFinished
+
+                    restartOnPrevious = (countdownMillis - millisUntilFinished) > 1000
+
                     if (workoutStateLD.value != WorkoutState.PREPARE) {
-                        totalSecondsElapsed++
-                        _totalSecondsElapsedLD.value = totalSecondsElapsed
+                        onSecondElapsed()
                     }
 
                     if (workoutStateLD.value == WorkoutState.WORK) {
                         if (millisUntilNextCombination <= 0L) {
-                            val currentCombination: Combination? = getRandomCombination()
-                            combinationsThrown++
-                            _currentCombinationLD.value = currentCombination
-
-                            val timeToCompleteCombination =
-                                currentCombination?.timeToCompleteMillis ?: 2000
-
-                            millisUntilNextCombination =
-                                getTimeUntilNextCombination(timeToCompleteCombination)
+                            initNextCommand()
                         } else {
                             millisUntilNextCombination -= 1000
                         }
@@ -145,53 +184,48 @@ class WorkoutScreenViewModel(
             }.start()
     }
 
-    private fun startRound(roundNumber: Int) {
-        _workoutStateLD.value = WorkoutState.WORK
-        _currentRoundLD.value = roundNumber
-        _countdownSecondsLD.value = workTimeSecs
-        if (workoutInProgress) {
-            _playStartBellLD.value = true
-            initCountdown(workTimeSecs * 1000L)
-        }
+    private fun initNextCommand() {
+        combinationsThrown++
+        val nextCombination: Combination? = getRandomCombination()
+        _currentCombinationLD.value = nextCombination
+        val timeToCompleteCombination = nextCombination?.timeToCompleteMillis ?: 2000
+        millisUntilNextCombination = getTimeUntilNextCombination(timeToCompleteCombination)
     }
 
-    private fun startRest() {
-        if (currentRound >= numberOfRounds) {
-            if (workoutInProgress) {
-                countDownTimer.cancel()
-            }
-            onComplete()
-        } else {
-            _workoutStateLD.value = WorkoutState.REST
-            if (workoutInProgress) {
-                initCountdown(restTimeSecs * 1000L)
-            }
-        }
+    private fun onSecondElapsed() {
+        totalSecondsElapsed++
+        _totalSecondsElapsedLD.value = totalSecondsElapsed
     }
 
     fun onNext() {
         if (workoutHasBegun) {
             countDownTimer.cancel()
         }
+
         when (workoutStateLD.value) {
             WorkoutState.PREPARE -> {
-                currentRound++
-                startRound(currentRound)
+                setCurrentRound(currentRound + 1)
+                initWorkoutState(WorkoutState.WORK)
             }
-            WorkoutState.WORK -> startRest()
+
+            WorkoutState.WORK -> initWorkoutState(WorkoutState.REST)
 
             WorkoutState.REST -> {
-                currentRound++
-                startRound(currentRound)
+                setCurrentRound(currentRound + 1)
+                initWorkoutState(WorkoutState.WORK)
             }
         }
     }
 
     fun onRestart() {
+        workoutHasBegun = false
+        workoutInProgress = false
+        combinationsThrown = 0
         initWorkout()
     }
 
     fun onPrevious() {
+        millisRemainingAtPause = preparationTimeSecs * 1000L
 
         if (workoutHasBegun) {
             countDownTimer.cancel()
@@ -199,35 +233,35 @@ class WorkoutScreenViewModel(
 
         when (workoutStateLD.value) {
             WorkoutState.PREPARE -> {
-                _countdownSecondsLD.value = preparationTimeSecs
-                millisRemaining = preparationTimeSecs * 1000L
-                if (workoutInProgress) {
-                    initCountdown(preparationTimeSecs * 1000L)
-                }
+                initWorkoutState(WorkoutState.PREPARE)
             }
             WorkoutState.WORK -> {
-                currentRound--
-                if (currentRound <= 1) {
-                    _workoutStateLD.value = WorkoutState.PREPARE
-                    _countdownSecondsLD.value = preparationTimeSecs
-                    millisRemaining = preparationTimeSecs * 1000L
-                    if (workoutInProgress) {
-                        initCountdown(preparationTimeSecs * 1000L)
-                    }
+                if (restartOnPrevious) {
+                    initWorkoutState(WorkoutState.WORK)
+                    restartOnPrevious = false
                 } else {
-                    _currentRoundLD.value = currentRound
-                    startRest()
+                    setCurrentRound(currentRound - 1)
+                    if (currentRound < 1) {
+                        initWorkoutState(WorkoutState.PREPARE)
+                    } else {
+                        initWorkoutState(WorkoutState.REST)
+                    }
                 }
             }
             WorkoutState.REST -> {
-                currentRound--
-                startRound(currentRound)}
+                if (restartOnPrevious) {
+                    initWorkoutState(WorkoutState.REST)
+                    restartOnPrevious = false
+                } else {
+                    initWorkoutState(WorkoutState.WORK)
+                }
+            }
         }
     }
 
-    fun onStart() {
+    fun onPlay() {
         if (workoutHasBegun) {
-            initCountdown(millisRemaining)
+            initCountdown(millisRemainingAtPause)
         } else {
             var timeSecs = 0
             when (workoutStateLD.value) {
@@ -247,6 +281,11 @@ class WorkoutScreenViewModel(
     }
 
     private fun onComplete() {
+        if (workoutInProgress) {
+            countDownTimer.cancel()
+        }
+
+        workoutInProgress = false
         _workoutStateLD.value = WorkoutState.COMPLETE
     }
 
