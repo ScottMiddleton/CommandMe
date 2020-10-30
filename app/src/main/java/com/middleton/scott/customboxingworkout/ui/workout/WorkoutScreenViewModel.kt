@@ -16,7 +16,7 @@ class WorkoutScreenViewModel(
 ) : ViewModel() {
 
     private var restartOnPrevious = false
-    private var workoutHasPreparation = false
+    var workoutHasPreparation = false
     private var workoutHasBegun = false
     var workoutInProgress = false
     var combinationsThrown = 0
@@ -35,6 +35,7 @@ class WorkoutScreenViewModel(
     private var millisRemainingAtPause: Long = 0
     private var millisUntilNextCombination: Long = 0
     private var totalSecondsElapsed: Int = 0
+    private var roundProgress: Int = -1
     var totalWorkoutSecs = getTotalWorkoutLengthSecs()
 
     private val _totalSecondsElapsedLD = MutableLiveData<Int>()
@@ -44,6 +45,10 @@ class WorkoutScreenViewModel(
     private val _countdownSecondsLD = MutableLiveData<Int>()
     val countdownSecondsLD: LiveData<Int>
         get() = _countdownSecondsLD
+
+    private val _roundProgressLD = MutableLiveData<Int>()
+    val roundProgressLD: LiveData<Int>
+        get() = _roundProgressLD
 
     private var currentRound = 0
     private val _currentRoundLD = MutableLiveData<Int>()
@@ -75,8 +80,8 @@ class WorkoutScreenViewModel(
         initWorkout()
     }
 
-    fun getTotalRounds(): String {
-        return numberOfRounds.toString()
+    fun getTotalRounds(): Int {
+        return numberOfRounds
     }
 
     private fun initWorkout() {
@@ -93,30 +98,32 @@ class WorkoutScreenViewModel(
         _workoutStateLD.value = state
 
         // If is last round
-        if (currentRound >= numberOfRounds) {
-            onComplete()
-        } else {
-            when (state) {
-                WorkoutState.PREPARE -> {
-                    _countdownSecondsLD.value = preparationTimeSecs
-                    millisRemainingAtPause = preparationTimeSecs * 1000L
-                }
-                WorkoutState.WORK -> {
-                    _countdownSecondsLD.value = workTimeSecs
-                    millisRemainingAtPause = workTimeSecs * 1000L
-                }
-                WorkoutState.REST -> {
+        when (state) {
+            WorkoutState.PREPARE -> {
+                _countdownSecondsLD.value = preparationTimeSecs
+                millisRemainingAtPause = preparationTimeSecs * 1000L
+            }
+            WorkoutState.WORK -> {
+                roundProgress = -1
+                _roundProgressLD.value = roundProgress
+                _countdownSecondsLD.value = workTimeSecs
+                millisRemainingAtPause = workTimeSecs * 1000L
+            }
+            WorkoutState.REST -> {
+                if (currentRound >= numberOfRounds) {
+                    onComplete()
+                } else {
                     _countdownSecondsLD.value = restTimeSecs
                     millisRemainingAtPause = restTimeSecs * 1000L
                 }
             }
+        }
 
-            if (workoutInProgress) {
-                when (state) {
-                    WorkoutState.PREPARE -> initCountdown(preparationTimeSecs * 1000L)
-                    WorkoutState.WORK -> initCountdown(workTimeSecs * 1000L)
-                    WorkoutState.REST -> initCountdown(restTimeSecs * 1000L)
-                }
+        if (workoutInProgress) {
+            when (state) {
+                WorkoutState.PREPARE -> initCountdown(preparationTimeSecs * 1000L)
+                WorkoutState.WORK -> initCountdown(workTimeSecs * 1000L)
+                WorkoutState.REST -> initCountdown(restTimeSecs * 1000L)
             }
         }
     }
@@ -124,6 +131,10 @@ class WorkoutScreenViewModel(
     private fun setCurrentRound(round: Int) {
         currentRound = round
         _currentRoundLD.value = round
+    }
+
+    fun getCurrentRound(): Int {
+        return currentRound
     }
 
     private fun initCountdown(countdownMillis: Long) {
@@ -138,9 +149,7 @@ class WorkoutScreenViewModel(
         countDownTimer =
             object : CountDownTimer(countdownMillis, 1000) {
                 override fun onFinish() {
-                    if (workoutStateLD.value != WorkoutState.PREPARE) {
-                        onSecondElapsed()
-                    }
+                    onSecondElapsed()
 
                     millisUntilNextCombination = 0L
 
@@ -178,6 +187,7 @@ class WorkoutScreenViewModel(
                         } else {
                             millisUntilNextCombination -= 1000
                         }
+                        roundProgressLD
                     }
 
                 }
@@ -193,8 +203,16 @@ class WorkoutScreenViewModel(
     }
 
     private fun onSecondElapsed() {
-        totalSecondsElapsed++
-        _totalSecondsElapsedLD.value = totalSecondsElapsed
+        if (workoutStateLD.value == WorkoutState.WORK) {
+            roundProgress++
+            _roundProgressLD.value = roundProgress
+        }
+
+        if (workoutStateLD.value != WorkoutState.PREPARE) {
+            totalSecondsElapsed++
+            _totalSecondsElapsedLD.value = totalSecondsElapsed
+        }
+
     }
 
     fun onNext() {
@@ -208,7 +226,11 @@ class WorkoutScreenViewModel(
                 initWorkoutState(WorkoutState.WORK)
             }
 
-            WorkoutState.WORK -> initWorkoutState(WorkoutState.REST)
+            WorkoutState.WORK -> {
+                roundProgress = getCountdownProgressBarMax(WorkoutState.WORK)
+                _roundProgressLD.value = roundProgress
+                initWorkoutState(WorkoutState.REST)
+            }
 
             WorkoutState.REST -> {
                 setCurrentRound(currentRound + 1)
@@ -236,6 +258,8 @@ class WorkoutScreenViewModel(
                 initWorkoutState(WorkoutState.PREPARE)
             }
             WorkoutState.WORK -> {
+                roundProgress = -1
+                _roundProgressLD.value = roundProgress
                 if (restartOnPrevious) {
                     initWorkoutState(WorkoutState.WORK)
                     restartOnPrevious = false
@@ -289,8 +313,8 @@ class WorkoutScreenViewModel(
         _workoutStateLD.value = WorkoutState.COMPLETE
     }
 
-    fun getCountdownProgressBarMax(): Int {
-        return when (workoutStateLD.value) {
+    fun getCountdownProgressBarMax(workoutState: WorkoutState): Int {
+        return when (workoutState) {
             WorkoutState.PREPARE -> preparationTimeSecs
             WorkoutState.WORK -> workTimeSecs
             WorkoutState.REST -> restTimeSecs

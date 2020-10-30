@@ -265,15 +265,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <ProgressBar
-            android:id="@+id/round_1_pb"
-            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:progressTint="#FF0000"
-            android:scaleY="2" />
-
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

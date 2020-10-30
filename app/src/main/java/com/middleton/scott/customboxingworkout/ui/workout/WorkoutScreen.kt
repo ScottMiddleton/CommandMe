@@ -13,6 +13,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.*
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import android.widget.ProgressBar
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -24,6 +26,7 @@ import kotlinx.android.synthetic.main.fragment_workout_screen.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import java.io.IOException
+
 
 class WorkoutScreen : BaseFragment() {
     private val args: WorkoutScreenArgs by navArgs()
@@ -43,11 +46,12 @@ class WorkoutScreen : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initRoundProgressView()
         initSoundPool()
         (activity as MainActivity).supportActionBar?.title = viewModel.workoutName
         viewModel.audioFileBaseDirectory =
             view.context.getExternalFilesDir(null)?.absolutePath + "/"
-        total_rounds_count_tv.text = viewModel.getTotalRounds()
+        total_rounds_count_tv.text = viewModel.getTotalRounds().toString()
         remaining_tv.text = DateTimeUtils.toMinuteSeconds(viewModel.totalWorkoutSecs)
         subscribeUI()
         setClickListeners()
@@ -63,6 +67,12 @@ class WorkoutScreen : BaseFragment() {
             countdown_pb.progress = it
         })
 
+        viewModel.roundProgressLD.observe(viewLifecycleOwner, Observer {
+            val bottomProgress =
+                round_progress_ll.getChildAt(viewModel.getCurrentRound() - 1) as ProgressBar
+            bottomProgress.progress = it
+        })
+
         viewModel.totalSecondsElapsedLD.observe(viewLifecycleOwner, Observer {
             elapsed_tv.text = DateTimeUtils.toMinuteSeconds(it)
             remaining_tv.text = DateTimeUtils.toMinuteSeconds(viewModel.totalWorkoutSecs - it)
@@ -70,7 +80,7 @@ class WorkoutScreen : BaseFragment() {
 
         viewModel.workoutStateLD.observe(viewLifecycleOwner, Observer {
             workout_state_tv.text = it.toString()
-            countdown_pb.max = viewModel.getCountdownProgressBarMax()
+            countdown_pb.max = viewModel.getCountdownProgressBarMax(it)
 
             when (it) {
                 WorkoutState.PREPARE -> {
@@ -96,8 +106,11 @@ class WorkoutScreen : BaseFragment() {
                     WorkoutCompleteDialog(
                         viewModel.totalWorkoutSecs,
                         viewModel.combinationsThrown,
-                        {viewModel.onRestart()},
-                        {findNavController().popBackStack()}).show(childFragmentManager, null)
+                        {
+                            initRoundProgressView()
+                            viewModel.onRestart()
+                        },
+                        { findNavController().popBackStack() }).show(childFragmentManager, null)
                 }
             }
         })
@@ -203,6 +216,27 @@ class WorkoutScreen : BaseFragment() {
         workStartAudioId = soundPool.load(context, R.raw.work_start, 1)
         workEndAudioId = soundPool.load(context, R.raw.work_end, 1)
 
+    }
+
+    private fun initRoundProgressView() {
+        round_progress_ll.removeAllViews()
+
+        val params = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            1.0f
+        )
+        params.marginEnd = 10
+
+        repeat(viewModel.getTotalRounds()) {
+            val progressBar = ProgressBar(activity, null, android.R.attr.progressBarStyleHorizontal)
+            progressBar.layoutParams = params
+            progressBar.max = viewModel.getCountdownProgressBarMax(WorkoutState.WORK)
+            progressBar.scaleY = 4f
+            progressBar.progress = 0
+            progressBar.progressTintList = ColorStateList.valueOf(Color.RED)
+            round_progress_ll.addView(progressBar)
+        }
     }
 
     override fun onDestroy() {

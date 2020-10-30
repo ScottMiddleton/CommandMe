@@ -10,6 +10,7 @@ import android.view.WindowManager
 import androidx.annotation.Nullable
 import androidx.fragment.app.DialogFragment
 import com.middleton.scott.commandMeBoxing.R
+import com.middleton.scott.customboxingworkout.utils.DateTimeUtils
 import kotlinx.android.synthetic.main.dialog_workout_comlete.*
 
 class WorkoutCompleteDialog(
@@ -33,7 +34,7 @@ class WorkoutCompleteDialog(
         )
         setClickListeners()
 
-        elapsed_tv.text = timeElapsedSecs.toString()
+        elapsed_tv.text = DateTimeUtils.toMinuteSeconds(timeElapsedSecs)
         combos_thrown_tv.text = combinationsThrown.toString()
     }
 
