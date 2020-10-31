@@ -55,5 +55,9 @@
     <string name="round">Round</string>
     <string name="of">of</string>
     <string name="time_to_complete">Time to complete</string>
+    <string name="remaining">remaining</string>
+    <string name="elapsed">Elapsed</string>
+    <string name="exit">Exit</string>
+    <string name="restart">Restart</string>
 
 </resources>

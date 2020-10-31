@@ -1,5 +1,7 @@
 package com.middleton.scott.customboxingworkout.ui.workout
 
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.media.AudioAttributes
 import android.media.AudioManager
 import android.media.MediaPlayer
@@ -9,10 +11,12 @@ import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.INVISIBLE
-import android.view.View.VISIBLE
+import android.view.View.*
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import android.widget.ProgressBar
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.middleton.scott.commandMeBoxing.R
 import com.middleton.scott.customboxingworkout.MainActivity
@@ -42,11 +46,13 @@ class WorkoutScreen : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initRoundProgressView()
         initSoundPool()
         (activity as MainActivity).supportActionBar?.title = viewModel.workoutName
         viewModel.audioFileBaseDirectory =
             view.context.getExternalFilesDir(null)?.absolutePath + "/"
-        total_rounds_count_tv.text = viewModel.getTotalRounds()
+        total_rounds_count_tv.text = viewModel.getTotalRounds().toString()
+        remaining_tv.text = DateTimeUtils.toMinuteSeconds(viewModel.totalWorkoutSecs)
         subscribeUI()
         setClickListeners()
     }
@@ -61,21 +67,50 @@ class WorkoutScreen : BaseFragment() {
             countdown_pb.progress = it
         })
 
+        viewModel.roundProgressLD.observe(viewLifecycleOwner, Observer {
+            val bottomProgress =
+                round_progress_ll.getChildAt(viewModel.getCurrentRound() - 1) as ProgressBar
+            bottomProgress.progress = it
+        })
+
+        viewModel.totalSecondsElapsedLD.observe(viewLifecycleOwner, Observer {
+            elapsed_tv.text = DateTimeUtils.toMinuteSeconds(it)
+            remaining_tv.text = DateTimeUtils.toMinuteSeconds(viewModel.totalWorkoutSecs - it)
+        })
+
         viewModel.workoutStateLD.observe(viewLifecycleOwner, Observer {
             workout_state_tv.text = it.toString()
-            countdown_pb.max = viewModel.getCountdownProgressBarMax()
+            countdown_pb.max = viewModel.getCountdownProgressBarMax(it)
 
             when (it) {
                 WorkoutState.PREPARE -> {
                     round_count_ll.visibility = INVISIBLE
+                    play_command_lottie.visibility = GONE
+                    countdown_pb.progressTintList = ColorStateList.valueOf(Color.YELLOW)
                 }
                 WorkoutState.WORK -> {
                     round_count_ll.visibility = VISIBLE
                     combination_name_tv.visibility = VISIBLE
+                    play_command_lottie.visibility = VISIBLE
+                    countdown_pb.progressTintList = ColorStateList.valueOf(Color.RED)
                 }
                 WorkoutState.REST -> {
                     combination_name_tv.visibility = INVISIBLE
                     round_count_ll.visibility = VISIBLE
+                    play_command_lottie.visibility = VISIBLE
+                    countdown_pb.progressTintList = ColorStateList.valueOf(Color.GREEN)
+                }
+                WorkoutState.COMPLETE -> {
+                    handlePlayAnimationLottie(true)
+                    mediaPlayer.stop()
+                    WorkoutCompleteDialog(
+                        viewModel.totalWorkoutSecs,
+                        viewModel.combinationsThrown,
+                        {
+                            initRoundProgressView()
+                            viewModel.onRestart()
+                        },
+                        { findNavController().popBackStack() }).show(childFragmentManager, null)
                 }
             }
         })
@@ -127,16 +162,41 @@ class WorkoutScreen : BaseFragment() {
                 Log.e("LOG_TAG", "prepare() failed")
             }
         }
+        play_command_lottie.playAnimation()
     }
 
     private fun setClickListeners() {
-        start_toggle_btn.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                viewModel.onStart()
+        start_workout_lottie.speed = 3f
+        start_workout_lottie.setMinAndMaxFrame(30, 60)
+        start_workout_lottie.setOnClickListener {
+            if (!viewModel.workoutInProgress) {
+                handlePlayAnimationLottie(true)
+                handlePlayAnimationLottie(false)
+                viewModel.onPlay()
             } else {
+                handlePlayAnimationLottie(true)
                 mediaPlayer.stop()
                 viewModel.onPause()
             }
+        }
+        next_btn.setOnClickListener {
+            viewModel.onNext()
+        }
+
+        previous_btn.setOnClickListener {
+            viewModel.onPrevious()
+        }
+    }
+
+    private fun handlePlayAnimationLottie(
+        playInReverse: Boolean
+    ) {
+        if (playInReverse) {
+            start_workout_lottie.setMinAndMaxFrame(0, 30)
+            start_workout_lottie.playAnimation()
+        } else {
+            start_workout_lottie.setMinAndMaxFrame(30, 60)
+            start_workout_lottie.playAnimation()
         }
     }
 
@@ -156,6 +216,27 @@ class WorkoutScreen : BaseFragment() {
         workStartAudioId = soundPool.load(context, R.raw.work_start, 1)
         workEndAudioId = soundPool.load(context, R.raw.work_end, 1)
 
+    }
+
+    private fun initRoundProgressView() {
+        round_progress_ll.removeAllViews()
+
+        val params = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            1.0f
+        )
+        params.marginEnd = 10
+
+        repeat(viewModel.getTotalRounds()) {
+            val progressBar = ProgressBar(activity, null, android.R.attr.progressBarStyleHorizontal)
+            progressBar.layoutParams = params
+            progressBar.max = viewModel.getCountdownProgressBarMax(WorkoutState.WORK)
+            progressBar.scaleY = 4f
+            progressBar.progress = 0
+            progressBar.progressTintList = ColorStateList.valueOf(Color.RED)
+            round_progress_ll.addView(progressBar)
+        }
     }
 
     override fun onDestroy() {

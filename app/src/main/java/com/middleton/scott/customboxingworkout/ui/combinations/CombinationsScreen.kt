@@ -37,9 +37,16 @@ class CombinationsScreen : BaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel.audioFileBaseDirectory = context?.getExternalFilesDir(null)?.absolutePath + "/"
-        adapter = CombinationsAdapter(viewModel.audioFileBaseDirectory, parentFragmentManager) {
-            viewModel.upsertCombination(it)
-        }
+        adapter = CombinationsAdapter(
+            viewModel.audioFileBaseDirectory,
+            parentFragmentManager,
+            onEditCombination = {
+                viewModel.upsertCombination(it)
+            },
+            onDeleteCombination = {
+                val file = File(viewModel.audioFileCompleteDirectory)
+                file.delete()
+            })
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
