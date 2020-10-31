@@ -7,7 +7,9 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:nestedScrollingEnabled="false"
+        >
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/parent_cl"
@@ -50,6 +52,7 @@
                 android:layout_marginTop="8dp"
                 app:endIconDrawable="@drawable/ic_time"
                 app:endIconMode="custom"
+                app:hintAnimationEnabled="false"
                 app:hintTextColor="@color/white"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -59,6 +62,7 @@
                     android:id="@+id/preparation_time_et"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:foreground="?attr/selectableItemBackground"
                     android:clickable="true"
                     android:focusable="false"
                     android:inputType="text" />
@@ -74,6 +78,7 @@
                 android:layout_marginTop="8dp"
                 app:endIconDrawable="@drawable/ic_bell"
                 app:endIconMode="custom"
+                app:hintAnimationEnabled="false"
                 app:hintTextColor="@color/white"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -83,6 +88,7 @@
                     android:id="@+id/number_of_rounds_et"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:foreground="?attr/selectableItemBackground"
                     android:clickable="true"
                     android:focusable="false"
                     android:inputType="text" />
@@ -96,6 +102,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:hint="@string/work_time"
+                app:hintAnimationEnabled="false"
                 app:endIconDrawable="@drawable/ic_boxer_24dp"
                 app:endIconMode="custom"
                 app:hintTextColor="@color/white"
@@ -107,6 +114,7 @@
                     android:id="@+id/work_time_et"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:foreground="?attr/selectableItemBackground"
                     android:clickable="true"
                     android:focusable="false"
                     android:inputType="text" />
@@ -120,6 +128,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:hint="@string/rest_time"
+                app:hintAnimationEnabled="false"
                 app:endIconDrawable="@drawable/ic_stool"
                 app:endIconMode="custom"
                 app:hintTextColor="@color/white"
@@ -131,6 +140,7 @@
                     android:id="@+id/rest_time_et"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:foreground="?attr/selectableItemBackground"
                     android:clickable="true"
                     android:focusable="false"
                     android:inputType="text" />
@@ -147,6 +157,7 @@
                 app:endIconDrawable="@drawable/ic_intensity"
                 app:endIconMode="custom"
                 app:hintTextColor="@color/white"
+                app:hintAnimationEnabled="false"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/rest_time_til">
@@ -155,6 +166,7 @@
                     android:id="@+id/intensity_et"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:foreground="?attr/selectableItemBackground"
                     android:clickable="true"
                     android:focusable="false"
                     android:inputType="text" />
@@ -201,8 +213,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:drawablePadding="8dp"
-                app:drawableTint="@color/white_faded_60"
+                app:drawableTint="@color/white_faded_70"
                 android:text="@string/add_combinations_to_workout"
+                android:foreground="?attr/selectableItemBackground"
                 android:background="@drawable/list_item_combination_summary_background"
                 android:visibility="gone"
                 android:layout_marginTop="8dp"
@@ -248,7 +261,6 @@
                 android:background="@drawable/list_item_combination_summary_background"
                 android:visibility="gone"
                 android:layout_marginTop="4dp"
-                android:nestedScrollingEnabled="false"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintTop_toBottomOf="@+id/name_label_tv"
                 android:paddingBottom="6dp"
@@ -263,6 +275,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center"
+        android:textColor="@color/white"
         android:layout_marginBottom="20dp"
         android:text="@string/complete" />
 </FrameLayout>

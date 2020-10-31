@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import com.middleton.scott.commandMeBoxing.R
+import com.middleton.scott.customboxingworkout.datasource.local.model.Combination
 import com.middleton.scott.customboxingworkout.ui.base.BaseFragment
 import com.middleton.scott.customboxingworkout.ui.combinations.CombinationsAdapter
 import com.middleton.scott.customboxingworkout.ui.createworkout.CreateWorkoutSharedViewModel
@@ -32,9 +33,15 @@ class CreateWorkoutCombinationsFragment : BaseFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        adapter = CombinationsAdapter(viewModel.audioFileBaseDirectory) { selectedCombinationCrossRef, isChecked ->
-            viewModel.setCombination(selectedCombinationCrossRef, isChecked)
-        }
+        adapter = CombinationsAdapter(
+                viewModel.audioFileBaseDirectory,
+            parentFragmentManager,
+                { selectedCombinationCrossRef, isChecked ->
+                    viewModel.setCombination(selectedCombinationCrossRef, isChecked)
+                },
+                {
+                    viewModel.upsertCombination(it)
+                })
     }
 
     override fun onCreateView(
@@ -107,16 +114,19 @@ class CreateWorkoutCombinationsFragment : BaseFragment() {
     }
 
     private fun showSaveCombinationDialog() {
-        SaveCombinationDialog({ name ->
-            viewModel.upsertCombination(name)
-        }, {
-            val file = File(viewModel.audioFileCompleteDirectory)
-            file.delete()
-        }).show(childFragmentManager, null)
+        SaveCombinationDialog(
+            false,
+            Combination("", 0, viewModel.audioFileName),
+            { combination ->
+                viewModel.upsertCombination(combination)
+            }, {
+                val file = File(viewModel.audioFileCompleteDirectory)
+                file.delete()
+            }).show(childFragmentManager, "")
     }
 
-    private fun handleRecordAudioAnimations(recording: Boolean){
-        if(recording){
+    private fun handleRecordAudioAnimations(recording: Boolean) {
+        if (recording) {
             lottie_anim_left.playAnimation()
             lottie_anim_right.playAnimation()
             lottie_anim_left.visibility = View.VISIBLE

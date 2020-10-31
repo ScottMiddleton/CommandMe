@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import androidx.viewpager2.widget.ViewPager2
 import com.middleton.scott.commandMeBoxing.R
 import com.middleton.scott.customboxingworkout.ui.base.BaseFragment
 import com.middleton.scott.customboxingworkout.ui.createworkout.CreateWorkoutSharedViewModel
@@ -170,12 +171,13 @@ class CreateWorkoutSummaryFragment : BaseFragment() {
         }
 
         add_combination_tv.setOnClickListener {
-            // TODO navigate to combinations tab
+            val viewPager = parentFragment?.view?.findViewById(R.id.create_workout_vp) as ViewPager2
+            viewPager.currentItem = 1
         }
     }
 
     private fun populateFields() {
-            workout_name_et.setText(viewModel.workout.name)
+        workout_name_et.setText(viewModel.workout.name)
         viewModel.setPreparationTime(viewModel.workout.preparation_time_secs)
         viewModel.setNumberOfRounds(viewModel.workout.numberOfRounds)
         viewModel.setWorkTime(viewModel.workout.work_time_secs)

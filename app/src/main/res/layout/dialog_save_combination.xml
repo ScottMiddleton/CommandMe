@@ -32,19 +32,43 @@
             android:imeOptions="actionDone" />
     </com.google.android.material.textfield.TextInputLayout>
 
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/time_to_complete_til"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/time_to_complete"
+        android:layout_marginTop="10dp"
+        app:hintTextColor="@color/white"
+        app:suffixText="Seconds"
+        app:suffixTextColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_input_layout">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/time_to_complete_et"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:foreground="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="false"
+            android:inputType="text" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
     <Button
         android:id="@+id/save_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:foreground="?attr/selectableItemBackground"
-        android:background="@android:color/transparent"
         android:text="@string/save"
         android:textAllCaps="false"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_input_layout" />
+        app:layout_constraintTop_toBottomOf="@+id/time_to_complete_til" />
 
     <Button
         android:id="@+id/delete_btn"
@@ -53,13 +77,12 @@
         android:layout_marginTop="10dp"
         android:layout_marginEnd="20dp"
         android:foreground="?attr/selectableItemBackground"
-        android:background="@android:color/transparent"
         android:text="@string/delete"
         android:textAllCaps="false"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/save_btn"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_input_layout" />
+        app:layout_constraintTop_toBottomOf="@+id/time_to_complete_til" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

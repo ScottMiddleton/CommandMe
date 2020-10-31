@@ -1,12 +1,9 @@
 package com.middleton.scott.customboxingworkout
 
-import android.content.Context
-import android.media.AudioManager
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import androidx.appcompat.app.AppCompatActivity
@@ -81,11 +78,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupCustomAppBar() {
         // Control the media volume
-        volumeControlStream = AudioManager.STREAM_MUSIC
+//        volumeControlStream = AudioManager.STREAM_MUSIC
         // Initialize the AudioManager
-        val mAudioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
+//        val mAudioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
 
-        val view: View = layoutInflater.inflate(R.layout.title_bar_with_volume_slider_layout, null)
+//        val view: View = layoutInflater.inflate(R.layout.title_bar_with_volume_slider_layout, null)
 //        val mVolumeControls = view.findViewById<View>(R.id.volume_SB) as SeekBar
 //        // Set the max range of the SeekBar to the max volume stream type
 //        mVolumeControls.max = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
@@ -106,7 +103,7 @@ class MainActivity : AppCompatActivity() {
 //        )
 
         // Apply the custom View to the ActionBar
-        supportActionBar?.customView = view
-        supportActionBar?.setDisplayShowCustomEnabled(true)
+//        supportActionBar?.customView = view
+//        supportActionBar?.setDisplayShowCustomEnabled(true)
     }
 }

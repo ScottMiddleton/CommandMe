@@ -12,6 +12,7 @@ import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import com.middleton.scott.commandMeBoxing.R
+import com.middleton.scott.customboxingworkout.datasource.local.model.Combination
 import com.middleton.scott.customboxingworkout.ui.base.BaseFragment
 import com.middleton.scott.customboxingworkout.utils.MediaRecorderManager
 import com.middleton.scott.customboxingworkout.utils.PermissionsDialogManager
@@ -35,7 +36,10 @@ class CombinationsScreen : BaseFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        adapter = CombinationsAdapter(viewModel.audioFileBaseDirectory)
+        viewModel.audioFileBaseDirectory = context?.getExternalFilesDir(null)?.absolutePath + "/"
+        adapter = CombinationsAdapter(viewModel.audioFileBaseDirectory, parentFragmentManager) {
+            viewModel.upsertCombination(it)
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -47,12 +51,13 @@ class CombinationsScreen : BaseFragment() {
 
     private fun subscribeUI() {
         viewModel.getAllCombinationsLD().observe(viewLifecycleOwner, Observer {
+            if (!viewModel.listAnimationShownOnce) {
+                val controller =
+                    AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_fall_down)
+                combinations_RV.layoutAnimation = controller
+                viewModel.listAnimationShownOnce = true
+            }
             adapter.setAdapter(it, null)
-            val controller =
-                AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_fall_down)
-            combinations_RV.layoutAnimation = controller
-            combinations_RV.adapter?.notifyDataSetChanged()
-            combinations_RV.scheduleLayoutAnimation()
         })
     }
 
@@ -69,7 +74,8 @@ class CombinationsScreen : BaseFragment() {
                                 ) { permissionsGranted ->
                                     if (permissionsGranted) {
                                         handleRecordAudioAnimations(true)
-                                        viewModel.audioFileBaseDirectory = context.getExternalFilesDir(null)?.absolutePath + "/"
+                                        viewModel.audioFileBaseDirectory =
+                                            context.getExternalFilesDir(null)?.absolutePath + "/"
                                         startRecording()
                                     }
                                 }
@@ -89,7 +95,10 @@ class CombinationsScreen : BaseFragment() {
     private fun startRecording() {
         viewModel.recording = true
         viewModel.setAudioFileOutput(System.currentTimeMillis())
-        MediaRecorderManager.startRecording(mediaRecorder, viewModel.audioFileCompleteDirectory)
+        MediaRecorderManager.startRecording(
+            mediaRecorder,
+            viewModel.audioFileCompleteDirectory
+        )
     }
 
     private fun stopRecording() {
@@ -106,16 +115,19 @@ class CombinationsScreen : BaseFragment() {
     }
 
     private fun showSaveCombinationDialog() {
-        SaveCombinationDialog({ name ->
-            viewModel.upsertCombination(name)
-        }, {
-            val file = File(viewModel.audioFileCompleteDirectory)
-            file.delete()
-        }).show(childFragmentManager, null)
+        SaveCombinationDialog(
+            false,
+            Combination("", 0, viewModel.audioFileName),
+            { combination ->
+                viewModel.upsertCombination(combination)
+            }, {
+                val file = File(viewModel.audioFileCompleteDirectory)
+                file.delete()
+            }).show(childFragmentManager, "")
     }
 
-    private fun handleRecordAudioAnimations(recording: Boolean){
-        if(recording){
+    private fun handleRecordAudioAnimations(recording: Boolean) {
+        if (recording) {
             lottie_anim_left.playAnimation()
             lottie_anim_right.playAnimation()
             lottie_anim_left.visibility = View.VISIBLE

@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 open class CombinationsViewModel(private val localDataSource: LocalDataSource) : ViewModel() {
+    var listAnimationShownOnce = false
     var audioFileBaseDirectory = ""
     var audioFileName = ""
     var audioFileCompleteDirectory = ""
@@ -18,9 +19,9 @@ open class CombinationsViewModel(private val localDataSource: LocalDataSource) :
     lateinit var allCombinations: List<Combination>
 
 
-    fun upsertCombination(name: String) {
+    fun upsertCombination(combination: Combination) {
         GlobalScope.launch {
-            localDataSource.upsertCombination(Combination(name, 10, audioFileName))
+            localDataSource.upsertCombination(combination)
         }
 
     }

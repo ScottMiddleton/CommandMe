@@ -54,5 +54,6 @@
     <string name="very_rare">Very Rare</string>
     <string name="round">Round</string>
     <string name="of">of</string>
+    <string name="time_to_complete">Time to complete</string>
 
 </resources>
