@@ -19,7 +19,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : AppCompatActivity() {
     private lateinit var navController: NavController
     private val topLevelDestinations =
-        setOf(R.id.combinationsScreen, R.id.workoutsScreen, R.id.statsScreen)
+        setOf(R.id.combinationsScreen, R.id.workoutsScreen)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
         // menu should be considered as top level destinations.
         val appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.workoutsScreen, R.id.combinationsScreen, R.id.statsScreen
+                R.id.workoutsScreen, R.id.combinationsScreen
             )
         )
 

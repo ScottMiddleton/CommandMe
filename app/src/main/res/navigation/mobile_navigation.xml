@@ -14,11 +14,11 @@
         android:name="com.middleton.scott.customboxingworkout.ui.combinations.CombinationsScreen"
         android:label="@string/combinations"
         tools:layout="@layout/fragment_workouts" />
-    <fragment
-        android:id="@+id/statsScreen"
-        android:name="com.middleton.scott.customboxingworkout.ui.stats.StatsScreen"
-        android:label="@string/stats"
-        tools:layout="@layout/fragment_notifications" />
+<!--    <fragment-->
+<!--        android:id="@+id/statsScreen"-->
+<!--        android:name="com.middleton.scott.customboxingworkout.ui.stats.StatsScreen"-->
+<!--        android:label="@string/stats"-->
+<!--        tools:layout="@layout/fragment_notifications" />-->
     <fragment
         android:id="@+id/createWorkoutScreen"
         android:name="com.middleton.scott.customboxingworkout.ui.createworkout.CreateWorkoutScreen"
@@ -31,7 +31,6 @@
     <fragment
         android:id="@+id/workoutScreen"
         android:name="com.middleton.scott.customboxingworkout.ui.workout.WorkoutScreen"
-        android:label="fragment_workout_screen"
         tools:layout="@layout/fragment_workout_screen">
         <argument
             android:name="workoutId"

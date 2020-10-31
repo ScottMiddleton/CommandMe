@@ -59,5 +59,6 @@
     <string name="elapsed">Elapsed</string>
     <string name="exit">Exit</string>
     <string name="restart">Restart</string>
+    <string name="combinations_thrown">Combinations thrown:</string>
 
 </resources>

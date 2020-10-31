@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@drawable/dialog_background"
     android:padding="20dp">
 
@@ -40,7 +40,7 @@
             android:id="@+id/elapsed_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="00:00"
+            tools:text="00:00"
             android:textSize="18sp" />
     </LinearLayout>
 
@@ -58,7 +58,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:text="Combnations thrown: "
+            android:text="@string/combinations_thrown"
             android:textColor="@color/primary_text_color_faded"
             android:textSize="18sp" />
 
@@ -66,7 +66,7 @@
             android:id="@+id/combos_thrown_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0"
+            tools:text="0"
             android:textSize="18sp" />
     </LinearLayout>
 
