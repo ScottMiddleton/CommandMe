@@ -22,6 +22,10 @@ class LocalDataSourceImpl(
         return database.workoutDao().getWorkouts()
     }
 
+    override suspend fun deleteWorkout(workout: Workout) {
+        database.workoutDao().delete(workout)
+    }
+
     override fun getCombinations(): Flow<List<Combination>> {
         return database.combinationDao().getCombinations()
     }
@@ -52,11 +56,19 @@ class LocalDataSourceImpl(
         database.selectedCombinationsCrossRefDao().deleteByWorkoutId(workoutId)
     }
 
+    override suspend fun deleteWorkoutCombination(combinationId: Long) {
+        database.selectedCombinationsCrossRefDao().deleteByCombinationId(combinationId)
+    }
+
     override fun getWorkoutById(workoutId: Long): Flow<Workout?> {
         return database.workoutDao().getWorkoutById(workoutId)
     }
 
-    override suspend fun upsertCombination(exercise: Combination): Long {
-        return database.combinationDao().upsert(exercise)
+    override suspend fun upsertCombination(combination: Combination): Long {
+        return database.combinationDao().upsert(combination)
+    }
+
+    override suspend fun deleteCombination(combination: Combination) {
+        database.combinationDao().delete(combination)
     }
 }

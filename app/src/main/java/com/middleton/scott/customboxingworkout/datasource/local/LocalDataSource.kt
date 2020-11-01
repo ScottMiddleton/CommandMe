@@ -8,11 +8,14 @@ import kotlinx.coroutines.flow.Flow
 
 interface LocalDataSource {
     fun getWorkouts(): Flow<List<Workout>>
+    suspend fun deleteWorkout(workout: Workout)
     fun getCombinations(): Flow<List<Combination>>
     suspend fun upsertWorkout(workout: Workout): Long
-    suspend fun upsertCombination(exercise: Combination): Long
+    suspend fun upsertCombination(combination: Combination): Long
+    suspend fun deleteCombination(combination: Combination)
     suspend fun upsertWorkoutCombinations(selectedCombinationCrossRefs: List<SelectedCombinationsCrossRef>)
     suspend fun deleteWorkoutCombinations(workoutId: Long)
+    suspend fun deleteWorkoutCombination(combinationId: Long)
     fun getWorkoutById(workoutId: Long): Flow<Workout?>
     fun getWorkoutWithCombinationsFlow(workoutId: Long): Flow<WorkoutWithCombinations?>
     fun getWorkoutWithCombinations(workoutId: Long): WorkoutWithCombinations?
