@@ -17,8 +17,10 @@ class WorkoutsViewModel(private val localDataSource: LocalDataSource) : ViewMode
 
     fun getWorkoutsWithCombinationsLD(): LiveData<List<WorkoutWithCombinations>> {
         return localDataSource.getAllWorkoutsWithCombinations().map {
+            allWorkouts.clear()
             it.forEach { workoutWithCombinations ->
-                workoutWithCombinations.workout?.let { workout -> allWorkouts.add(workout) }
+                workoutWithCombinations.workout?.let { workout ->
+                    allWorkouts.add(workout) }
             }
             it
         }.asLiveData()

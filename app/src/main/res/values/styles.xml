@@ -26,6 +26,6 @@
 
     <style name="SnackbarActionButtonStyle"  tools:override="true" parent="@style/Widget.MaterialComponents.Button.TextButton.Snackbar">
         <item name="fontFamily">@string/font_roboto_medium</item>
-        <item name="android:textColor">@color/accent</item>
+        <item name="android:textColor">@color/colorPrimary</item>
     </style>
     </resources>

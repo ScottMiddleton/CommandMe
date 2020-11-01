@@ -22,6 +22,6 @@
     <color name="list_item_color">#12FFFFFF</color>
     <color name="edit_item_color">#34000000</color>
     <color name="dialog_background">#272727</color>
-    <color name="red">#BFFF0000</color>
+    <color name="red">#80FF0000</color>
 
 </resources>

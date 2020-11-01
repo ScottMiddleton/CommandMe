@@ -107,7 +107,8 @@ class WorkoutsScreen : BaseFragment() {
                                 requireContext(), R.color.red
                             )
                         )
-                        .addActionIcon(R.drawable.ic_delete_sweep)
+                        .setIconHorizontalMargin(20)
+                        .addActionIcon(R.drawable.ic_workout_delete_sweep)
                         .create()
                         .decorate()
                 }
