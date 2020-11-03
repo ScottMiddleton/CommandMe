@@ -68,7 +68,7 @@ class CombinationsSummaryAdapter(
         }
 
         for (workoutCombinations in selectedCombinationCrossRefs) {
-            if (workoutCombinations.combination_id == combination.id){
+            if (workoutCombinations.combination_id == combination.id) {
                 // This is the frequency for this combination
                 val combinationFrequencyType = workoutCombinations.frequency
 

@@ -4,8 +4,11 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import android.widget.FrameLayout
+import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
@@ -15,6 +18,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.middleton.scott.commandMeBoxing.R
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.fragment_combinations.*
 
 class MainActivity : AppCompatActivity() {
     private lateinit var navController: NavController
@@ -36,10 +40,15 @@ class MainActivity : AppCompatActivity() {
         )
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
+            supportActionBar?.setDisplayShowCustomEnabled(false)
             if (!topLevelDestinations.contains(destination.id)) {
                 nav_view.visibility = GONE
             } else {
                 nav_view.visibility = VISIBLE
+            }
+
+            if (destination.id == R.id.createWorkoutScreen){
+                setupCustomAppBar()
             }
         }
 
@@ -97,13 +106,15 @@ class MainActivity : AppCompatActivity() {
 //            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
 //        })
 
-//        view.layoutParams = LinearLayout.LayoutParams(
-//            FrameLayout.LayoutParams.MATCH_PARENT,
-//            FrameLayout.LayoutParams.MATCH_PARENT
-//        )
+        val view: View = layoutInflater.inflate(R.layout.title_bar_create_workout, null)
 
-        // Apply the custom View to the ActionBar
-//        supportActionBar?.customView = view
-//        supportActionBar?.setDisplayShowCustomEnabled(true)
+        view.layoutParams = LinearLayout.LayoutParams(
+            FrameLayout.LayoutParams.MATCH_PARENT,
+            FrameLayout.LayoutParams.MATCH_PARENT
+        )
+
+
+        supportActionBar?.customView = view
+        supportActionBar?.setDisplayShowCustomEnabled(true)
     }
 }

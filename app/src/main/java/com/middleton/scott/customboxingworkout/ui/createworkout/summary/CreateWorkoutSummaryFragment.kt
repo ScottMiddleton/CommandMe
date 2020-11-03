@@ -18,6 +18,7 @@ import com.middleton.scott.customboxingworkout.ui.base.BaseFragment
 import com.middleton.scott.customboxingworkout.ui.createworkout.CreateWorkoutSharedViewModel
 import com.middleton.scott.customboxingworkout.utils.DateTimeUtils
 import kotlinx.android.synthetic.main.fragment_summary_tab.*
+import kotlinx.android.synthetic.main.title_bar_create_workout.*
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 class CreateWorkoutSummaryFragment : BaseFragment() {
@@ -32,7 +33,7 @@ class CreateWorkoutSummaryFragment : BaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         adapter = CombinationsSummaryAdapter { selectedCombinationCrossRef ->
-            viewModel.setCombination(selectedCombinationCrossRef, true)
+            viewModel.setCombinationFrequency(selectedCombinationCrossRef)
         }
     }
 
@@ -47,9 +48,9 @@ class CreateWorkoutSummaryFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
         combinations_summary_rv.adapter = adapter
         if (viewModel.workoutId == -1L) {
-            complete_btn.text = getString(R.string.complete)
+
         } else {
-            complete_btn.text = getString(R.string.save)
+
         }
         subscribeUI()
         setListeners()
@@ -77,7 +78,7 @@ class CreateWorkoutSummaryFragment : BaseFragment() {
         })
 
         viewModel.selectedCombinationsLD.observe(viewLifecycleOwner, Observer {
-            if (viewModel.subscribe) {
+             if (viewModel.subscribe) {
                 if (!viewModel.selectedCombinations.isNullOrEmpty()) {
                     adapter.setAdapter(it, viewModel.selectedCombinationsCrossRefs)
                     weighting_label_tv.visibility = VISIBLE
@@ -166,8 +167,12 @@ class CreateWorkoutSummaryFragment : BaseFragment() {
             )
         }
 
-        complete_btn.setOnClickListener {
+        parentFragment?.save_btn?.setOnClickListener {
             viewModel.upsertWorkout()
+        }
+
+        parentFragment?.cancel_btn?.setOnClickListener {
+            findNavController().popBackStack()
         }
 
         add_combination_tv.setOnClickListener {

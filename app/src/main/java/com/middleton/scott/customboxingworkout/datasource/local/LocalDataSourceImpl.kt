@@ -52,6 +52,14 @@ class LocalDataSourceImpl(
         database.selectedCombinationsCrossRefDao().upsert(selectedCombinationCrossRefs)
     }
 
+    override suspend fun upsertWorkoutCombination(selectedCombinationCrossRef: SelectedCombinationsCrossRef) {
+        database.selectedCombinationsCrossRefDao().upsert(selectedCombinationCrossRef)
+    }
+
+    override suspend fun deleteWorkoutCombination(selectedCombinationCrossRef: SelectedCombinationsCrossRef) {
+        database.selectedCombinationsCrossRefDao().delete(selectedCombinationCrossRef)
+    }
+
     override suspend fun deleteWorkoutCombinations(workoutId: Long) {
         database.selectedCombinationsCrossRefDao().deleteByWorkoutId(workoutId)
     }

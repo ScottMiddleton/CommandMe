@@ -39,7 +39,8 @@ class CreateWorkoutSharedViewModel(
         combinationsFlow.combine(selectedCombinationCrossRefsFlow) { combinations, selectedCombinationsCrossRefs ->
             selectedCombinations.clear()
             if (workoutId != -1L) {
-                this.selectedCombinationsCrossRefs = selectedCombinationsCrossRefs as ArrayList<SelectedCombinationsCrossRef>
+                this.selectedCombinationsCrossRefs =
+                    selectedCombinationsCrossRefs as ArrayList<SelectedCombinationsCrossRef>
             }
 
             combinations.forEach { combination ->
@@ -63,8 +64,17 @@ class CreateWorkoutSharedViewModel(
     fun upsertWorkout() {
         viewModelScope.launch {
             subscribe = false
+            localDataSource.upsertWorkoutCombinations(selectedCombinationsCrossRefs)
             localDataSource.upsertWorkout(workout)
             dbUpdateLD.value = true
+        }
+    }
+
+    fun setCombinationFrequency(selectedCombinationsCrossRef: SelectedCombinationsCrossRef) {
+        selectedCombinationsCrossRefs.forEach {
+            if (it.combination_id == selectedCombinationsCrossRef.combination_id) {
+                it.frequency = selectedCombinationsCrossRef.frequency
+            }
         }
     }
 
@@ -72,31 +82,47 @@ class CreateWorkoutSharedViewModel(
         selectedCombinationsCrossRef: SelectedCombinationsCrossRef,
         isChecked: Boolean
     ) {
-        selectedCombinationsCrossRefs.removeIf {
-            it.combination_id == selectedCombinationsCrossRef.combination_id
-        }
 
-        selectedCombinations.clear()
-
-        if (isChecked) {
-            selectedCombinationsCrossRef.workout_id = workoutId
-            selectedCombinationsCrossRefs.add(selectedCombinationsCrossRef)
-        }
-
-        viewModelScope.launch {
-            if (workoutId == -1L) {
+        if (workoutId == -1L) {
+            viewModelScope.launch {
                 val newWorkoutId = localDataSource.upsertWorkout(workout)
                 workout.id = newWorkoutId
                 localDataSource.deleteWorkoutCombinations(newWorkoutId)
-                selectedCombinationsCrossRefs.forEach {
-                    it.workout_id = newWorkoutId
-                }
-                localDataSource.upsertWorkoutCombinations(selectedCombinationsCrossRefs)
-            } else {
-                localDataSource.deleteWorkoutCombinations(workoutId)
-                localDataSource.upsertWorkoutCombinations(selectedCombinationsCrossRefs)
             }
         }
+
+        selectedCombinationsCrossRef.workout_id = workoutId
+        if (isChecked) {
+            selectedCombinationsCrossRefs.add(selectedCombinationsCrossRef)
+            selectedCombinationsCrossRefs.forEach {
+                if (it.combination_id == selectedCombinationsCrossRef.combination_id) {
+                    viewModelScope.launch {
+                        localDataSource.upsertWorkoutCombination(
+                            selectedCombinationsCrossRef
+                        )
+                    }
+                }
+            }
+        } else {
+            viewModelScope.launch {
+                localDataSource.deleteWorkoutCombination(selectedCombinationsCrossRef)
+            }
+        }
+
+//        selectedCombinations.clear()
+//        if (isChecked) {
+//            selectedCombinationsCrossRef.workout_id = workoutId
+//            selectedCombinationsCrossRefs.add(selectedCombinationsCrossRef)
+//        }
+
+
+//
+//                localDataSource.upsertWorkoutCombinations(selectedCombinationsCrossRefs)
+//            } else {
+//                localDataSource.deleteWorkoutCombinations(workoutId)
+//                localDataSource.upsertWorkoutCombinations(selectedCombinationsCrossRefs)
+//            }
+//        }
     }
 
     fun setWorkoutName(name: String) {
