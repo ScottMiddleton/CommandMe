@@ -18,12 +18,11 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.middleton.scott.commandMeBoxing.R
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_combinations.*
 
 class MainActivity : AppCompatActivity() {
     private lateinit var navController: NavController
     private val topLevelDestinations =
-        setOf(R.id.combinationsScreen, R.id.workoutsScreen)
+        setOf(R.id.combinationsScreen, R.id.workoutsScreen, R.id.createWorkoutScreen)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,9 +33,7 @@ class MainActivity : AppCompatActivity() {
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         val appBarConfiguration = AppBarConfiguration(
-            setOf(
-                R.id.workoutsScreen, R.id.combinationsScreen
-            )
+            topLevelDestinations
         )
 
         navController.addOnDestinationChangedListener { _, destination, _ ->

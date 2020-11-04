@@ -6,6 +6,7 @@
     android:layout_height="match_parent">
 
     <ScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:focusable="true"
@@ -257,7 +258,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/combinations_summary_rv"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_marginTop="8dp"
                 android:background="@drawable/list_item_combination_summary_background"
                 android:paddingBottom="6dp"

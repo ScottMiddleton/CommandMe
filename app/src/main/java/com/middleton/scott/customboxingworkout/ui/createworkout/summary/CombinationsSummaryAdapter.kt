@@ -1,19 +1,23 @@
 package com.middleton.scott.customboxingworkout.ui.createworkout.summary
 
+import FrequencyDialog
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
 import android.widget.TextView
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import com.middleton.scott.commandMeBoxing.R
 import com.middleton.scott.customboxingworkout.datasource.local.enums.CombinationFrequencyType
 import com.middleton.scott.customboxingworkout.datasource.local.model.Combination
 import com.middleton.scott.customboxingworkout.datasource.local.model.SelectedCombinationsCrossRef
 
+
 class CombinationsSummaryAdapter(
+    private val fragmentManager: FragmentManager,
     private val onEditFrequency: ((selectedCombinationsCrossRef: SelectedCombinationsCrossRef) -> Unit)
 ) : RecyclerView.Adapter<CombinationsSummaryAdapter.CombinationsViewHolder>() {
 
@@ -45,26 +49,19 @@ class CombinationsSummaryAdapter(
             context.getString(it.textResId)
         }
 
-        val adapter: ArrayAdapter<String?> = ArrayAdapter(
-            context,
-            R.layout.frequency_dropdown_menu_popup_item,
-            relationshipTypes
-        )
 
-        holder.frequencyTV.setAdapter(adapter)
-        holder.frequencyTV.setOnClickListener {
-            holder.frequencyTV.showDropDown()
-        }
-
-        // Callback when a dropdown menu item is selected
-        holder.frequencyTV.setOnItemClickListener { _, _, itemIndex, _ ->
-            val selectedCombinationsCrossRef = SelectedCombinationsCrossRef(
-                workout_id = -1,
-                combination_id = combination.id,
-                frequency = CombinationFrequencyType.fromPosition(itemIndex)
+        holder.frequencyET.setOnClickListener {
+            FrequencyDialog {frequencyType ->
+                val selectedCombinationsCrossRef = SelectedCombinationsCrossRef(
+                    workout_id = -1,
+                    combination_id = combination.id,
+                    frequency = frequencyType
+                )
+                onEditFrequency(selectedCombinationsCrossRef)
+            }.show(
+                fragmentManager,
+                null
             )
-
-            onEditFrequency(selectedCombinationsCrossRef)
         }
 
         for (workoutCombinations in selectedCombinationCrossRefs) {
@@ -72,17 +69,15 @@ class CombinationsSummaryAdapter(
                 // This is the frequency for this combination
                 val combinationFrequencyType = workoutCombinations.frequency
 
-                holder.frequencyTV.setText(
-                    context.getString(combinationFrequencyType.textResId),
-                    false
-                )
+                holder.frequencyET.setText(context.getString(combinationFrequencyType.textResId))
             }
         }
     }
 
     class CombinationsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val nameTV: TextView = view.findViewById(R.id.combination_name_tv)
-        val frequencyTV = view.findViewById(R.id.frequency_TV) as AutoCompleteTextView
+        val frequencyTIL = view.findViewById(R.id.frequency_til) as TextInputLayout
+        val frequencyET = view.findViewById(R.id.frequency_et) as TextInputEditText
     }
 
     override fun getItemId(position: Int): Long {

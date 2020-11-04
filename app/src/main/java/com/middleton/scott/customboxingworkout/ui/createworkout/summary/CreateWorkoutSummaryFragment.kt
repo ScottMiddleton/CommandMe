@@ -32,7 +32,7 @@ class CreateWorkoutSummaryFragment : BaseFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        adapter = CombinationsSummaryAdapter { selectedCombinationCrossRef ->
+        adapter = CombinationsSummaryAdapter(childFragmentManager) { selectedCombinationCrossRef ->
             viewModel.setCombinationFrequency(selectedCombinationCrossRef)
         }
     }

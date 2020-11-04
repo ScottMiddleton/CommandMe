@@ -37,7 +37,7 @@ class IntensityDialog(
     }
 
     private fun setClickListeners() {
-        intensity_seekbar.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener{
+        intensity_seekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(p0: SeekBar?, progress: Int, p2: Boolean) {
                 intensity_value_pb.progress = progress
                 intensity_value_tv.text = progress.toString()
