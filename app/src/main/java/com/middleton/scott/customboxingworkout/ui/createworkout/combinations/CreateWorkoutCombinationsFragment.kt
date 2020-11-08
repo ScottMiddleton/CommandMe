@@ -43,7 +43,11 @@ class CreateWorkoutCombinationsFragment : BaseFragment() {
             viewModel.audioFileBaseDirectory,
             parentFragmentManager,
             { selectedCombinationCrossRef, isChecked ->
-                viewModel.setCombination(selectedCombinationCrossRef, isChecked)
+                if (isChecked) {
+                    viewModel.addCombination(selectedCombinationCrossRef)
+                } else {
+                    viewModel.removeCombination(selectedCombinationCrossRef)
+                }
             },
             {
                 viewModel.upsertCombination(it)
@@ -79,7 +83,11 @@ class CreateWorkoutCombinationsFragment : BaseFragment() {
                     val position = viewHolder.adapterPosition
                     val combination = viewModel.deleteCombination(position)
 
-                    Snackbar.make(combinations_RV, getString(R.string.deleted_snackbar, combination.name), Snackbar.LENGTH_LONG)
+                    Snackbar.make(
+                        combinations_RV,
+                        getString(R.string.deleted_snackbar, combination.name),
+                        Snackbar.LENGTH_LONG
+                    )
                         .setAction(getString(R.string.undo)) {
                             viewModel.undoPreviouslyDeletedCombination()
                         }.addCallback(object : Snackbar.Callback() {
