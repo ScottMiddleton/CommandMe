@@ -6,12 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayoutMediator
 import com.middleton.scott.commandMeBoxing.R
-import com.middleton.scott.customboxingworkout.MainActivity
 import com.middleton.scott.customboxingworkout.ui.base.BaseFragment
 import com.middleton.scott.customboxingworkout.ui.createworkout.combinations.CreateWorkoutCombinationsFragment
 import com.middleton.scott.customboxingworkout.ui.createworkout.summary.CreateWorkoutSummaryFragment
@@ -44,10 +42,10 @@ class CreateWorkoutScreen : BaseFragment() {
 
     private fun subscribeUI() {
         viewModel.workoutLD.observe(viewLifecycleOwner, Observer {
-            if (it != null) {
-                (activity as MainActivity).supportActionBar?.title = viewModel.workout.name
+            if (it.name == "") {
+                parentFragment?.workout_name_tv?.text = getString(R.string.create_workout)
             } else {
-                (activity as MainActivity).supportActionBar?.title = getString(R.string.create_workout)
+                parentFragment?.workout_name_tv?.text = viewModel.workout.name
             }
         })
     }

@@ -9,9 +9,7 @@ import android.widget.TextView
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputEditText
-import com.google.android.material.textfield.TextInputLayout
 import com.middleton.scott.commandMeBoxing.R
-import com.middleton.scott.customboxingworkout.datasource.local.enums.CombinationFrequencyType
 import com.middleton.scott.customboxingworkout.datasource.local.model.Combination
 import com.middleton.scott.customboxingworkout.datasource.local.model.SelectedCombinationsCrossRef
 
@@ -45,10 +43,6 @@ class CombinationsSummaryAdapter(
         val combination = combinations[position]
         holder.nameTV.text = combinations[position].name
 
-        val relationshipTypes = CombinationFrequencyType.values().map {
-            context.getString(it.textResId)
-        }
-
 
         holder.frequencyET.setOnClickListener {
             FrequencyDialog {frequencyType ->
@@ -57,6 +51,7 @@ class CombinationsSummaryAdapter(
                     combination_id = combination.id,
                     frequency = frequencyType
                 )
+                holder.frequencyET.setText(frequencyType.textResId)
                 onEditFrequency(selectedCombinationsCrossRef)
             }.show(
                 fragmentManager,
@@ -76,7 +71,6 @@ class CombinationsSummaryAdapter(
 
     class CombinationsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val nameTV: TextView = view.findViewById(R.id.combination_name_tv)
-        val frequencyTIL = view.findViewById(R.id.frequency_til) as TextInputLayout
         val frequencyET = view.findViewById(R.id.frequency_et) as TextInputEditText
     }
 

@@ -45,7 +45,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             if (destination.id == R.id.createWorkoutScreen){
-                setupCustomAppBar()
+                (this as AppCompatActivity).supportActionBar?.hide()
             }
         }
 

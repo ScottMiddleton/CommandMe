@@ -9,6 +9,9 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.widget.TextView
+import android.widget.Toast
+import android.widget.Toast.LENGTH_LONG
 import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -47,11 +50,11 @@ class CreateWorkoutSummaryFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         combinations_summary_rv.adapter = adapter
-        if (viewModel.workoutId == -1L) {
 
-        } else {
-
+        requireActivity().findViewById<TextView>(R.id.save_btn).setOnClickListener {
+            findNavController().popBackStack()
         }
+
         subscribeUI()
         setListeners()
     }
@@ -78,7 +81,7 @@ class CreateWorkoutSummaryFragment : BaseFragment() {
         })
 
         viewModel.selectedCombinationsLD.observe(viewLifecycleOwner, Observer {
-             if (viewModel.subscribe) {
+            if (viewModel.subscribe) {
                 if (!viewModel.selectedCombinations.isNullOrEmpty()) {
                     adapter.setAdapter(it, viewModel.selectedCombinationsCrossRefs)
                     weighting_label_tv.visibility = VISIBLE
@@ -97,6 +100,14 @@ class CreateWorkoutSummaryFragment : BaseFragment() {
 
         viewModel.dbUpdateLD.observe(viewLifecycleOwner, Observer {
             findNavController().popBackStack()
+        })
+
+        viewModel.showCancellationdialogLD.observe(viewLifecycleOwner, Observer {
+            if (it) {
+                Toast.makeText(context, "Cancel Dialog", LENGTH_LONG).show()
+            } else {
+                findNavController().popBackStack()
+            }
         })
     }
 
@@ -172,7 +183,7 @@ class CreateWorkoutSummaryFragment : BaseFragment() {
         }
 
         parentFragment?.cancel_btn?.setOnClickListener {
-            findNavController().popBackStack()
+            viewModel.onCancel()
         }
 
         add_combination_tv.setOnClickListener {
