@@ -68,7 +68,11 @@ class LocalDataSourceImpl(
         database.selectedCombinationsCrossRefDao().deleteByCombinationId(combinationId)
     }
 
-    override fun getWorkoutById(workoutId: Long): Flow<Workout?> {
+    override fun getWorkoutByIdFlow(workoutId: Long): Flow<Workout?> {
+        return database.workoutDao().getWorkoutByIdFlow(workoutId)
+    }
+
+    override fun getWorkoutById(workoutId: Long): Workout? {
         return database.workoutDao().getWorkoutById(workoutId)
     }
 

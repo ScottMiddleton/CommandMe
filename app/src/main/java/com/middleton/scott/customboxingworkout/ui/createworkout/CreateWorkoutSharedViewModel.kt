@@ -30,16 +30,18 @@ class CreateWorkoutSharedViewModel(
     private val selectedCombinationCrossRefsFlow =
         localDataSource.getSelectedCombinationCrossRefsFlow(workoutId)
 
-    val workoutLD = localDataSource.getWorkoutById(workoutId).map {
+    val workoutLD = localDataSource.getWorkoutByIdFlow(workoutId).map {
         it?.let {
             this.workout = it
-            this.duplicateWorkout = it
         }
         this.workout
     }.asLiveData()
 
     init {
-        duplicateSelectedCombinationsCrossRefs = localDataSource.getSelectedCombinationCrossRefs(workoutId) as ArrayList<SelectedCombinationsCrossRef>
+        duplicateWorkout = localDataSource.getWorkoutById(workoutId) ?: workout
+
+        duplicateSelectedCombinationsCrossRefs =
+            localDataSource.getSelectedCombinationCrossRefs(workoutId) as ArrayList<SelectedCombinationsCrossRef>
     }
 
     val selectedCombinationsLD: LiveData<List<Combination>> =
@@ -68,7 +70,7 @@ class CreateWorkoutSharedViewModel(
     val restTimeSecsLD = MutableLiveData<Int>()
     val intensityLD = MutableLiveData<Int>()
     val dbUpdateLD = MutableLiveData<Boolean>()
-    val showCancellationdialogLD = MutableLiveData<Boolean>()
+    val showCancellationDialogLD = MutableLiveData<Boolean>()
 
     fun upsertWorkout() {
         viewModelScope.launch {
@@ -163,7 +165,7 @@ class CreateWorkoutSharedViewModel(
     }
 
     fun onCancel() {
-        showCancellationdialogLD.value =
+        showCancellationDialogLD.value =
             !(duplicateWorkout == workout && duplicateSelectedCombinationsCrossRefs == selectedCombinationsCrossRefs)
     }
 }

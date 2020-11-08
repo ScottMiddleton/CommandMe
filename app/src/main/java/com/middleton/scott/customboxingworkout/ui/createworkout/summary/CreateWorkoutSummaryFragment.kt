@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import android.widget.Toast.LENGTH_LONG
+import androidx.activity.OnBackPressedCallback
 import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -24,6 +25,7 @@ import kotlinx.android.synthetic.main.fragment_summary_tab.*
 import kotlinx.android.synthetic.main.title_bar_create_workout.*
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
+
 class CreateWorkoutSummaryFragment : BaseFragment() {
     private val viewModel by lazy { requireParentFragment().getViewModel<CreateWorkoutSharedViewModel>() }
     private lateinit var adapter: CombinationsSummaryAdapter
@@ -35,6 +37,17 @@ class CreateWorkoutSummaryFragment : BaseFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // This callback will only be called when MyFragment is at least Started.
+        val callback: OnBackPressedCallback =
+            object : OnBackPressedCallback(true /* enabled by default */) {
+                override fun handleOnBackPressed() {
+                    viewModel.onCancel()
+                }
+            }
+
+        requireActivity().onBackPressedDispatcher.addCallback(this, callback)
+
         adapter = CombinationsSummaryAdapter(childFragmentManager) { selectedCombinationCrossRef ->
             viewModel.setCombinationFrequency(selectedCombinationCrossRef)
         }
@@ -102,7 +115,7 @@ class CreateWorkoutSummaryFragment : BaseFragment() {
             findNavController().popBackStack()
         })
 
-        viewModel.showCancellationdialogLD.observe(viewLifecycleOwner, Observer {
+        viewModel.showCancellationDialogLD.observe(viewLifecycleOwner, Observer {
             if (it) {
                 Toast.makeText(context, "Cancel Dialog", LENGTH_LONG).show()
             } else {
