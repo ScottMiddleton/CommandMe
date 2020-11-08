@@ -20,9 +20,11 @@ class CreateWorkoutSharedViewModel(
 
     var subscribe = true
     var workout = Workout()
+    var duplicateWorkout = Workout()
 
     var selectedCombinations = ArrayList<Combination>()
     var selectedCombinationsCrossRefs = ArrayList<SelectedCombinationsCrossRef>()
+    var duplicateSelectedCombinationsCrossRefs = ArrayList<SelectedCombinationsCrossRef>()
 
     private val combinationsFlow = localDataSource.getCombinations()
     private val selectedCombinationCrossRefsFlow =
@@ -31,9 +33,14 @@ class CreateWorkoutSharedViewModel(
     val workoutLD = localDataSource.getWorkoutById(workoutId).map {
         it?.let {
             this.workout = it
+            this.duplicateWorkout = it
         }
         this.workout
     }.asLiveData()
+
+    init {
+        duplicateSelectedCombinationsCrossRefs = localDataSource.getSelectedCombinationCrossRefs(workoutId) as ArrayList<SelectedCombinationsCrossRef>
+    }
 
     val selectedCombinationsLD: LiveData<List<Combination>> =
         combinationsFlow.combine(selectedCombinationCrossRefsFlow) { combinations, selectedCombinationsCrossRefs ->
@@ -44,7 +51,7 @@ class CreateWorkoutSharedViewModel(
             }
 
             // Iterate through all combinations, find the ones with matching combination Ids to
-//             list of selected combination id, and add them to selectedCombinations list
+            // list of selected combination id, and add them to selectedCombinations list
             combinations.forEach { combination ->
                 this.selectedCombinationsCrossRefs.forEach { selectedCombinationsCrossRef ->
                     if (combination.id == selectedCombinationsCrossRef.combination_id) {
@@ -66,12 +73,6 @@ class CreateWorkoutSharedViewModel(
     fun upsertWorkout() {
         viewModelScope.launch {
             subscribe = false
-
-            selectedCombinationsCrossRefs.forEach {
-                it.workout_id = workout.id
-            }
-
-            localDataSource.upsertWorkoutCombinations(selectedCombinationsCrossRefs)
             localDataSource.upsertWorkout(workout)
             dbUpdateLD.value = true
         }
@@ -125,6 +126,8 @@ class CreateWorkoutSharedViewModel(
     fun setWorkoutName(name: String) {
         if (name.isNotEmpty()) {
             workout.name = name
+        } else {
+            workout.name = ""
         }
     }
 
@@ -160,6 +163,7 @@ class CreateWorkoutSharedViewModel(
     }
 
     fun onCancel() {
-        showCancellationdialogLD.value = selectedCombinations.isNotEmpty() || workout.name != ""
+        showCancellationdialogLD.value =
+            !(duplicateWorkout == workout && duplicateSelectedCombinationsCrossRefs == selectedCombinationsCrossRefs)
     }
 }
