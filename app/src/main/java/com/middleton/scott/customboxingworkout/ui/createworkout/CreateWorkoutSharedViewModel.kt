@@ -38,7 +38,7 @@ class CreateWorkoutSharedViewModel(
     }.asLiveData()
 
     init {
-        savedWorkout = localDataSource.getWorkoutById(workoutId) ?: workout
+        localDataSource.getWorkoutById(workoutId)?.let { savedWorkout = it }
 
         savedSelectedCombinationsCrossRefs =
             localDataSource.getSelectedCombinationCrossRefs(workoutId) as ArrayList<SelectedCombinationsCrossRef>
@@ -169,6 +169,7 @@ class CreateWorkoutSharedViewModel(
             viewModelScope.launch {
                 localDataSource.deleteWorkout(workout)
                 localDataSource.deleteWorkoutCombinations(workout.id)
+                dbUpdateLD.value = true
             }
         } else {
             viewModelScope.launch {
@@ -176,6 +177,7 @@ class CreateWorkoutSharedViewModel(
                 localDataSource.deleteWorkoutCombinations(workout.id)
                 localDataSource.upsertWorkout(savedWorkout)
                 localDataSource.upsertWorkoutCombinations(savedSelectedCombinationsCrossRefs)
+                dbUpdateLD.value = true
             }
         }
     }

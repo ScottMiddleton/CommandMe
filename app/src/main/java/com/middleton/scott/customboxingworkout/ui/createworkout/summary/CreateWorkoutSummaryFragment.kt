@@ -124,7 +124,6 @@ class CreateWorkoutSummaryFragment : BaseFragment() {
                     R.string.yes_cancel,
                     {
                         viewModel.cancelChanges()
-                        findNavController().popBackStack()
                     })
             } else {
                 findNavController().popBackStack()
