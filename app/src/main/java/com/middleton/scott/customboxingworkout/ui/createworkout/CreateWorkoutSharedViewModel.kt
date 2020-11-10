@@ -20,11 +20,11 @@ class CreateWorkoutSharedViewModel(
 
     var subscribe = true
     var workout = Workout()
-    var duplicateWorkout = Workout()
+    var savedWorkout = Workout()
 
     var selectedCombinations = ArrayList<Combination>()
     var selectedCombinationsCrossRefs = ArrayList<SelectedCombinationsCrossRef>()
-    var duplicateSelectedCombinationsCrossRefs = ArrayList<SelectedCombinationsCrossRef>()
+    var savedSelectedCombinationsCrossRefs = ArrayList<SelectedCombinationsCrossRef>()
 
     private val combinationsFlow = localDataSource.getCombinations()
     private val selectedCombinationCrossRefsFlow =
@@ -38,9 +38,9 @@ class CreateWorkoutSharedViewModel(
     }.asLiveData()
 
     init {
-        duplicateWorkout = localDataSource.getWorkoutById(workoutId) ?: workout
+        savedWorkout = localDataSource.getWorkoutById(workoutId) ?: workout
 
-        duplicateSelectedCombinationsCrossRefs =
+        savedSelectedCombinationsCrossRefs =
             localDataSource.getSelectedCombinationCrossRefs(workoutId) as ArrayList<SelectedCombinationsCrossRef>
     }
 
@@ -164,8 +164,24 @@ class CreateWorkoutSharedViewModel(
         intensityLD.value = intensity
     }
 
+    fun cancelChanges() {
+        if (workoutId == -1L) {
+            viewModelScope.launch {
+                localDataSource.deleteWorkout(workout)
+                localDataSource.deleteWorkoutCombinations(workout.id)
+            }
+        } else {
+            viewModelScope.launch {
+                localDataSource.deleteWorkout(workout)
+                localDataSource.deleteWorkoutCombinations(workout.id)
+                localDataSource.upsertWorkout(savedWorkout)
+                localDataSource.upsertWorkoutCombinations(savedSelectedCombinationsCrossRefs)
+            }
+        }
+    }
+
     fun onCancel() {
         showCancellationDialogLD.value =
-            !(duplicateWorkout == workout && duplicateSelectedCombinationsCrossRefs == selectedCombinationsCrossRefs)
+            !(savedWorkout == workout && savedSelectedCombinationsCrossRefs == selectedCombinationsCrossRefs)
     }
 }

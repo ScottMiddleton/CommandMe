@@ -10,8 +10,6 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.Toast
-import android.widget.Toast.LENGTH_LONG
 import androidx.activity.OnBackPressedCallback
 import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.Observer
@@ -21,10 +19,10 @@ import com.middleton.scott.commandMeBoxing.R
 import com.middleton.scott.customboxingworkout.ui.base.BaseFragment
 import com.middleton.scott.customboxingworkout.ui.createworkout.CreateWorkoutSharedViewModel
 import com.middleton.scott.customboxingworkout.utils.DateTimeUtils
+import com.middleton.scott.customboxingworkout.utils.DialogManager
 import kotlinx.android.synthetic.main.fragment_summary_tab.*
 import kotlinx.android.synthetic.main.title_bar_create_workout.*
 import org.koin.androidx.viewmodel.ext.android.getViewModel
-
 
 class CreateWorkoutSummaryFragment : BaseFragment() {
     private val viewModel by lazy { requireParentFragment().getViewModel<CreateWorkoutSharedViewModel>() }
@@ -117,7 +115,17 @@ class CreateWorkoutSummaryFragment : BaseFragment() {
 
         viewModel.showCancellationDialogLD.observe(viewLifecycleOwner, Observer {
             if (it) {
-                Toast.makeText(context, "Cancel Dialog", LENGTH_LONG).show()
+                DialogManager.showDialog(
+                    requireContext(),
+                    R.string.cancel_this_workout,
+                    R.string.unsaved_dialog_message,
+                    R.string.save_and_exit,
+                    { viewModel.upsertWorkout() },
+                    R.string.yes_cancel,
+                    {
+                        viewModel.cancelChanges()
+                        findNavController().popBackStack()
+                    })
             } else {
                 findNavController().popBackStack()
             }
