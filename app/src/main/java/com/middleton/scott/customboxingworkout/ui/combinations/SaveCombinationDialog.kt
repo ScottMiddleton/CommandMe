@@ -65,13 +65,11 @@ class SaveCombinationDialog(
         }
 
         delete_btn.setOnClickListener {
-            if (validateFields()) {
-                if (isEditMode) {
-                    dismiss()
-                } else {
-                    onDelete()
-                    dismiss()
-                }
+            if (isEditMode) {
+                dismiss()
+            } else {
+                onDelete()
+                dismiss()
             }
         }
 
@@ -87,9 +85,15 @@ class SaveCombinationDialog(
 
             NumberPickerSecondsDialog(millis, { newMillis ->
                 timeToCompleteMillis = newMillis
-
                 time_to_complete_et.setText(getSecondsTextFromMillis(newMillis))
                 name_et.clearFocus()
+                if (saveAttempted) {
+                    if (timeToCompleteMillis <= 0) {
+                        time_to_complete_til.error = getString(R.string.greater_than_zero)
+                    } else {
+                        time_to_complete_til.isErrorEnabled = false
+                    }
+                }
             }, {
 
             }).show(childFragmentManager, "")
@@ -100,7 +104,7 @@ class SaveCombinationDialog(
                 if (name_et.text.isNullOrBlank()) {
                     name_til.error = getString(R.string.this_is_a_required_field)
                 } else {
-                    name_til.error = null
+                    name_til.isErrorEnabled = false
                 }
             }
         }
