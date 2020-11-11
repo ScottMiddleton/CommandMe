@@ -119,12 +119,12 @@ class CreateWorkoutSummaryFragment : BaseFragment() {
                     requireContext(),
                     R.string.cancel_this_workout,
                     R.string.unsaved_dialog_message,
-                    R.string.save_and_exit,
-                    { viewModel.upsertWorkout() },
                     R.string.yes_cancel,
                     {
                         viewModel.cancelChanges()
-                    })
+                    },
+                    R.string.save_and_exit,
+                    { viewModel.upsertWorkout() })
             } else {
                 findNavController().popBackStack()
             }
