@@ -120,7 +120,7 @@ class CreateWorkoutSummaryFragment : BaseFragment() {
                     R.string.cancel_this_workout,
                     R.string.unsaved_dialog_message,
                     R.string.save_and_exit,
-                    { viewModel.upsertWorkout() },
+                    { viewModel.validateSaveAttempt() },
                     R.string.yes_cancel,
                     {
                         viewModel.cancelChanges()
@@ -129,10 +129,39 @@ class CreateWorkoutSummaryFragment : BaseFragment() {
                 findNavController().popBackStack()
             }
         })
+
+        viewModel.combinationsValidatedLD.observe(viewLifecycleOwner, Observer {
+            if (!it) {
+                DialogManager.showDialog(
+                    context = requireContext(),
+                    messageId = R.string.add_combination_dialog_message,
+                    positiveBtnTextId = R.string.add_combination,
+                    positiveBtnClick = {
+                        val viewPager =
+                            parentFragment?.view?.findViewById(R.id.create_workout_vp) as ViewPager2
+                        viewPager.currentItem = 1
+                    })
+            }
+        })
+
+        viewModel.workoutNameValidatedLD.observe(viewLifecycleOwner, Observer {
+            if (it) {
+                workout_name_til.error = null
+            } else {
+                workout_name_til.error = getString(R.string.this_is_a_required_field)
+            }
+        })
     }
 
     private fun setListeners() {
         workout_name_et.doAfterTextChanged {
+            if (viewModel.userHasAttemptedToSave) {
+                if (it.isNullOrBlank()) {
+                    workout_name_til.error = getString(R.string.this_is_a_required_field)
+                } else {
+                    workout_name_til.error = null
+                }
+            }
             viewModel.setWorkoutName(it.toString())
         }
 
@@ -199,7 +228,7 @@ class CreateWorkoutSummaryFragment : BaseFragment() {
         }
 
         parentFragment?.save_btn?.setOnClickListener {
-            viewModel.upsertWorkout()
+            viewModel.validateSaveAttempt()
         }
 
         parentFragment?.cancel_btn?.setOnClickListener {
