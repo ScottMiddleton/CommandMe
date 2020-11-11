@@ -75,6 +75,7 @@ class CreateWorkoutSharedViewModel(
     val showCancellationDialogLD = MutableLiveData<Boolean>()
     val workoutNameValidatedLD = MutableLiveData<Boolean>()
     val combinationsValidatedLD = MutableLiveData<Boolean>()
+    val requiredSummaryFieldLD = MutableLiveData<Boolean>()
 
     fun upsertWorkout() {
         viewModelScope.launch {
@@ -204,6 +205,10 @@ class CreateWorkoutSharedViewModel(
 
         if(selectedCombinations.isNotEmpty() && !workout.name.isNullOrBlank()) {
             upsertWorkout()
+        }
+
+        if(selectedCombinations.isNotEmpty() && workout.name.isNullOrBlank()){
+            requiredSummaryFieldLD.value = true
         }
     }
 }

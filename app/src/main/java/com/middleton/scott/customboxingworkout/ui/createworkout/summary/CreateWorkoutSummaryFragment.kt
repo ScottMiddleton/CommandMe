@@ -151,6 +151,13 @@ class CreateWorkoutSummaryFragment : BaseFragment() {
                 workout_name_til.error = getString(R.string.this_is_a_required_field)
             }
         })
+
+        viewModel.requiredSummaryFieldLD.observe(viewLifecycleOwner, Observer {
+            if(it){
+                val viewPager = parentFragment?.view?.findViewById(R.id.create_workout_vp) as ViewPager2
+                viewPager.currentItem = 0
+            }
+        })
     }
 
     private fun setListeners() {
