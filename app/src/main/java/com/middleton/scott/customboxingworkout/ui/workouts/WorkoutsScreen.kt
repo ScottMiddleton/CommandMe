@@ -2,11 +2,17 @@ package com.middleton.scott.customboxingworkout.ui.workouts
 
 import android.graphics.Canvas
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
+import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -49,6 +55,9 @@ class WorkoutsScreen : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        handleFab()
+
         workout_rv.adapter = adapter
 
         val itemTouchHelperCallback =
@@ -120,14 +129,63 @@ class WorkoutsScreen : BaseFragment() {
 
         subscribeUI()
 
-        add_workout_BTN.setOnClickListener {
+        add_workouts_btn.setOnClickListener {
             findNavController().navigate(R.id.createWorkoutScreen)
         }
     }
 
     private fun subscribeUI() {
         viewModel.getWorkoutsWithCombinationsLD().observe(viewLifecycleOwner, Observer {
+            if (it.isNullOrEmpty()) {
+                empty_list_layout.visibility = VISIBLE
+                workout_rv.visibility = GONE
+            } else {
+                empty_list_layout.visibility = GONE
+                workout_rv.visibility = VISIBLE
+            }
             adapter.setAdapter(it)
+        })
+    }
+
+    private fun handleFab() {
+        nested_scroll_view.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
+            when {
+                scrollY > oldScrollY -> {
+                    fab_tv.visibility = View.GONE
+                    val params = CoordinatorLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                    ).apply {
+                        gravity = Gravity.BOTTOM or Gravity.END
+                    }
+                    params.setMargins(40, 40, 40, 40)
+                    add_workouts_btn.layoutParams = params
+                }
+                scrollX == scrollY -> {
+                    fab_tv.visibility = View.VISIBLE
+                    val params = CoordinatorLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                    ).apply {
+                        gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
+                    }
+                    params.setMargins(40, 40, 40, 40)
+                    add_workouts_btn.layoutParams = params
+
+                }
+                else -> {
+                    fab_tv.visibility = View.VISIBLE
+                    val params = CoordinatorLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                    ).apply {
+                        gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
+                    }
+                    params.setMargins(40, 40, 40, 40)
+                    add_workouts_btn.layoutParams = params
+                }
+            }
+
         })
     }
 }

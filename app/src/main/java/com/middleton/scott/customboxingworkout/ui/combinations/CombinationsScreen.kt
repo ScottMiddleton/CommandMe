@@ -11,6 +11,7 @@ import android.view.View.GONE
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
@@ -163,11 +164,20 @@ class CombinationsScreen : BaseFragment() {
 
     private fun subscribeUI() {
         viewModel.getAllCombinationsLD().observe(viewLifecycleOwner, Observer {
-            if (!viewModel.listAnimationShownOnce) {
-                val controller =
-                    AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_fall_down)
-                combinations_RV.layoutAnimation = controller
-                viewModel.listAnimationShownOnce = true
+            if (it.isNullOrEmpty()) {
+                empty_list_layout.visibility = View.VISIBLE
+                combinations_RV.visibility = GONE
+                punch_bag_iv.scaleType = ImageView.ScaleType.CENTER_INSIDE
+            } else {
+                empty_list_layout.visibility = GONE
+                combinations_RV.visibility = View.VISIBLE
+                punch_bag_iv.scaleType = ImageView.ScaleType.CENTER_CROP
+                if (!viewModel.listAnimationShownOnce) {
+                    val controller =
+                        AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_fall_down)
+                    combinations_RV.layoutAnimation = controller
+                    viewModel.listAnimationShownOnce = true
+                }
             }
             adapter.setAdapter(it, null)
         })

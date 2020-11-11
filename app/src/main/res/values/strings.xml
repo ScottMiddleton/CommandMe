@@ -69,5 +69,9 @@
     <string name="this_is_a_required_field">This is a required field.</string>
     <string name="add_combination_dialog_message">You need to add at least one combination to save this workout</string>
     <string name="greater_than_zero">Must be greater than zero.</string>
+    <string name="add_a_workout_and_it_will_show_up_here">Add a workout and it will show up here.</string>
+    <string name="create_a_workout">Create a Workout!</string>
+    <string name="record_a_command">Record a command!</string>
+    <string name="shout_your_combination_and_it_will_appear_here">Hold the record button below and shout your combination. It will show up here.</string>
 
 </resources>
