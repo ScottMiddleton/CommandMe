@@ -64,7 +64,7 @@
     <string name="cancel">Cancel</string>
     <string name="cancel_this_workout">Cancel this workout?</string>
     <string name="unsaved_dialog_message">The changes you have made to this workout are unsaved and will be lost.</string>
-    <string name="save_and_exit">Save and Exit</string>
+    <string name="save_and_exit">Save and exit</string>
     <string name="yes_cancel">Yes, cancel</string>
     <string name="this_is_a_required_field">This is a required field.</string>
     <string name="add_combination_dialog_message">You need to add at least one combination to save this workout</string>
