@@ -14,12 +14,12 @@ import com.middleton.scott.customboxingworkout.datasource.local.model.WorkoutWit
 import com.middleton.scott.customboxingworkout.utils.DateTimeUtils
 
 class WorkoutsAdapter(
-    private val workoutsWithExercises: List<WorkoutWithCombinations>,
     private val onEditWorkout: ((Long) -> Unit),
     private val onClickWorkout: ((Long) -> Unit)
 ) : RecyclerView.Adapter<WorkoutsAdapter.WorkoutsViewHolder>() {
 
     private lateinit var context: Context
+    private var workoutsWithCombinations = mutableListOf<WorkoutWithCombinations>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WorkoutsViewHolder {
         context = parent.context
@@ -33,12 +33,12 @@ class WorkoutsAdapter(
     }
 
     override fun getItemCount(): Int {
-        return workoutsWithExercises.size
+        return workoutsWithCombinations.size
     }
 
     override fun onBindViewHolder(holder: WorkoutsViewHolder, position: Int) {
-        val workout = workoutsWithExercises[position].workout
-        val exercises = workoutsWithExercises[position].combinations
+        val workout = workoutsWithCombinations[position].workout
+        val exercises = workoutsWithCombinations[position].combinations
         holder.nameTV.text = workout?.name
         holder.editButton.setOnClickListener {
             workout?.id?.let { id -> onEditWorkout(id) }
@@ -62,5 +62,10 @@ class WorkoutsAdapter(
         val roundsCombosTV: TextView = view.findViewById(R.id.rounds_and_combos_tv)
         val intensityPB: ProgressBar = view.findViewById(R.id.intensity_seekbar)
         val intensityTV: TextView = view.findViewById(R.id.intensity_tv)
+    }
+
+    fun setAdapter(workoutsWithCombinations: List<WorkoutWithCombinations>){
+        this.workoutsWithCombinations = workoutsWithCombinations as MutableList<WorkoutWithCombinations>
+        notifyDataSetChanged()
     }
 }

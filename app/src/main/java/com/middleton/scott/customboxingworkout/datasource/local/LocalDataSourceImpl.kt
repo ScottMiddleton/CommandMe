@@ -22,6 +22,10 @@ class LocalDataSourceImpl(
         return database.workoutDao().getWorkouts()
     }
 
+    override suspend fun deleteWorkout(workout: Workout) {
+        database.workoutDao().delete(workout)
+    }
+
     override fun getCombinations(): Flow<List<Combination>> {
         return database.combinationDao().getCombinations()
     }
@@ -48,15 +52,35 @@ class LocalDataSourceImpl(
         database.selectedCombinationsCrossRefDao().upsert(selectedCombinationCrossRefs)
     }
 
+    override suspend fun upsertWorkoutCombination(selectedCombinationCrossRef: SelectedCombinationsCrossRef) {
+        database.selectedCombinationsCrossRefDao().upsert(selectedCombinationCrossRef)
+    }
+
+    override suspend fun deleteWorkoutCombination(selectedCombinationCrossRef: SelectedCombinationsCrossRef) {
+        database.selectedCombinationsCrossRefDao().delete(selectedCombinationCrossRef)
+    }
+
     override suspend fun deleteWorkoutCombinations(workoutId: Long) {
         database.selectedCombinationsCrossRefDao().deleteByWorkoutId(workoutId)
     }
 
-    override fun getWorkoutById(workoutId: Long): Flow<Workout?> {
+    override suspend fun deleteWorkoutCombination(combinationId: Long) {
+        database.selectedCombinationsCrossRefDao().deleteByCombinationId(combinationId)
+    }
+
+    override fun getWorkoutByIdFlow(workoutId: Long): Flow<Workout?> {
+        return database.workoutDao().getWorkoutByIdFlow(workoutId)
+    }
+
+    override fun getWorkoutById(workoutId: Long): Workout? {
         return database.workoutDao().getWorkoutById(workoutId)
     }
 
-    override suspend fun upsertCombination(exercise: Combination): Long {
-        return database.combinationDao().upsert(exercise)
+    override suspend fun upsertCombination(combination: Combination): Long {
+        return database.combinationDao().upsert(combination)
+    }
+
+    override suspend fun deleteCombination(combination: Combination) {
+        database.combinationDao().delete(combination)
     }
 }

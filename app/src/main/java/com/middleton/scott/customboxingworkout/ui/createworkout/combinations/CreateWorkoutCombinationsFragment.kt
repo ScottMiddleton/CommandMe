@@ -1,6 +1,7 @@
 package com.middleton.scott.customboxingworkout.ui.createworkout.combinations
 
 import SaveCombinationDialog
+import android.graphics.Canvas
 import android.media.MediaRecorder
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,7 +9,11 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.middleton.scott.commandMeBoxing.R
 import com.middleton.scott.customboxingworkout.datasource.local.model.Combination
 import com.middleton.scott.customboxingworkout.ui.base.BaseFragment
@@ -16,6 +21,7 @@ import com.middleton.scott.customboxingworkout.ui.combinations.CombinationsAdapt
 import com.middleton.scott.customboxingworkout.ui.createworkout.CreateWorkoutSharedViewModel
 import com.middleton.scott.customboxingworkout.utils.MediaRecorderManager
 import com.middleton.scott.customboxingworkout.utils.PermissionsDialogManager
+import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import kotlinx.android.synthetic.main.fragment_combinations.*
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import java.io.File
@@ -37,7 +43,11 @@ class CreateWorkoutCombinationsFragment : BaseFragment() {
             viewModel.audioFileBaseDirectory,
             parentFragmentManager,
             { selectedCombinationCrossRef, isChecked ->
-                viewModel.setCombination(selectedCombinationCrossRef, isChecked)
+                if (isChecked) {
+                    viewModel.addCombination(selectedCombinationCrossRef)
+                } else {
+                    viewModel.removeCombination(selectedCombinationCrossRef)
+                }
             },
             {
                 viewModel.upsertCombination(it)
@@ -58,8 +68,82 @@ class CreateWorkoutCombinationsFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         combinations_RV.adapter = adapter
-        subscribeUI()
+
+        val itemTouchHelperCallback =
+            object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+                override fun onMove(
+                    recyclerView: RecyclerView,
+                    viewHolder: RecyclerView.ViewHolder,
+                    target: RecyclerView.ViewHolder
+                ): Boolean {
+                    return true
+                }
+
+                override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                    val position = viewHolder.adapterPosition
+                    val combination = viewModel.deleteCombination(position)
+
+                    Snackbar.make(
+                        combinations_RV,
+                        getString(R.string.deleted_snackbar, combination.name),
+                        Snackbar.LENGTH_LONG
+                    )
+                        .setAction(getString(R.string.undo)) {
+                            viewModel.undoPreviouslyDeletedCombination()
+                        }.addCallback(object : Snackbar.Callback() {
+                            override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                                super.onDismissed(transientBottomBar, event)
+                                if (event != DISMISS_EVENT_ACTION) {
+                                    viewModel.deleteWorkoutCombinations()
+                                }
+                            }
+                        }).show()
+                }
+
+                override fun onChildDraw(
+                    c: Canvas,
+                    recyclerView: RecyclerView,
+                    viewHolder: RecyclerView.ViewHolder,
+                    dX: Float,
+                    dY: Float,
+                    actionState: Int,
+                    isCurrentlyActive: Boolean
+                ) {
+                    super.onChildDraw(
+                        c,
+                        recyclerView,
+                        viewHolder,
+                        dX,
+                        dY,
+                        actionState,
+                        isCurrentlyActive
+                    )
+
+                    RecyclerViewSwipeDecorator.Builder(
+                        c,
+                        recyclerView,
+                        viewHolder,
+                        dX,
+                        dY,
+                        actionState,
+                        isCurrentlyActive
+                    )
+                        .addBackgroundColor(
+                            ContextCompat.getColor(
+                                requireContext(), R.color.red
+                            )
+                        )
+                        .addActionIcon(R.drawable.ic_delete_sweep)
+                        .create()
+                        .decorate()
+                }
+            }
+
+        val itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
+        itemTouchHelper.attachToRecyclerView(combinations_RV)
+
         setClickListeners()
+        subscribeUI()
     }
 
     private fun subscribeUI() {

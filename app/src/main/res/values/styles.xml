@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.MaterialComponents">
@@ -13,6 +13,7 @@
         <item name="sliderStyle">@style/SliderStyle</item>
         <item name="android:textSize">16sp</item>
         <item name="android:textColor">@color/white</item>
+        <item name="snackbarButtonStyle">@style/SnackbarActionButtonStyle</item>
     </style>
 
     <style name="SliderStyle" parent="Widget.MaterialComponents.Slider">
@@ -23,4 +24,8 @@
         <item name="android:background">@color/colorPrimaryDark</item>
     </style>
 
-</resources>
+    <style name="SnackbarActionButtonStyle"  tools:override="true" parent="@style/Widget.MaterialComponents.Button.TextButton.Snackbar">
+        <item name="fontFamily">@string/font_roboto_medium</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+    </style>
+    </resources>

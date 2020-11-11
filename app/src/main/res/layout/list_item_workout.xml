@@ -12,11 +12,15 @@
 
         <TextView
             android:id="@+id/name_tv"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:fontFamily="@string/font_roboto_medium"
             android:textSize="19sp"
+            android:layout_marginEnd="10dp"
+            android:ellipsize="end"
+            android:maxLines="1"
             app:layout_constraintBottom_toTopOf="@+id/rounds_and_combos_tv"
+            app:layout_constraintEnd_toStartOf="@+id/linearLayout3"
             app:layout_constraintStart_toStartOf="@+id/date_created_tv"
             app:layout_constraintTop_toBottomOf="@+id/date_created_tv"
             tools:text="Workout 1234" />
@@ -45,6 +49,7 @@
             tools:text="6 Rounds · 20 Combos" />
 
         <LinearLayout
+            android:id="@+id/linearLayout3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="20dp"

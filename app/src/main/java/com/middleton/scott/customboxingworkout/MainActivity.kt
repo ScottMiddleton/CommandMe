@@ -4,8 +4,11 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import android.widget.FrameLayout
+import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
@@ -19,7 +22,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : AppCompatActivity() {
     private lateinit var navController: NavController
     private val topLevelDestinations =
-        setOf(R.id.combinationsScreen, R.id.workoutsScreen, R.id.statsScreen)
+        setOf(R.id.combinationsScreen, R.id.workoutsScreen, R.id.createWorkoutScreen)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,16 +33,19 @@ class MainActivity : AppCompatActivity() {
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         val appBarConfiguration = AppBarConfiguration(
-            setOf(
-                R.id.workoutsScreen, R.id.combinationsScreen, R.id.statsScreen
-            )
+            topLevelDestinations
         )
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
+            supportActionBar?.setDisplayShowCustomEnabled(false)
             if (!topLevelDestinations.contains(destination.id)) {
                 nav_view.visibility = GONE
             } else {
                 nav_view.visibility = VISIBLE
+            }
+
+            if (destination.id == R.id.createWorkoutScreen){
+                (this as AppCompatActivity).supportActionBar?.hide()
             }
         }
 
@@ -97,13 +103,15 @@ class MainActivity : AppCompatActivity() {
 //            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
 //        })
 
-//        view.layoutParams = LinearLayout.LayoutParams(
-//            FrameLayout.LayoutParams.MATCH_PARENT,
-//            FrameLayout.LayoutParams.MATCH_PARENT
-//        )
+        val view: View = layoutInflater.inflate(R.layout.title_bar_create_workout, null)
 
-        // Apply the custom View to the ActionBar
-//        supportActionBar?.customView = view
-//        supportActionBar?.setDisplayShowCustomEnabled(true)
+        view.layoutParams = LinearLayout.LayoutParams(
+            FrameLayout.LayoutParams.MATCH_PARENT,
+            FrameLayout.LayoutParams.MATCH_PARENT
+        )
+
+
+        supportActionBar?.customView = view
+        supportActionBar?.setDisplayShowCustomEnabled(true)
     }
 }

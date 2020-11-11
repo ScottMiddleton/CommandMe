@@ -46,25 +46,28 @@
 
     <TextView
         android:id="@+id/combination_name_tv"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
         android:layout_marginTop="12dp"
         android:layout_marginBottom="12dp"
         android:fontFamily="@string/font_roboto_medium"
         android:textSize="17sp"
+        android:maxLines="1"
+        android:ellipsize="end"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/checkbox_fl"
         app:layout_constraintStart_toEndOf="@+id/play_fl"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Combination 1234" />
 
     <FrameLayout
         android:id="@+id/checkbox_fl"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/edit_btn"
-        app:layout_constraintStart_toEndOf="@+id/combination_name_tv"
         app:layout_constraintTop_toTopOf="parent">
 
         <CheckBox

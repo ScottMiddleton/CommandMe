@@ -16,4 +16,7 @@ abstract class SelectedCombinationsCrossRefDao : BaseDao<SelectedCombinationsCro
 
     @Query("DELETE FROM workout_combinations WHERE workout_id = :workoutId")
     abstract suspend fun deleteByWorkoutId(workoutId: Long)
+
+    @Query("DELETE FROM workout_combinations WHERE combination_id = :combinationId")
+    abstract suspend fun deleteByCombinationId(combinationId: Long)
 }
