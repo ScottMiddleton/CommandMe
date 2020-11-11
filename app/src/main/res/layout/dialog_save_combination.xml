@@ -14,12 +14,13 @@
     android:orientation="vertical">
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/text_input_layout"
+        android:id="@+id/name_til"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="@string/combination_name"
         app:hintTextColor="@color/white"
+        android:paddingBottom="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -38,13 +39,13 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="@string/time_to_complete"
-        android:layout_marginTop="10dp"
+        android:paddingBottom="10dp"
         app:hintTextColor="@color/white"
         app:suffixText="Seconds"
         app:suffixTextColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_input_layout">
+        app:layout_constraintTop_toBottomOf="@+id/name_til">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/time_to_complete_et"
@@ -61,7 +62,6 @@
         android:id="@+id/save_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
         android:foreground="?attr/selectableItemBackground"
         android:text="@string/save"
         android:textAllCaps="false"
@@ -74,7 +74,6 @@
         android:id="@+id/delete_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
         android:layout_marginEnd="20dp"
         android:foreground="?attr/selectableItemBackground"
         android:text="@string/delete"

@@ -46,6 +46,8 @@ class MainActivity : AppCompatActivity() {
 
             if (destination.id == R.id.createWorkoutScreen){
                 (this as AppCompatActivity).supportActionBar?.hide()
+            } else {
+                (this as AppCompatActivity).supportActionBar?.show()
             }
         }
 

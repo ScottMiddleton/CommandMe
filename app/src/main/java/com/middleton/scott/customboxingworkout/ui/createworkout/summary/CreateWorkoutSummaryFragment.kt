@@ -3,12 +3,14 @@ package com.middleton.scott.customboxingworkout.ui.createworkout.summary
 import IntensityDialog
 import NumberPickerMinutesSecondsDialog
 import NumberPickerRoundsDialog
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.core.widget.doAfterTextChanged
@@ -235,10 +237,12 @@ class CreateWorkoutSummaryFragment : BaseFragment() {
         }
 
         parentFragment?.save_btn?.setOnClickListener {
+            hideKeyboard()
             viewModel.validateSaveAttempt()
         }
 
         parentFragment?.cancel_btn?.setOnClickListener {
+            hideKeyboard()
             viewModel.onCancel()
         }
 
@@ -255,5 +259,11 @@ class CreateWorkoutSummaryFragment : BaseFragment() {
         viewModel.setWorkTime(viewModel.workout.work_time_secs)
         viewModel.setRestTime(viewModel.workout.rest_time_secs)
         viewModel.setIntensity(viewModel.workout.intensity)
+    }
+
+    private fun hideKeyboard(){
+        val imm: InputMethodManager =
+            requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(requireView().windowToken, 0)
     }
 }

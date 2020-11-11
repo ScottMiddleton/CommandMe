@@ -68,5 +68,6 @@
     <string name="yes_cancel">Yes, cancel</string>
     <string name="this_is_a_required_field">This is a required field.</string>
     <string name="add_combination_dialog_message">You need to add at least one combination to save this workout</string>
+    <string name="greater_than_zero">Must be greater than zero.</string>
 
 </resources>
