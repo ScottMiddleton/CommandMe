@@ -27,7 +27,6 @@ import kotlinx.android.synthetic.main.fragment_combinations.*
 import org.koin.android.ext.android.inject
 import java.io.File
 
-
 class CombinationsScreen : BaseFragment() {
     private val viewModel: CombinationsViewModel by inject()
     private var mediaRecorder = MediaRecorder()
