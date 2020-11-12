@@ -83,9 +83,9 @@ class WorkoutsScreen : BaseFragment() {
         workout_rv.adapter = adapter
 
         undo_btn.setOnClickListener {
-            viewModel.undoPreviouslyDeletedWorkout()
             undo_btn.visibility = GONE
             undo_tv.visibility = GONE
+            viewModel.undoPreviouslyDeletedWorkout()
         }
 
         val itemTouchHelperCallback =

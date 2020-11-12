@@ -75,9 +75,9 @@ class CombinationsScreen : BaseFragment() {
         combinations_RV.adapter = adapter
 
         undo_btn.setOnClickListener {
-            viewModel.undoPreviouslyDeletedCombination()
             undo_btn.visibility = GONE
             undo_tv.visibility = GONE
+            viewModel.undoPreviouslyDeletedCombination()
         }
 
         val itemTouchHelperCallback =
@@ -100,7 +100,7 @@ class CombinationsScreen : BaseFragment() {
                     undo_tv.text = getString(R.string.deleted_snackbar, combination.name)
 
                     handler.removeCallbacksAndMessages(null)
-                    handler.postDelayed( {
+                    handler.postDelayed({
                         undo_btn.visibility = GONE
                         undo_tv.visibility = GONE
                     }, 3000)
@@ -179,7 +179,10 @@ class CombinationsScreen : BaseFragment() {
                 combinations_RV.visibility = View.VISIBLE
                 if (!viewModel.listAnimationShownOnce) {
                     val controller =
-                        AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_fall_down)
+                        AnimationUtils.loadLayoutAnimation(
+                            context,
+                            R.anim.layout_animation_fall_down
+                        )
                     combinations_RV.layoutAnimation = controller
                     viewModel.listAnimationShownOnce = true
                 }
