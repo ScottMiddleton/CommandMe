@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.middleton.scott.commandMeBoxing.R
 import com.middleton.scott.customboxingworkout.ui.base.BaseFragment
+import com.middleton.scott.customboxingworkout.utils.DialogManager
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import kotlinx.android.synthetic.main.fragment_workouts.*
 import org.koin.android.ext.android.inject
@@ -37,11 +38,28 @@ class WorkoutsScreen : BaseFragment() {
                 R.id.createWorkoutScreen,
                 bundleOf("workoutId" to workoutId)
             )
-        }) { workoutId ->
-            findNavController().navigate(
-                R.id.workoutScreen,
-                bundleOf("workoutId" to workoutId)
-            )
+        }) { workoutWithCombinations ->
+            if (workoutWithCombinations.combinations.isEmpty()) {
+                DialogManager.showDialog(
+                    context = requireContext(),
+                    messageId = R.string.no_combinations_dialog_message,
+                    positiveBtnTextId = R.string.exit,
+                    positiveBtnClick = {
+                    },
+                    negativeBtnTextId =  R.string.ok,
+                    negativeBtnClick = {
+                        findNavController().navigate(
+                            R.id.createWorkoutScreen,
+                            bundleOf("workoutId" to workoutWithCombinations.workout?.id)
+                        )
+                    }
+                )
+            } else {
+                findNavController().navigate(
+                    R.id.workoutScreen,
+                    bundleOf("workoutId" to workoutWithCombinations.workout?.id)
+                )
+            }
         }
     }
 
