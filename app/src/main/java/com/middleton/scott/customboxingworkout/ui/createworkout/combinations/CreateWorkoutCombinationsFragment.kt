@@ -71,6 +71,7 @@ class CreateWorkoutCombinationsFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         combinations_RV.adapter = adapter
 
         recordButtonAnimation = AnimationUtils.loadAnimation(this.context, R.anim.button_scale)

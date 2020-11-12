@@ -6,13 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <View
-        android:id="@+id/view2"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/white_faded_20"
-        app:layout_constraintTop_toTopOf="@+id/punch_bag_iv" />
-
     <ImageView
         android:id="@+id/punch_bag_iv"
         android:layout_width="match_parent"
@@ -25,18 +18,15 @@
 
     <LinearLayout
         android:id="@+id/empty_list_layout"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:padding="48dp"
-        android:layout_marginTop="40dp"
         android:animateLayoutChanges="true"
         android:orientation="vertical"
+        android:padding="48dp"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/record_cl"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/punch_bag_iv">
+        app:layout_constraintBottom_toBottomOf="@+id/linearLayout5"
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/empty_state_title_tv"
@@ -59,16 +49,84 @@
 
     </LinearLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/combinations_RV"
+    <LinearLayout
+        android:id="@+id/linearLayout5"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:animateLayoutChanges="true"
+        android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/record_cl"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:visibility="visible"
-        tools:listitem="@layout/list_item_combination" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <View
+            android:id="@+id/view2"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/white_faded_20"
+            app:layout_constraintTop_toTopOf="@+id/punch_bag_iv" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/undo_cl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:animateLayoutChanges="true"
+            android:background="@drawable/list_item_combination_summary_background"
+            android:elevation="3dp">
+
+            <TextView
+                android:id="@+id/undo_tv"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:padding="8dp"
+                android:ellipsize="end"
+                android:lines="1"
+                android:text="@string/deleted_snackbar"
+                android:textAlignment="center"
+                android:textSize="16sp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/undo_btn"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Button
+                android:id="@+id/undo_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="10dp"
+                android:background="@android:color/transparent"
+                android:fontFamily="@string/font_roboto_medium"
+                android:text="@string/undo"
+                android:textColor="@color/colorPrimary"
+                android:textSize="16sp"
+                android:visibility="gone"
+                android:padding="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/combinations_RV"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="visible"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintBottom_toTopOf="@+id/record_cl"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:listitem="@layout/list_item_combination" />
+
+        </FrameLayout>
+
+    </LinearLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/record_cl"

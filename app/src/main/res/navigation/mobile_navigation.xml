@@ -27,6 +27,10 @@
             android:name="workoutId"
             android:defaultValue="-1L"
             app:argType="long" />
+        <argument
+            android:name="navigateToCombinations"
+            android:defaultValue="false"
+            app:argType="boolean" />
     </fragment>
     <fragment
         android:id="@+id/workoutScreen"

@@ -20,7 +20,7 @@ import org.koin.core.parameter.parametersOf
 
 class CreateWorkoutScreen : BaseFragment() {
     private val args: CreateWorkoutScreenArgs by navArgs()
-    private val viewModel: CreateWorkoutSharedViewModel by viewModel { parametersOf(args.workoutId) }
+    private val viewModel: CreateWorkoutSharedViewModel by viewModel { parametersOf(args.workoutId, args.navigateToCombinations) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,7 +37,10 @@ class CreateWorkoutScreen : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         subscribeUI()
+
         setupViewPagerAndTabLayout()
+
+
     }
 
     private fun subscribeUI() {

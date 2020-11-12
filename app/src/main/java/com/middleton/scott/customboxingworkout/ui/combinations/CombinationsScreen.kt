@@ -4,6 +4,7 @@ import SaveCombinationDialog
 import android.graphics.Canvas
 import android.media.MediaRecorder
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -24,6 +25,11 @@ import com.middleton.scott.customboxingworkout.utils.MediaRecorderManager
 import com.middleton.scott.customboxingworkout.utils.PermissionsDialogManager
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import kotlinx.android.synthetic.main.fragment_combinations.*
+import kotlinx.android.synthetic.main.fragment_combinations.empty_list_layout
+import kotlinx.android.synthetic.main.fragment_combinations.undo_btn
+import kotlinx.android.synthetic.main.fragment_combinations.undo_tv
+import kotlinx.android.synthetic.main.fragment_workouts.*
+import kotlinx.coroutines.GlobalScope
 import org.koin.android.ext.android.inject
 import java.io.File
 
@@ -32,6 +38,8 @@ class CombinationsScreen : BaseFragment() {
     private var mediaRecorder = MediaRecorder()
     private lateinit var recordButtonAnimation: Animation
     private lateinit var recordButtonAnimationReverse: Animation
+
+    private val handler = Handler()
 
     private lateinit var adapter: CombinationsAdapter
 
@@ -66,6 +74,12 @@ class CombinationsScreen : BaseFragment() {
             AnimationUtils.loadAnimation(this.context, R.anim.button_scale_reverse)
         combinations_RV.adapter = adapter
 
+        undo_btn.setOnClickListener {
+            viewModel.undoPreviouslyDeletedCombination()
+            undo_btn.visibility = GONE
+            undo_tv.visibility = GONE
+        }
+
         val itemTouchHelperCallback =
             object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
                 override fun onMove(
@@ -77,24 +91,19 @@ class CombinationsScreen : BaseFragment() {
                 }
 
                 override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                    undo_btn.visibility = View.VISIBLE
+                    undo_tv.visibility = View.VISIBLE
+
                     val position = viewHolder.adapterPosition
                     val combination = viewModel.deleteCombination(position)
 
-                    Snackbar.make(
-                        combinations_RV,
-                        getString(R.string.deleted_snackbar, combination.name),
-                        Snackbar.LENGTH_LONG
-                    )
-                        .setAction(getString(R.string.undo)) {
-                            viewModel.undoPreviouslyDeletedCombination()
-                        }.addCallback(object : Snackbar.Callback() {
-                            override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
-                                super.onDismissed(transientBottomBar, event)
-                                if (event != DISMISS_EVENT_ACTION) {
-                                    viewModel.deleteWorkoutCombinations()
-                                }
-                            }
-                        }).show()
+                    undo_tv.text = getString(R.string.deleted_snackbar, combination.name)
+
+                    handler.removeCallbacksAndMessages(null)
+                    handler.postDelayed( {
+                        undo_btn.visibility = GONE
+                        undo_tv.visibility = GONE
+                    }, 3000)
                 }
 
                 override fun onChildDraw(

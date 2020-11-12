@@ -2,6 +2,7 @@ package com.middleton.scott.customboxingworkout.ui.workouts
 
 import android.graphics.Canvas
 import android.os.Bundle
+import android.os.Handler
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -17,7 +18,6 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.snackbar.Snackbar
 import com.middleton.scott.commandMeBoxing.R
 import com.middleton.scott.customboxingworkout.ui.base.BaseFragment
 import com.middleton.scott.customboxingworkout.utils.DialogManager
@@ -25,10 +25,11 @@ import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import kotlinx.android.synthetic.main.fragment_workouts.*
 import org.koin.android.ext.android.inject
 
-
 class WorkoutsScreen : BaseFragment() {
     private val viewModel: WorkoutsViewModel by inject()
     private lateinit var adapter: WorkoutsAdapter
+
+    private val handler = Handler()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,11 +47,14 @@ class WorkoutsScreen : BaseFragment() {
                     positiveBtnTextId = R.string.exit,
                     positiveBtnClick = {
                     },
-                    negativeBtnTextId =  R.string.ok,
+                    negativeBtnTextId = R.string.ok,
                     negativeBtnClick = {
                         findNavController().navigate(
                             R.id.createWorkoutScreen,
-                            bundleOf("workoutId" to workoutWithCombinations.workout?.id)
+                            bundleOf(
+                                "workoutId" to workoutWithCombinations.workout?.id,
+                                "navigateToCombinations" to true
+                            )
                         )
                     }
                 )
@@ -78,6 +82,12 @@ class WorkoutsScreen : BaseFragment() {
 
         workout_rv.adapter = adapter
 
+        undo_btn.setOnClickListener {
+            viewModel.undoPreviouslyDeletedWorkout()
+            undo_btn.visibility = GONE
+            undo_tv.visibility = GONE
+        }
+
         val itemTouchHelperCallback =
             object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
                 override fun onMove(
@@ -89,16 +99,19 @@ class WorkoutsScreen : BaseFragment() {
                 }
 
                 override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                    undo_btn.visibility = VISIBLE
+                    undo_tv.visibility = VISIBLE
+
                     val position = viewHolder.adapterPosition
                     val workout = viewModel.deleteWorkout(position)
 
-                    Snackbar.make(
-                        workout_rv,
-                        getString(R.string.deleted_snackbar, workout.name),
-                        Snackbar.LENGTH_LONG
-                    ).setAction(getString(R.string.undo)) {
-                        viewModel.undoPreviouslyDeletedWorkout()
-                    }.show()
+                    undo_tv.text = getString(R.string.deleted_snackbar, workout.name)
+
+                    handler.removeCallbacksAndMessages(null)
+                    handler.postDelayed( {
+                        undo_btn.visibility = GONE
+                        undo_tv.visibility = GONE
+                    }, 3000)
                 }
 
                 override fun onChildDraw(

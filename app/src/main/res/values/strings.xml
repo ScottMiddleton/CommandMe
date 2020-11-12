@@ -59,7 +59,7 @@
     <string name="restart">Restart</string>
     <string name="combinations_thrown">Combinations thrown:</string>
     <string name="deleted_snackbar">%1$s has been deleted</string>
-    <string name="undo">UNDO</string>
+    <string name="undo">Undo</string>
     <string name="cancel">Cancel</string>
     <string name="cancel_this_workout">Cancel this workout?</string>
     <string name="unsaved_dialog_message">The changes you have made to this workout are unsaved and will be lost.</string>
@@ -71,9 +71,9 @@
     <string name="add_a_workout_and_it_will_show_up_here">Add a workout and it will show up here.</string>
     <string name="create_a_workout">Create a Workout!</string>
     <string name="record_a_command">Record a command!</string>
-    <string name="shout_your_combination_and_it_will_appear_here">Hold the record button below and shout your combination. It will show up here.</string>
+    <string name="shout_your_combination_and_it_will_appear_here">Hold the record button below and shout a combination.</string>
     <string name="exit">Exit</string>
-    <string name="no_combinations_dialog_message">This workout no longer has combinations added as they have been deleted. Please add new ones to begin this workout</string>
+    <string name="no_combinations_dialog_message">Please add combinations to begin this workout</string>
     <string name="ok">Ok</string>
 
 </resources>

@@ -15,7 +15,8 @@ import kotlinx.coroutines.launch
 
 class CreateWorkoutSharedViewModel(
     private val localDataSource: LocalDataSource,
-    var workoutId: Long
+    var workoutId: Long,
+    var navigateToCombinations: Boolean
 ) : CombinationsViewModel(localDataSource) {
 
     var subscribe = true
