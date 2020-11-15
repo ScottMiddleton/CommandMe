@@ -1,5 +1,6 @@
 package com.middleton.scott.customboxingworkout
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
@@ -12,11 +13,13 @@ import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.middleton.scott.commandMeBoxing.R
+import com.middleton.scott.customboxingworkout.other.Constants.ACTION_SHOW_WORKOUT_SCREEN
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -27,6 +30,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        navigatedToWorkoutScreenIfNeeded(intent)
+
         val navView: BottomNavigationView = findViewById(R.id.nav_view)
 
         navController = findNavController(R.id.nav_host_fragment)
@@ -84,6 +90,11 @@ class MainActivity : AppCompatActivity() {
         return super.onSupportNavigateUp()
     }
 
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        navigatedToWorkoutScreenIfNeeded(intent)
+    }
+
     private fun setupCustomAppBar() {
         // Control the media volume
 //        volumeControlStream = AudioManager.STREAM_MUSIC
@@ -115,5 +126,11 @@ class MainActivity : AppCompatActivity() {
 
         supportActionBar?.customView = view
         supportActionBar?.setDisplayShowCustomEnabled(true)
+    }
+
+    private fun navigatedToWorkoutScreenIfNeeded(intent: Intent?){
+        if(intent?.action == ACTION_SHOW_WORKOUT_SCREEN){
+            nav_host_fragment.findNavController().navigate(R.id.action_global_workout_screen)
+        }
     }
 }

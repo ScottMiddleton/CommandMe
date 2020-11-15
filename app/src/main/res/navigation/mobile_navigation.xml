@@ -4,6 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
     app:startDestination="@+id/workoutsScreen">
+
+    <action
+        android:id="@+id/action_global_workout_screen"
+        app:destination="@id/workoutScreen"
+        app:launchSingleTop="true" />
+
     <fragment
         android:id="@+id/workoutsScreen"
         android:name="com.middleton.scott.customboxingworkout.ui.workouts.WorkoutsScreen"
@@ -14,11 +20,6 @@
         android:name="com.middleton.scott.customboxingworkout.ui.combinations.CombinationsScreen"
         android:label="@string/combinations"
         tools:layout="@layout/fragment_workouts" />
-<!--    <fragment-->
-<!--        android:id="@+id/statsScreen"-->
-<!--        android:name="com.middleton.scott.customboxingworkout.ui.stats.StatsScreen"-->
-<!--        android:label="@string/stats"-->
-<!--        tools:layout="@layout/fragment_notifications" />-->
     <fragment
         android:id="@+id/createWorkoutScreen"
         android:name="com.middleton.scott.customboxingworkout.ui.createworkout.CreateWorkoutScreen"
