@@ -23,6 +23,6 @@ val appModule = module {
     viewModel { CombinationsViewModel(get()) }
     viewModel { WorkoutsViewModel(get()) }
     viewModel { StatsViewModel(get()) }
-    viewModel {(workoutId: Long) -> CreateWorkoutSharedViewModel(get(), workoutId) }
+    viewModel {(workoutId: Long, navigateToCombinations: Boolean) -> CreateWorkoutSharedViewModel(get(), workoutId, navigateToCombinations) }
     viewModel {(workoutId: Long) -> WorkoutScreenViewModel(get(), workoutId) }
 }

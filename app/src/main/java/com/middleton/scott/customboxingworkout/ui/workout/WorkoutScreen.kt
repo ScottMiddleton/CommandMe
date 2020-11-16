@@ -1,5 +1,6 @@
 package com.middleton.scott.customboxingworkout.ui.workout
 
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.media.AudioAttributes
@@ -20,13 +21,14 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.middleton.scott.commandMeBoxing.R
 import com.middleton.scott.customboxingworkout.MainActivity
+import com.middleton.scott.customboxingworkout.other.Constants.ACTION_START_OR_RESUME_SERVICE
+import com.middleton.scott.customboxingworkout.service.WorkoutService
 import com.middleton.scott.customboxingworkout.ui.base.BaseFragment
 import com.middleton.scott.customboxingworkout.utils.DateTimeUtils
 import kotlinx.android.synthetic.main.fragment_workout_screen.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import java.io.IOException
-
 
 class WorkoutScreen : BaseFragment() {
     private val args: WorkoutScreenArgs by navArgs()
@@ -49,8 +51,7 @@ class WorkoutScreen : BaseFragment() {
         initRoundProgressView()
         initSoundPool()
         (activity as MainActivity).supportActionBar?.title = viewModel.workoutName
-        viewModel.audioFileBaseDirectory =
-            view.context.getExternalFilesDir(null)?.absolutePath + "/"
+        viewModel.audioFileBaseDirectory = view.context.getExternalFilesDir(null)?.absolutePath + "/"
         total_rounds_count_tv.text = viewModel.getTotalRounds().toString()
         remaining_tv.text = DateTimeUtils.toMinuteSeconds(viewModel.totalWorkoutSecs)
         subscribeUI()
@@ -237,6 +238,18 @@ class WorkoutScreen : BaseFragment() {
             progressBar.progressTintList = ColorStateList.valueOf(Color.RED)
             round_progress_ll.addView(progressBar)
         }
+    }
+
+    private fun sendCommandToService(action: String){
+        Intent(requireContext(), WorkoutService::class.java).also{
+            it.action = action
+            requireContext().startService(it)
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        sendCommandToService(ACTION_START_OR_RESUME_SERVICE)
     }
 
     override fun onDestroy() {

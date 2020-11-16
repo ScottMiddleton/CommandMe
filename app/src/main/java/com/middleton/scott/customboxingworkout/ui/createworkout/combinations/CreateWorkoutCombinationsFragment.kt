@@ -8,6 +8,8 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
@@ -29,6 +31,8 @@ import java.io.File
 class CreateWorkoutCombinationsFragment : BaseFragment() {
     private val viewModel by lazy { requireParentFragment().getViewModel<CreateWorkoutSharedViewModel>() }
     private var mediaRecorder = MediaRecorder()
+    private lateinit var recordButtonAnimation: Animation
+    private lateinit var recordButtonAnimationReverse: Animation
 
     private lateinit var adapter: CombinationsAdapter
 
@@ -67,6 +71,12 @@ class CreateWorkoutCombinationsFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        combinations_RV.adapter = adapter
+
+        recordButtonAnimation = AnimationUtils.loadAnimation(this.context, R.anim.button_scale)
+        recordButtonAnimationReverse =
+            AnimationUtils.loadAnimation(this.context, R.anim.button_scale_reverse)
         combinations_RV.adapter = adapter
 
         val itemTouchHelperCallback =
@@ -142,43 +152,65 @@ class CreateWorkoutCombinationsFragment : BaseFragment() {
         val itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
         itemTouchHelper.attachToRecyclerView(combinations_RV)
 
-        setClickListeners()
         subscribeUI()
+
+        viewModel.audioFileBaseDirectory =
+            context?.getExternalFilesDir(null)?.absolutePath + "/"
+
+        context?.let { context ->
+            activity?.let { activity ->
+                PermissionsDialogManager.handlePermissionsDialog(
+                    context,
+                    activity
+                ) { permissionsGranted ->
+                    if (permissionsGranted) {
+                        viewModel.permissionsGranted = true
+                    }
+                }
+            }
+        }
+
+        setClickListeners()
     }
 
     private fun subscribeUI() {
         viewModel.getAllCombinationsLD().observe(viewLifecycleOwner, Observer {
-            adapter.setAdapter(it, viewModel.selectedCombinations)
+            if (it.isNullOrEmpty()) {
+                empty_list_layout.visibility = View.VISIBLE
+                combinations_RV.visibility = View.GONE
+            } else {
+                empty_list_layout.visibility = View.GONE
+                combinations_RV.visibility = View.VISIBLE
+                if (!viewModel.listAnimationShownOnce) {
+                    val controller =
+                        AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_fall_down)
+                    combinations_RV.layoutAnimation = controller
+                    viewModel.listAnimationShownOnce = true
+                }
+            }
+            adapter.setAdapter(it, null)
         })
     }
 
     private fun setClickListeners() {
-        record_audio_button.setOnTouchListener(object : View.OnTouchListener {
-            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-                when (event?.action) {
-                    MotionEvent.ACTION_DOWN -> {
-                        context?.let { context ->
-                            activity?.let { activity ->
-                                PermissionsDialogManager.handlePermissionsDialog(
-                                    context,
-                                    activity
-                                ) { permissionsGranted ->
-                                    if (permissionsGranted) {
-                                        handleRecordAudioAnimations(true)
-                                        startRecording()
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    MotionEvent.ACTION_UP -> {
-                        stopRecording()
-                        handleRecordAudioAnimations(false)
+        record_audio_button.setOnTouchListener { _, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    if (viewModel.permissionsGranted) {
+                        record_audio_button.startAnimation(recordButtonAnimation)
+                        handleRecordAudioAnimations(true)
+                        startRecording()
                     }
                 }
-                return v?.onTouchEvent(event) ?: true
+
+                MotionEvent.ACTION_UP -> {
+                    handleRecordAudioAnimations(false)
+                    record_audio_button.startAnimation(recordButtonAnimationReverse)
+                    stopRecording()
+                }
             }
-        })
+            true
+        }
     }
 
     private fun startRecording() {

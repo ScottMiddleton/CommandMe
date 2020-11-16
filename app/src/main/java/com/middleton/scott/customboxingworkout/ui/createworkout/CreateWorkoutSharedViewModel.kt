@@ -15,12 +15,15 @@ import kotlinx.coroutines.launch
 
 class CreateWorkoutSharedViewModel(
     private val localDataSource: LocalDataSource,
-    var workoutId: Long
+    var workoutId: Long,
+    var navigateToCombinations: Boolean
 ) : CombinationsViewModel(localDataSource) {
 
     var subscribe = true
     var workout = Workout()
     var savedWorkout = Workout()
+
+    var userHasAttemptedToSave = false
 
     var selectedCombinations = ArrayList<Combination>()
     var selectedCombinationsCrossRefs = ArrayList<SelectedCombinationsCrossRef>()
@@ -71,10 +74,14 @@ class CreateWorkoutSharedViewModel(
     val intensityLD = MutableLiveData<Int>()
     val dbUpdateLD = MutableLiveData<Boolean>()
     val showCancellationDialogLD = MutableLiveData<Boolean>()
+    val workoutNameValidatedLD = MutableLiveData<Boolean>()
+    val combinationsValidatedLD = MutableLiveData<Boolean>()
+    val requiredSummaryFieldLD = MutableLiveData<Boolean>()
 
     fun upsertWorkout() {
         viewModelScope.launch {
             subscribe = false
+            localDataSource.upsertWorkoutCombinations(selectedCombinationsCrossRefs)
             localDataSource.upsertWorkout(workout)
             dbUpdateLD.value = true
         }
@@ -185,5 +192,24 @@ class CreateWorkoutSharedViewModel(
     fun onCancel() {
         showCancellationDialogLD.value =
             !(savedWorkout == workout && savedSelectedCombinationsCrossRefs == selectedCombinationsCrossRefs)
+    }
+
+    fun validateSaveAttempt() {
+        userHasAttemptedToSave = true
+        if (workout.name.isNullOrBlank()){
+            workoutNameValidatedLD.value = false
+        }
+
+        if(selectedCombinations.isEmpty()){
+            combinationsValidatedLD.value = false
+        }
+
+        if(selectedCombinations.isNotEmpty() && !workout.name.isNullOrBlank()) {
+            upsertWorkout()
+        }
+
+        if(selectedCombinations.isNotEmpty() && workout.name.isNullOrBlank()){
+            requiredSummaryFieldLD.value = true
+        }
     }
 }

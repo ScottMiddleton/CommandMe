@@ -8,7 +8,13 @@ import androidx.lifecycle.viewModelScope
 import com.middleton.scott.customboxingworkout.datasource.local.LocalDataSource
 import com.middleton.scott.customboxingworkout.datasource.local.model.Combination
 import com.middleton.scott.customboxingworkout.datasource.local.model.WorkoutWithCombinations
+import com.middleton.scott.customboxingworkout.service.ServiceAudioCommand
+import com.middleton.scott.customboxingworkout.service.WorkoutService.Companion.serviceCommandAudioLD
+import com.middleton.scott.customboxingworkout.service.WorkoutService.Companion.serviceCountdownSecondsLD
+import com.middleton.scott.customboxingworkout.service.WorkoutService.Companion.serviceWorkoutStateLD
+import com.middleton.scott.customboxingworkout.utils.DateTimeUtils
 import kotlinx.coroutines.launch
+import kotlin.math.ceil
 
 class WorkoutScreenViewModel(
     private val localDataSource: LocalDataSource,
@@ -96,17 +102,20 @@ class WorkoutScreenViewModel(
 
     private fun initWorkoutState(state: WorkoutState) {
         _workoutStateLD.value = state
+        serviceWorkoutStateLD.value = state
 
         // If is last round
         when (state) {
             WorkoutState.PREPARE -> {
                 _countdownSecondsLD.value = preparationTimeSecs
+//                serviceCountdownSecondsLD.value = preparationTimeSecs
                 millisRemainingAtPause = preparationTimeSecs * 1000L
             }
             WorkoutState.WORK -> {
                 roundProgress = -1
                 _roundProgressLD.value = roundProgress
                 _countdownSecondsLD.value = workTimeSecs
+//                serviceCountdownSecondsLD.value = workTimeSecs
                 millisRemainingAtPause = workTimeSecs * 1000L
             }
             WorkoutState.REST -> {
@@ -114,6 +123,7 @@ class WorkoutScreenViewModel(
                     onComplete()
                 } else {
                     _countdownSecondsLD.value = restTimeSecs
+//                    serviceCountdownSecondsLD.value = restTimeSecs
                     millisRemainingAtPause = restTimeSecs * 1000L
                 }
             }
@@ -172,10 +182,13 @@ class WorkoutScreenViewModel(
                 }
 
                 override fun onTick(millisUntilFinished: Long) {
-                    _countdownSecondsLD.value = (millisUntilFinished / 1000 + 1).toInt()
+                    _countdownSecondsLD.value = (ceil(millisUntilFinished.toDouble() / 1000).toInt())
+
+                    val countdownStr = DateTimeUtils.toMinuteSeconds(ceil(millisUntilFinished.toDouble() / 1000).toInt())
+                    serviceCountdownSecondsLD.value = countdownStr
                     millisRemainingAtPause = millisUntilFinished
 
-                    restartOnPrevious = (countdownMillis - millisUntilFinished) > 1000
+                    restartOnPrevious = countdownMillis - millisUntilFinished > 1000
 
                     if (workoutStateLD.value != WorkoutState.PREPARE) {
                         onSecondElapsed()
@@ -198,6 +211,7 @@ class WorkoutScreenViewModel(
         combinationsThrown++
         val nextCombination: Combination? = getRandomCombination()
         _currentCombinationLD.value = nextCombination
+        serviceCommandAudioLD.value = nextCombination?.file_name?.let { ServiceAudioCommand(it, audioFileBaseDirectory) }
         val timeToCompleteCombination = nextCombination?.timeToCompleteMillis ?: 2000
         millisUntilNextCombination = getTimeUntilNextCombination(timeToCompleteCombination)
     }

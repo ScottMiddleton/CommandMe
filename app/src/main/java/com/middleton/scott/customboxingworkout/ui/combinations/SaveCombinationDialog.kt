@@ -8,10 +8,13 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import androidx.annotation.Nullable
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.DialogFragment
 import com.middleton.scott.commandMeBoxing.R
 import com.middleton.scott.customboxingworkout.datasource.local.model.Combination
 import kotlinx.android.synthetic.main.dialog_save_combination.*
+
+const val numberOfFieldsToValidate = 2
 
 class SaveCombinationDialog(
     private val isEditMode: Boolean,
@@ -27,6 +30,7 @@ class SaveCombinationDialog(
     }
 
     private var timeToCompleteMillis: Long = 0L
+    private var saveAttempted = false
 
     override fun onViewCreated(view: View, @Nullable savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -36,6 +40,8 @@ class SaveCombinationDialog(
         dialog?.window?.setSoftInputMode(
             WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE
         )
+
+        dialog?.setCanceledOnTouchOutside(false)
 
         timeToCompleteMillis = combination.timeToCompleteMillis
 
@@ -49,10 +55,13 @@ class SaveCombinationDialog(
 
     private fun setClickListeners() {
         save_btn.setOnClickListener {
-            combination.name = name_et.text.toString()
-            combination.timeToCompleteMillis = timeToCompleteMillis
-            onSave(combination)
-            dismiss()
+            saveAttempted = true
+            if (validateFields()) {
+                combination.name = name_et.text.toString()
+                combination.timeToCompleteMillis = timeToCompleteMillis
+                onSave(combination)
+                dismiss()
+            }
         }
 
         delete_btn.setOnClickListener {
@@ -76,12 +85,28 @@ class SaveCombinationDialog(
 
             NumberPickerSecondsDialog(millis, { newMillis ->
                 timeToCompleteMillis = newMillis
-
                 time_to_complete_et.setText(getSecondsTextFromMillis(newMillis))
                 name_et.clearFocus()
+                if (saveAttempted) {
+                    if (timeToCompleteMillis <= 0) {
+                        time_to_complete_til.error = getString(R.string.greater_than_zero)
+                    } else {
+                        time_to_complete_til.isErrorEnabled = false
+                    }
+                }
             }, {
 
             }).show(childFragmentManager, "")
+        }
+
+        name_et.doAfterTextChanged {
+            if (saveAttempted) {
+                if (name_et.text.isNullOrBlank()) {
+                    name_til.error = getString(R.string.this_is_a_required_field)
+                } else {
+                    name_til.isErrorEnabled = false
+                }
+            }
         }
     }
 
@@ -91,5 +116,21 @@ class SaveCombinationDialog(
         } else {
             (millis / 1000.0).toString()
         }
+    }
+
+    private fun validateFields(): Boolean {
+        var validFieldsCount = 2
+
+        if (name_et.text.isNullOrBlank()) {
+            name_til.error = getString(R.string.this_is_a_required_field)
+            validFieldsCount--
+        }
+
+        if (timeToCompleteMillis <= 0) {
+            time_to_complete_til.error = getString(R.string.greater_than_zero)
+            validFieldsCount--
+        }
+
+        return validFieldsCount == numberOfFieldsToValidate
     }
 }

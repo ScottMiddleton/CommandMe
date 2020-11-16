@@ -40,4 +40,8 @@ class WorkoutsViewModel(private val localDataSource: LocalDataSource) : ViewMode
             localDataSource.upsertWorkout(previouslyDeletedWorkout)
         }
     }
+
+    fun getWorkout(workoutId: Long): Workout? {
+        return localDataSource.getWorkoutById(workoutId)
+    }
 }

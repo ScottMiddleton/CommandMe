@@ -15,7 +15,7 @@ import com.middleton.scott.customboxingworkout.utils.DateTimeUtils
 
 class WorkoutsAdapter(
     private val onEditWorkout: ((Long) -> Unit),
-    private val onClickWorkout: ((Long) -> Unit)
+    private val onClickWorkout: ((WorkoutWithCombinations) -> Unit)
 ) : RecyclerView.Adapter<WorkoutsAdapter.WorkoutsViewHolder>() {
 
     private lateinit var context: Context
@@ -44,7 +44,7 @@ class WorkoutsAdapter(
             workout?.id?.let { id -> onEditWorkout(id) }
         }
         holder.parent.setOnClickListener {
-            workout?.id?.let { id -> onClickWorkout(id) }
+            onClickWorkout(workoutsWithCombinations[position])
         }
         holder.dateTV.text = workout?.dateCreated?.let { DateTimeUtils.toDayMonthYear(it) }
         holder.roundsCombosTV.text = context.getString(R.string.rounds_combos, workout?.numberOfRounds.toString(), exercises.size.toString())

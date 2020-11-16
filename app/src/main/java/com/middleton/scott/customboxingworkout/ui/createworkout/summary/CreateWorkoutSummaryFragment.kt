@@ -3,13 +3,14 @@ package com.middleton.scott.customboxingworkout.ui.createworkout.summary
 import IntensityDialog
 import NumberPickerMinutesSecondsDialog
 import NumberPickerRoundsDialog
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
-import android.widget.TextView
+import android.view.inputmethod.InputMethodManager
 import androidx.activity.OnBackPressedCallback
 import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.Observer
@@ -20,6 +21,7 @@ import com.middleton.scott.customboxingworkout.ui.base.BaseFragment
 import com.middleton.scott.customboxingworkout.ui.createworkout.CreateWorkoutSharedViewModel
 import com.middleton.scott.customboxingworkout.utils.DateTimeUtils
 import com.middleton.scott.customboxingworkout.utils.DialogManager
+import kotlinx.android.synthetic.main.fragment_create_workout_screen.*
 import kotlinx.android.synthetic.main.fragment_summary_tab.*
 import kotlinx.android.synthetic.main.title_bar_create_workout.*
 import org.koin.androidx.viewmodel.ext.android.getViewModel
@@ -60,11 +62,12 @@ class CreateWorkoutSummaryFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        combinations_summary_rv.adapter = adapter
 
-        requireActivity().findViewById<TextView>(R.id.save_btn).setOnClickListener {
-            findNavController().popBackStack()
+        if (viewModel.navigateToCombinations) {
+            parentFragment?.create_workout_vp?.setCurrentItem(1, false)
         }
+
+        combinations_summary_rv.adapter = adapter
 
         subscribeUI()
         setListeners()
@@ -119,20 +122,56 @@ class CreateWorkoutSummaryFragment : BaseFragment() {
                     requireContext(),
                     R.string.cancel_this_workout,
                     R.string.unsaved_dialog_message,
+                    R.string.save_and_exit,
+                    { viewModel.validateSaveAttempt() },
                     R.string.yes_cancel,
                     {
                         viewModel.cancelChanges()
-                    },
-                    R.string.save_and_exit,
-                    { viewModel.upsertWorkout() })
+                    })
             } else {
                 findNavController().popBackStack()
+            }
+        })
+
+        viewModel.combinationsValidatedLD.observe(viewLifecycleOwner, Observer {
+            if (!it) {
+                DialogManager.showDialog(
+                    context = requireContext(),
+                    messageId = R.string.add_combination_dialog_message,
+                    positiveBtnTextId = R.string.add_combination,
+                    positiveBtnClick = {
+                        val viewPager =
+                            parentFragment?.view?.findViewById(R.id.create_workout_vp) as ViewPager2
+                        viewPager.currentItem = 1
+                    })
+            }
+        })
+
+        viewModel.workoutNameValidatedLD.observe(viewLifecycleOwner, Observer {
+            if (it) {
+                workout_name_til.isErrorEnabled = false
+            } else {
+                workout_name_til.error = getString(R.string.this_is_a_required_field)
+            }
+        })
+
+        viewModel.requiredSummaryFieldLD.observe(viewLifecycleOwner, Observer {
+            if(it){
+                val viewPager = parentFragment?.view?.findViewById(R.id.create_workout_vp) as ViewPager2
+                viewPager.currentItem = 0
             }
         })
     }
 
     private fun setListeners() {
         workout_name_et.doAfterTextChanged {
+            if (viewModel.userHasAttemptedToSave) {
+                if (it.isNullOrBlank()) {
+                    workout_name_til.error = getString(R.string.this_is_a_required_field)
+                } else {
+                    workout_name_til.error = null
+                }
+            }
             viewModel.setWorkoutName(it.toString())
         }
 
@@ -199,10 +238,12 @@ class CreateWorkoutSummaryFragment : BaseFragment() {
         }
 
         parentFragment?.save_btn?.setOnClickListener {
-            viewModel.upsertWorkout()
+            hideKeyboard()
+            viewModel.validateSaveAttempt()
         }
 
         parentFragment?.cancel_btn?.setOnClickListener {
+            hideKeyboard()
             viewModel.onCancel()
         }
 
@@ -219,5 +260,11 @@ class CreateWorkoutSummaryFragment : BaseFragment() {
         viewModel.setWorkTime(viewModel.workout.work_time_secs)
         viewModel.setRestTime(viewModel.workout.rest_time_secs)
         viewModel.setIntensity(viewModel.workout.intensity)
+    }
+
+    private fun hideKeyboard(){
+        val imm: InputMethodManager =
+            requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(requireView().windowToken, 0)
     }
 }
