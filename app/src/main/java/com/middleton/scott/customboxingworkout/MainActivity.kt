@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-//        navigatedToWorkoutScreenIfNeeded(intent)
+        navigatedToWorkoutScreenIfNeeded(intent)
 
         val navView: BottomNavigationView = findViewById(R.id.nav_view)
 
@@ -128,9 +128,9 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.setDisplayShowCustomEnabled(true)
     }
 
-//    private fun navigatedToWorkoutScreenIfNeeded(intent: Intent?){
-//        if(intent?.action == ACTION_SHOW_WORKOUT_SCREEN){
-//            nav_host_fragment.findNavController().navigate(R.id.action_global_workout_screen)
-//        }
-//    }
+    private fun navigatedToWorkoutScreenIfNeeded(intent: Intent?){
+        if(intent?.action == ACTION_SHOW_WORKOUT_SCREEN){
+            nav_host_fragment.findNavController().navigate(R.id.action_global_workout_screen)
+        }
+    }
 }

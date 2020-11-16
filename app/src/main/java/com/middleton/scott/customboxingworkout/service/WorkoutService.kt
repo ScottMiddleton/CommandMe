@@ -33,6 +33,7 @@ import java.io.IOException
 class WorkoutService : LifecycleService() {
 
     var isFirstRun = true
+    var serviceKilled = false
 
     private var mediaPlayer = MediaPlayer()
 
@@ -43,6 +44,11 @@ class WorkoutService : LifecycleService() {
         val serviceWorkoutStateLD = MutableLiveData<WorkoutState>()
         val serviceCountdownSecondsLD = MutableLiveData<String>()
         val serviceCommandAudioLD = MutableLiveData<ServiceAudioCommand>()
+    }
+
+    private fun postInitialValues(){
+        serviceCountdownSecondsLD.value = ""
+        serviceCommandAudioLD.value = ServiceAudioCommand("","")
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -60,7 +66,7 @@ class WorkoutService : LifecycleService() {
 
                 }
                 ACTION_STOP_SERVICE -> {
-
+                    killService()
                 }
 
             }
@@ -92,13 +98,15 @@ class WorkoutService : LifecycleService() {
         startForeground(NOTIFICATION_ID, notificationBuilder.build())
 
         serviceWorkoutStateLD.observe(this, Observer {
+            if(!serviceKilled){
             notificationBuilder.setContentTitle(it.name)
-            notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build());
+            notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build())}
         })
 
         serviceCountdownSecondsLD.observe(this, Observer {
+            if(!serviceKilled){
             notificationBuilder.setContentText(it)
-            notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build());
+            notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build())}
         })
 
         serviceCommandAudioLD.observe(this, Observer {
@@ -128,6 +136,14 @@ class WorkoutService : LifecycleService() {
                 Log.e("LOG_TAG", "prepare() failed")
             }
         }
+    }
+
+    private fun killService(){
+        serviceKilled = true
+        isFirstRun = true
+        postInitialValues()
+        stopForeground(true)
+        stopSelf()
     }
 
 }

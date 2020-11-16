@@ -9,7 +9,6 @@ import android.media.MediaPlayer
 import android.media.SoundPool
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.*
@@ -22,13 +21,13 @@ import androidx.navigation.fragment.navArgs
 import com.middleton.scott.commandMeBoxing.R
 import com.middleton.scott.customboxingworkout.MainActivity
 import com.middleton.scott.customboxingworkout.other.Constants.ACTION_START_OR_RESUME_SERVICE
+import com.middleton.scott.customboxingworkout.other.Constants.ACTION_STOP_SERVICE
 import com.middleton.scott.customboxingworkout.service.WorkoutService
 import com.middleton.scott.customboxingworkout.ui.base.BaseFragment
 import com.middleton.scott.customboxingworkout.utils.DateTimeUtils
 import kotlinx.android.synthetic.main.fragment_workout_screen.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
-import java.io.IOException
 
 class WorkoutScreen : BaseFragment() {
     private val args: WorkoutScreenArgs by navArgs()
@@ -48,6 +47,7 @@ class WorkoutScreen : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        sendCommandToService(ACTION_START_OR_RESUME_SERVICE)
         initRoundProgressView()
         initSoundPool()
         (activity as MainActivity).supportActionBar?.title = viewModel.workoutName
@@ -118,7 +118,7 @@ class WorkoutScreen : BaseFragment() {
 
         viewModel.currentCombinationLD.observe(viewLifecycleOwner, Observer {
             combination_name_tv.text = it.name
-            startPlayingCombinationAudio(it.file_name)
+            play_command_lottie.playAnimation()
         })
 
         viewModel.playEndBellLD.observe(viewLifecycleOwner, Observer {
@@ -147,23 +147,6 @@ class WorkoutScreen : BaseFragment() {
                 )
             }
         })
-    }
-
-    private fun startPlayingCombinationAudio(fileName: String) {
-        mediaPlayer.stop()
-        mediaPlayer.reset()
-        mediaPlayer = MediaPlayer().apply {
-            try {
-                setDataSource(viewModel.audioFileBaseDirectory + fileName)
-                prepare()
-                this.setOnCompletionListener {
-                }
-                start()
-            } catch (e: IOException) {
-                Log.e("LOG_TAG", "prepare() failed")
-            }
-        }
-        play_command_lottie.playAnimation()
     }
 
     private fun setClickListeners() {
@@ -247,13 +230,9 @@ class WorkoutScreen : BaseFragment() {
         }
     }
 
-    override fun onPause() {
-        super.onPause()
-        sendCommandToService(ACTION_START_OR_RESUME_SERVICE)
-    }
-
     override fun onDestroy() {
         super.onDestroy()
+        sendCommandToService(ACTION_STOP_SERVICE)
         soundPool.release()
     }
 
