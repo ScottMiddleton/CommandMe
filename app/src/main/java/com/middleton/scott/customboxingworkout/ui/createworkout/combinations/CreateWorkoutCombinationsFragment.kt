@@ -4,18 +4,17 @@ import SaveCombinationDialog
 import android.graphics.Canvas
 import android.media.MediaRecorder
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.snackbar.Snackbar
 import com.middleton.scott.commandMeBoxing.R
 import com.middleton.scott.customboxingworkout.datasource.local.model.Combination
 import com.middleton.scott.customboxingworkout.ui.base.BaseFragment
@@ -25,12 +24,18 @@ import com.middleton.scott.customboxingworkout.utils.MediaRecorderManager
 import com.middleton.scott.customboxingworkout.utils.PermissionsDialogManager
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import kotlinx.android.synthetic.main.fragment_combinations.*
+import kotlinx.android.synthetic.main.fragment_combinations.empty_list_layout
+import kotlinx.android.synthetic.main.fragment_combinations.undo_btn
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import java.io.File
 
 class CreateWorkoutCombinationsFragment : BaseFragment() {
     private val viewModel by lazy { requireParentFragment().getViewModel<CreateWorkoutSharedViewModel>() }
     private var mediaRecorder = MediaRecorder()
+    var combinationsEmpty = true
+    var undoSnackbarVisible = false
+
+    private val handler = Handler()
 
     private lateinit var adapter: CombinationsAdapter
 
@@ -70,6 +75,13 @@ class CreateWorkoutCombinationsFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        undo_btn.setOnClickListener {
+            undo_btn?.visibility = View.GONE
+            undo_tv.visibility = View.GONE
+            viewModel.undoPreviouslyDeletedCombination()
+        }
+
+
         combinations_RV.adapter = adapter
 
         val itemTouchHelperCallback =
@@ -83,24 +95,24 @@ class CreateWorkoutCombinationsFragment : BaseFragment() {
                 }
 
                 override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                    undo_btn.visibility = View.VISIBLE
+                    undo_tv.visibility = View.VISIBLE
+                    undoSnackbarVisible = true
+
                     val position = viewHolder.adapterPosition
                     val combination = viewModel.deleteCombination(position)
 
-                    Snackbar.make(
-                        combinations_RV,
-                        getString(R.string.deleted_snackbar, combination.name),
-                        Snackbar.LENGTH_LONG
-                    )
-                        .setAction(getString(R.string.undo)) {
-                            viewModel.undoPreviouslyDeletedCombination()
-                        }.addCallback(object : Snackbar.Callback() {
-                            override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
-                                super.onDismissed(transientBottomBar, event)
-                                if (event != DISMISS_EVENT_ACTION) {
-                                    viewModel.deleteWorkoutCombinations()
-                                }
-                            }
-                        }).show()
+                    undo_tv.text = getString(R.string.deleted_snackbar, combination.name)
+
+                    handler.removeCallbacksAndMessages(null)
+                    handler.postDelayed({
+                        undoSnackbarVisible = false
+                        undo_btn?.visibility = View.GONE
+                        undo_tv?.visibility = View.GONE
+                        if (combinationsEmpty) {
+                            empty_list_layout?.visibility = View.VISIBLE
+                        }
+                    }, 3000)
                 }
 
                 override fun onChildDraw(
@@ -169,14 +181,21 @@ class CreateWorkoutCombinationsFragment : BaseFragment() {
     private fun subscribeUI() {
         viewModel.getAllCombinationsLD().observe(viewLifecycleOwner, Observer {
             if (it.isNullOrEmpty()) {
-                empty_list_layout.visibility = View.VISIBLE
+                combinationsEmpty = true
                 combinations_RV.visibility = View.GONE
+                if (!undoSnackbarVisible) {
+                    empty_list_layout.visibility = View.VISIBLE
+                }
             } else {
+                combinationsEmpty = false
                 empty_list_layout.visibility = View.GONE
                 combinations_RV.visibility = View.VISIBLE
                 if (!viewModel.listAnimationShownOnce) {
                     val controller =
-                        AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_fall_down)
+                        AnimationUtils.loadLayoutAnimation(
+                            context,
+                            R.anim.layout_animation_fall_down
+                        )
                     combinations_RV.layoutAnimation = controller
                     viewModel.listAnimationShownOnce = true
                 }
@@ -224,16 +243,6 @@ class CreateWorkoutCombinationsFragment : BaseFragment() {
         }
     }
 
-    private fun handleRecordAudioAnimations(recording: Boolean) {
-        if (recording) {
-            record_audio_button.speed = 1.8f
-            record_audio_button.playAnimation()
-        } else {
-            record_audio_button.cancelAnimation()
-            record_audio_button.progress = 0.08f
-        }
-    }
-
     private fun showSaveCombinationDialog() {
         SaveCombinationDialog(
             false,
@@ -244,6 +253,15 @@ class CreateWorkoutCombinationsFragment : BaseFragment() {
                 val file = File(viewModel.audioFileCompleteDirectory)
                 file.delete()
             }).show(childFragmentManager, "")
+    }
+
+    private fun handleRecordAudioAnimations(recording: Boolean) {
+        if (recording) {
+            record_audio_button.playAnimation()
+        } else {
+            record_audio_button.cancelAnimation()
+            record_audio_button.progress = 0.08f
+        }
     }
 
     override fun onPause() {

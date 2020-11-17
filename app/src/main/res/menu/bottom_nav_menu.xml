@@ -11,9 +11,4 @@
         android:icon="@drawable/ic_dashboard_black_24dp"
         android:title="@string/combinations" />
 
-<!--    <item-->
-<!--        android:id="@+id/statsScreen"-->
-<!--        android:icon="@drawable/ic_notifications_black_24dp"-->
-<!--        android:title="@string/stats" />-->
-
 </menu>

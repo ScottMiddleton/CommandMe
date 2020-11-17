@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.middleton.scott.customboxingworkout.MainActivity
 import com.middleton.scott.customboxingworkout.datasource.local.LocalDataSource
 import com.middleton.scott.customboxingworkout.datasource.local.model.Combination
 import com.middleton.scott.customboxingworkout.datasource.local.model.WorkoutWithCombinations
@@ -77,9 +78,10 @@ class WorkoutScreenViewModel(
     val playEndBellLD: LiveData<Boolean>
         get() = _playEndBellLD
 
-    private lateinit var countDownTimer: CountDownTimer
+    private var countDownTimer: CountDownTimer? = null
 
     init {
+        MainActivity.currentWorkoutId = workoutId
         workoutHasPreparation = preparationTimeSecs > 0
         combinations = workoutWithCombinations?.combinations
         handleCombinationFrequencies()
@@ -230,7 +232,7 @@ class WorkoutScreenViewModel(
 
     fun onNext() {
         if (workoutHasBegun) {
-            countDownTimer.cancel()
+            countDownTimer?.cancel()
         }
 
         when (workoutStateLD.value) {
@@ -263,7 +265,7 @@ class WorkoutScreenViewModel(
         millisRemainingAtPause = preparationTimeSecs * 1000L
 
         if (workoutHasBegun) {
-            countDownTimer.cancel()
+            countDownTimer?.cancel()
         }
 
         when (workoutStateLD.value) {
@@ -314,12 +316,12 @@ class WorkoutScreenViewModel(
 
     fun onPause() {
         workoutInProgress = false
-        countDownTimer.cancel()
+        countDownTimer?.cancel()
     }
 
     private fun onComplete() {
         if (workoutInProgress) {
-            countDownTimer.cancel()
+            countDownTimer?.cancel()
         }
 
         workoutInProgress = false
@@ -375,7 +377,6 @@ class WorkoutScreenViewModel(
             3 -> amountToAdjustMillis = (timeToCompleteCombinationMillis / 100) * 20
             2 -> amountToAdjustMillis = (timeToCompleteCombinationMillis / 100) * 30
             1 -> amountToAdjustMillis = (timeToCompleteCombinationMillis / 100) * 40
-
         }
 
         val adjustedTimeToCompleteCombination =

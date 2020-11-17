@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:id="@+id/privacy_policy"
-        android:title="Privacy Policy" />
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <group
+        android:id="@+id/workout_menu">
+        <item
+            android:id="@+id/edit_workout"
+            android:title="@string/edit"
+            android:icon="@drawable/ic_edit"
+            app:showAsAction="ifRoom"/>
+    </group>
+
+
 </menu>

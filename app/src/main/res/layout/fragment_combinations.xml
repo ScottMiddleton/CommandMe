@@ -24,7 +24,7 @@
         android:orientation="vertical"
         android:padding="48dp"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/record_audio_button"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
@@ -52,7 +52,6 @@
         android:id="@+id/linearLayout5"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:animateLayoutChanges="true"
         android:orientation="vertical">
 
         <View
@@ -61,50 +60,6 @@
             android:layout_height="1dp"
             android:background="@color/white_faded_20"
             app:layout_constraintTop_toTopOf="@+id/punch_bag_iv" />
-
-<!--        <androidx.constraintlayout.widget.ConstraintLayout-->
-<!--            android:id="@+id/undo_cl"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:animateLayoutChanges="true"-->
-<!--            android:background="@drawable/list_item_combination_summary_background"-->
-<!--            android:elevation="3dp">-->
-
-<!--            <TextView-->
-<!--                android:id="@+id/undo_tv"-->
-<!--                android:layout_width="0dp"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginStart="10dp"-->
-<!--                android:layout_marginEnd="10dp"-->
-<!--                android:ellipsize="end"-->
-<!--                android:lines="1"-->
-<!--                android:padding="8dp"-->
-<!--                android:text="@string/deleted_snackbar"-->
-<!--                android:textAlignment="center"-->
-<!--                android:textSize="16sp"-->
-<!--                android:visibility="gone"-->
-<!--                app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                app:layout_constraintEnd_toStartOf="@+id/undo_btn"-->
-<!--                app:layout_constraintStart_toStartOf="parent"-->
-<!--                app:layout_constraintTop_toTopOf="parent" />-->
-
-<!--            <Button-->
-<!--                android:id="@+id/undo_btn"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="match_parent"-->
-<!--                android:layout_marginEnd="10dp"-->
-<!--                android:background="@android:color/transparent"-->
-<!--                android:fontFamily="@string/font_roboto_medium"-->
-<!--                android:padding="8dp"-->
-<!--                android:text="@string/undo"-->
-<!--                android:textColor="@color/colorPrimary"-->
-<!--                android:textSize="16sp"-->
-<!--                android:visibility="gone"-->
-<!--                app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                app:layout_constraintEnd_toEndOf="parent"-->
-<!--                app:layout_constraintTop_toTopOf="parent" />-->
-
-<!--        </androidx.constraintlayout.widget.ConstraintLayout>-->
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/combinations_RV"
@@ -116,17 +71,66 @@
 
     </LinearLayout>
 
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/record_audio_button"
-        android:layout_width="130dp"
-        android:layout_height="130dp"
-        app:lottie_progress="0.08"
-        app:lottie_speed="1.8"
+    <LinearLayout
+        android:id="@+id/linearLayout4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:lottie_fileName="record_button_lottie.json"
-        app:lottie_loop="true"
-        app:tint="@color/white" />
+        app:layout_constraintStart_toStartOf="parent">
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/record_audio_button"
+            android:layout_width="130dp"
+            android:layout_height="130dp"
+            android:layout_gravity="center_horizontal"
+            app:lottie_fileName="record_button_lottie.json"
+            app:lottie_loop="true"
+            app:lottie_progress="0.08"
+            app:lottie_speed="1.8"
+            app:tint="@color/white" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/undo_cl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/snackbar_background">
+
+            <TextView
+                android:id="@+id/undo_tv"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="10dp"
+                android:ellipsize="end"
+                android:lines="1"
+                android:text="@string/deleted_snackbar"
+                android:textColor="@color/black_faded_80"
+                android:textSize="17sp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/undo_btn"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Button
+                android:id="@+id/undo_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent"
+                android:fontFamily="@string/font_roboto_medium"
+                android:padding="4dp"
+                android:text="@string/undo"
+                android:textColor="@color/colorPrimary"
+                android:textSize="16sp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

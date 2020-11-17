@@ -50,6 +50,7 @@ class WorkoutScreen : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         requireActivity().volumeControlStream = AudioManager.STREAM_MUSIC
         sendCommandToService(ACTION_START_OR_RESUME_SERVICE)
         initRoundProgressView()
@@ -70,7 +71,6 @@ class WorkoutScreen : BaseFragment() {
             } else {
                 current_round_count_tv.text = it.toString()
             }
-
         })
 
         viewModel.countdownSecondsLD.observe(viewLifecycleOwner, Observer {

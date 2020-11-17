@@ -37,12 +37,6 @@ open class CombinationsViewModel(private val localDataSource: LocalDataSource) :
         return combination
     }
 
-    fun deleteWorkoutCombinations() {
-        viewModelScope.launch {
-            localDataSource.deleteWorkoutCombination(previouslyDeletedCombination.id)
-        }
-    }
-
     fun getAllCombinationsLD(): LiveData<List<Combination>> {
         return localDataSource.getCombinations().map {
             allCombinations = it

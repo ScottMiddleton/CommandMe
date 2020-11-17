@@ -32,6 +32,9 @@ class WorkoutCompleteDialog(
         dialog?.window?.setSoftInputMode(
             WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE
         )
+
+        dialog?.setCanceledOnTouchOutside(false)
+
         setClickListeners()
 
         elapsed_tv.text = DateTimeUtils.toMinuteSeconds(timeElapsedSecs)

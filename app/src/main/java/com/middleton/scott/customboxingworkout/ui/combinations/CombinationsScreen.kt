@@ -1,6 +1,7 @@
 package com.middleton.scott.customboxingworkout.ui.combinations
 
 import SaveCombinationDialog
+import android.animation.LayoutTransition
 import android.graphics.Canvas
 import android.media.MediaRecorder
 import android.os.Bundle
@@ -24,13 +25,18 @@ import com.middleton.scott.customboxingworkout.utils.PermissionsDialogManager
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import kotlinx.android.synthetic.main.fragment_combinations.*
 import kotlinx.android.synthetic.main.fragment_combinations.empty_list_layout
+import kotlinx.android.synthetic.main.fragment_combinations.undo_btn
+import kotlinx.android.synthetic.main.fragment_combinations.undo_cl
 import kotlinx.android.synthetic.main.fragment_workouts.*
+import kotlinx.android.synthetic.main.fragment_combinations.undo_tv
 import org.koin.android.ext.android.inject
 import java.io.File
 
 class CombinationsScreen : BaseFragment() {
     private val viewModel: CombinationsViewModel by inject()
     private var mediaRecorder = MediaRecorder()
+    var combinationsEmpty = true
+    var undoSnackbarVisible = false
 
     private val handler = Handler()
 
@@ -63,11 +69,11 @@ class CombinationsScreen : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-//        undo_btn.setOnClickListener {
-//            undo_btn.visibility = GONE
-//            undo_tv.visibility = GONE
-//            viewModel.undoPreviouslyDeletedCombination()
-//        }
+        undo_btn.setOnClickListener {
+            undo_btn.visibility = GONE
+            undo_tv.visibility = GONE
+            viewModel.undoPreviouslyDeletedCombination()
+        }
 
         combinations_RV.adapter = adapter
 
@@ -84,6 +90,7 @@ class CombinationsScreen : BaseFragment() {
                 override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                     undo_btn.visibility = View.VISIBLE
                     undo_tv.visibility = View.VISIBLE
+                    undoSnackbarVisible = true
 
                     val position = viewHolder.adapterPosition
                     val combination = viewModel.deleteCombination(position)
@@ -92,8 +99,12 @@ class CombinationsScreen : BaseFragment() {
 
                     handler.removeCallbacksAndMessages(null)
                     handler.postDelayed({
+                        undoSnackbarVisible = false
                         undo_btn?.visibility = GONE
                         undo_tv?.visibility = GONE
+                        if (combinationsEmpty) {
+                            empty_list_layout?.visibility = View.VISIBLE
+                        }
                     }, 3000)
                 }
 
@@ -163,9 +174,13 @@ class CombinationsScreen : BaseFragment() {
     private fun subscribeUI() {
         viewModel.getAllCombinationsLD().observe(viewLifecycleOwner, Observer {
             if (it.isNullOrEmpty()) {
-                empty_list_layout.visibility = View.VISIBLE
+                combinationsEmpty = true
                 combinations_RV.visibility = GONE
+                if (!undoSnackbarVisible) {
+                    empty_list_layout.visibility = View.VISIBLE
+                }
             } else {
+                combinationsEmpty = false
                 empty_list_layout.visibility = GONE
                 combinations_RV.visibility = View.VISIBLE
                 if (!viewModel.listAnimationShownOnce) {

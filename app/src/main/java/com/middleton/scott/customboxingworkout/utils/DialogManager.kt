@@ -1,10 +1,13 @@
 package com.middleton.scott.customboxingworkout.utils
 
 import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import android.view.WindowManager
 import android.widget.TextView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.middleton.scott.commandMeBoxing.R
@@ -65,6 +68,8 @@ object DialogManager {
                 negativeBtnClick()
             }
         }
+
+        alertDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
         alertDialog.show()
     }

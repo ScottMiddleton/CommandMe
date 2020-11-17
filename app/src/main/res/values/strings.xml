@@ -76,5 +76,8 @@
     <string name="no_combinations_dialog_message">Please add combinations to begin this workout</string>
     <string name="ok">Ok</string>
     <string name="time_elapsed">Time Elapsed:</string>
+    <string name="edit_this_workout">Edit this workout?</string>
+    <string name="edit_workout_dialog_message">This will stop and exit the current workout.</string>
+    <string name="exit_workout">Exit workout</string>
 
 </resources>
