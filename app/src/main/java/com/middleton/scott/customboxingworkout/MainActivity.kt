@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        navigatedToWorkoutScreenIfNeeded(intent)
+        navigateToWorkoutScreenIfNeeded(intent)
 
         val navView: BottomNavigationView = findViewById(R.id.nav_view)
 
@@ -90,45 +90,7 @@ class MainActivity : AppCompatActivity() {
         return super.onSupportNavigateUp()
     }
 
-    override fun onNewIntent(intent: Intent?) {
-        super.onNewIntent(intent)
-//        navigatedToWorkoutScreenIfNeeded(intent)
-    }
-
-    private fun setupCustomAppBar() {
-        // Control the media volume
-//        volumeControlStream = AudioManager.STREAM_MUSIC
-        // Initialize the AudioManager
-//        val mAudioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
-
-//        val view: View = layoutInflater.inflate(R.layout.title_bar_with_volume_slider_layout, null)
-//        val mVolumeControls = view.findViewById<View>(R.id.volume_SB) as SeekBar
-//        // Set the max range of the SeekBar to the max volume stream type
-//        mVolumeControls.max = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
-//        // Bind the OnSeekBarChangeListener
-//
-//        mVolumeControls.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
-//            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-//                mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, progress, 0)
-//            }
-//
-//            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-//            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-//        })
-
-        val view: View = layoutInflater.inflate(R.layout.title_bar_create_workout, null)
-
-        view.layoutParams = LinearLayout.LayoutParams(
-            FrameLayout.LayoutParams.MATCH_PARENT,
-            FrameLayout.LayoutParams.MATCH_PARENT
-        )
-
-
-        supportActionBar?.customView = view
-        supportActionBar?.setDisplayShowCustomEnabled(true)
-    }
-
-    private fun navigatedToWorkoutScreenIfNeeded(intent: Intent?){
+    private fun navigateToWorkoutScreenIfNeeded(intent: Intent?){
         if(intent?.action == ACTION_SHOW_WORKOUT_SCREEN){
             nav_host_fragment.findNavController().navigate(R.id.action_global_workout_screen)
         }
