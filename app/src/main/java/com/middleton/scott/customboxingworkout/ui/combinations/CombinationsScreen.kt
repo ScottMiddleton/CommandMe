@@ -101,8 +101,8 @@ class CombinationsScreen : BaseFragment() {
 
                     handler.removeCallbacksAndMessages(null)
                     handler.postDelayed({
-                        undo_btn.visibility = GONE
-                        undo_tv.visibility = GONE
+                        undo_btn?.visibility = GONE
+                        undo_tv?.visibility = GONE
                     }, 3000)
                 }
 
