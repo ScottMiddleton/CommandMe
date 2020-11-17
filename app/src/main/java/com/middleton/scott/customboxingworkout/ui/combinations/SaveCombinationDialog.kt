@@ -119,7 +119,7 @@ class SaveCombinationDialog(
     }
 
     private fun validateFields(): Boolean {
-        var validFieldsCount = 2
+        var validFieldsCount = numberOfFieldsToValidate
 
         if (name_et.text.isNullOrBlank()) {
             name_til.error = getString(R.string.this_is_a_required_field)
