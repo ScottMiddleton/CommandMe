@@ -2,33 +2,35 @@ package com.middleton.scott.customboxingworkout.ui.workout
 
 import android.content.Intent
 import android.content.res.ColorStateList
-import android.graphics.Color
+import android.graphics.drawable.ShapeDrawable
+import android.graphics.drawable.shapes.OvalShape
 import android.media.AudioAttributes
 import android.media.AudioManager
 import android.media.MediaPlayer
 import android.media.SoundPool
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.*
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import android.widget.ProgressBar
+import android.widget.SeekBar
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.middleton.scott.commandMeBoxing.R
 import com.middleton.scott.customboxingworkout.MainActivity
 import com.middleton.scott.customboxingworkout.other.Constants.ACTION_START_OR_RESUME_SERVICE
+import com.middleton.scott.customboxingworkout.other.Constants.ACTION_STOP_SERVICE
 import com.middleton.scott.customboxingworkout.service.WorkoutService
 import com.middleton.scott.customboxingworkout.ui.base.BaseFragment
 import com.middleton.scott.customboxingworkout.utils.DateTimeUtils
 import kotlinx.android.synthetic.main.fragment_workout_screen.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
-import java.io.IOException
+
 
 class WorkoutScreen : BaseFragment() {
     private val args: WorkoutScreenArgs by navArgs()
@@ -48,10 +50,13 @@ class WorkoutScreen : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        requireActivity().volumeControlStream = AudioManager.STREAM_MUSIC
+        sendCommandToService(ACTION_START_OR_RESUME_SERVICE)
         initRoundProgressView()
         initSoundPool()
         (activity as MainActivity).supportActionBar?.title = viewModel.workoutName
-        viewModel.audioFileBaseDirectory = view.context.getExternalFilesDir(null)?.absolutePath + "/"
+        viewModel.audioFileBaseDirectory =
+            view.context.getExternalFilesDir(null)?.absolutePath + "/"
         total_rounds_count_tv.text = viewModel.getTotalRounds().toString()
         remaining_tv.text = DateTimeUtils.toMinuteSeconds(viewModel.totalWorkoutSecs)
         subscribeUI()
@@ -60,7 +65,12 @@ class WorkoutScreen : BaseFragment() {
 
     private fun subscribeUI() {
         viewModel.currentRoundLD.observe(viewLifecycleOwner, Observer {
-            current_round_count_tv.text = it.toString()
+            if (it == 0) {
+                current_round_count_tv.text = "1"
+            } else {
+                current_round_count_tv.text = it.toString()
+            }
+
         })
 
         viewModel.countdownSecondsLD.observe(viewLifecycleOwner, Observer {
@@ -69,9 +79,9 @@ class WorkoutScreen : BaseFragment() {
         })
 
         viewModel.roundProgressLD.observe(viewLifecycleOwner, Observer {
-            val bottomProgress =
-                round_progress_ll.getChildAt(viewModel.getCurrentRound() - 1) as ProgressBar
-            bottomProgress.progress = it
+            val seekbar = round_progress_ll.getChildAt(viewModel.getCurrentRound() - 1) as SeekBar
+            seekbar.thumb.mutate().alpha = 255
+            seekbar.progress = it
         })
 
         viewModel.totalSecondsElapsedLD.observe(viewLifecycleOwner, Observer {
@@ -85,21 +95,33 @@ class WorkoutScreen : BaseFragment() {
 
             when (it) {
                 WorkoutState.PREPARE -> {
-                    round_count_ll.visibility = INVISIBLE
                     play_command_lottie.visibility = GONE
-                    countdown_pb.progressTintList = ColorStateList.valueOf(Color.YELLOW)
+                    countdown_pb.progressTintList = ColorStateList.valueOf(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.yellow
+                        )
+                    )
                 }
                 WorkoutState.WORK -> {
-                    round_count_ll.visibility = VISIBLE
                     combination_name_tv.visibility = VISIBLE
                     play_command_lottie.visibility = VISIBLE
-                    countdown_pb.progressTintList = ColorStateList.valueOf(Color.RED)
+                    countdown_pb.progressTintList = ColorStateList.valueOf(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.red
+                        )
+                    )
                 }
                 WorkoutState.REST -> {
                     combination_name_tv.visibility = INVISIBLE
-                    round_count_ll.visibility = VISIBLE
                     play_command_lottie.visibility = VISIBLE
-                    countdown_pb.progressTintList = ColorStateList.valueOf(Color.GREEN)
+                    countdown_pb.progressTintList = ColorStateList.valueOf(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.colorPrimary
+                        )
+                    )
                 }
                 WorkoutState.COMPLETE -> {
                     handlePlayAnimationLottie(true)
@@ -118,7 +140,7 @@ class WorkoutScreen : BaseFragment() {
 
         viewModel.currentCombinationLD.observe(viewLifecycleOwner, Observer {
             combination_name_tv.text = it.name
-            startPlayingCombinationAudio(it.file_name)
+            play_command_lottie.playAnimation()
         })
 
         viewModel.playEndBellLD.observe(viewLifecycleOwner, Observer {
@@ -147,23 +169,6 @@ class WorkoutScreen : BaseFragment() {
                 )
             }
         })
-    }
-
-    private fun startPlayingCombinationAudio(fileName: String) {
-        mediaPlayer.stop()
-        mediaPlayer.reset()
-        mediaPlayer = MediaPlayer().apply {
-            try {
-                setDataSource(viewModel.audioFileBaseDirectory + fileName)
-                prepare()
-                this.setOnCompletionListener {
-                }
-                start()
-            } catch (e: IOException) {
-                Log.e("LOG_TAG", "prepare() failed")
-            }
-        }
-        play_command_lottie.playAnimation()
     }
 
     private fun setClickListeners() {
@@ -230,30 +235,38 @@ class WorkoutScreen : BaseFragment() {
         params.marginEnd = 10
 
         repeat(viewModel.getTotalRounds()) {
-            val progressBar = ProgressBar(activity, null, android.R.attr.progressBarStyleHorizontal)
-            progressBar.layoutParams = params
-            progressBar.max = viewModel.getCountdownProgressBarMax(WorkoutState.WORK)
-            progressBar.scaleY = 4f
-            progressBar.progress = 0
-            progressBar.progressTintList = ColorStateList.valueOf(Color.RED)
-            round_progress_ll.addView(progressBar)
+            val seekBar = SeekBar(requireContext())
+            val thumb = ShapeDrawable(OvalShape())
+            thumb.setTint(ContextCompat.getColor(requireContext(), R.color.white))
+            thumb.intrinsicHeight = 20
+            thumb.intrinsicWidth = 8
+            seekBar.setPadding(0, 0, 0, 0)
+            seekBar.thumb = thumb
+            seekBar.layoutParams = params
+            seekBar.max = viewModel.getCountdownProgressBarMax(WorkoutState.WORK)
+            seekBar.scaleY = 12f
+            seekBar.progress = 0
+            seekBar.progressTintList = ColorStateList.valueOf(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.red
+                )
+            )
+            round_progress_ll.addView(seekBar)
+            seekBar.thumb.mutate().alpha = 0
         }
     }
 
-    private fun sendCommandToService(action: String){
-        Intent(requireContext(), WorkoutService::class.java).also{
+    private fun sendCommandToService(action: String) {
+        Intent(requireContext(), WorkoutService::class.java).also {
             it.action = action
             requireContext().startService(it)
         }
     }
 
-    override fun onPause() {
-        super.onPause()
-        sendCommandToService(ACTION_START_OR_RESUME_SERVICE)
-    }
-
     override fun onDestroy() {
         super.onDestroy()
+        sendCommandToService(ACTION_STOP_SERVICE)
         soundPool.release()
     }
 

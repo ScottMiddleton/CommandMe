@@ -23,7 +23,7 @@ class WorkoutScreenViewModel(
 
     private var restartOnPrevious = false
     var workoutHasPreparation = false
-    private var workoutHasBegun = false
+    var workoutHasBegun = false
     var workoutInProgress = false
     var combinationsThrown = 0
 
@@ -325,6 +325,7 @@ class WorkoutScreenViewModel(
 
         workoutInProgress = false
         _workoutStateLD.value = WorkoutState.COMPLETE
+        serviceWorkoutStateLD.value = WorkoutState.COMPLETE
     }
 
     fun getCountdownProgressBarMax(workoutState: WorkoutState): Int {

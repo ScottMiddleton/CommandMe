@@ -29,6 +29,9 @@ class WorkoutsScreen : BaseFragment() {
     private val viewModel: WorkoutsViewModel by inject()
     private lateinit var adapter: WorkoutsAdapter
 
+    var undoSnackbarVisible = false
+    var workoutsEmpty = true
+
     private val handler = Handler()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -101,6 +104,7 @@ class WorkoutsScreen : BaseFragment() {
                 override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                     undo_btn.visibility = VISIBLE
                     undo_tv.visibility = VISIBLE
+                    undoSnackbarVisible = true
 
                     val position = viewHolder.adapterPosition
                     val workout = viewModel.deleteWorkout(position)
@@ -109,8 +113,12 @@ class WorkoutsScreen : BaseFragment() {
 
                     handler.removeCallbacksAndMessages(null)
                     handler.postDelayed( {
-                        undo_btn.visibility = GONE
-                        undo_tv.visibility = GONE
+                        undo_btn?.visibility = GONE
+                        undo_tv?.visibility = GONE
+                        undoSnackbarVisible = false
+                        if(workoutsEmpty){
+                            empty_list_layout?.visibility = VISIBLE
+                        }
                     }, 3000)
                 }
 
@@ -168,9 +176,12 @@ class WorkoutsScreen : BaseFragment() {
     private fun subscribeUI() {
         viewModel.getWorkoutsWithCombinationsLD().observe(viewLifecycleOwner, Observer {
             if (it.isNullOrEmpty()) {
-                empty_list_layout.visibility = VISIBLE
+                workoutsEmpty = true
+                if (!undoSnackbarVisible) {
+                empty_list_layout.visibility = VISIBLE }
                 workout_rv.visibility = GONE
             } else {
+                workoutsEmpty = false
                 empty_list_layout.visibility = GONE
                 workout_rv.visibility = VISIBLE
             }
