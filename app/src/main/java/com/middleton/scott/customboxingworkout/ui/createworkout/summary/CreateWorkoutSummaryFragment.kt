@@ -175,6 +175,12 @@ class CreateWorkoutSummaryFragment : BaseFragment() {
             viewModel.setWorkoutName(it.toString())
         }
 
+        workout_name_et.setOnFocusChangeListener { v, hasFocus ->
+            if (!hasFocus){
+                hideKeyboard()
+            }
+        }
+
         preparation_time_et.setOnClickListener {
             NumberPickerMinutesSecondsDialog(
                 getString(R.string.preparation_time),
@@ -187,6 +193,7 @@ class CreateWorkoutSummaryFragment : BaseFragment() {
                 childFragmentManager,
                 null
             )
+            hideKeyboard()
         }
 
         work_time_et.setOnClickListener {
@@ -201,6 +208,7 @@ class CreateWorkoutSummaryFragment : BaseFragment() {
                 childFragmentManager,
                 null
             )
+            hideKeyboard()
         }
 
         rest_time_et.setOnClickListener {
@@ -215,6 +223,7 @@ class CreateWorkoutSummaryFragment : BaseFragment() {
                 childFragmentManager,
                 null
             )
+            hideKeyboard()
         }
 
         number_of_rounds_et.setOnClickListener {
@@ -225,6 +234,7 @@ class CreateWorkoutSummaryFragment : BaseFragment() {
                 childFragmentManager,
                 null
             )
+            hideKeyboard()
         }
 
         intensity_et.setOnClickListener {
@@ -235,6 +245,7 @@ class CreateWorkoutSummaryFragment : BaseFragment() {
                 childFragmentManager,
                 null
             )
+            hideKeyboard()
         }
 
         parentFragment?.save_btn?.setOnClickListener {

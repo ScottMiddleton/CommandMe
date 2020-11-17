@@ -14,7 +14,15 @@
         android:id="@+id/workoutsScreen"
         android:name="com.middleton.scott.customboxingworkout.ui.workouts.WorkoutsScreen"
         android:label="@string/workouts"
-        tools:layout="@layout/fragment_combinations" />
+        tools:layout="@layout/fragment_combinations" >
+        <action
+            android:id="@+id/action_workoutsScreen_to_workoutScreen"
+            app:destination="@id/workoutScreen"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+    </fragment>
     <fragment
         android:id="@+id/combinationsScreen"
         android:name="com.middleton.scott.customboxingworkout.ui.combinations.CombinationsScreen"

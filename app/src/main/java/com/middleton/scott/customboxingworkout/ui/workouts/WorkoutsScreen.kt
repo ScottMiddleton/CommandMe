@@ -10,7 +10,6 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.core.widget.NestedScrollView
@@ -62,10 +61,16 @@ class WorkoutsScreen : BaseFragment() {
                     }
                 )
             } else {
-                findNavController().navigate(
-                    R.id.workoutScreen,
-                    bundleOf("workoutId" to workoutWithCombinations.workout?.id)
-                )
+                val action = workoutWithCombinations.workout?.id?.let {
+                    WorkoutsScreenDirections.actionWorkoutsScreenToWorkoutScreen(
+                        it
+                    )
+                }
+                if (action != null) {
+                    findNavController().navigate(
+                        action
+                    )
+                }
             }
         }
     }
@@ -190,40 +195,49 @@ class WorkoutsScreen : BaseFragment() {
     }
 
     private fun handleFab() {
+        val params = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        ).apply {
+            gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
+        }
+        params.setMargins(80, 80, 80, 80)
+        add_workouts_btn.layoutParams = params
+        
         nested_scroll_view.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
             when {
                 scrollY > oldScrollY -> {
                     fab_tv.visibility = View.GONE
-                    val params = CoordinatorLayout.LayoutParams(
+                    val params = LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.WRAP_CONTENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT
                     ).apply {
                         gravity = Gravity.BOTTOM or Gravity.END
                     }
-                    params.setMargins(40, 40, 40, 40)
+                    params.setMargins(80, 80, 80, 80)
                     add_workouts_btn.layoutParams = params
                 }
                 scrollX == scrollY -> {
                     fab_tv.visibility = View.VISIBLE
-                    val params = CoordinatorLayout.LayoutParams(
+                    val params = LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.WRAP_CONTENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT
                     ).apply {
                         gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
                     }
-                    params.setMargins(40, 40, 40, 40)
+                    params.setMargins(80, 80, 80, 80)
                     add_workouts_btn.layoutParams = params
 
                 }
                 else -> {
                     fab_tv.visibility = View.VISIBLE
-                    val params = CoordinatorLayout.LayoutParams(
+                    val params = LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.WRAP_CONTENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT
                     ).apply {
                         gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
                     }
-                    params.setMargins(40, 40, 40, 40)
+                    params.setMargins(80, 80, 80, 80)
                     add_workouts_btn.layoutParams = params
                 }
             }

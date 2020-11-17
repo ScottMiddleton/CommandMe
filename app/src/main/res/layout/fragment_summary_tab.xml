@@ -73,6 +73,7 @@
                     android:layout_height="wrap_content"
                     android:foreground="?attr/selectableItemBackground"
                     android:clickable="true"
+                    android:cursorVisible="false"
                     android:focusable="false"
                     android:inputType="text" />
 
@@ -99,6 +100,7 @@
                     android:layout_height="wrap_content"
                     android:foreground="?attr/selectableItemBackground"
                     android:clickable="true"
+                    android:cursorVisible="false"
                     android:focusable="false"
                     android:inputType="text" />
 
@@ -125,6 +127,7 @@
                     android:layout_height="wrap_content"
                     android:foreground="?attr/selectableItemBackground"
                     android:clickable="true"
+                    android:cursorVisible="false"
                     android:focusable="false"
                     android:inputType="text" />
 
@@ -151,6 +154,7 @@
                     android:layout_height="wrap_content"
                     android:foreground="?attr/selectableItemBackground"
                     android:clickable="true"
+                    android:cursorVisible="false"
                     android:focusable="false"
                     android:inputType="text" />
 
@@ -177,6 +181,7 @@
                     android:layout_height="wrap_content"
                     android:foreground="?attr/selectableItemBackground"
                     android:clickable="true"
+                    android:cursorVisible="false"
                     android:focusable="false"
                     android:inputType="text" />
 
