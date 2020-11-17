@@ -31,8 +31,6 @@ import java.io.File
 class CreateWorkoutCombinationsFragment : BaseFragment() {
     private val viewModel by lazy { requireParentFragment().getViewModel<CreateWorkoutSharedViewModel>() }
     private var mediaRecorder = MediaRecorder()
-    private lateinit var recordButtonAnimation: Animation
-    private lateinit var recordButtonAnimationReverse: Animation
 
     private lateinit var adapter: CombinationsAdapter
 
@@ -72,11 +70,6 @@ class CreateWorkoutCombinationsFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        combinations_RV.adapter = adapter
-
-        recordButtonAnimation = AnimationUtils.loadAnimation(this.context, R.anim.button_scale)
-        recordButtonAnimationReverse =
-            AnimationUtils.loadAnimation(this.context, R.anim.button_scale_reverse)
         combinations_RV.adapter = adapter
 
         val itemTouchHelperCallback =
@@ -188,7 +181,7 @@ class CreateWorkoutCombinationsFragment : BaseFragment() {
                     viewModel.listAnimationShownOnce = true
                 }
             }
-            adapter.setAdapter(it, null)
+            adapter.setAdapter(it, viewModel.selectedCombinations)
         })
     }
 
@@ -197,7 +190,6 @@ class CreateWorkoutCombinationsFragment : BaseFragment() {
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
                     if (viewModel.permissionsGranted) {
-                        record_audio_button.startAnimation(recordButtonAnimation)
                         handleRecordAudioAnimations(true)
                         startRecording()
                     }
@@ -205,7 +197,6 @@ class CreateWorkoutCombinationsFragment : BaseFragment() {
 
                 MotionEvent.ACTION_UP -> {
                     handleRecordAudioAnimations(false)
-                    record_audio_button.startAnimation(recordButtonAnimationReverse)
                     stopRecording()
                 }
             }
@@ -226,9 +217,20 @@ class CreateWorkoutCombinationsFragment : BaseFragment() {
                     showSaveCombinationDialog()
                 } else {
                     Toast.makeText(context, "Recording too short", Toast.LENGTH_SHORT).show()
+                    mediaRecorder = MediaRecorder()
                 }
             }
             viewModel.recording = false
+        }
+    }
+
+    private fun handleRecordAudioAnimations(recording: Boolean) {
+        if (recording) {
+            record_audio_button.speed = 1.8f
+            record_audio_button.playAnimation()
+        } else {
+            record_audio_button.cancelAnimation()
+            record_audio_button.progress = 0.08f
         }
     }
 
@@ -242,20 +244,6 @@ class CreateWorkoutCombinationsFragment : BaseFragment() {
                 val file = File(viewModel.audioFileCompleteDirectory)
                 file.delete()
             }).show(childFragmentManager, "")
-    }
-
-    private fun handleRecordAudioAnimations(recording: Boolean) {
-        if (recording) {
-            lottie_anim_left.playAnimation()
-            lottie_anim_right.playAnimation()
-            lottie_anim_left.visibility = View.VISIBLE
-            lottie_anim_right.visibility = View.VISIBLE
-        } else {
-            lottie_anim_left.pauseAnimation()
-            lottie_anim_right.pauseAnimation()
-            lottie_anim_left.visibility = View.GONE
-            lottie_anim_right.visibility = View.GONE
-        }
     }
 
     override fun onPause() {

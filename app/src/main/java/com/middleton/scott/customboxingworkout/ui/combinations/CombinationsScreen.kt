@@ -10,14 +10,12 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.View.GONE
 import android.view.ViewGroup
-import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.snackbar.Snackbar
 import com.middleton.scott.commandMeBoxing.R
 import com.middleton.scott.customboxingworkout.datasource.local.model.Combination
 import com.middleton.scott.customboxingworkout.ui.base.BaseFragment
@@ -26,18 +24,13 @@ import com.middleton.scott.customboxingworkout.utils.PermissionsDialogManager
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import kotlinx.android.synthetic.main.fragment_combinations.*
 import kotlinx.android.synthetic.main.fragment_combinations.empty_list_layout
-import kotlinx.android.synthetic.main.fragment_combinations.undo_btn
-import kotlinx.android.synthetic.main.fragment_combinations.undo_tv
 import kotlinx.android.synthetic.main.fragment_workouts.*
-import kotlinx.coroutines.GlobalScope
 import org.koin.android.ext.android.inject
 import java.io.File
 
 class CombinationsScreen : BaseFragment() {
     private val viewModel: CombinationsViewModel by inject()
     private var mediaRecorder = MediaRecorder()
-    private lateinit var recordButtonAnimation: Animation
-    private lateinit var recordButtonAnimationReverse: Animation
 
     private val handler = Handler()
 
@@ -69,16 +62,14 @@ class CombinationsScreen : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        recordButtonAnimation = AnimationUtils.loadAnimation(this.context, R.anim.button_scale)
-        recordButtonAnimationReverse =
-            AnimationUtils.loadAnimation(this.context, R.anim.button_scale_reverse)
-        combinations_RV.adapter = adapter
 
-        undo_btn.setOnClickListener {
-            undo_btn.visibility = GONE
-            undo_tv.visibility = GONE
-            viewModel.undoPreviouslyDeletedCombination()
-        }
+//        undo_btn.setOnClickListener {
+//            undo_btn.visibility = GONE
+//            undo_tv.visibility = GONE
+//            viewModel.undoPreviouslyDeletedCombination()
+//        }
+
+        combinations_RV.adapter = adapter
 
         val itemTouchHelperCallback =
             object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
@@ -196,7 +187,6 @@ class CombinationsScreen : BaseFragment() {
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
                     if (viewModel.permissionsGranted) {
-                        record_audio_button.startAnimation(recordButtonAnimation)
                         handleRecordAudioAnimations(true)
                         startRecording()
                     }
@@ -204,7 +194,6 @@ class CombinationsScreen : BaseFragment() {
 
                 MotionEvent.ACTION_UP -> {
                     handleRecordAudioAnimations(false)
-                    record_audio_button.startAnimation(recordButtonAnimationReverse)
                     stopRecording()
                 }
             }
@@ -228,6 +217,7 @@ class CombinationsScreen : BaseFragment() {
                     showSaveCombinationDialog()
                 } else {
                     Toast.makeText(context, "Recording too short", Toast.LENGTH_SHORT).show()
+                    mediaRecorder = MediaRecorder()
                 }
             }
             viewModel.recording = false
@@ -248,15 +238,10 @@ class CombinationsScreen : BaseFragment() {
 
     private fun handleRecordAudioAnimations(recording: Boolean) {
         if (recording) {
-            lottie_anim_left.playAnimation()
-            lottie_anim_right.playAnimation()
-            lottie_anim_left.visibility = View.VISIBLE
-            lottie_anim_right.visibility = View.VISIBLE
+            record_audio_button.playAnimation()
         } else {
-            lottie_anim_left.pauseAnimation()
-            lottie_anim_right.pauseAnimation()
-            lottie_anim_left.visibility = GONE
-            lottie_anim_right.visibility = GONE
+            record_audio_button.cancelAnimation()
+            record_audio_button.progress = 0.08f
         }
     }
 

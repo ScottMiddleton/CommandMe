@@ -25,7 +25,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : AppCompatActivity() {
     private lateinit var navController: NavController
     private val topLevelDestinations =
-        setOf(R.id.combinationsScreen, R.id.workoutsScreen, R.id.createWorkoutScreen)
+        setOf(R.id.combinationsScreen, R.id.workoutsScreen)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

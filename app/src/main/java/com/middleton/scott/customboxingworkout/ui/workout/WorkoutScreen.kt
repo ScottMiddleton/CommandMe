@@ -266,6 +266,7 @@ class WorkoutScreen : BaseFragment() {
 
     override fun onDestroy() {
         super.onDestroy()
+        viewModel.onPause()
         sendCommandToService(ACTION_STOP_SERVICE)
         soundPool.release()
     }

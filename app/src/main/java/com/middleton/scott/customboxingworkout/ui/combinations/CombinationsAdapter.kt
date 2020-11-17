@@ -57,13 +57,11 @@ class CombinationsAdapter(
         val combination = allCombinations[position]
         holder.nameTV.text = allCombinations[position].name
 
-        var isChecked = false
-
-        val selectedCombination = selectedCombinations.filter {
+        val selectedCombination = selectedCombinations.firstOrNull {
             it.id == combination.id
-        }.firstOrNull()
+        }
 
-        isChecked = selectedCombination != null
+        val isChecked = selectedCombination != null
 
         holder.checkBox.isChecked = isChecked
 

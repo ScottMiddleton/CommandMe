@@ -200,7 +200,6 @@ class WorkoutScreenViewModel(
                         } else {
                             millisUntilNextCombination -= 1000
                         }
-                        roundProgressLD
                     }
 
                 }
