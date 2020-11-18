@@ -78,6 +78,6 @@
     <string name="time_elapsed">Time Elapsed:</string>
     <string name="edit_this_workout">Edit this workout?</string>
     <string name="edit_workout_dialog_message">This will stop and exit the current workout.</string>
-    <string name="exit_workout">Exit workout</string>
+    <string name="edit_workout">Edit workout</string>
 
 </resources>

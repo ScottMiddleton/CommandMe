@@ -11,7 +11,7 @@ import androidx.annotation.Nullable
 import androidx.fragment.app.DialogFragment
 import com.middleton.scott.commandMeBoxing.R
 import com.middleton.scott.customboxingworkout.utils.DateTimeUtils
-import kotlinx.android.synthetic.main.dialog_workout_comlete.*
+import kotlinx.android.synthetic.main.dialog_workout_complete.*
 
 class WorkoutCompleteDialog(
     private val timeElapsedSecs: Int,
@@ -23,7 +23,7 @@ class WorkoutCompleteDialog(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.dialog_workout_comlete, container)
+        return inflater.inflate(R.layout.dialog_workout_complete, container)
     }
 
     override fun onViewCreated(view: View, @Nullable savedInstanceState: Bundle?) {

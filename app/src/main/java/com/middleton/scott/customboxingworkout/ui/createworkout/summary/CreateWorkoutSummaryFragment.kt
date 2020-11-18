@@ -138,8 +138,8 @@ class CreateWorkoutSummaryFragment : BaseFragment() {
                 DialogManager.showDialog(
                     context = requireContext(),
                     messageId = R.string.add_combination_dialog_message,
-                    positiveBtnTextId = R.string.add_combination,
-                    positiveBtnClick = {
+                    negativeBtnTextId = R.string.add_combination,
+                    negativeBtnClick = {
                         val viewPager =
                             parentFragment?.view?.findViewById(R.id.create_workout_vp) as ViewPager2
                         viewPager.currentItem = 1

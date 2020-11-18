@@ -5,11 +5,8 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
-import android.widget.FrameLayout
-import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
@@ -92,7 +89,7 @@ class MainActivity : AppCompatActivity() {
                     R.string.edit_workout_dialog_message,
                     R.string.cancel,
                     { },
-                    R.string.exit_workout,
+                    R.string.edit_workout,
                     {
                         navController.popBackStack()
                         navController.navigate(

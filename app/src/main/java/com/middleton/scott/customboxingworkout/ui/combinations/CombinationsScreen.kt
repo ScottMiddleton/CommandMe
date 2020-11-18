@@ -3,6 +3,7 @@ package com.middleton.scott.customboxingworkout.ui.combinations
 import SaveCombinationDialog
 import android.animation.LayoutTransition
 import android.graphics.Canvas
+import android.graphics.ColorFilter
 import android.media.MediaRecorder
 import android.os.Bundle
 import android.os.Handler
@@ -17,6 +18,10 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.airbnb.lottie.LottieProperty
+import com.airbnb.lottie.SimpleColorFilter
+import com.airbnb.lottie.model.KeyPath
+import com.airbnb.lottie.value.LottieValueCallback
 import com.middleton.scott.commandMeBoxing.R
 import com.middleton.scott.customboxingworkout.datasource.local.model.Combination
 import com.middleton.scott.customboxingworkout.ui.base.BaseFragment
@@ -202,14 +207,25 @@ class CombinationsScreen : BaseFragment() {
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
                     if (viewModel.permissionsGranted) {
-                        handleRecordAudioAnimations(true)
+                        val yourColor = ContextCompat.getColor(requireContext(), R.color.red)
+                        val filter = SimpleColorFilter(yourColor)
+                        val keyPath = KeyPath("**")
+                        val callback: LottieValueCallback<ColorFilter> = LottieValueCallback(filter)
+                        record_audio_button.addValueCallback(keyPath, LottieProperty.COLOR_FILTER, callback)
                         startRecording()
+                        handleRecordAudioAnimations(true)
+
                     }
                 }
 
                 MotionEvent.ACTION_UP -> {
-                    handleRecordAudioAnimations(false)
                     stopRecording()
+                    val yourColor = ContextCompat.getColor(requireContext(), R.color.transparent)
+                    val filter = SimpleColorFilter(yourColor)
+                    val keyPath = KeyPath("**")
+                    val callback: LottieValueCallback<ColorFilter> = LottieValueCallback(filter)
+                    record_audio_button.addValueCallback(keyPath, LottieProperty.COLOR_FILTER, callback)
+                    handleRecordAudioAnimations(false)
                 }
             }
             true
