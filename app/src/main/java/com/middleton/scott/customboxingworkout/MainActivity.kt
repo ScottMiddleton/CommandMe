@@ -5,8 +5,11 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import android.widget.FrameLayout
+import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
@@ -30,7 +33,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var navController: NavController
     private val topLevelDestinations =
-        setOf(R.id.combinationsScreen, R.id.workoutsScreen)
+        setOf(R.id.combinationsScreen, R.id.workoutsScreen, R.id.createWorkoutScreen)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,9 +59,15 @@ class MainActivity : AppCompatActivity() {
             }
 
             if (destination.id == R.id.createWorkoutScreen) {
-                (this as AppCompatActivity).supportActionBar?.hide()
-            } else {
-                (this as AppCompatActivity).supportActionBar?.show()
+                val view: View = layoutInflater.inflate(R.layout.title_bar_create_workout, null)
+
+                view.layoutParams = LinearLayout.LayoutParams(
+                    FrameLayout.LayoutParams.MATCH_PARENT,
+                    FrameLayout.LayoutParams.MATCH_PARENT
+                )
+
+                supportActionBar?.customView = view
+                supportActionBar?.setDisplayShowCustomEnabled(true)
             }
 
             if (destination.id == R.id.workoutScreen) {

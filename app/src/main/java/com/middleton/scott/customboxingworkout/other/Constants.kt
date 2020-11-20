@@ -11,5 +11,4 @@ object Constants {
     const val NOTIFICATION_ID = 1
 
     const val ACTION_SHOW_WORKOUT_SCREEN = "ACTION_SHOW_WORKOUT_SCREEN"
-
 }

@@ -27,6 +27,7 @@ class WorkoutScreenViewModel(
     var workoutHasBegun = false
     var workoutInProgress = false
     var combinationsThrown = 0
+    var firstTick = true
 
     var audioFileBaseDirectory = ""
     private val workoutWithCombinations: WorkoutWithCombinations? =
@@ -100,6 +101,8 @@ class WorkoutScreenViewModel(
             setCurrentRound(1)
             initWorkoutState(WorkoutState.WORK)
         }
+        totalSecondsElapsed = getTotalSecondsElapsed()
+        _totalSecondsElapsedLD.value = totalSecondsElapsed
     }
 
     private fun initWorkoutState(state: WorkoutState) {
@@ -110,14 +113,12 @@ class WorkoutScreenViewModel(
         when (state) {
             WorkoutState.PREPARE -> {
                 _countdownSecondsLD.value = preparationTimeSecs
-//                serviceCountdownSecondsLD.value = preparationTimeSecs
                 millisRemainingAtPause = preparationTimeSecs * 1000L
             }
             WorkoutState.WORK -> {
                 roundProgress = -1
                 _roundProgressLD.value = roundProgress
                 _countdownSecondsLD.value = workTimeSecs
-//                serviceCountdownSecondsLD.value = workTimeSecs
                 millisRemainingAtPause = workTimeSecs * 1000L
             }
             WorkoutState.REST -> {
@@ -125,7 +126,6 @@ class WorkoutScreenViewModel(
                     onComplete()
                 } else {
                     _countdownSecondsLD.value = restTimeSecs
-//                    serviceCountdownSecondsLD.value = restTimeSecs
                     millisRemainingAtPause = restTimeSecs * 1000L
                 }
             }
@@ -151,6 +151,7 @@ class WorkoutScreenViewModel(
 
     private fun initCountdown(countdownMillis: Long) {
         workoutInProgress = true
+        firstTick = true
 
         if (workoutStateLD.value == WorkoutState.WORK) {
             _playStartBellLD.value = true
@@ -181,10 +182,13 @@ class WorkoutScreenViewModel(
                             initWorkoutState(WorkoutState.WORK)
                         }
                     }
+
+                    serviceCountdownSecondsLD.value = DateTimeUtils.toMinuteSeconds(0)
                 }
 
                 override fun onTick(millisUntilFinished: Long) {
-                    _countdownSecondsLD.value = (ceil(millisUntilFinished.toDouble() / 1000).toInt())
+                    _countdownSecondsLD.value =
+                        (ceil(millisUntilFinished.toDouble() / 1000).toInt())
 
                     val countdownStr = DateTimeUtils.toMinuteSeconds(ceil(millisUntilFinished.toDouble() / 1000).toInt())
                     serviceCountdownSecondsLD.value = countdownStr
@@ -192,9 +196,10 @@ class WorkoutScreenViewModel(
 
                     restartOnPrevious = countdownMillis - millisUntilFinished > 1000
 
-                    if (workoutStateLD.value != WorkoutState.PREPARE) {
+                    if (!firstTick) {
                         onSecondElapsed()
                     }
+                    firstTick = false
 
                     if (workoutStateLD.value == WorkoutState.WORK) {
                         if (millisUntilNextCombination <= 0L) {
@@ -212,7 +217,8 @@ class WorkoutScreenViewModel(
         combinationsThrown++
         val nextCombination: Combination? = getRandomCombination()
         _currentCombinationLD.value = nextCombination
-        serviceCommandAudioLD.value = nextCombination?.file_name?.let { ServiceAudioCommand(it, audioFileBaseDirectory) }
+        serviceCommandAudioLD.value =
+            nextCombination?.file_name?.let { ServiceAudioCommand(it, audioFileBaseDirectory) }
         val timeToCompleteCombination = nextCombination?.timeToCompleteMillis ?: 2000
         millisUntilNextCombination = getTimeUntilNextCombination(timeToCompleteCombination)
     }
@@ -252,6 +258,9 @@ class WorkoutScreenViewModel(
                 initWorkoutState(WorkoutState.WORK)
             }
         }
+
+        totalSecondsElapsed = getTotalSecondsElapsed()
+        _totalSecondsElapsedLD.value = totalSecondsElapsed
     }
 
     fun onRestart() {
@@ -296,6 +305,9 @@ class WorkoutScreenViewModel(
                 }
             }
         }
+
+        totalSecondsElapsed = getTotalSecondsElapsed()
+        _totalSecondsElapsedLD.value = totalSecondsElapsed
     }
 
     fun onPlay() {
@@ -404,6 +416,23 @@ class WorkoutScreenViewModel(
 
     private fun getTotalWorkoutLengthSecs(): Int {
         return (workTimeSecs * numberOfRounds) + (restTimeSecs * numberOfRounds) - restTimeSecs
+    }
+
+    private fun getTotalSecondsElapsed(): Int {
+        var totalSecondsElapsed = 0
+        when (workoutStateLD.value) {
+            WorkoutState.PREPARE -> {
+                totalSecondsElapsed = 0
+            }
+            WorkoutState.WORK -> {
+                totalSecondsElapsed = (currentRound -1) * (workTimeSecs + restTimeSecs)
+            }
+
+            WorkoutState.REST -> {
+                totalSecondsElapsed = ((currentRound) * workTimeSecs) + ((currentRound - 1) * restTimeSecs)
+            }
+        }
+        return totalSecondsElapsed
     }
 
 }
