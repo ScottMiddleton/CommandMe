@@ -64,8 +64,26 @@ class WorkoutScreen : BaseFragment() {
         setClickListeners()
     }
 
+    override fun onResume() {
+        super.onResume()
+        // This is to ensure that the round progress bars update after the app has been backgrounded
+        if (viewModel.workoutStateLD.value == WorkoutState.REST) {
+            repeat(viewModel.getCurrentRound()) { index ->
+                val seekbar = round_progress_ll.getChildAt(index) as SeekBar?
+                seekbar?.thumb?.mutate()?.alpha = 255
+                seekbar?.progress = viewModel.getCountdownProgressBarMax(WorkoutState.WORK)
+            }
+        } else if (viewModel.workoutStateLD.value == WorkoutState.PREPARE) {
+            repeat(viewModel.getCurrentRound()) { index ->
+                val seekbar = round_progress_ll.getChildAt(index - 1) as SeekBar?
+                seekbar?.thumb?.mutate()?.alpha = 255
+                seekbar?.progress = viewModel.getCountdownProgressBarMax(WorkoutState.WORK)
+            }
+        }
+    }
+
     private fun subscribeUI() {
-        viewModel.currentRoundLD.observe(viewLifecycleOwner, Observer {
+        viewModel.currentRoundLD.observe(viewLifecycleOwner, { it ->
             if (it == 0) {
                 current_round_count_tv.text = "1"
             } else {

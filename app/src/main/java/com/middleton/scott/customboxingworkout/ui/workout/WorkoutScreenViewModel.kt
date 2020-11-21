@@ -116,7 +116,7 @@ class WorkoutScreenViewModel(
                 millisRemainingAtPause = preparationTimeSecs * 1000L
             }
             WorkoutState.WORK -> {
-                roundProgress = -1
+                roundProgress = 0
                 _roundProgressLD.value = roundProgress
                 _countdownSecondsLD.value = workTimeSecs
                 millisRemainingAtPause = workTimeSecs * 1000L
@@ -282,7 +282,7 @@ class WorkoutScreenViewModel(
                 initWorkoutState(WorkoutState.PREPARE)
             }
             WorkoutState.WORK -> {
-                roundProgress = -1
+                roundProgress = 0
                 _roundProgressLD.value = roundProgress
                 if (restartOnPrevious) {
                     initWorkoutState(WorkoutState.WORK)
