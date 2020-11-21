@@ -6,7 +6,7 @@
     android:orientation="horizontal">
 
     <TextView
-        android:id="@+id/cancel_btn"
+        android:id="@+id/action_bar_cancel_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
@@ -22,16 +22,16 @@
         android:id="@+id/workout_name_tv"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:paddingEnd="36dp"
-        android:paddingStart="24dp"
+        android:ellipsize="end"
+        android:fontFamily="@string/font_roboto_medium"
         android:gravity="center"
         android:maxLines="1"
-        android:ellipsize="end"
+        android:paddingStart="24dp"
+        android:paddingEnd="36dp"
         android:textSize="20sp"
-        android:fontFamily="@string/font_roboto_medium"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/save_btn"
-        app:layout_constraintStart_toEndOf="@+id/cancel_btn"
+        app:layout_constraintStart_toEndOf="@+id/action_bar_cancel_btn"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Workout 1 " />
 

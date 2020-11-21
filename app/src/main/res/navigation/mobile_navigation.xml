@@ -12,7 +12,7 @@
 
     <fragment
         android:id="@+id/workoutsScreen"
-        android:name="com.middleton.scott.customboxingworkout.ui.workouts.WorkoutsScreen"
+        android:name="com.middleton.scott.cmboxing.ui.workouts.WorkoutsScreen"
         android:label="@string/workouts"
         tools:layout="@layout/fragment_combinations" >
         <action
@@ -25,12 +25,12 @@
     </fragment>
     <fragment
         android:id="@+id/combinationsScreen"
-        android:name="com.middleton.scott.customboxingworkout.ui.combinations.CombinationsScreen"
+        android:name="com.middleton.scott.cmboxing.ui.combinations.CombinationsScreen"
         android:label="@string/combinations"
         tools:layout="@layout/fragment_workouts" />
     <fragment
         android:id="@+id/createWorkoutScreen"
-        android:name="com.middleton.scott.customboxingworkout.ui.createworkout.CreateWorkoutScreen"
+        android:name="com.middleton.scott.cmboxing.ui.createworkout.CreateWorkoutScreen"
         tools:layout="@layout/fragment_create_workout_screen">
         <argument
             android:name="workoutId"
@@ -43,7 +43,7 @@
     </fragment>
     <fragment
         android:id="@+id/workoutScreen"
-        android:name="com.middleton.scott.customboxingworkout.ui.workout.WorkoutScreen"
+        android:name="com.middleton.scott.cmboxing.ui.workout.WorkoutScreen"
         tools:layout="@layout/fragment_workout_screen">
         <argument
             android:name="workoutId"

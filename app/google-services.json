@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "955110075138",
+    "firebase_url": "https://commandme---boxing.firebaseio.com",
+    "project_id": "commandme---boxing",
+    "storage_bucket": "commandme---boxing.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:955110075138:android:5fd49c5ae642e783d3301b",
+        "android_client_info": {
+          "package_name": "com.middleton.scott.cmboxing"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "955110075138-4aim06t4cashps7q0ae1vr8tp0jhu550.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.middleton.scott.cmboxing",
+            "certificate_hash": "af1c129561d9b80ef69de01e567d19267d157fe6"
+          }
+        },
+        {
+          "client_id": "955110075138-ptcfk6usrhaikehal9kfdpgfcint21b0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBxLQY7G8MrvBQ0RYluXly6DQbtN-Tz2NY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "955110075138-ptcfk6usrhaikehal9kfdpgfcint21b0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
