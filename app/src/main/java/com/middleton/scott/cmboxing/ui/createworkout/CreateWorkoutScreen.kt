@@ -26,7 +26,12 @@ import org.koin.core.parameter.parametersOf
 
 class CreateWorkoutScreen : BaseFragment() {
     private val args: CreateWorkoutScreenArgs by navArgs()
-    private val viewModel: CreateWorkoutSharedViewModel by viewModel { parametersOf(args.workoutId, args.navigateToCombinations) }
+    private val viewModel: CreateWorkoutSharedViewModel by viewModel {
+        parametersOf(
+            args.workoutId,
+            args.navigateToCombinations
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,8 +54,8 @@ class CreateWorkoutScreen : BaseFragment() {
             viewModel.onCancel()
         }
 
-       activity.getCreateWorkoutSaveButton()?.setOnClickListener {
-           hideKeyboard()
+        activity.getCreateWorkoutSaveButton()?.setOnClickListener {
+            hideKeyboard()
             viewModel.validateSaveAttempt()
         }
 
@@ -113,8 +118,9 @@ class CreateWorkoutScreen : BaseFragment() {
         })
 
         viewModel.requiredSummaryFieldLD.observe(viewLifecycleOwner, Observer {
-            if(it){
-                val viewPager = parentFragment?.view?.findViewById(R.id.create_workout_vp) as ViewPager2
+            if (it) {
+                val viewPager =
+                    parentFragment?.view?.findViewById(R.id.create_workout_vp) as ViewPager2
                 viewPager.currentItem = 0
             }
         })
@@ -149,7 +155,7 @@ class CreateWorkoutScreen : BaseFragment() {
         }
     }
 
-    private fun hideKeyboard(){
+    private fun hideKeyboard() {
         val imm: InputMethodManager =
             requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(requireView().windowToken, 0)

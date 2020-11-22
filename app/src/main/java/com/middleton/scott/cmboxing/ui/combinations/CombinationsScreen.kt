@@ -54,7 +54,7 @@ class CombinationsScreen : BaseFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        var recordingEnabled = checkPermissions()
+        recordingEnabled = checkPermissions()
         viewModel.audioFileBaseDirectory = context?.getExternalFilesDir(null)?.absolutePath + "/"
         adapter = CombinationsAdapter(
             viewModel.audioFileBaseDirectory,

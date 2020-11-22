@@ -207,6 +207,8 @@ class CreateWorkoutCombinationsFragment : BaseFragment() {
             }
             adapter.setAdapter(it, viewModel.selectedCombinations)
         })
+
+        viewModel.selectedCombinationsLD.observe(viewLifecycleOwner, {})
     }
 
     private fun setClickListeners() {
