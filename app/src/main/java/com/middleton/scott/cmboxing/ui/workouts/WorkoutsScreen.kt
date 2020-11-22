@@ -11,7 +11,6 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
-import androidx.core.os.bundleOf
 import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -37,7 +36,7 @@ class WorkoutsScreen : BaseFragment() {
         super.onCreate(savedInstanceState)
 
         adapter = WorkoutsAdapter({ workoutId ->
-            val action = WorkoutsScreenDirections.actionWorkoutsScreenToCreateWorkoutScreen(
+            val action = WorkoutsScreenDirections.editActionWorkoutsScreenToCreateWorkoutScreen(
                 workoutId, false
             )
             findNavController().navigate(
@@ -53,13 +52,16 @@ class WorkoutsScreen : BaseFragment() {
                     },
                     negativeBtnTextId = R.string.ok,
                     negativeBtnClick = {
-                        findNavController().navigate(
-                            R.id.createWorkoutScreen,
-                            bundleOf(
-                                "workoutId" to workoutWithCombinations.workout?.id,
-                                "navigateToCombinations" to true
+                        val action = workoutWithCombinations.workout?.id?.let {
+                            WorkoutsScreenDirections.addCombinationsActionWorkoutsScreenToCreateWorkoutScreen(
+                                it, true
                             )
-                        )
+                        }
+                        action?.let {
+                            findNavController().navigate(
+                                it
+                            )
+                        }
                     }
                 )
             } else {
@@ -176,7 +178,7 @@ class WorkoutsScreen : BaseFragment() {
         subscribeUI()
 
         add_workouts_btn.setOnClickListener {
-            val action = WorkoutsScreenDirections.actionWorkoutsScreenToCreateWorkoutScreen(
+            val action = WorkoutsScreenDirections.addWorkoutActionWorkoutsScreenToCreateWorkoutScreen(
                 -1L, false
             )
             findNavController().navigate(

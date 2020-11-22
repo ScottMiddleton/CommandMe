@@ -62,10 +62,6 @@ class CreateWorkoutSummaryFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (viewModel.navigateToCombinations) {
-            parentFragment?.create_workout_vp?.setCurrentItem(1, false)
-        }
-
         combinations_summary_rv.adapter = adapter
 
         subscribeUI()
@@ -108,56 +104,6 @@ class CreateWorkoutSummaryFragment : BaseFragment() {
                     combinations_summary_rv.visibility = GONE
                 }
                 populateFields()
-            }
-        })
-
-        viewModel.dbUpdateLD.observe(viewLifecycleOwner, Observer {
-            findNavController().popBackStack()
-        })
-
-        viewModel.showCancellationDialogLD.observe(viewLifecycleOwner, Observer {
-            if (it) {
-                DialogManager.showDialog(
-                    requireContext(),
-                    R.string.cancel_this_workout,
-                    R.string.unsaved_dialog_message,
-                    R.string.save_and_exit,
-                    { viewModel.validateSaveAttempt() },
-                    R.string.yes_cancel,
-                    {
-                        viewModel.cancelChanges()
-                    })
-            } else {
-                findNavController().popBackStack()
-            }
-        })
-
-        viewModel.combinationsValidatedLD.observe(viewLifecycleOwner, Observer {
-            if (!it) {
-                DialogManager.showDialog(
-                    context = requireContext(),
-                    messageId = R.string.add_combination_dialog_message,
-                    negativeBtnTextId = R.string.add_combination,
-                    negativeBtnClick = {
-                        val viewPager =
-                            parentFragment?.view?.findViewById(R.id.create_workout_vp) as ViewPager2
-                        viewPager.currentItem = 1
-                    })
-            }
-        })
-
-        viewModel.workoutNameValidatedLD.observe(viewLifecycleOwner, Observer {
-            if (it) {
-                workout_name_til.isErrorEnabled = false
-            } else {
-                workout_name_til.error = getString(R.string.this_is_a_required_field)
-            }
-        })
-
-        viewModel.requiredSummaryFieldLD.observe(viewLifecycleOwner, Observer {
-            if(it){
-                val viewPager = parentFragment?.view?.findViewById(R.id.create_workout_vp) as ViewPager2
-                viewPager.currentItem = 0
             }
         })
     }

@@ -29,11 +29,8 @@ import com.middleton.scott.cmboxing.ui.base.BaseFragment
 import com.middleton.scott.cmboxing.ui.combinations.CombinationsAdapter
 import com.middleton.scott.cmboxing.ui.createworkout.CreateWorkoutSharedViewModel
 import com.middleton.scott.cmboxing.utils.MediaRecorderManager
-import com.middleton.scott.cmboxing.utils.PermissionsDialogManager
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import kotlinx.android.synthetic.main.fragment_combinations.*
-import kotlinx.android.synthetic.main.fragment_combinations.empty_list_layout
-import kotlinx.android.synthetic.main.fragment_combinations.undo_btn
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import java.io.File
 
