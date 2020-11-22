@@ -19,7 +19,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/workout_name_tv"
+        android:id="@+id/action_bar_title_tv"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ellipsize="end"
@@ -30,13 +30,13 @@
         android:paddingEnd="36dp"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/save_btn"
+        app:layout_constraintEnd_toStartOf="@+id/action_bar_save_btn"
         app:layout_constraintStart_toEndOf="@+id/action_bar_cancel_btn"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Workout 1 " />
 
     <TextView
-        android:id="@+id/save_btn"
+        android:id="@+id/action_bar_save_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"

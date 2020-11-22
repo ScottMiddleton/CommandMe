@@ -11,12 +11,12 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayoutMediator
+import com.middleton.scott.cmboxing.MainActivity
 import com.middleton.scott.cmboxing.R
 import com.middleton.scott.cmboxing.ui.base.BaseFragment
 import com.middleton.scott.cmboxing.ui.createworkout.combinations.CreateWorkoutCombinationsFragment
 import com.middleton.scott.cmboxing.ui.createworkout.summary.CreateWorkoutSummaryFragment
 import kotlinx.android.synthetic.main.fragment_create_workout_screen.*
-import kotlinx.android.synthetic.main.title_bar_create_workout.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -38,36 +38,30 @@ class CreateWorkoutScreen : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        requireActivity().actionBar?.customView?.findViewById<TextView>(R.id.action_bar_cancel_btn)?.setOnClickListener {
-//            hideKeyboard()
-//            viewModel.onCancel()
-//            Toast.makeText(requireContext(), "lkdnflknc", LENGTH_SHORT).show()
-//        }
 
-//        parentFragment?.save_btn?.setOnClickListener {
-//            hideKeyboard()
-//            viewModel.validateSaveAttempt()
-//        }
-//
-//        parentFragment?.cancel_btn?.setOnClickListener {
-//
-//        }
+        val activity = activity as MainActivity
+        activity.getCreateWorkoutCancelButton()?.setOnClickListener {
+            hideKeyboard()
+            viewModel.onCancel()
+        }
 
-        val crash = 1/0
+       activity.getCreateWorkoutSaveButton()?.setOnClickListener {
+           hideKeyboard()
+            viewModel.validateSaveAttempt()
+        }
 
         subscribeUI()
 
         setupViewPagerAndTabLayout()
-
-
     }
 
     private fun subscribeUI() {
         viewModel.workoutLD.observe(viewLifecycleOwner, Observer {
+            val activity = activity as MainActivity
             if (it.name == "") {
-                parentFragment?.workout_name_tv?.text = getString(R.string.create_workout)
+                activity.setCreateWorkoutActionBarTitle(getString(R.string.create_workout))
             } else {
-                parentFragment?.workout_name_tv?.text = viewModel.workout.name
+                activity.setCreateWorkoutActionBarTitle(viewModel.workout.name)
             }
         })
     }

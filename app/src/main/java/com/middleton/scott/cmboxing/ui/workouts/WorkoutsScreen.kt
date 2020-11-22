@@ -37,9 +37,11 @@ class WorkoutsScreen : BaseFragment() {
         super.onCreate(savedInstanceState)
 
         adapter = WorkoutsAdapter({ workoutId ->
+            val action = WorkoutsScreenDirections.actionWorkoutsScreenToCreateWorkoutScreen(
+                workoutId, false
+            )
             findNavController().navigate(
-                R.id.createWorkoutScreen,
-                bundleOf("workoutId" to workoutId)
+                action
             )
         }) { workoutWithCombinations ->
             if (workoutWithCombinations.combinations.isEmpty()) {
@@ -117,11 +119,11 @@ class WorkoutsScreen : BaseFragment() {
                     undo_tv.text = getString(R.string.deleted_snackbar, workout.name)
 
                     handler.removeCallbacksAndMessages(null)
-                    handler.postDelayed( {
+                    handler.postDelayed({
                         undo_btn?.visibility = GONE
                         undo_tv?.visibility = GONE
                         undoSnackbarVisible = false
-                        if(workoutsEmpty){
+                        if (workoutsEmpty) {
                             empty_list_layout?.visibility = VISIBLE
                         }
                     }, 3000)
@@ -174,7 +176,12 @@ class WorkoutsScreen : BaseFragment() {
         subscribeUI()
 
         add_workouts_btn.setOnClickListener {
-            findNavController().navigate(R.id.createWorkoutScreen)
+            val action = WorkoutsScreenDirections.actionWorkoutsScreenToCreateWorkoutScreen(
+                -1L, false
+            )
+            findNavController().navigate(
+                action
+            )
         }
     }
 
@@ -183,7 +190,8 @@ class WorkoutsScreen : BaseFragment() {
             if (it.isNullOrEmpty()) {
                 workoutsEmpty = true
                 if (!undoSnackbarVisible) {
-                empty_list_layout.visibility = VISIBLE }
+                    empty_list_layout.visibility = VISIBLE
+                }
                 workout_rv.visibility = GONE
             } else {
                 workoutsEmpty = false
@@ -203,7 +211,7 @@ class WorkoutsScreen : BaseFragment() {
         }
         params.setMargins(80, 80, 80, 80)
         add_workouts_btn.layoutParams = params
-        
+
         nested_scroll_view.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
             when {
                 scrollY > oldScrollY -> {

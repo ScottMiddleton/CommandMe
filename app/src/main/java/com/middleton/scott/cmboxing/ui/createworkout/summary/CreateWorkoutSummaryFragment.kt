@@ -247,16 +247,6 @@ class CreateWorkoutSummaryFragment : BaseFragment() {
             hideKeyboard()
         }
 
-//        parentFragment?.save_btn?.setOnClickListener {
-//            hideKeyboard()
-//            viewModel.validateSaveAttempt()
-//        }
-//
-//        parentFragment?.cancel_btn?.setOnClickListener {
-//            hideKeyboard()
-//            viewModel.onCancel()
-//        }
-
         add_combination_tv.setOnClickListener {
             val viewPager = parentFragment?.view?.findViewById(R.id.create_workout_vp) as ViewPager2
             viewPager.currentItem = 1

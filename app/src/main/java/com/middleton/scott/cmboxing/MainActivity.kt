@@ -90,10 +90,6 @@ class MainActivity : AppCompatActivity() {
 
                 supportActionBar?.customView = view
                 supportActionBar?.setDisplayShowCustomEnabled(true)
-                view.findViewById<TextView>(R.id.action_bar_cancel_btn).setOnClickListener {
-//                    hideKeyboard()
-                    viewModel.onCancel()
-                }
             }
 
             if (destination.id == R.id.workoutScreen) {
@@ -152,5 +148,17 @@ class MainActivity : AppCompatActivity() {
         if (intent?.action == ACTION_SHOW_WORKOUT_SCREEN) {
             nav_host_fragment.findNavController().navigate(R.id.action_global_workout_screen)
         }
+    }
+
+    fun getCreateWorkoutCancelButton(): TextView? {
+        return supportActionBar?.customView?.findViewById<TextView>(R.id.action_bar_cancel_btn)
+    }
+
+    fun getCreateWorkoutSaveButton(): TextView? {
+        return supportActionBar?.customView?.findViewById<TextView>(R.id.action_bar_save_btn)
+    }
+
+    fun setCreateWorkoutActionBarTitle(title: String) {
+        supportActionBar?.customView?.findViewById<TextView>(R.id.action_bar_title_tv)?.text = title
     }
 }

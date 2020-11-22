@@ -20,8 +20,15 @@
             app:destination="@id/workoutScreen"
             app:enterAnim="@android:anim/fade_in"
             app:exitAnim="@android:anim/fade_out"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out"/>
+        <action
+            android:id="@+id/action_workoutsScreen_to_createWorkoutScreen"
+            app:destination="@id/createWorkoutScreen"
+            app:exitAnim="@anim/slide_out_bottom"
+            app:enterAnim="@anim/slide_in_top"
+            app:popEnterAnim="@anim/slide_in_bottom"
+            app:popExitAnim="@anim/slide_out_top" />
     </fragment>
     <fragment
         android:id="@+id/combinationsScreen"
