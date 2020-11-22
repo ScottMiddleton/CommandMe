@@ -42,9 +42,9 @@ class CreateWorkoutCombinationsFragment : BaseFragment() {
     private var mediaRecorder = MediaRecorder()
     var combinationsEmpty = true
     var undoSnackbarVisible = false
+    var recordingEnabled = false
 
     private val handler = Handler()
-
     private lateinit var adapter: CombinationsAdapter
 
     companion object {
@@ -54,6 +54,7 @@ class CreateWorkoutCombinationsFragment : BaseFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        recordingEnabled = checkPermissions()
         adapter = CombinationsAdapter(
             viewModel.audioFileBaseDirectory,
             parentFragmentManager,
@@ -203,7 +204,7 @@ class CreateWorkoutCombinationsFragment : BaseFragment() {
         record_audio_button.setOnTouchListener { _, event ->
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
-                    if (checkPermissions()) {
+                    if (recordingEnabled) {
                         val yourColor = ContextCompat.getColor(requireContext(), R.color.red)
                         val filter = SimpleColorFilter(yourColor)
                         val keyPath = KeyPath("**")
@@ -212,7 +213,7 @@ class CreateWorkoutCombinationsFragment : BaseFragment() {
                         startRecording()
                         handleRecordAudioAnimations(true)
                     } else {
-                        checkPermissions()
+                        requestPermission()
                     }
                 }
 
@@ -260,9 +261,11 @@ class CreateWorkoutCombinationsFragment : BaseFragment() {
                 val permissionToRecord = grantResults[0] == PackageManager.PERMISSION_GRANTED
                 val permissionToStore = grantResults[1] == PackageManager.PERMISSION_GRANTED
                 if (permissionToRecord && permissionToStore) {
+                    recordingEnabled = true
                     Toast.makeText(requireContext(), getString(R.string.recording_enabled), Toast.LENGTH_LONG)
                         .show()
                 } else {
+                    recordingEnabled = false
                     Toast.makeText(requireContext(), getString(R.string.recording_denied), Toast.LENGTH_LONG)
                         .show()
                 }

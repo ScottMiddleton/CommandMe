@@ -28,7 +28,6 @@ import com.middleton.scott.cmboxing.datasource.local.model.Combination
 import com.middleton.scott.cmboxing.other.Constants.REQUEST_AUDIO_PERMISSION_CODE
 import com.middleton.scott.cmboxing.ui.base.BaseFragment
 import com.middleton.scott.cmboxing.utils.MediaRecorderManager
-import com.middleton.scott.cmboxing.utils.PermissionsDialogManager
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import kotlinx.android.synthetic.main.fragment_combinations.*
 import org.koin.android.ext.android.inject
@@ -39,6 +38,7 @@ class CombinationsScreen : BaseFragment() {
     private var mediaRecorder = MediaRecorder()
     var combinationsEmpty = true
     var undoSnackbarVisible = false
+    var recordingEnabled = false
 
     private val handler = Handler()
 
@@ -54,6 +54,7 @@ class CombinationsScreen : BaseFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        var recordingEnabled = checkPermissions()
         viewModel.audioFileBaseDirectory = context?.getExternalFilesDir(null)?.absolutePath + "/"
         adapter = CombinationsAdapter(
             viewModel.audioFileBaseDirectory,
@@ -192,7 +193,7 @@ class CombinationsScreen : BaseFragment() {
         record_audio_button.setOnTouchListener { _, event ->
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
-                    if (checkPermissions()) {
+                    if (recordingEnabled) {
                         val yourColor = ContextCompat.getColor(requireContext(), R.color.red)
                         val filter = SimpleColorFilter(yourColor)
                         val keyPath = KeyPath("**")
@@ -261,9 +262,11 @@ class CombinationsScreen : BaseFragment() {
                 val permissionToRecord = grantResults[0] == PackageManager.PERMISSION_GRANTED
                 val permissionToStore = grantResults[1] == PackageManager.PERMISSION_GRANTED
                 if (permissionToRecord && permissionToStore) {
+                    recordingEnabled = true
                     Toast.makeText(requireContext(), "Recording enabled.", Toast.LENGTH_LONG)
                         .show()
                 } else {
+                    recordingEnabled = false
                     Toast.makeText(requireContext(), "Recording and saving audio permissions have been denied. These both must be granted to record audio.", Toast.LENGTH_LONG)
                         .show()
                 }
