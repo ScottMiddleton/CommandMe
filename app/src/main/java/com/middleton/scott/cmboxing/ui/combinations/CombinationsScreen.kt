@@ -1,6 +1,9 @@
 package com.middleton.scott.cmboxing.ui.combinations
 
 import SaveCombinationDialog
+import android.Manifest.permission.RECORD_AUDIO
+import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+import android.content.pm.PackageManager
 import android.graphics.Canvas
 import android.graphics.ColorFilter
 import android.media.MediaRecorder
@@ -14,7 +17,6 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieProperty
@@ -23,14 +25,12 @@ import com.airbnb.lottie.model.KeyPath
 import com.airbnb.lottie.value.LottieValueCallback
 import com.middleton.scott.cmboxing.R
 import com.middleton.scott.cmboxing.datasource.local.model.Combination
+import com.middleton.scott.cmboxing.other.Constants.REQUEST_AUDIO_PERMISSION_CODE
 import com.middleton.scott.cmboxing.ui.base.BaseFragment
 import com.middleton.scott.cmboxing.utils.MediaRecorderManager
 import com.middleton.scott.cmboxing.utils.PermissionsDialogManager
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import kotlinx.android.synthetic.main.fragment_combinations.*
-import kotlinx.android.synthetic.main.fragment_combinations.empty_list_layout
-import kotlinx.android.synthetic.main.fragment_combinations.undo_btn
-import kotlinx.android.synthetic.main.fragment_combinations.undo_tv
 import org.koin.android.ext.android.inject
 import java.io.File
 
@@ -71,11 +71,7 @@ class CombinationsScreen : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        undo_btn.setOnClickListener {
-            undo_btn.visibility = GONE
-            undo_tv.visibility = GONE
-            viewModel.undoPreviouslyDeletedCombination()
-        }
+        setClickListeners()
 
         combinations_RV.adapter = adapter
 
@@ -157,24 +153,10 @@ class CombinationsScreen : BaseFragment() {
         viewModel.audioFileBaseDirectory =
             context?.getExternalFilesDir(null)?.absolutePath + "/"
 
-        context?.let { context ->
-            activity?.let { activity ->
-                PermissionsDialogManager.handlePermissionsDialog(
-                    context,
-                    activity
-                ) { permissionsGranted ->
-                    if (permissionsGranted) {
-                        viewModel.permissionsGranted = true
-                    }
-                }
-            }
-        }
-
-        setClickListeners()
     }
 
     private fun subscribeUI() {
-        viewModel.getAllCombinationsLD().observe(viewLifecycleOwner, Observer {
+        viewModel.getAllCombinationsLD().observe(viewLifecycleOwner, {
             if (it.isNullOrEmpty()) {
                 combinationsEmpty = true
                 combinations_RV.visibility = GONE
@@ -200,18 +182,31 @@ class CombinationsScreen : BaseFragment() {
     }
 
     private fun setClickListeners() {
+
+        undo_btn.setOnClickListener {
+            undo_btn.visibility = GONE
+            undo_tv.visibility = GONE
+            viewModel.undoPreviouslyDeletedCombination()
+        }
+
         record_audio_button.setOnTouchListener { _, event ->
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
-                    if (viewModel.permissionsGranted) {
+                    if (checkPermissions()) {
                         val yourColor = ContextCompat.getColor(requireContext(), R.color.red)
                         val filter = SimpleColorFilter(yourColor)
                         val keyPath = KeyPath("**")
                         val callback: LottieValueCallback<ColorFilter> = LottieValueCallback(filter)
-                        record_audio_button.addValueCallback(keyPath, LottieProperty.COLOR_FILTER, callback)
+                        record_audio_button.addValueCallback(
+                            keyPath,
+                            LottieProperty.COLOR_FILTER,
+                            callback
+                        )
                         startRecording()
                         handleRecordAudioAnimations(true)
 
+                    } else {
+                        requestPermission()
                     }
                 }
 
@@ -221,7 +216,11 @@ class CombinationsScreen : BaseFragment() {
                     val filter = SimpleColorFilter(yourColor)
                     val keyPath = KeyPath("**")
                     val callback: LottieValueCallback<ColorFilter> = LottieValueCallback(filter)
-                    record_audio_button.addValueCallback(keyPath, LottieProperty.COLOR_FILTER, callback)
+                    record_audio_button.addValueCallback(
+                        keyPath,
+                        LottieProperty.COLOR_FILTER,
+                        callback
+                    )
                     handleRecordAudioAnimations(false)
                 }
             }
@@ -250,6 +249,42 @@ class CombinationsScreen : BaseFragment() {
             }
             viewModel.recording = false
         }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        when (requestCode) {
+            REQUEST_AUDIO_PERMISSION_CODE -> if (grantResults.isNotEmpty()) {
+                val permissionToRecord = grantResults[0] == PackageManager.PERMISSION_GRANTED
+                val permissionToStore = grantResults[1] == PackageManager.PERMISSION_GRANTED
+                if (permissionToRecord && permissionToStore) {
+                    Toast.makeText(requireContext(), "Recording enabled.", Toast.LENGTH_LONG)
+                        .show()
+                } else {
+                    Toast.makeText(requireContext(), "Recording and saving audio permissions have been denied. These both must be granted to record audio.", Toast.LENGTH_LONG)
+                        .show()
+                }
+            }
+        }
+    }
+
+    private fun checkPermissions(): Boolean {
+        val result = ContextCompat.checkSelfPermission(
+            requireContext(),
+            WRITE_EXTERNAL_STORAGE
+        )
+        val result1 = ContextCompat.checkSelfPermission(requireContext(), RECORD_AUDIO)
+        return result == PackageManager.PERMISSION_GRANTED && result1 == PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun requestPermission() {
+        requestPermissions(
+            arrayOf(RECORD_AUDIO, WRITE_EXTERNAL_STORAGE),
+            REQUEST_AUDIO_PERMISSION_CODE
+        )
     }
 
     private fun showSaveCombinationDialog() {

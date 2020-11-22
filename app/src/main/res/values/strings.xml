@@ -79,5 +79,7 @@
     <string name="edit_this_workout">Edit this workout?</string>
     <string name="edit_workout_dialog_message">This will stop and exit the current workout.</string>
     <string name="edit_workout">Edit workout</string>
+    <string name="recording_enabled">Recording enabled.</string>
+    <string name="recording_denied">Recording and saving audio permissions have been denied. These both must be granted to record audio.</string>
 
 </resources>

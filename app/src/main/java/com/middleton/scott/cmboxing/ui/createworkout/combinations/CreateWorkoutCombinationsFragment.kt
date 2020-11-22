@@ -1,6 +1,8 @@
 package com.middleton.scott.cmboxing.ui.createworkout.combinations
 
 import SaveCombinationDialog
+import android.Manifest
+import android.content.pm.PackageManager
 import android.graphics.Canvas
 import android.graphics.ColorFilter
 import android.media.MediaRecorder
@@ -22,6 +24,7 @@ import com.airbnb.lottie.model.KeyPath
 import com.airbnb.lottie.value.LottieValueCallback
 import com.middleton.scott.cmboxing.R
 import com.middleton.scott.cmboxing.datasource.local.model.Combination
+import com.middleton.scott.cmboxing.other.Constants
 import com.middleton.scott.cmboxing.ui.base.BaseFragment
 import com.middleton.scott.cmboxing.ui.combinations.CombinationsAdapter
 import com.middleton.scott.cmboxing.ui.createworkout.CreateWorkoutSharedViewModel
@@ -167,19 +170,6 @@ class CreateWorkoutCombinationsFragment : BaseFragment() {
         viewModel.audioFileBaseDirectory =
             context?.getExternalFilesDir(null)?.absolutePath + "/"
 
-        context?.let { context ->
-            activity?.let { activity ->
-                PermissionsDialogManager.handlePermissionsDialog(
-                    context,
-                    activity
-                ) { permissionsGranted ->
-                    if (permissionsGranted) {
-                        viewModel.permissionsGranted = true
-                    }
-                }
-            }
-        }
-
         setClickListeners()
     }
 
@@ -213,7 +203,7 @@ class CreateWorkoutCombinationsFragment : BaseFragment() {
         record_audio_button.setOnTouchListener { _, event ->
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
-                    if (viewModel.permissionsGranted) {
+                    if (checkPermissions()) {
                         val yourColor = ContextCompat.getColor(requireContext(), R.color.red)
                         val filter = SimpleColorFilter(yourColor)
                         val keyPath = KeyPath("**")
@@ -221,7 +211,8 @@ class CreateWorkoutCombinationsFragment : BaseFragment() {
                         record_audio_button.addValueCallback(keyPath, LottieProperty.COLOR_FILTER, callback)
                         startRecording()
                         handleRecordAudioAnimations(true)
-
+                    } else {
+                        checkPermissions()
                     }
                 }
 
@@ -257,6 +248,44 @@ class CreateWorkoutCombinationsFragment : BaseFragment() {
             }
             viewModel.recording = false
         }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        when (requestCode) {
+            Constants.REQUEST_AUDIO_PERMISSION_CODE -> if (grantResults.isNotEmpty()) {
+                val permissionToRecord = grantResults[0] == PackageManager.PERMISSION_GRANTED
+                val permissionToStore = grantResults[1] == PackageManager.PERMISSION_GRANTED
+                if (permissionToRecord && permissionToStore) {
+                    Toast.makeText(requireContext(), getString(R.string.recording_enabled), Toast.LENGTH_LONG)
+                        .show()
+                } else {
+                    Toast.makeText(requireContext(), getString(R.string.recording_denied), Toast.LENGTH_LONG)
+                        .show()
+                }
+            }
+        }
+    }
+
+    private fun checkPermissions(): Boolean {
+        val result = ContextCompat.checkSelfPermission(
+            requireContext(),
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+        )
+        val result1 = ContextCompat.checkSelfPermission(requireContext(),
+            Manifest.permission.RECORD_AUDIO
+        )
+        return result == PackageManager.PERMISSION_GRANTED && result1 == PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun requestPermission() {
+        requestPermissions(
+            arrayOf(Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE),
+            Constants.REQUEST_AUDIO_PERMISSION_CODE
+        )
     }
 
     private fun showSaveCombinationDialog() {
