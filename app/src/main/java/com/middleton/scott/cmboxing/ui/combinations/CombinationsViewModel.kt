@@ -16,8 +16,6 @@ open class CombinationsViewModel(private val localDataSource: LocalDataSource) :
     var audioFileCompleteDirectory = ""
     var recording = false
 
-    var permissionsGranted = false
-
     lateinit var allCombinations: List<Combination>
     lateinit var previouslyDeletedCombination: Combination
 

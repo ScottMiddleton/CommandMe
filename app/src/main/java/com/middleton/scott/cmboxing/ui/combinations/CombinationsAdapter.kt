@@ -31,7 +31,7 @@ class CombinationsAdapter(
 
     lateinit var context: Context
 
-    private var selectedCombinations = mutableListOf<Combination>()
+    var selectedCombinations = mutableListOf<Combination>()
     private var allCombinations = mutableListOf<Combination>()
     private var mediaPlayer = MediaPlayer()
 

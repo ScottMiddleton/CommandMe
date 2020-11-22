@@ -14,6 +14,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.Toast
+import android.widget.Toast.LENGTH_LONG
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -101,24 +102,35 @@ class CreateWorkoutCombinationsFragment : BaseFragment() {
                 }
 
                 override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                    undo_btn.visibility = View.VISIBLE
-                    undo_tv.visibility = View.VISIBLE
-                    undoSnackbarVisible = true
-
-                    val position = viewHolder.adapterPosition
-                    val combination = viewModel.deleteCombination(position)
-
-                    undo_tv.text = getString(R.string.deleted_snackbar, combination.name)
-
-                    handler.removeCallbacksAndMessages(null)
-                    handler.postDelayed({
-                        undoSnackbarVisible = false
-                        undo_btn?.visibility = View.GONE
-                        undo_tv?.visibility = View.GONE
-                        if (combinationsEmpty) {
-                            empty_list_layout?.visibility = View.VISIBLE
+                    var swipedComboIsChecked = false
+                    adapter.selectedCombinations.forEach {
+                        if (it == viewModel.allCombinations[viewHolder.adapterPosition]) {
+                            swipedComboIsChecked = true
                         }
-                    }, 3000)
+                    }
+                    if (swipedComboIsChecked) {
+                        adapter.notifyDataSetChanged()
+                        Toast.makeText(requireContext(), "Checked combinations cannot be deleted", LENGTH_LONG).show()
+                    } else {
+                        undo_btn.visibility = View.VISIBLE
+                        undo_tv.visibility = View.VISIBLE
+                        undoSnackbarVisible = true
+
+                        val position = viewHolder.adapterPosition
+                        val combination = viewModel.deleteCombination(position)
+
+                        undo_tv.text = getString(R.string.deleted_snackbar, combination.name)
+
+                        handler.removeCallbacksAndMessages(null)
+                        handler.postDelayed({
+                            undoSnackbarVisible = false
+                            undo_btn?.visibility = View.GONE
+                            undo_tv?.visibility = View.GONE
+                            if (combinationsEmpty) {
+                                empty_list_layout?.visibility = View.VISIBLE
+                            }
+                        }, 3000)
+                    }
                 }
 
                 override fun onChildDraw(
@@ -206,7 +218,11 @@ class CreateWorkoutCombinationsFragment : BaseFragment() {
                         val filter = SimpleColorFilter(yourColor)
                         val keyPath = KeyPath("**")
                         val callback: LottieValueCallback<ColorFilter> = LottieValueCallback(filter)
-                        record_audio_button.addValueCallback(keyPath, LottieProperty.COLOR_FILTER, callback)
+                        record_audio_button.addValueCallback(
+                            keyPath,
+                            LottieProperty.COLOR_FILTER,
+                            callback
+                        )
                         startRecording()
                         handleRecordAudioAnimations(true)
                     } else {
@@ -220,7 +236,11 @@ class CreateWorkoutCombinationsFragment : BaseFragment() {
                     val filter = SimpleColorFilter(yourColor)
                     val keyPath = KeyPath("**")
                     val callback: LottieValueCallback<ColorFilter> = LottieValueCallback(filter)
-                    record_audio_button.addValueCallback(keyPath, LottieProperty.COLOR_FILTER, callback)
+                    record_audio_button.addValueCallback(
+                        keyPath,
+                        LottieProperty.COLOR_FILTER,
+                        callback
+                    )
                     handleRecordAudioAnimations(false)
                 }
             }
@@ -259,11 +279,19 @@ class CreateWorkoutCombinationsFragment : BaseFragment() {
                 val permissionToStore = grantResults[1] == PackageManager.PERMISSION_GRANTED
                 if (permissionToRecord && permissionToStore) {
                     recordingEnabled = true
-                    Toast.makeText(requireContext(), getString(R.string.recording_enabled), Toast.LENGTH_LONG)
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.recording_enabled),
+                        Toast.LENGTH_LONG
+                    )
                         .show()
                 } else {
                     recordingEnabled = false
-                    Toast.makeText(requireContext(), getString(R.string.recording_denied), Toast.LENGTH_LONG)
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.recording_denied),
+                        Toast.LENGTH_LONG
+                    )
                         .show()
                 }
             }
@@ -275,7 +303,8 @@ class CreateWorkoutCombinationsFragment : BaseFragment() {
             requireContext(),
             Manifest.permission.WRITE_EXTERNAL_STORAGE
         )
-        val result1 = ContextCompat.checkSelfPermission(requireContext(),
+        val result1 = ContextCompat.checkSelfPermission(
+            requireContext(),
             Manifest.permission.RECORD_AUDIO
         )
         return result == PackageManager.PERMISSION_GRANTED && result1 == PackageManager.PERMISSION_GRANTED
