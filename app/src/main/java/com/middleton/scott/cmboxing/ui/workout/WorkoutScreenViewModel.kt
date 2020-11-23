@@ -10,6 +10,8 @@ import com.middleton.scott.cmboxing.datasource.local.LocalDataSource
 import com.middleton.scott.cmboxing.datasource.local.model.Combination
 import com.middleton.scott.cmboxing.datasource.local.model.WorkoutWithCombinations
 import com.middleton.scott.cmboxing.service.ServiceAudioCommand
+import com.middleton.scott.cmboxing.service.WorkoutService.Companion.playEndBellLD
+import com.middleton.scott.cmboxing.service.WorkoutService.Companion.playStartBellLD
 import com.middleton.scott.cmboxing.service.WorkoutService.Companion.serviceCommandAudioLD
 import com.middleton.scott.cmboxing.service.WorkoutService.Companion.serviceCountdownSecondsLD
 import com.middleton.scott.cmboxing.service.WorkoutService.Companion.serviceWorkoutStateLD
@@ -70,14 +72,6 @@ class WorkoutScreenViewModel(
     private val _currentCombinationLD = MutableLiveData<Combination>()
     val currentCombinationLD: LiveData<Combination>
         get() = _currentCombinationLD
-
-    private val _playStartBellLD = MutableLiveData<Boolean>()
-    val playStartBellLD: LiveData<Boolean>
-        get() = _playStartBellLD
-
-    private val _playEndBellLD = MutableLiveData<Boolean>()
-    val playEndBellLD: LiveData<Boolean>
-        get() = _playEndBellLD
 
     private var countDownTimer: CountDownTimer? = null
 
@@ -154,7 +148,7 @@ class WorkoutScreenViewModel(
         firstTick = true
 
         if (workoutStateLD.value == WorkoutState.WORK) {
-            _playStartBellLD.value = true
+            playStartBellLD.value = true
         }
 
         millisRemainingAtPause = countdownMillis
@@ -174,7 +168,7 @@ class WorkoutScreenViewModel(
 
                         WorkoutState.WORK -> {
                             initWorkoutState(WorkoutState.REST)
-                            _playEndBellLD.value = true
+                            playEndBellLD.value = true
                         }
 
                         WorkoutState.REST -> {
@@ -320,7 +314,7 @@ class WorkoutScreenViewModel(
                 WorkoutState.WORK -> timeSecs = workTimeSecs
                 WorkoutState.REST -> timeSecs = restTimeSecs
             }
-            _playStartBellLD.value = true
+            playStartBellLD.value = true
             initCountdown(timeSecs * 1000L)
             workoutHasBegun = true
         }

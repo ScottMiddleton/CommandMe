@@ -4,11 +4,8 @@ import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.OvalShape
-import android.media.AudioAttributes
 import android.media.AudioManager
 import android.media.MediaPlayer
-import android.media.SoundPool
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -20,8 +17,8 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.middleton.scott.cmboxing.R
 import com.middleton.scott.cmboxing.MainActivity
+import com.middleton.scott.cmboxing.R
 import com.middleton.scott.cmboxing.other.Constants.ACTION_START_OR_RESUME_SERVICE
 import com.middleton.scott.cmboxing.other.Constants.ACTION_STOP_SERVICE
 import com.middleton.scott.cmboxing.service.WorkoutService
@@ -31,15 +28,11 @@ import kotlinx.android.synthetic.main.fragment_workout_screen.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-
 class WorkoutScreen : BaseFragment() {
     private val args: WorkoutScreenArgs by navArgs()
     private val viewModel: WorkoutScreenViewModel by viewModel { parametersOf(args.workoutId) }
 
     private var mediaPlayer = MediaPlayer()
-    private lateinit var soundPool: SoundPool
-    private var workStartAudioId: Int = 0
-    private var workEndAudioId: Int = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -54,7 +47,6 @@ class WorkoutScreen : BaseFragment() {
         requireActivity().volumeControlStream = AudioManager.STREAM_MUSIC
         sendCommandToService(ACTION_START_OR_RESUME_SERVICE)
         initRoundProgressView()
-        initSoundPool()
         (activity as MainActivity).supportActionBar?.title = viewModel.workoutName
         viewModel.audioFileBaseDirectory =
             view.context.getExternalFilesDir(null)?.absolutePath + "/"
@@ -160,33 +152,6 @@ class WorkoutScreen : BaseFragment() {
             combination_name_tv.text = it.name
             play_command_lottie.playAnimation()
         })
-
-        viewModel.playEndBellLD.observe(viewLifecycleOwner, Observer {
-            if (it) {
-                mediaPlayer.stop()
-                soundPool.play(
-                    workEndAudioId,
-                    1.0f,
-                    1.0f,
-                    0,
-                    0,
-                    1.0f
-                )
-            }
-        })
-
-        viewModel.playStartBellLD.observe(viewLifecycleOwner, Observer {
-            if (it) {
-                soundPool.play(
-                    workStartAudioId,
-                    1.0f,
-                    1.0f,
-                    0,
-                    0,
-                    1.0f
-                )
-            }
-        })
     }
 
     private fun setClickListeners() {
@@ -224,23 +189,7 @@ class WorkoutScreen : BaseFragment() {
         }
     }
 
-    private fun initSoundPool() {
-        soundPool = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            val attributes = AudioAttributes.Builder()
-                .setUsage(AudioAttributes.USAGE_MEDIA)
-                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                .build()
-            SoundPool.Builder()
-                .setAudioAttributes(attributes)
-                .build()
-        } else {
-            SoundPool(1, AudioManager.STREAM_NOTIFICATION, 0)
-        }
 
-        workStartAudioId = soundPool.load(context, R.raw.work_start, 1)
-        workEndAudioId = soundPool.load(context, R.raw.work_end, 1)
-
-    }
 
     private fun initRoundProgressView() {
         round_progress_ll.removeAllViews()
@@ -286,7 +235,6 @@ class WorkoutScreen : BaseFragment() {
         super.onDestroy()
         viewModel.onPause()
         sendCommandToService(ACTION_STOP_SERVICE)
-        soundPool.release()
     }
 
 }

@@ -7,7 +7,10 @@ import android.app.PendingIntent
 import android.app.PendingIntent.FLAG_UPDATE_CURRENT
 import android.content.Context
 import android.content.Intent
+import android.media.AudioAttributes
+import android.media.AudioManager
 import android.media.MediaPlayer
+import android.media.SoundPool
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
@@ -15,8 +18,8 @@ import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import com.middleton.scott.cmboxing.R
 import com.middleton.scott.cmboxing.MainActivity
+import com.middleton.scott.cmboxing.R
 import com.middleton.scott.cmboxing.other.Constants.ACTION_PAUSE_SERVICE
 import com.middleton.scott.cmboxing.other.Constants.ACTION_SHOW_WORKOUT_SCREEN
 import com.middleton.scott.cmboxing.other.Constants.ACTION_START_OR_RESUME_SERVICE
@@ -33,6 +36,9 @@ class WorkoutService : LifecycleService() {
     var serviceKilled = false
 
     private var mediaPlayer = MediaPlayer()
+    private lateinit var soundPool: SoundPool
+    private var workStartAudioId: Int = 0
+    private var workEndAudioId: Int = 0
 
     lateinit var notificationBuilder: NotificationCompat.Builder
     lateinit var notificationManager: NotificationManager
@@ -41,6 +47,8 @@ class WorkoutService : LifecycleService() {
         val serviceWorkoutStateLD = MutableLiveData<WorkoutState>()
         val serviceCountdownSecondsLD = MutableLiveData<String>()
         val serviceCommandAudioLD = MutableLiveData<ServiceAudioCommand>()
+        val playStartBellLD = MutableLiveData<Boolean>()
+        val playEndBellLD = MutableLiveData<Boolean>()
     }
 
     private fun postInitialValues(){
@@ -53,6 +61,7 @@ class WorkoutService : LifecycleService() {
             when (it.action) {
                 ACTION_START_OR_RESUME_SERVICE -> {
                     if (isFirstRun) {
+                        initSoundPool()
                         startForegroundService()
                         isFirstRun = false
                     } else {
@@ -109,6 +118,33 @@ class WorkoutService : LifecycleService() {
         serviceCommandAudioLD.observe(this, Observer {
             startPlayingCombinationAudio(it.fileName, it.audioBaseFileDirectory)
         })
+
+        playEndBellLD.observe(this, Observer {
+            if (it) {
+                mediaPlayer.stop()
+                soundPool.play(
+                    workEndAudioId,
+                    1.0f,
+                    1.0f,
+                    0,
+                    0,
+                    1.0f
+                )
+            }
+        })
+
+        playStartBellLD.observe(this, Observer {
+            if (it) {
+                soundPool.play(
+                    workStartAudioId,
+                    1.0f,
+                    1.0f,
+                    0,
+                    0,
+                    1.0f
+                )
+            }
+        })
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -139,8 +175,26 @@ class WorkoutService : LifecycleService() {
         serviceKilled = true
         isFirstRun = true
         postInitialValues()
+        soundPool.release()
         stopForeground(true)
         stopSelf()
+    }
+
+    private fun initSoundPool() {
+        soundPool = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            val attributes = AudioAttributes.Builder()
+                .setUsage(AudioAttributes.USAGE_MEDIA)
+                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                .build()
+            SoundPool.Builder()
+                .setAudioAttributes(attributes)
+                .build()
+        } else {
+            SoundPool(1, AudioManager.STREAM_NOTIFICATION, 0)
+        }
+
+        workStartAudioId = soundPool.load(this, R.raw.work_start, 1)
+        workEndAudioId = soundPool.load(this, R.raw.work_end, 1)
     }
 
 }
