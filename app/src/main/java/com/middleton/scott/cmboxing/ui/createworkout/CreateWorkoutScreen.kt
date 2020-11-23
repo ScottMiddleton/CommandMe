@@ -20,7 +20,6 @@ import com.middleton.scott.cmboxing.ui.createworkout.combinations.CreateWorkoutC
 import com.middleton.scott.cmboxing.ui.createworkout.summary.CreateWorkoutSummaryFragment
 import com.middleton.scott.cmboxing.utils.DialogManager
 import kotlinx.android.synthetic.main.fragment_create_workout_screen.*
-import kotlinx.android.synthetic.main.fragment_summary_tab.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
