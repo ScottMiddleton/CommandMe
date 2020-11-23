@@ -106,6 +106,14 @@ class CreateWorkoutSummaryFragment : BaseFragment() {
                 populateFields()
             }
         })
+
+        viewModel.workoutNameValidatedLD.observe(viewLifecycleOwner, Observer {
+            if (it) {
+                workout_name_til.isErrorEnabled = false
+            } else {
+                workout_name_til.error = getString(R.string.this_is_a_required_field)
+            }
+        })
     }
 
     private fun setListeners() {

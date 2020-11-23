@@ -109,14 +109,6 @@ class CreateWorkoutScreen : BaseFragment() {
             }
         })
 
-        viewModel.workoutNameValidatedLD.observe(viewLifecycleOwner, Observer {
-            if (it) {
-                workout_name_til.isErrorEnabled = false
-            } else {
-                workout_name_til.error = getString(R.string.this_is_a_required_field)
-            }
-        })
-
         viewModel.requiredSummaryFieldLD.observe(viewLifecycleOwner, Observer {
             if (it) {
                 val viewPager =
