@@ -81,5 +81,8 @@
     <string name="edit_workout">Edit workout</string>
     <string name="recording_enabled">Recording enabled.</string>
     <string name="recording_denied">Recording and saving audio permissions have been denied. These both must be granted to record audio.</string>
+    <string name="upgrade">Upgrade</string>
+    <string name="upgrade_required">Upgrade Required</string>
+    <string name="max_combos_dialog_message">You have reached the maximum number of combinations allowed in the free version of the app. Please upgrade to the full version to create unlimited combinations.</string>
 
 </resources>

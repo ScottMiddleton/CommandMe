@@ -28,6 +28,7 @@ import com.middleton.scott.cmboxing.R
 import com.middleton.scott.cmboxing.datasource.local.model.Combination
 import com.middleton.scott.cmboxing.other.Constants.REQUEST_AUDIO_PERMISSION_CODE
 import com.middleton.scott.cmboxing.ui.base.BaseFragment
+import com.middleton.scott.cmboxing.utils.DialogManager
 import com.middleton.scott.cmboxing.utils.MediaRecorderManager
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import kotlinx.android.synthetic.main.fragment_combinations.*
@@ -243,8 +244,16 @@ class CombinationsScreen : BaseFragment() {
         if (viewModel.recording) {
             MediaRecorderManager.stopRecording(mediaRecorder) { recordingComplete ->
                 if (recordingComplete) {
-                    if(viewModel.allCombinations.size >= 5) {
-                        Toast.makeText(requireContext(), "Free version limit", LENGTH_LONG).show()
+                    if (viewModel.allCombinations.size >= 5) {
+                        DialogManager.showDialog(
+                            requireContext(),
+                            R.string.upgrade_required,
+                            R.string.max_combos_dialog_message,
+                            R.string.cancel,
+                            { },
+                            R.string.upgrade,
+                            {
+                            })
                         val file = File(viewModel.audioFileCompleteDirectory)
                         file.delete()
                     } else {
@@ -275,7 +284,11 @@ class CombinationsScreen : BaseFragment() {
                         .show()
                 } else {
                     recordingEnabled = false
-                    Toast.makeText(requireContext(), "Recording and saving audio permissions have been denied. These both must be granted to record audio.", Toast.LENGTH_LONG)
+                    Toast.makeText(
+                        requireContext(),
+                        "Recording and saving audio permissions have been denied. These both must be granted to record audio.",
+                        Toast.LENGTH_LONG
+                    )
                         .show()
                 }
             }
