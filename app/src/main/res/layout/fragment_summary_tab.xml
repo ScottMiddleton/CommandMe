@@ -246,7 +246,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginEnd="34dp"
+                android:layout_marginEnd="28dp"
                 android:text="@string/frequency"
                 android:visibility="invisible"
                 android:textColor="@color/primary_text_color_faded"

@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.android.gms.common.config.GservicesValue.value
 import com.middleton.scott.cmboxing.MainActivity
 import com.middleton.scott.cmboxing.datasource.local.LocalDataSource
 import com.middleton.scott.cmboxing.datasource.local.model.Combination
@@ -184,7 +185,8 @@ class WorkoutScreenViewModel(
                     _countdownSecondsLD.value =
                         (ceil(millisUntilFinished.toDouble() / 1000).toInt())
 
-                    val countdownStr = DateTimeUtils.toMinuteSeconds(ceil(millisUntilFinished.toDouble() / 1000).toInt())
+                    val countdownStr =
+                        DateTimeUtils.toMinuteSeconds(ceil(millisUntilFinished.toDouble() / 1000).toInt())
                     serviceCountdownSecondsLD.value = countdownStr
                     millisRemainingAtPause = millisUntilFinished
 
@@ -314,7 +316,9 @@ class WorkoutScreenViewModel(
                 WorkoutState.WORK -> timeSecs = workTimeSecs
                 WorkoutState.REST -> timeSecs = restTimeSecs
             }
-            playStartBellLD.value = true
+            if (workoutStateLD.value != WorkoutState.PREPARE) {
+                playStartBellLD.value = true
+            }
             initCountdown(timeSecs * 1000L)
             workoutHasBegun = true
         }
@@ -419,11 +423,12 @@ class WorkoutScreenViewModel(
                 totalSecondsElapsed = 0
             }
             WorkoutState.WORK -> {
-                totalSecondsElapsed = (currentRound -1) * (workTimeSecs + restTimeSecs)
+                totalSecondsElapsed = (currentRound - 1) * (workTimeSecs + restTimeSecs)
             }
 
             WorkoutState.REST -> {
-                totalSecondsElapsed = ((currentRound) * workTimeSecs) + ((currentRound - 1) * restTimeSecs)
+                totalSecondsElapsed =
+                    ((currentRound) * workTimeSecs) + ((currentRound - 1) * restTimeSecs)
             }
         }
         return totalSecondsElapsed

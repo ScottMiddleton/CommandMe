@@ -64,8 +64,6 @@ class WorkoutService : LifecycleService() {
                         initSoundPool()
                         startForegroundService()
                         isFirstRun = false
-                    } else {
-
                     }
                 }
                 ACTION_PAUSE_SERVICE -> {
