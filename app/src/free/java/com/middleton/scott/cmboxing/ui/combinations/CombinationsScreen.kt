@@ -9,6 +9,7 @@ import android.graphics.ColorFilter
 import android.media.MediaRecorder
 import android.os.Bundle
 import android.os.Handler
+import android.os.SystemClock
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -16,7 +17,6 @@ import android.view.View.GONE
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.Toast
-import android.widget.Toast.LENGTH_LONG
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -232,12 +232,15 @@ class CombinationsScreen : BaseFragment() {
     }
 
     private fun startRecording() {
+        viewModel.resetRecordingTimer()
         viewModel.recording = true
         viewModel.setAudioFileOutput(System.currentTimeMillis())
         MediaRecorderManager.startRecording(
             mediaRecorder,
             viewModel.audioFileCompleteDirectory
         )
+        viewModel.startHTime = SystemClock.uptimeMillis();
+        viewModel.customHandler.postDelayed(viewModel.updateTimerThread, 0);
     }
 
     private fun stopRecording() {
@@ -250,18 +253,26 @@ class CombinationsScreen : BaseFragment() {
                             R.string.upgrade_required,
                             R.string.max_combos_dialog_message,
                             R.string.cancel,
-                            { },
+                            {},
                             R.string.upgrade,
                             {
                             })
                         val file = File(viewModel.audioFileCompleteDirectory)
                         file.delete()
                     } else {
-                        showSaveCombinationDialog()
+                        viewModel.timeSwapBuff += viewModel.timeInMilliseconds
+                        viewModel.customHandler.removeCallbacks(viewModel.updateTimerThread)
+                        if(viewModel.timeSwapBuff > 500){
+                            showSaveCombinationDialog()
+                        } else {
+                            val file = File(viewModel.audioFileCompleteDirectory)
+                            file.delete()
+                            Toast.makeText(context, "Recording too short. Hold the microphone to record a combination command.", Toast.LENGTH_LONG).show()
+                        }
                     }
 
                 } else {
-                    Toast.makeText(context, "Recording too short", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Recording too short. Hold the microphone to record a combination command.", Toast.LENGTH_LONG).show()
                     mediaRecorder = MediaRecorder()
                 }
             }
@@ -313,6 +324,7 @@ class CombinationsScreen : BaseFragment() {
 
     private fun showSaveCombinationDialog() {
         SaveCombinationDialog(
+            viewModel.audioFileCompleteDirectory,
             false,
             Combination("", 0, viewModel.audioFileName),
             { combination ->

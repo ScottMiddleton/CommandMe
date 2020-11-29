@@ -322,6 +322,7 @@ class CreateWorkoutCombinationsFragment : BaseFragment() {
 
     private fun showSaveCombinationDialog() {
         SaveCombinationDialog(
+            viewModel.audioFileCompleteDirectory,
             false,
             Combination("", 0, viewModel.audioFileName),
             { combination ->

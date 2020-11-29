@@ -94,6 +94,7 @@ class CombinationsAdapter(
 
         holder.editButton.setOnClickListener {
             SaveCombinationDialog(
+                (audioFileDirectory + combination.file_name),
                 true,
                 combination,
                 { combination ->
