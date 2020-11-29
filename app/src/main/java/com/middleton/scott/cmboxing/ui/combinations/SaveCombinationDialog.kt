@@ -1,7 +1,9 @@
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.media.MediaPlayer
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,13 +12,16 @@ import android.view.inputmethod.InputMethodManager
 import androidx.annotation.Nullable
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.DialogFragment
+import com.airbnb.lottie.LottieAnimationView
 import com.middleton.scott.cmboxing.R
 import com.middleton.scott.cmboxing.datasource.local.model.Combination
 import kotlinx.android.synthetic.main.dialog_save_combination.*
+import java.io.IOException
 
 const val numberOfFieldsToValidate = 2
 
 class SaveCombinationDialog(
+    private val audioFileDirectory: String,
     private val isEditMode: Boolean,
     private val combination: Combination,
     private val onSave: ((Combination) -> Unit),
@@ -31,6 +36,7 @@ class SaveCombinationDialog(
 
     private var timeToCompleteMillis: Long = 0L
     private var saveAttempted = false
+    private var mediaPlayer = MediaPlayer()
 
     override fun onViewCreated(view: View, @Nullable savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -40,6 +46,9 @@ class SaveCombinationDialog(
         dialog?.window?.setSoftInputMode(
             WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE
         )
+
+        play_audio_lottie.speed = 3f
+        play_audio_lottie.setMinAndMaxFrame(30, 60)
 
         dialog?.setCanceledOnTouchOutside(false)
 
@@ -70,6 +79,17 @@ class SaveCombinationDialog(
             } else {
                 onDelete()
                 dismiss()
+            }
+        }
+
+
+        play_cl.setOnClickListener {
+            if (!mediaPlayer.isPlaying) {
+                handlePlayAnimationLottie(true, play_audio_lottie)
+                handlePlayAnimationLottie(false, play_audio_lottie)
+                startPlaying()
+            } else {
+                stopPlaying()
             }
         }
 
@@ -132,5 +152,41 @@ class SaveCombinationDialog(
         }
 
         return validFieldsCount == numberOfFieldsToValidate
+    }
+
+    private fun startPlaying() {
+        mediaPlayer.stop()
+        mediaPlayer.reset()
+        mediaPlayer = MediaPlayer().apply {
+            try {
+                setDataSource(audioFileDirectory)
+                prepare()
+                this.setOnCompletionListener {
+                    handlePlayAnimationLottie(true, play_audio_lottie)
+                }
+                start()
+            } catch (e: IOException) {
+                Log.e("LOG_TAG", "prepare() failed")
+            }
+        }
+    }
+
+    private fun stopPlaying() {
+        handlePlayAnimationLottie(true, play_audio_lottie)
+        mediaPlayer.stop()
+        mediaPlayer.reset()
+    }
+
+    private fun handlePlayAnimationLottie(
+        playInReverse: Boolean,
+        playAudioLottie: LottieAnimationView?
+    ) {
+        if (playInReverse) {
+            playAudioLottie?.setMinAndMaxFrame(0, 30)
+            playAudioLottie?.playAnimation()
+        } else {
+            playAudioLottie?.setMinAndMaxFrame(30, 60)
+            playAudioLottie?.playAnimation()
+        }
     }
 }
