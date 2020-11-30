@@ -21,6 +21,6 @@ val appModule = module {
     single<LocalDataSource> { LocalDataSourceImpl(get()) }
     viewModel { CombinationsViewModel(get()) }
     viewModel { WorkoutsViewModel(get()) }
-    viewModel {(workoutId: Long, navigateToCombinations: Boolean) -> CreateWorkoutSharedViewModel(get(), workoutId, navigateToCombinations) }
+    viewModel {(workoutId: Long) -> CreateWorkoutSharedViewModel(get(), workoutId) }
     viewModel {(workoutId: Long) -> WorkoutScreenViewModel(get(), workoutId) }
 }

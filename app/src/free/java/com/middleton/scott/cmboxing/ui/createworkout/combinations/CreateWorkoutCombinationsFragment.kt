@@ -82,13 +82,6 @@ class CreateWorkoutCombinationsFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        undo_btn.setOnClickListener {
-            undo_btn?.visibility = View.GONE
-            undo_tv.visibility = View.GONE
-            viewModel.undoPreviouslyDeletedCombination()
-        }
-
-
         combinations_RV.adapter = adapter
 
         val itemTouchHelperCallback =
@@ -118,11 +111,14 @@ class CreateWorkoutCombinationsFragment : BaseFragment() {
 
                         val position = viewHolder.adapterPosition
                         val combination = viewModel.deleteCombination(position)
+                        viewModel.addDeletedCombinationID(combination.id)
 
                         undo_tv.text = getString(R.string.deleted_snackbar, combination.name)
 
                         handler.removeCallbacksAndMessages(null)
                         handler.postDelayed({
+                            val file = File(viewModel.audioFileBaseDirectory + combination.file_name)
+                            file.delete()
                             undoSnackbarVisible = false
                             undo_btn?.visibility = View.GONE
                             undo_tv?.visibility = View.GONE
@@ -247,6 +243,13 @@ class CreateWorkoutCombinationsFragment : BaseFragment() {
                 }
             }
             true
+        }
+
+        undo_btn.setOnClickListener {
+            undo_btn?.visibility = View.GONE
+            undo_tv.visibility = View.GONE
+            viewModel.removeDeletedCombinationID()
+            viewModel.undoPreviouslyDeletedCombination()
         }
     }
 

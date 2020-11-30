@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">CommandMe: Boxing</string>
+    <string name="app_name">CommandMe</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
@@ -84,5 +84,6 @@
     <string name="upgrade">Upgrade</string>
     <string name="upgrade_required">Upgrade Required</string>
     <string name="max_combos_dialog_message">You have reached the maximum number of combinations allowed in the free version of the app. Please upgrade to the full version to create unlimited combinations.</string>
+    <string name="checked_combos_cannot_be_deleted">Checked combinations cannot be deleted</string>
 
 </resources>

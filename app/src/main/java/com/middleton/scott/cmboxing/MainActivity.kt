@@ -30,7 +30,6 @@ import org.koin.core.parameter.parametersOf
 
 class MainActivity : AppCompatActivity() {
     var menu: Menu? = null
-    private val viewModel: CreateWorkoutSharedViewModel by viewModel { parametersOf(-1, false) }
 
     companion object {
         var currentWorkoutId = -1L
@@ -54,23 +53,6 @@ class MainActivity : AppCompatActivity() {
         val appBarConfiguration = AppBarConfiguration(
             topLevelDestinations
         )
-
-        viewModel.showCancellationDialogLD.observe(this, Observer {
-            if (it) {
-                DialogManager.showDialog(
-                    this,
-                    R.string.cancel_this_workout,
-                    R.string.unsaved_dialog_message,
-                    R.string.save_and_exit,
-                    { viewModel.validateSaveAttempt() },
-                    R.string.yes_cancel,
-                    {
-                        viewModel.cancelChanges()
-                    })
-            } else {
-                navController.popBackStack()
-            }
-        })
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             supportActionBar?.setDisplayShowCustomEnabled(false)

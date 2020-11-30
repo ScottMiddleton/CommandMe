@@ -15,15 +15,15 @@ import kotlinx.coroutines.launch
 
 class CreateWorkoutSharedViewModel(
     private val localDataSource: LocalDataSource,
-    var workoutId: Long,
-    var navigateToCombinations: Boolean
+    var workoutId: Long
 ) : CombinationsViewModel(localDataSource) {
 
     var subscribe = true
     var workout = Workout()
     var savedWorkout = Workout()
-
     var userHasAttemptedToSave = false
+
+    var deletedCombinationIdsList = mutableListOf<Long>()
 
     var selectedCombinations = ArrayList<Combination>()
     var selectedCombinationsCrossRefs = ArrayList<SelectedCombinationsCrossRef>()
@@ -183,7 +183,11 @@ class CreateWorkoutSharedViewModel(
                 localDataSource.deleteWorkout(workout)
                 localDataSource.deleteWorkoutCombinations(workout.id)
                 localDataSource.upsertWorkout(savedWorkout)
-                localDataSource.upsertWorkoutCombinations(savedSelectedCombinationsCrossRefs)
+                savedSelectedCombinationsCrossRefs.forEach {
+                    if (!deletedCombinationIdsList.contains(it.combination_id)) {
+                        localDataSource.upsertWorkoutCombinations(savedSelectedCombinationsCrossRefs)
+                    }
+                }
                 dbUpdateLD.value = true
             }
         }
@@ -196,20 +200,28 @@ class CreateWorkoutSharedViewModel(
 
     fun validateSaveAttempt() {
         userHasAttemptedToSave = true
-        if (workout.name.isNullOrBlank()){
+        if (workout.name.isNullOrBlank()) {
             workoutNameValidatedLD.value = false
         }
 
-        if(selectedCombinations.isEmpty()){
+        if (selectedCombinations.isEmpty()) {
             combinationsValidatedLD.value = false
         }
 
-        if(selectedCombinations.isNotEmpty() && !workout.name.isNullOrBlank()) {
+        if (selectedCombinations.isNotEmpty() && !workout.name.isNullOrBlank()) {
             upsertWorkout()
         }
 
-        if(selectedCombinations.isNotEmpty() && workout.name.isNullOrBlank()){
+        if (selectedCombinations.isNotEmpty() && workout.name.isNullOrBlank()) {
             requiredSummaryFieldLD.value = true
         }
+    }
+
+    fun addDeletedCombinationID(id: Long) {
+        deletedCombinationIdsList.add(id)
+    }
+
+    fun removeDeletedCombinationID() {
+        deletedCombinationIdsList.add(previouslyDeletedCombination.id)
     }
 }
