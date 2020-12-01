@@ -85,92 +85,92 @@ class CreateWorkoutCombinationsFragment : BaseFragment() {
 
         combinations_RV.adapter = adapter
 
-        val itemTouchHelperCallback =
-            object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
-                override fun onMove(
-                    recyclerView: RecyclerView,
-                    viewHolder: RecyclerView.ViewHolder,
-                    target: RecyclerView.ViewHolder
-                ): Boolean {
-                    return true
-                }
-
-                override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                    var swipedComboIsChecked = false
-                    adapter.selectedCombinations.forEach {
-                        if (it == viewModel.allCombinations[viewHolder.adapterPosition]) {
-                            swipedComboIsChecked = true
-                        }
-                    }
-                    if (swipedComboIsChecked) {
-                        adapter.notifyDataSetChanged()
-                        Toast.makeText(requireContext(), getString(R.string.checked_combos_cannot_be_deleted), LENGTH_LONG).show()
-                    } else {
-                        undo_btn.visibility = View.VISIBLE
-                        undo_tv.visibility = View.VISIBLE
-                        undoSnackbarVisible = true
-
-                        val position = viewHolder.adapterPosition
-                        val combination = viewModel.deleteCombination(position)
-                        viewModel.addDeletedCombinationID(combination.id)
-
-                        undo_tv.text = getString(R.string.deleted_snackbar, combination.name)
-
-                        handler.removeCallbacksAndMessages(null)
-                        handler.postDelayed({
-                            val file = File(viewModel.audioFileBaseDirectory + combination.file_name)
-                            file.delete()
-                            undoSnackbarVisible = false
-                            undo_btn?.visibility = View.GONE
-                            undo_tv?.visibility = View.GONE
-                            if (combinationsEmpty) {
-                                empty_list_layout?.visibility = View.VISIBLE
-                            }
-                        }, 3000)
-                    }
-                }
-
-                override fun onChildDraw(
-                    c: Canvas,
-                    recyclerView: RecyclerView,
-                    viewHolder: RecyclerView.ViewHolder,
-                    dX: Float,
-                    dY: Float,
-                    actionState: Int,
-                    isCurrentlyActive: Boolean
-                ) {
-                    super.onChildDraw(
-                        c,
-                        recyclerView,
-                        viewHolder,
-                        dX,
-                        dY,
-                        actionState,
-                        isCurrentlyActive
-                    )
-
-                    RecyclerViewSwipeDecorator.Builder(
-                        c,
-                        recyclerView,
-                        viewHolder,
-                        dX,
-                        dY,
-                        actionState,
-                        isCurrentlyActive
-                    )
-                        .addBackgroundColor(
-                            ContextCompat.getColor(
-                                requireContext(), R.color.red
-                            )
-                        )
-                        .addActionIcon(R.drawable.ic_delete_sweep)
-                        .create()
-                        .decorate()
-                }
-            }
-
-        val itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
-        itemTouchHelper.attachToRecyclerView(combinations_RV)
+//        val itemTouchHelperCallback =
+//            object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+//                override fun onMove(
+//                    recyclerView: RecyclerView,
+//                    viewHolder: RecyclerView.ViewHolder,
+//                    target: RecyclerView.ViewHolder
+//                ): Boolean {
+//                    return true
+//                }
+//
+//                override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+//                    var swipedComboIsChecked = false
+//                    adapter.selectedCombinations.forEach {
+//                        if (it == viewModel.allCombinations[viewHolder.adapterPosition]) {
+//                            swipedComboIsChecked = true
+//                        }
+//                    }
+//                    if (swipedComboIsChecked) {
+//                        adapter.notifyDataSetChanged()
+//                        Toast.makeText(requireContext(), getString(R.string.checked_combos_cannot_be_deleted), LENGTH_LONG).show()
+//                    } else {
+//                        undo_btn.visibility = View.VISIBLE
+//                        undo_tv.visibility = View.VISIBLE
+//                        undoSnackbarVisible = true
+//
+//                        val position = viewHolder.adapterPosition
+//                        val combination = viewModel.deleteCombination(position)
+//                        viewModel.addDeletedCombinationID(combination.id)
+//
+//                        undo_tv.text = getString(R.string.deleted_snackbar, combination.name)
+//
+//                        handler.removeCallbacksAndMessages(null)
+//                        handler.postDelayed({
+//                            val file = File(viewModel.audioFileBaseDirectory + combination.file_name)
+//                            file.delete()
+//                            undoSnackbarVisible = false
+//                            undo_btn?.visibility = View.GONE
+//                            undo_tv?.visibility = View.GONE
+//                            if (combinationsEmpty) {
+//                                empty_list_layout?.visibility = View.VISIBLE
+//                            }
+//                        }, 3000)
+//                    }
+//                }
+//
+//                override fun onChildDraw(
+//                    c: Canvas,
+//                    recyclerView: RecyclerView,
+//                    viewHolder: RecyclerView.ViewHolder,
+//                    dX: Float,
+//                    dY: Float,
+//                    actionState: Int,
+//                    isCurrentlyActive: Boolean
+//                ) {
+//                    super.onChildDraw(
+//                        c,
+//                        recyclerView,
+//                        viewHolder,
+//                        dX,
+//                        dY,
+//                        actionState,
+//                        isCurrentlyActive
+//                    )
+//
+//                    RecyclerViewSwipeDecorator.Builder(
+//                        c,
+//                        recyclerView,
+//                        viewHolder,
+//                        dX,
+//                        dY,
+//                        actionState,
+//                        isCurrentlyActive
+//                    )
+//                        .addBackgroundColor(
+//                            ContextCompat.getColor(
+//                                requireContext(), R.color.red
+//                            )
+//                        )
+//                        .addActionIcon(R.drawable.ic_delete_sweep)
+//                        .create()
+//                        .decorate()
+//                }
+//            }
+//
+//        val itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
+//        itemTouchHelper.attachToRecyclerView(combinations_RV)
 
         subscribeUI()
 
@@ -249,7 +249,6 @@ class CreateWorkoutCombinationsFragment : BaseFragment() {
         undo_btn.setOnClickListener {
             undo_btn?.visibility = View.GONE
             undo_tv.visibility = View.GONE
-            viewModel.removeDeletedCombinationID()
             viewModel.undoPreviouslyDeletedCombination()
         }
     }

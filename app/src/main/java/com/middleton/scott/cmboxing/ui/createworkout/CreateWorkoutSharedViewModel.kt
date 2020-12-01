@@ -23,8 +23,6 @@ class CreateWorkoutSharedViewModel(
     var savedWorkout = Workout()
     var userHasAttemptedToSave = false
 
-    var deletedCombinationIdsList = mutableListOf<Long>()
-
     var selectedCombinations = ArrayList<Combination>()
     var selectedCombinationsCrossRefs = ArrayList<SelectedCombinationsCrossRef>()
     var savedSelectedCombinationsCrossRefs = ArrayList<SelectedCombinationsCrossRef>()
@@ -183,11 +181,7 @@ class CreateWorkoutSharedViewModel(
                 localDataSource.deleteWorkout(workout)
                 localDataSource.deleteWorkoutCombinations(workout.id)
                 localDataSource.upsertWorkout(savedWorkout)
-                savedSelectedCombinationsCrossRefs.forEach {
-                    if (!deletedCombinationIdsList.contains(it.combination_id)) {
-                        localDataSource.upsertWorkoutCombinations(savedSelectedCombinationsCrossRefs)
-                    }
-                }
+                localDataSource.upsertWorkoutCombinations(savedSelectedCombinationsCrossRefs)
                 dbUpdateLD.value = true
             }
         }
@@ -215,13 +209,5 @@ class CreateWorkoutSharedViewModel(
         if (selectedCombinations.isNotEmpty() && workout.name.isNullOrBlank()) {
             requiredSummaryFieldLD.value = true
         }
-    }
-
-    fun addDeletedCombinationID(id: Long) {
-        deletedCombinationIdsList.add(id)
-    }
-
-    fun removeDeletedCombinationID() {
-        deletedCombinationIdsList.add(previouslyDeletedCombination.id)
     }
 }
