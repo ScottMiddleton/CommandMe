@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/workoutsScreen">
+    app:startDestination="@+id/splashFragment">
 
     <action
         android:id="@+id/action_global_workout_screen"
@@ -70,5 +70,20 @@
             android:name="workoutId"
             android:defaultValue="-1L"
             app:argType="long" />
+    </fragment>
+    <fragment
+        android:id="@+id/splashFragment"
+        android:name="com.middleton.scott.cmboxing.SplashFragment"
+        android:label="fragment_splash"
+        tools:layout="@layout/fragment_splash" >
+        <action
+            android:id="@+id/action_splashFragment_to_workoutsScreen"
+            app:destination="@id/workoutsScreen"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"
+            app:popUpTo="@+id/mobile_navigation"
+            app:popUpToInclusive="true" />
     </fragment>
 </navigation>

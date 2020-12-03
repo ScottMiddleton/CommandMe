@@ -2,10 +2,7 @@ package com.middleton.scott.cmboxing
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.FrameLayout
@@ -78,6 +75,12 @@ class MainActivity : AppCompatActivity() {
                 menu?.setGroupVisible(R.id.workout_menu, true)
             } else {
                 menu?.setGroupVisible(R.id.workout_menu, false)
+            }
+
+            if (destination.id == R.id.splashFragment) {
+                supportActionBar?.hide()
+            } else {
+                supportActionBar?.show()
             }
         }
 
