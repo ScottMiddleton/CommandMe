@@ -14,14 +14,11 @@ import android.view.inputmethod.InputMethodManager
 import androidx.activity.OnBackPressedCallback
 import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.middleton.scott.cmboxing.R
 import com.middleton.scott.cmboxing.ui.base.BaseFragment
 import com.middleton.scott.cmboxing.ui.createworkout.CreateWorkoutSharedViewModel
 import com.middleton.scott.cmboxing.utils.DateTimeUtils
-import com.middleton.scott.cmboxing.utils.DialogManager
-import kotlinx.android.synthetic.main.fragment_create_workout_screen.*
 import kotlinx.android.synthetic.main.fragment_summary_tab.*
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 

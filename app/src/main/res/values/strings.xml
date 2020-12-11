@@ -88,5 +88,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="your_workout_your_way">Your workout, your way</string>
+    <string name="boxing">Boxing</string>
+    <string name="hiit">HIIT</string>
 
 </resources>

@@ -10,6 +10,8 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.Toast
+import android.widget.Toast.LENGTH_LONG
 import androidx.core.content.ContextCompat
 import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.Observer
@@ -18,6 +20,8 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.middleton.scott.cmboxing.R
 import com.middleton.scott.cmboxing.ui.base.BaseFragment
+import com.middleton.scott.cmboxing.ui.createworkout.WorkoutType
+import com.middleton.scott.cmboxing.ui.createworkout.WorkoutTypeDialog
 import com.middleton.scott.cmboxing.utils.DialogManager
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import kotlinx.android.synthetic.main.fragment_workouts.*
@@ -178,12 +182,24 @@ class WorkoutsScreen : BaseFragment() {
         subscribeUI()
 
         add_workouts_btn.setOnClickListener {
-            val action = WorkoutsScreenDirections.addWorkoutActionWorkoutsScreenToCreateWorkoutScreen(
-                -1L, false
-            )
-            findNavController().navigate(
-                action
-            )
+            WorkoutTypeDialog {
+                when (it) {
+                    WorkoutType.BOXING -> {
+                        val action =
+                            WorkoutsScreenDirections.addWorkoutActionWorkoutsScreenToCreateWorkoutScreen(
+                                -1L, false
+                            )
+                        findNavController().navigate(
+                            action
+                        )
+                    }
+                    WorkoutType.HIIT -> {
+                        Toast.makeText(requireContext(), "Coming soon", LENGTH_LONG).show()
+                    }
+                }
+            }.show(childFragmentManager, null)
+
+
         }
     }
 

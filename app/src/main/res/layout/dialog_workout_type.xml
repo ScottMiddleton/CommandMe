@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/dialog_background"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:fontFamily="@string/font_roboto_medium"
+        android:textSize="16sp"
+        android:text="Workout Type"/>
+
+    <TextView
+        android:id="@+id/boxing_btn"
+        android:layout_width="200dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_height="64dp"
+        android:background="@drawable/workout_type_btn_background"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:textAllCaps="true"
+        android:fontFamily="@string/font_roboto_medium"
+        android:text="@string/boxing"/>
+
+    <TextView
+        android:id="@+id/hiit_btn"
+        android:layout_width="200dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_height="64dp"
+        android:background="@drawable/workout_type_btn_background"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:gravity="center"
+        android:textAllCaps="true"
+        android:fontFamily="@string/font_roboto_medium"
+        android:text="@string/hiit"/>
+
+</LinearLayout>
