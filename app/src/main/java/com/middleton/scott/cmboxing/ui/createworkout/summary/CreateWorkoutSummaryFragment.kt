@@ -17,13 +17,13 @@ import androidx.lifecycle.Observer
 import androidx.viewpager2.widget.ViewPager2
 import com.middleton.scott.cmboxing.R
 import com.middleton.scott.cmboxing.ui.base.BaseFragment
-import com.middleton.scott.cmboxing.ui.createworkout.CreateWorkoutSharedViewModel
+import com.middleton.scott.cmboxing.ui.createworkout.boxing.CreateBoxingWorkoutSharedViewModel
 import com.middleton.scott.cmboxing.utils.DateTimeUtils
 import kotlinx.android.synthetic.main.fragment_summary_tab.*
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 class CreateWorkoutSummaryFragment : BaseFragment() {
-    private val viewModel by lazy { requireParentFragment().getViewModel<CreateWorkoutSharedViewModel>() }
+    private val viewModel by lazy { requireParentFragment().getViewModel<CreateBoxingWorkoutSharedViewModel>() }
     private lateinit var adapter: CombinationsSummaryAdapter
 
     companion object {
@@ -199,7 +199,7 @@ class CreateWorkoutSummaryFragment : BaseFragment() {
         }
 
         add_combination_tv.setOnClickListener {
-            val viewPager = parentFragment?.view?.findViewById(R.id.create_workout_vp) as ViewPager2
+            val viewPager = parentFragment?.view?.findViewById(R.id.create_boxing_workout_vp) as ViewPager2
             viewPager.currentItem = 1
         }
     }

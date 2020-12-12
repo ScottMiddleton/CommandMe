@@ -56,7 +56,7 @@ class WorkoutsScreen : BaseFragment() {
                     },
                     negativeBtnTextId = R.string.ok,
                     negativeBtnClick = {
-                        val action = workoutWithCombinations.workout?.id?.let {
+                        val action = workoutWithCombinations.boxingWorkout?.id?.let {
                             WorkoutsScreenDirections.addCombinationsActionWorkoutsScreenToCreateWorkoutScreen(
                                 it, true
                             )
@@ -69,7 +69,7 @@ class WorkoutsScreen : BaseFragment() {
                     }
                 )
             } else {
-                val action = workoutWithCombinations.workout?.id?.let {
+                val action = workoutWithCombinations.boxingWorkout?.id?.let {
                     WorkoutsScreenDirections.actionWorkoutsScreenToWorkoutScreen(
                         it
                     )

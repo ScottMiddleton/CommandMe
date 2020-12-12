@@ -47,7 +47,7 @@ class CombinationsSummaryAdapter(
         holder.frequencyET.setOnClickListener {
             FrequencyDialog {frequencyType ->
                 val selectedCombinationsCrossRef = SelectedCombinationsCrossRef(
-                    workout_id = -1,
+                    boxing_workout_id = -1,
                     combination_id = combination.id,
                     frequency = frequencyType
                 )

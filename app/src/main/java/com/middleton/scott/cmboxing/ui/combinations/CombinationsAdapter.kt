@@ -71,7 +71,7 @@ class CombinationsAdapter(
             holder.checkBox.visibility = VISIBLE
             holder.checkBox.setOnCheckedChangeListener { _, checked ->
                 onCheckCombination.invoke(
-                    SelectedCombinationsCrossRef(workout_id = -1, combination_id = combination.id),
+                    SelectedCombinationsCrossRef(boxing_workout_id = -1, combination_id = combination.id),
                     checked
                 )
             }

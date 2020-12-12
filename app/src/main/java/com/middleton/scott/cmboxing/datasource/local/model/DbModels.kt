@@ -4,7 +4,7 @@ import androidx.room.Entity
 import java.util.*
 
 @Entity()
-data class Workout constructor(
+data class BoxingWorkout constructor(
     var name: String = "",
     var preparation_time_secs: Int = 10,
     var numberOfRounds: Int = 5,
@@ -18,5 +18,17 @@ data class Workout constructor(
 data class Combination constructor(
     var name: String,
     var timeToCompleteMillis: Long,
+    var file_name: String
+) : BaseDbModel()
+
+@Entity()
+data class HiitWorkout constructor(
+    var name: String = "",
+    var dateCreated: Date = Date()
+) : BaseDbModel()
+
+@Entity()
+data class HiitExercise constructor(
+    var name: String,
     var file_name: String
 ) : BaseDbModel()

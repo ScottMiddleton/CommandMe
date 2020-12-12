@@ -6,7 +6,7 @@ import com.middleton.scott.cmboxing.datasource.local.model.SelectedCombinationsC
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-abstract class SelectedCombinationsCrossRefDao : BaseDao<SelectedCombinationsCrossRef>() {
+abstract class SelectedHiitExercisesCrossRefDao : BaseDao<SelectedCombinationsCrossRef>() {
 
     @Query("SELECT * FROM boxing_workout_combinations WHERE boxing_workout_id = :workoutId")
     abstract fun getSelectedCombinationCrossRefsFlow(workoutId: Long) : Flow<List<SelectedCombinationsCrossRef>>

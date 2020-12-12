@@ -10,7 +10,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
-import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
@@ -19,11 +18,8 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.middleton.scott.cmboxing.other.Constants.ACTION_SHOW_WORKOUT_SCREEN
-import com.middleton.scott.cmboxing.ui.createworkout.CreateWorkoutSharedViewModel
 import com.middleton.scott.cmboxing.utils.DialogManager
 import kotlinx.android.synthetic.main.activity_main.*
-import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.parameter.parametersOf
 
 class MainActivity : AppCompatActivity() {
     var menu: Menu? = null
@@ -34,7 +30,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var navController: NavController
     private val topLevelDestinations =
-        setOf(R.id.combinationsScreen, R.id.workoutsScreen, R.id.createWorkoutScreen)
+        setOf(R.id.combinationsScreen, R.id.workoutsScreen, R.id.createBoxingWorkoutScreen)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,7 +55,7 @@ class MainActivity : AppCompatActivity() {
                 nav_view.visibility = VISIBLE
             }
 
-            if (destination.id == R.id.createWorkoutScreen) {
+            if (destination.id == R.id.createBoxingWorkoutScreen) {
                 val view: View = layoutInflater.inflate(R.layout.title_bar_create_workout, null)
 
                 view.layoutParams = LinearLayout.LayoutParams(
@@ -109,7 +105,7 @@ class MainActivity : AppCompatActivity() {
                     {
                         navController.popBackStack()
                         navController.navigate(
-                            R.id.createWorkoutScreen,
+                            R.id.createBoxingWorkoutScreen,
                             bundleOf("workoutId" to currentWorkoutId)
                         )
                     })

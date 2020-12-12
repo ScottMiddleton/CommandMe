@@ -4,11 +4,11 @@ import androidx.room.*
 import com.middleton.scott.cmboxing.datasource.local.enums.CombinationFrequencyType
 
 @Entity(
-    tableName = "workout_combinations", primaryKeys = ["workout_id", "combination_id"], foreignKeys = [
+    tableName = "boxing_workout_combinations", primaryKeys = ["boxing_workout_id", "combination_id"], foreignKeys = [
         ForeignKey(
-            entity = Workout::class,
+            entity = BoxingWorkout::class,
             parentColumns = ["_id"],
-            childColumns = ["workout_id"],
+            childColumns = ["boxing_workout_id"],
             onDelete = ForeignKey.CASCADE
         ), ForeignKey(
             entity = Combination::class,
@@ -21,16 +21,16 @@ import com.middleton.scott.cmboxing.datasource.local.enums.CombinationFrequencyT
 
 data class SelectedCombinationsCrossRef constructor(
     @ColumnInfo
-    var workout_id: Long,
+    var boxing_workout_id: Long,
     @ColumnInfo
     val combination_id: Long,
     @ColumnInfo
     var frequency: CombinationFrequencyType = CombinationFrequencyType.AVERAGE
 ) : BaseDbModel()
 
-class WorkoutWithCombinations {
+class BoxingWorkoutWithCombinations {
     @Embedded
-    var workout: Workout? = null
+    var boxingWorkout: BoxingWorkout? = null
 
     @Relation(
         parentColumn = "_id",
@@ -38,7 +38,7 @@ class WorkoutWithCombinations {
         entity = Combination::class,
         associateBy = Junction(
             value = SelectedCombinationsCrossRef::class,
-            parentColumn = "workout_id",
+            parentColumn = "boxing_workout_id",
             entityColumn = "combination_id"
         )
     )

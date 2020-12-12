@@ -1,4 +1,4 @@
-package com.middleton.scott.cmboxing.ui.createworkout
+package com.middleton.scott.cmboxing.ui.createworkout.boxing
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -7,20 +7,20 @@ import androidx.lifecycle.viewModelScope
 import com.middleton.scott.cmboxing.datasource.local.LocalDataSource
 import com.middleton.scott.cmboxing.datasource.local.model.Combination
 import com.middleton.scott.cmboxing.datasource.local.model.SelectedCombinationsCrossRef
-import com.middleton.scott.cmboxing.datasource.local.model.Workout
+import com.middleton.scott.cmboxing.datasource.local.model.BoxingWorkout
 import com.middleton.scott.cmboxing.ui.combinations.CombinationsViewModel
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
-class CreateWorkoutSharedViewModel(
+class CreateBoxingWorkoutSharedViewModel(
     private val localDataSource: LocalDataSource,
     var workoutId: Long
 ) : CombinationsViewModel(localDataSource) {
 
     var subscribe = true
-    var workout = Workout()
-    var savedWorkout = Workout()
+    var workout = BoxingWorkout()
+    var savedWorkout = BoxingWorkout()
     var userHasAttemptedToSave = false
 
     var selectedCombinations = ArrayList<Combination>()
@@ -31,7 +31,7 @@ class CreateWorkoutSharedViewModel(
     private val selectedCombinationCrossRefsFlow =
         localDataSource.getSelectedCombinationCrossRefsFlow(workoutId)
 
-    val workoutLD = localDataSource.getWorkoutByIdFlow(workoutId).map {
+    val workoutLD = localDataSource.getBoxingWorkoutByIdFlow(workoutId).map {
         it?.let {
             this.workout = it
         }
@@ -39,7 +39,7 @@ class CreateWorkoutSharedViewModel(
     }.asLiveData()
 
     init {
-        localDataSource.getWorkoutById(workoutId)?.let { savedWorkout = it }
+        localDataSource.getBoxingWorkoutById(workoutId)?.let { savedWorkout = it }
 
         savedSelectedCombinationsCrossRefs =
             localDataSource.getSelectedCombinationCrossRefs(workoutId) as ArrayList<SelectedCombinationsCrossRef>
@@ -80,7 +80,7 @@ class CreateWorkoutSharedViewModel(
         viewModelScope.launch {
             subscribe = false
             localDataSource.upsertWorkoutCombinations(selectedCombinationsCrossRefs)
-            localDataSource.upsertWorkout(workout)
+            localDataSource.upsertBoxingWorkout(workout)
             dbUpdateLD.value = true
         }
     }
@@ -99,17 +99,17 @@ class CreateWorkoutSharedViewModel(
         if (workoutId == -1L) {
             viewModelScope.launch {
                 // Upsert the workout and assign its ID
-                val newWorkoutId = localDataSource.upsertWorkout(workout)
+                val newWorkoutId = localDataSource.upsertBoxingWorkout(workout)
                 workout.id = newWorkoutId
                 // Assign the workout Id to this selected combinations
-                selectedCombinationsCrossRef.workout_id = newWorkoutId
+                selectedCombinationsCrossRef.boxing_workout_id = newWorkoutId
                 selectedCombinationsCrossRefs.add(selectedCombinationsCrossRef)
                 localDataSource.upsertWorkoutCombination(
                     selectedCombinationsCrossRef
                 )
             }
         } else {
-            selectedCombinationsCrossRef.workout_id = workoutId
+            selectedCombinationsCrossRef.boxing_workout_id = workoutId
             viewModelScope.launch {
                 localDataSource.upsertWorkoutCombination(
                     selectedCombinationsCrossRef
@@ -119,7 +119,7 @@ class CreateWorkoutSharedViewModel(
     }
 
     fun removeCombination(selectedCombinationsCrossRef: SelectedCombinationsCrossRef) {
-        selectedCombinationsCrossRef.workout_id = workout.id
+        selectedCombinationsCrossRef.boxing_workout_id = workout.id
 
         if (workoutId == -1L) {
             selectedCombinationsCrossRefs.remove(selectedCombinationsCrossRef)
@@ -172,15 +172,15 @@ class CreateWorkoutSharedViewModel(
     fun cancelChanges() {
         if (workoutId == -1L) {
             viewModelScope.launch {
-                localDataSource.deleteWorkout(workout)
+                localDataSource.deleteBoxingWorkout(workout)
                 localDataSource.deleteWorkoutCombinations(workout.id)
                 dbUpdateLD.value = true
             }
         } else {
             viewModelScope.launch {
-                localDataSource.deleteWorkout(workout)
+                localDataSource.deleteBoxingWorkout(workout)
                 localDataSource.deleteWorkoutCombinations(workout.id)
-                localDataSource.upsertWorkout(savedWorkout)
+                localDataSource.upsertBoxingWorkout(savedWorkout)
                 localDataSource.upsertWorkoutCombinations(savedSelectedCombinationsCrossRefs)
                 dbUpdateLD.value = true
             }

@@ -1,4 +1,4 @@
-package com.middleton.scott.cmboxing.ui.createworkout
+package com.middleton.scott.cmboxing.ui.createworkout.hiit
 
 import android.content.Context
 import android.os.Bundle
@@ -16,32 +16,32 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.middleton.scott.cmboxing.MainActivity
 import com.middleton.scott.cmboxing.R
 import com.middleton.scott.cmboxing.ui.base.BaseFragment
-import com.middleton.scott.cmboxing.ui.createworkout.combinations.CreateWorkoutCombinationsFragment
+import com.middleton.scott.cmboxing.ui.createworkout.combinations.CreateBoxingWorkoutCombinationsFragment
 import com.middleton.scott.cmboxing.ui.createworkout.summary.CreateWorkoutSummaryFragment
 import com.middleton.scott.cmboxing.utils.DialogManager
-import kotlinx.android.synthetic.main.fragment_create_workout_screen.*
+import kotlinx.android.synthetic.main.fragment_create_hiit_workout_screen.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-class CreateWorkoutScreen : BaseFragment() {
-    private val args: CreateWorkoutScreenArgs by navArgs()
-    private val viewModel: CreateWorkoutSharedViewModel by viewModel {
+class CreateHiitWorkoutScreen : BaseFragment() {
+    private val args: CreateHiitWorkoutScreenArgs by navArgs()
+    private val viewModelHiit: CreateHiitWorkoutSharedViewModel by viewModel {
         parametersOf(
             args.workoutId,
-            args.navigateToCombinations
+            args.navigateToExercises
         )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.audioFileBaseDirectory = context?.getExternalFilesDir(null)?.absolutePath + "/"
+        viewModelHiit.audioFileBaseDirectory = context?.getExternalFilesDir(null)?.absolutePath + "/"
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_create_workout_screen, container, false)
+        return inflater.inflate(R.layout.fragment_create_hiit_workout_screen, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -50,12 +50,12 @@ class CreateWorkoutScreen : BaseFragment() {
         val activity = activity as MainActivity
         activity.getCreateWorkoutCancelButton()?.setOnClickListener {
             hideKeyboard()
-            viewModel.onCancel()
+            viewModelHiit.onCancel()
         }
 
         activity.getCreateWorkoutSaveButton()?.setOnClickListener {
             hideKeyboard()
-            viewModel.validateSaveAttempt()
+            viewModelHiit.validateSaveAttempt()
         }
 
         subscribeUI()
@@ -64,37 +64,37 @@ class CreateWorkoutScreen : BaseFragment() {
     }
 
     private fun subscribeUI() {
-        viewModel.workoutLD.observe(viewLifecycleOwner, Observer {
+        viewModelHiit.workoutLD.observe(viewLifecycleOwner, Observer {
             val activity = activity as MainActivity
             if (it.name == "") {
                 activity.setCreateWorkoutActionBarTitle(getString(R.string.create_workout))
             } else {
-                activity.setCreateWorkoutActionBarTitle(viewModel.workout.name)
+                activity.setCreateWorkoutActionBarTitle(viewModelHiit.workout.name)
             }
         })
 
-        viewModel.dbUpdateLD.observe(viewLifecycleOwner, Observer {
+        viewModelHiit.dbUpdateLD.observe(viewLifecycleOwner, Observer {
             findNavController().popBackStack()
         })
 
-        viewModel.showCancellationDialogLD.observe(viewLifecycleOwner, Observer {
+        viewModelHiit.showCancellationDialogLD.observe(viewLifecycleOwner, Observer {
             if (it) {
                 DialogManager.showDialog(
                     requireContext(),
                     R.string.cancel_this_workout,
                     R.string.unsaved_dialog_message,
                     R.string.save_and_exit,
-                    { viewModel.validateSaveAttempt() },
+                    { viewModelHiit.validateSaveAttempt() },
                     R.string.yes_cancel,
                     {
-                        viewModel.cancelChanges()
+                        viewModelHiit.cancelChanges()
                     })
             } else {
                 findNavController().popBackStack()
             }
         })
 
-        viewModel.combinationsValidatedLD.observe(viewLifecycleOwner, Observer {
+        viewModelHiit.exercisesValidatedLD.observe(viewLifecycleOwner, Observer {
             if (!it) {
                 DialogManager.showDialog(
                     context = requireContext(),
@@ -102,23 +102,23 @@ class CreateWorkoutScreen : BaseFragment() {
                     negativeBtnTextId = R.string.add_combination,
                     negativeBtnClick = {
                         val viewPager =
-                            parentFragment?.view?.findViewById(R.id.create_workout_vp) as ViewPager2
+                            parentFragment?.view?.findViewById(R.id.create_boxing_workout_vp) as ViewPager2
                         viewPager.currentItem = 1
                     })
             }
         })
 
-        viewModel.requiredSummaryFieldLD.observe(viewLifecycleOwner, Observer {
+        viewModelHiit.requiredSummaryFieldLD.observe(viewLifecycleOwner, Observer {
             if (it) {
                 val viewPager =
-                    parentFragment?.view?.findViewById(R.id.create_workout_vp) as ViewPager2
+                    parentFragment?.view?.findViewById(R.id.create_boxing_workout_vp) as ViewPager2
                 viewPager.currentItem = 0
             }
         })
     }
 
     private fun setupViewPagerAndTabLayout() {
-        create_workout_vp.adapter = object : FragmentStateAdapter(this) {
+        create_hiit_workout_vp.adapter = object : FragmentStateAdapter(this) {
             override fun getItemCount(): Int {
                 return 2
             }
@@ -126,13 +126,13 @@ class CreateWorkoutScreen : BaseFragment() {
             override fun createFragment(position: Int): Fragment {
                 return when (position) {
                     0 -> CreateWorkoutSummaryFragment.newInstance()
-                    1 -> CreateWorkoutCombinationsFragment.newInstance()
+                    1 -> CreateBoxingWorkoutCombinationsFragment.newInstance()
                     else -> CreateWorkoutSummaryFragment.newInstance()
                 }
             }
         }
 
-        TabLayoutMediator(tab_layout, create_workout_vp) { tab, position ->
+        TabLayoutMediator(tab_layout, create_hiit_workout_vp) { tab, position ->
             var title = ""
             when (position) {
                 0 -> title = getString(R.string.summary)
@@ -141,8 +141,8 @@ class CreateWorkoutScreen : BaseFragment() {
             tab.text = title
         }.attach()
 
-        if (args.navigateToCombinations) {
-            create_workout_vp.setCurrentItem(1, false)
+        if (args.navigateToExercises) {
+            create_hiit_workout_vp.setCurrentItem(1, false)
         }
     }
 

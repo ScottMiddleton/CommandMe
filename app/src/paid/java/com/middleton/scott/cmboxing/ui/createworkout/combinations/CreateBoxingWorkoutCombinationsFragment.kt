@@ -3,7 +3,6 @@ package com.middleton.scott.cmboxing.ui.createworkout.combinations
 import SaveCombinationDialog
 import android.Manifest
 import android.content.pm.PackageManager
-import android.graphics.Canvas
 import android.graphics.ColorFilter
 import android.media.MediaRecorder
 import android.os.Bundle
@@ -15,11 +14,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.Toast
-import android.widget.Toast.LENGTH_LONG
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieProperty
 import com.airbnb.lottie.SimpleColorFilter
 import com.airbnb.lottie.model.KeyPath
@@ -29,15 +25,14 @@ import com.middleton.scott.cmboxing.datasource.local.model.Combination
 import com.middleton.scott.cmboxing.other.Constants
 import com.middleton.scott.cmboxing.ui.base.BaseFragment
 import com.middleton.scott.cmboxing.ui.combinations.CombinationsAdapter
-import com.middleton.scott.cmboxing.ui.createworkout.CreateWorkoutSharedViewModel
+import com.middleton.scott.cmboxing.ui.createworkout.boxing.CreateBoxingWorkoutSharedViewModel
 import com.middleton.scott.cmboxing.utils.MediaRecorderManager
-import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import kotlinx.android.synthetic.main.fragment_combinations.*
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import java.io.File
 
-class CreateWorkoutCombinationsFragment : BaseFragment() {
-    private val viewModel by lazy { requireParentFragment().getViewModel<CreateWorkoutSharedViewModel>() }
+class CreateBoxingWorkoutCombinationsFragment : BaseFragment() {
+    private val viewModel by lazy { requireParentFragment().getViewModel<CreateBoxingWorkoutSharedViewModel>() }
     private var mediaRecorder = MediaRecorder()
     var combinationsEmpty = true
     var undoSnackbarVisible = false
@@ -48,7 +43,7 @@ class CreateWorkoutCombinationsFragment : BaseFragment() {
 
     companion object {
         fun newInstance() =
-            CreateWorkoutCombinationsFragment()
+            CreateBoxingWorkoutCombinationsFragment()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

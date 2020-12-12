@@ -10,16 +10,16 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.middleton.scott.cmboxing.R
-import com.middleton.scott.cmboxing.datasource.local.model.WorkoutWithCombinations
+import com.middleton.scott.cmboxing.datasource.local.model.BoxingWorkoutWithCombinations
 import com.middleton.scott.cmboxing.utils.DateTimeUtils
 
 class WorkoutsAdapter(
     private val onEditWorkout: ((Long) -> Unit),
-    private val onClickWorkout: ((WorkoutWithCombinations) -> Unit)
+    private val onClickWorkout: ((BoxingWorkoutWithCombinations) -> Unit)
 ) : RecyclerView.Adapter<WorkoutsAdapter.WorkoutsViewHolder>() {
 
     private lateinit var context: Context
-    private var workoutsWithCombinations = mutableListOf<WorkoutWithCombinations>()
+    private var workoutsWithCombinations = mutableListOf<BoxingWorkoutWithCombinations>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WorkoutsViewHolder {
         context = parent.context
@@ -37,7 +37,7 @@ class WorkoutsAdapter(
     }
 
     override fun onBindViewHolder(holder: WorkoutsViewHolder, position: Int) {
-        val workout = workoutsWithCombinations[position].workout
+        val workout = workoutsWithCombinations[position].boxingWorkout
         val exercises = workoutsWithCombinations[position].combinations
         holder.nameTV.text = workout?.name
         holder.editButton.setOnClickListener {
@@ -64,8 +64,8 @@ class WorkoutsAdapter(
         val intensityTV: TextView = view.findViewById(R.id.intensity_tv)
     }
 
-    fun setAdapter(workoutsWithCombinations: List<WorkoutWithCombinations>){
-        this.workoutsWithCombinations = workoutsWithCombinations as MutableList<WorkoutWithCombinations>
+    fun setAdapter(workoutsWithCombinationBoxings: List<BoxingWorkoutWithCombinations>){
+        this.workoutsWithCombinations = workoutsWithCombinationBoxings as MutableList<BoxingWorkoutWithCombinations>
         notifyDataSetChanged()
     }
 }
