@@ -1,9 +1,8 @@
-package com.middleton.scott.cmboxing.ui.createworkout.combinations
+package com.middleton.scott.cmboxing.ui.createworkout.hiit
 
 import SaveCombinationDialog
 import android.Manifest
 import android.content.pm.PackageManager
-import android.graphics.Canvas
 import android.graphics.ColorFilter
 import android.media.MediaRecorder
 import android.os.Bundle
@@ -17,8 +16,6 @@ import android.widget.Toast
 import android.widget.Toast.LENGTH_LONG
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieProperty
 import com.airbnb.lottie.SimpleColorFilter
 import com.airbnb.lottie.model.KeyPath
@@ -27,48 +24,46 @@ import com.middleton.scott.cmboxing.R
 import com.middleton.scott.cmboxing.datasource.local.model.Combination
 import com.middleton.scott.cmboxing.other.Constants
 import com.middleton.scott.cmboxing.ui.base.BaseFragment
-import com.middleton.scott.cmboxing.ui.combinations.CombinationsAdapter
-import com.middleton.scott.cmboxing.ui.createworkout.CreateWorkoutSharedViewModel
+import com.middleton.scott.cmboxing.ui.combinations.CommandsAdapter
 import com.middleton.scott.cmboxing.utils.MediaRecorderManager
-import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import kotlinx.android.synthetic.main.fragment_combinations.*
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import java.io.File
 
-class CreateWorkoutCombinationsFragment : BaseFragment() {
-    private val viewModel by lazy { requireParentFragment().getViewModel<CreateWorkoutSharedViewModel>() }
+class HiitExercisesFragment : BaseFragment() {
+    private val viewModel by lazy { requireParentFragment().getViewModel<CreateHiitWorkoutSharedViewModel>() }
     private var mediaRecorder = MediaRecorder()
     var combinationsEmpty = true
     var undoSnackbarVisible = false
     var recordingEnabled = false
 
     private val handler = Handler()
-    private lateinit var adapter: CombinationsAdapter
+    private lateinit var adapter: CommandsAdapter
 
     companion object {
         fun newInstance() =
-            CreateWorkoutCombinationsFragment()
+            HiitExercisesFragment()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         recordingEnabled = checkPermissions()
-        adapter = CombinationsAdapter(
-            viewModel.audioFileBaseDirectory,
-            parentFragmentManager,
-            { selectedCombinationCrossRef, isChecked ->
-                if (isChecked) {
-                    viewModel.addCombination(selectedCombinationCrossRef)
-                } else {
-                    viewModel.removeCombination(selectedCombinationCrossRef)
-                }
-            },
-            {
-                viewModel.upsertCombination(it)
-            }, {
-                val file = File(viewModel.audioFileCompleteDirectory)
-                file.delete()
-            })
+//        adapter = CommandsAdapter(
+//            viewModel.audioFileBaseDirectory,
+//            parentFragmentManager,
+//            { selectedCombinationCrossRef, isChecked ->
+//                if (isChecked) {
+//                    viewModel.addHiitExercises(selectedCombinationCrossRef)
+//                } else {
+//                    viewModel.removeCombination(selectedCombinationCrossRef)
+//                }
+//            },
+//            {
+//                viewModel.upsertCombination(it)
+//            }, {
+//                val file = File(viewModel.audioFileCompleteDirectory)
+//                file.delete()
+//            })
     }
 
     override fun onCreateView(
@@ -201,7 +196,7 @@ class CreateWorkoutCombinationsFragment : BaseFragment() {
                     viewModel.listAnimationShownOnce = true
                 }
             }
-            adapter.setAdapter(it, viewModel.selectedCombinations)
+//            adapter.setAdapter(it, viewModel.selectedCombinations)
         })
 
         viewModel.selectedCombinationsLD.observe(viewLifecycleOwner, {})
@@ -261,7 +256,7 @@ class CreateWorkoutCombinationsFragment : BaseFragment() {
     private fun stopRecording() {
         if (viewModel.recording) {
             MediaRecorderManager.stopRecording(mediaRecorder) { recordingComplete ->
-                if(viewModel.allCombinations.size >= 5) {
+                if (viewModel.allCombinations.size >= 5) {
                     Toast.makeText(requireContext(), "Free version limit", LENGTH_LONG).show()
                     val file = File(viewModel.audioFileCompleteDirectory)
                     file.delete()

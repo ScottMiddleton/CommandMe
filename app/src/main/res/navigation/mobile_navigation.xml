@@ -71,7 +71,7 @@
             android:defaultValue="-1L"
             app:argType="long" />
         <argument
-            android:name="navigate_to_exercises"
+            android:name="navigateToExercises"
             android:defaultValue="false"
             app:argType="boolean" />
     </fragment>

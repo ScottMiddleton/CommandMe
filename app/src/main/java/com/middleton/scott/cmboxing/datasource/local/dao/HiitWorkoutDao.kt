@@ -10,22 +10,22 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 abstract class HiitWorkoutDao : BaseDao<HiitWorkout>() {
-    @Query("SELECT * FROM HiitWorkout")
+    @Query("SELECT * FROM hiitworkout")
     abstract fun getAllHiitWorkoutsWithExercises(): Flow<List<HiitWorkoutWithExercises>>
 
-    @Query("SELECT * FROM HiitWorkout")
+    @Query("SELECT * FROM hiitworkout")
     abstract fun getHiitWorkouts(): Flow<List<HiitWorkout>>
 
-    @Query("SELECT * FROM HiitWorkout WHERE _id = :id")
+    @Query("SELECT * FROM hiitworkout WHERE _id = :id")
     abstract fun getHiitWorkoutWithExercisesFlow(id: Long): Flow<HiitWorkoutWithExercises?>
 
-    @Query("SELECT * FROM HiitWorkout WHERE _id = :id")
+    @Query("SELECT * FROM hiitworkout WHERE _id = :id")
     abstract fun getHiitWorkoutWithExercises(id: Long): HiitWorkoutWithExercises?
 
-    @Query("SELECT * FROM HiitWorkout WHERE _id = :id")
+    @Query("SELECT * FROM hiitworkout WHERE _id = :id")
     abstract fun getHiitWorkoutByIdFlow(id: Long): Flow<HiitWorkout?>
 
-    @Query("SELECT * FROM HiitWorkout WHERE _id = :id")
+    @Query("SELECT * FROM hiitworkout WHERE _id = :id")
     abstract fun getHiitWorkoutById(id: Long): HiitWorkout?
 }
 

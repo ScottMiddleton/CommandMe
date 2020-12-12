@@ -16,8 +16,6 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.middleton.scott.cmboxing.MainActivity
 import com.middleton.scott.cmboxing.R
 import com.middleton.scott.cmboxing.ui.base.BaseFragment
-import com.middleton.scott.cmboxing.ui.createworkout.combinations.CreateBoxingWorkoutCombinationsFragment
-import com.middleton.scott.cmboxing.ui.createworkout.summary.CreateWorkoutSummaryFragment
 import com.middleton.scott.cmboxing.utils.DialogManager
 import kotlinx.android.synthetic.main.fragment_create_boxing_workout_screen.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -125,9 +123,9 @@ class CreateBoxingWorkoutScreen : BaseFragment() {
 
             override fun createFragment(position: Int): Fragment {
                 return when (position) {
-                    0 -> CreateWorkoutSummaryFragment.newInstance()
-                    1 -> CreateBoxingWorkoutCombinationsFragment.newInstance()
-                    else -> CreateWorkoutSummaryFragment.newInstance()
+                    0 -> BoxingSummaryFragment.newInstance()
+                    1 -> BoxingCombinationsFragment.newInstance()
+                    else -> BoxingSummaryFragment.newInstance()
                 }
             }
         }

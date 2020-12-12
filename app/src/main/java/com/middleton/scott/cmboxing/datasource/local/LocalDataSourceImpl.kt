@@ -117,11 +117,11 @@ class LocalDataSourceImpl(
         TODO("Not yet implemented")
     }
 
-    override fun getHiitExercisesCrossRefsFlow(workoutId: Long): Flow<List<SelectedHiitExercisesCrossRef>> {
+    override fun getSelectedHiitExercisesCrossRefsFlow(workoutId: Long): Flow<List<SelectedHiitExercisesCrossRef>> {
         TODO("Not yet implemented")
     }
 
-    override fun getHiitExercisesCrossRefs(workoutId: Long): List<SelectedHiitExercisesCrossRef> {
+    override fun getSelectedHiitExercisesCrossRefs(workoutId: Long): List<SelectedHiitExercisesCrossRef> {
         TODO("Not yet implemented")
     }
 

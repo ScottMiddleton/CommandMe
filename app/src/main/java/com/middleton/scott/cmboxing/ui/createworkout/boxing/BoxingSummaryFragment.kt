@@ -1,8 +1,5 @@
-package com.middleton.scott.cmboxing.ui.createworkout.summary
+package com.middleton.scott.cmboxing.ui.createworkout.boxing
 
-import IntensityDialog
-import NumberPickerMinutesSecondsDialog
-import NumberPickerRoundsDialog
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -17,18 +14,17 @@ import androidx.lifecycle.Observer
 import androidx.viewpager2.widget.ViewPager2
 import com.middleton.scott.cmboxing.R
 import com.middleton.scott.cmboxing.ui.base.BaseFragment
-import com.middleton.scott.cmboxing.ui.createworkout.boxing.CreateBoxingWorkoutSharedViewModel
 import com.middleton.scott.cmboxing.utils.DateTimeUtils
 import kotlinx.android.synthetic.main.fragment_summary_tab.*
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
-class CreateWorkoutSummaryFragment : BaseFragment() {
+class BoxingSummaryFragment : BaseFragment() {
     private val viewModel by lazy { requireParentFragment().getViewModel<CreateBoxingWorkoutSharedViewModel>() }
     private lateinit var adapter: CombinationsSummaryAdapter
 
     companion object {
         fun newInstance() =
-            CreateWorkoutSummaryFragment()
+            BoxingSummaryFragment()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

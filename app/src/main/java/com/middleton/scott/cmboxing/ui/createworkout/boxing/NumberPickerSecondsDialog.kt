@@ -1,3 +1,5 @@
+package com.middleton.scott.cmboxing.ui.createworkout.boxing
+
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -8,30 +10,39 @@ import android.view.WindowManager
 import androidx.annotation.Nullable
 import androidx.fragment.app.DialogFragment
 import com.middleton.scott.cmboxing.R
-import kotlinx.android.synthetic.main.dialog_number_picker_mins_secs.*
-import kotlinx.android.synthetic.main.dialog_number_picker_mins_secs.cancel_btn
-import kotlinx.android.synthetic.main.dialog_number_picker_mins_secs.title_tv
-import kotlinx.android.synthetic.main.dialog_number_picker_rounds.*
+import kotlinx.android.synthetic.main.dialog_number_picker_secs.*
 import kotlinx.android.synthetic.main.dialog_save_combination.save_btn
 
-class NumberPickerRoundsDialog(
-    private val numberOfRounds: Int,
-    private val onSave: ((Int) -> Unit),
+class NumberPickerSecondsDialog(
+    private val millis: Long = 0,
+    private val onSave: ((millis: Long) -> Unit),
     private val onCancel: (() -> Unit)
 ) : DialogFragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.dialog_number_picker_rounds, container)
+        return inflater.inflate(R.layout.dialog_number_picker_secs, container)
     }
 
     override fun onViewCreated(view: View, @Nullable savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        title_tv.text = view.context.getString(R.string.rounds)
-        rounds_np.maxValue = 99
-        rounds_np.minValue = 1
-        rounds_np.value = numberOfRounds
+        secs_np.maxValue = 59
+        secs_np.minValue = 0
+
+        val decimalValues = arrayOf("0", "5")
+        decimal_np.maxValue = 1
+        decimal_np.minValue = 0
+        decimal_np.wrapSelectorWheel = true
+
+        decimal_np.displayedValues = decimalValues
+
+        secs_np.value = (millis / 1000).toInt()
+
+        if(millis % 1000 == 500L){
+            decimal_np.value = 1
+        }
+
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog?.window?.setSoftInputMode(
             WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE
@@ -41,7 +52,14 @@ class NumberPickerRoundsDialog(
 
     private fun setClickListeners() {
         save_btn.setOnClickListener {
-            onSave(rounds_np.value)
+            var millis = secs_np.value * 1000L
+            val decimalIndexValue: Int = decimal_np.value
+
+            if(decimalIndexValue == 1) {
+                millis += 500
+            }
+
+            onSave(millis)
             dismiss()
         }
 

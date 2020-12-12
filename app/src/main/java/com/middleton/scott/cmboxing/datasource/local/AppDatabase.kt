@@ -4,14 +4,12 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.middleton.scott.cmboxing.datasource.local.dao.*
-import com.middleton.scott.cmboxing.datasource.local.model.Combination
-import com.middleton.scott.cmboxing.datasource.local.model.SelectedCombinationsCrossRef
-import com.middleton.scott.cmboxing.datasource.local.model.BoxingWorkout
+import com.middleton.scott.cmboxing.datasource.local.model.*
 import com.middleton.scott.cmboxing.datasource.local.typeconverters.CombinationFrequencyTypeConverter
 import com.middleton.scott.cmboxing.datasource.local.typeconverters.DateConverter
 
 @Database(
-    entities = [BoxingWorkout::class, Combination::class, SelectedCombinationsCrossRef::class],
+    entities = [BoxingWorkout::class, Combination::class, SelectedCombinationsCrossRef::class, HiitWorkout::class, HiitExercise::class, SelectedHiitExercisesCrossRef::class],
     version = 1,
     exportSchema = false
 )

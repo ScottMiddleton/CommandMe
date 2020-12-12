@@ -21,13 +21,13 @@ import com.middleton.scott.cmboxing.datasource.local.model.Combination
 import com.middleton.scott.cmboxing.datasource.local.model.SelectedCombinationsCrossRef
 import java.io.IOException
 
-class CombinationsAdapter(
+class CommandsAdapter(
     private val audioFileDirectory: String,
     private val fragmentManager: FragmentManager,
     private val onCheckCombination: ((selectedCombinationCrossRef: SelectedCombinationsCrossRef, isChecked: Boolean) -> Unit)? = null,
     private val onEditCombination: ((Combination) -> Unit),
     private val onDeleteCombination: ((Combination) -> Unit)
-) : RecyclerView.Adapter<CombinationsAdapter.CombinationsViewHolder>() {
+) : RecyclerView.Adapter<CommandsAdapter.CombinationsViewHolder>() {
 
     lateinit var context: Context
 

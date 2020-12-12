@@ -1,3 +1,5 @@
+package com.middleton.scott.cmboxing.ui.createworkout.boxing
+
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle

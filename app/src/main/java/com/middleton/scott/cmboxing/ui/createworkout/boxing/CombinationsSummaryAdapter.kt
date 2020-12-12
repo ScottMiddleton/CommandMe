@@ -1,6 +1,5 @@
-package com.middleton.scott.cmboxing.ui.createworkout.summary
+package com.middleton.scott.cmboxing.ui.createworkout.boxing
 
-import FrequencyDialog
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View

@@ -15,6 +15,7 @@ import androidx.fragment.app.DialogFragment
 import com.airbnb.lottie.LottieAnimationView
 import com.middleton.scott.cmboxing.R
 import com.middleton.scott.cmboxing.datasource.local.model.Combination
+import com.middleton.scott.cmboxing.ui.createworkout.boxing.NumberPickerSecondsDialog
 import kotlinx.android.synthetic.main.dialog_save_combination.*
 import java.io.IOException
 

@@ -1,4 +1,4 @@
-package com.middleton.scott.cmboxing.ui.createworkout.combinations
+package com.middleton.scott.cmboxing.ui.createworkout.boxing
 
 import SaveCombinationDialog
 import android.Manifest
@@ -24,14 +24,13 @@ import com.middleton.scott.cmboxing.R
 import com.middleton.scott.cmboxing.datasource.local.model.Combination
 import com.middleton.scott.cmboxing.other.Constants
 import com.middleton.scott.cmboxing.ui.base.BaseFragment
-import com.middleton.scott.cmboxing.ui.combinations.CombinationsAdapter
-import com.middleton.scott.cmboxing.ui.createworkout.boxing.CreateBoxingWorkoutSharedViewModel
+import com.middleton.scott.cmboxing.ui.combinations.CommandsAdapter
 import com.middleton.scott.cmboxing.utils.MediaRecorderManager
 import kotlinx.android.synthetic.main.fragment_combinations.*
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import java.io.File
 
-class CreateBoxingWorkoutCombinationsFragment : BaseFragment() {
+class BoxingCombinationsFragment : BaseFragment() {
     private val viewModel by lazy { requireParentFragment().getViewModel<CreateBoxingWorkoutSharedViewModel>() }
     private var mediaRecorder = MediaRecorder()
     var combinationsEmpty = true
@@ -39,17 +38,17 @@ class CreateBoxingWorkoutCombinationsFragment : BaseFragment() {
     var recordingEnabled = false
 
     private val handler = Handler()
-    private lateinit var adapter: CombinationsAdapter
+    private lateinit var adapter: CommandsAdapter
 
     companion object {
         fun newInstance() =
-            CreateBoxingWorkoutCombinationsFragment()
+            BoxingCombinationsFragment()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         recordingEnabled = checkPermissions()
-        adapter = CombinationsAdapter(
+        adapter = CommandsAdapter(
             viewModel.audioFileBaseDirectory,
             parentFragmentManager,
             { selectedCombinationCrossRef, isChecked ->

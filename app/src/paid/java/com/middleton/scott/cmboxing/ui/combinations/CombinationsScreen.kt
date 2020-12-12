@@ -43,7 +43,7 @@ class CombinationsScreen : BaseFragment() {
 
     private val handler = Handler()
 
-    private lateinit var adapter: CombinationsAdapter
+    private lateinit var adapter: CommandsAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -57,7 +57,7 @@ class CombinationsScreen : BaseFragment() {
         super.onCreate(savedInstanceState)
         recordingEnabled = checkPermissions()
         viewModel.audioFileBaseDirectory = context?.getExternalFilesDir(null)?.absolutePath + "/"
-        adapter = CombinationsAdapter(
+        adapter = CommandsAdapter(
             viewModel.audioFileBaseDirectory,
             parentFragmentManager,
             onEditCombination = {
