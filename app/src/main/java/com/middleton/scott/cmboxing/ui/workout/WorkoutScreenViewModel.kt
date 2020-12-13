@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.middleton.scott.cmboxing.MainActivity
+import com.middleton.scott.cmboxing.datasource.DataRepository
 import com.middleton.scott.cmboxing.datasource.local.LocalDataSource
 import com.middleton.scott.cmboxing.datasource.local.model.Combination
 import com.middleton.scott.cmboxing.datasource.local.model.BoxingWorkoutWithCombinations
@@ -20,7 +21,7 @@ import kotlinx.coroutines.launch
 import kotlin.math.ceil
 
 class WorkoutScreenViewModel(
-    private val localDataSource: LocalDataSource,
+    private val dataRepository: DataRepository,
     val workoutId: Long
 ) : ViewModel() {
 
@@ -33,7 +34,7 @@ class WorkoutScreenViewModel(
 
     var audioFileBaseDirectory = ""
     private val boxingWorkoutWithCombinations: BoxingWorkoutWithCombinations? =
-        localDataSource.getBoxingWorkoutWithCombinations(workoutId)
+        dataRepository.getLocalDataSource().getBoxingWorkoutWithCombinations(workoutId)
     val workoutName = boxingWorkoutWithCombinations?.boxingWorkout?.name
     private var combinations: List<Combination>? = null
     private val preparationTimeSecs = boxingWorkoutWithCombinations?.boxingWorkout?.preparation_time_secs ?: 0
@@ -351,7 +352,7 @@ class WorkoutScreenViewModel(
         viewModelScope.launch {
             val multipliedCombinationsList = mutableListOf<Combination>()
             val selectedCombinationsCrossRefs =
-                localDataSource.getSelectedCombinationCrossRefs(workoutId)
+                dataRepository.getLocalDataSource().getSelectedCombinationCrossRefs(workoutId)
 
             combinations?.forEach { combination ->
                 val frequencyType =

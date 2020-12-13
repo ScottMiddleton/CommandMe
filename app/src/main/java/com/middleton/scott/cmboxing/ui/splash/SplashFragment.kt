@@ -1,4 +1,4 @@
-package com.middleton.scott.cmboxing
+package com.middleton.scott.cmboxing.ui.splash
 
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -6,11 +6,15 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
-import com.middleton.scott.cmboxing.ui.workouts.WorkoutsScreenDirections
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
+import com.middleton.scott.cmboxing.R
 
 class SplashFragment : Fragment() {
+
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -23,12 +27,23 @@ class SplashFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        auth = Firebase.auth
+
         object : CountDownTimer(2000, 1000){
             override fun onFinish() {
-                val action = SplashFragmentDirections.actionSplashFragmentToWorkoutsScreen()
-                findNavController().navigate(
-                    action
-                )
+                val currentUser = auth.currentUser
+
+                if(currentUser != null){
+                    val action = SplashFragmentDirections.actionSplashFragmentToWorkoutsScreen()
+                    findNavController().navigate(
+                        action
+                    )
+                } else {
+                    val action = SplashFragmentDirections.actionSplashFragmentToLoginScreen()
+                    findNavController().navigate(
+                        action
+                    )
+                }
             }
 
             override fun onTick(millisUntilFinished: Long) {

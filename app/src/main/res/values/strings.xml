@@ -85,10 +85,20 @@
     <string name="upgrade_required">Upgrade Required</string>
     <string name="max_combos_dialog_message">You have reached the maximum number of combinations allowed in the free version of the app. Please upgrade to the full version to create unlimited combinations.</string>
     <string name="checked_combos_cannot_be_deleted">Checked combinations cannot be deleted</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="your_workout_your_way">Your workout, your way</string>
     <string name="boxing">Boxing</string>
     <string name="hiit">HIIT</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="log_in">Log in</string>
+    <string name="create_account">Create Account</string>
+
+    <string name="create_account_error">There was an problem creating your account, please try again later</string>
+    <string name="weak_password_error">You have entered a weak password. Please choose one that is more secure.</string>
+    <string name="email_collision_error">An account with this email address already exists.</string>
+    <string name="last_name">Last name</string>
+    <string name="enter_your_details_to_get_started">Enter your details to get started</string>
+    <string name="password_validation_error">Your password must have at least 7 characters</string>
+    <string name="email_validation_error">Please enter a valid email address</string>
 
 </resources>

@@ -4,19 +4,19 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import com.middleton.scott.cmboxing.datasource.local.LocalDataSource
+import com.middleton.scott.cmboxing.datasource.DataRepository
 import com.middleton.scott.cmboxing.datasource.local.model.BoxingWorkout
 import com.middleton.scott.cmboxing.datasource.local.model.BoxingWorkoutWithCombinations
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
-class WorkoutsViewModel(private val localDataSource: LocalDataSource) : ViewModel() {
+class WorkoutsViewModel(private val dataRepository: DataRepository) : ViewModel() {
 
     private var allWorkouts = mutableListOf<BoxingWorkout>()
     private lateinit var previouslyDeletedBoxingWorkout: BoxingWorkout
 
     fun getWorkoutsWithCombinationsLD(): LiveData<List<BoxingWorkoutWithCombinations>> {
-        return localDataSource.getAllBoxingWorkoutsWithCombinations().map {
+        return dataRepository.getLocalDataSource().getAllBoxingWorkoutsWithCombinations().map {
             allWorkouts.clear()
             it.forEach { workoutWithCombinations ->
                 workoutWithCombinations.boxingWorkout?.let { workout ->
@@ -29,7 +29,7 @@ class WorkoutsViewModel(private val localDataSource: LocalDataSource) : ViewMode
     fun deleteWorkout(position: Int): BoxingWorkout {
         val workout = allWorkouts[position]
         viewModelScope.launch {
-            localDataSource.deleteBoxingWorkout(workout)
+            dataRepository.getLocalDataSource().deleteBoxingWorkout(workout)
         }
         previouslyDeletedBoxingWorkout = workout
         return workout
@@ -37,11 +37,11 @@ class WorkoutsViewModel(private val localDataSource: LocalDataSource) : ViewMode
 
     fun undoPreviouslyDeletedWorkout() {
         viewModelScope.launch {
-            localDataSource.upsertBoxingWorkout(previouslyDeletedBoxingWorkout)
+            dataRepository.getLocalDataSource().upsertBoxingWorkout(previouslyDeletedBoxingWorkout)
         }
     }
 
     fun getWorkout(workoutId: Long): BoxingWorkout? {
-        return localDataSource.getBoxingWorkoutById(workoutId)
+        return dataRepository.getLocalDataSource().getBoxingWorkoutById(workoutId)
     }
 }

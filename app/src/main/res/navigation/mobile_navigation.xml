@@ -86,7 +86,7 @@
     </fragment>
     <fragment
         android:id="@+id/splashFragment"
-        android:name="com.middleton.scott.cmboxing.SplashFragment"
+        android:name="com.middleton.scott.cmboxing.ui.splash.SplashFragment"
         android:label="fragment_splash"
         tools:layout="@layout/fragment_splash" >
         <action
@@ -98,5 +98,36 @@
             app:popExitAnim="@anim/slide_out_right"
             app:popUpTo="@+id/mobile_navigation"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_splashFragment_to_loginScreen"
+            app:destination="@id/loginScreen" />
+    </fragment>
+    <fragment
+        android:id="@+id/loginScreen"
+        android:name="com.middleton.scott.cmboxing.ui.login.LoginScreen"
+        android:label="fragment_login_screen"
+        tools:layout="@layout/fragment_login_screen" >
+        <action
+            android:id="@+id/action_loginScreen_to_createAccountScreen"
+            app:destination="@id/createAccountScreen"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+    </fragment>
+    <fragment
+        android:id="@+id/createAccountScreen"
+        android:name="com.middleton.scott.cmboxing.ui.login.CreateAccountScreen"
+        android:label="fragment_create_account_screen"
+        tools:layout="@layout/fragment_create_account_screen" >
+        <action
+            android:id="@+id/action_createAccountScreen_to_workoutsScreen"
+            app:destination="@id/workoutsScreen"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"
+            app:popUpTo="@+id/mobile_navigation"
+            app:popUpToInclusive="true"/>
     </fragment>
 </navigation>

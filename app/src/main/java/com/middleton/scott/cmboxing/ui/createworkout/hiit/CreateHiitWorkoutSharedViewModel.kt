@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import com.middleton.scott.cmboxing.datasource.local.LocalDataSource
+import com.middleton.scott.cmboxing.datasource.DataRepository
 import com.middleton.scott.cmboxing.datasource.local.model.*
 import com.middleton.scott.cmboxing.ui.combinations.CombinationsViewModel
 import kotlinx.coroutines.flow.combine
@@ -12,9 +12,9 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 class CreateHiitWorkoutSharedViewModel(
-    private val localDataSource: LocalDataSource,
+    private val dataRepository: DataRepository,
     var workoutId: Long
-) : CombinationsViewModel(localDataSource) {
+) : CombinationsViewModel(dataRepository) {
 
     var subscribe = true
     var workout = HiitWorkout()
@@ -25,11 +25,11 @@ class CreateHiitWorkoutSharedViewModel(
     var selectedHiitExercisesCrossRefs = ArrayList<SelectedHiitExercisesCrossRef>()
     var savedSelectedHiitExercisesCrossRefs = ArrayList<SelectedHiitExercisesCrossRef>()
 
-    private val hiitExercisesFlow = localDataSource.getHiitExercises()
+    private val hiitExercisesFlow = dataRepository.getLocalDataSource().getHiitExercises()
     private val selectedHiitExercisesCrossRefsFlow =
-        localDataSource.getSelectedCombinationCrossRefsFlow(workoutId)
+        dataRepository.getLocalDataSource().getSelectedCombinationCrossRefsFlow(workoutId)
 
-    val workoutLD = localDataSource.getHiitWorkoutByIdFlow(workoutId).map {
+    val workoutLD = dataRepository.getLocalDataSource().getHiitWorkoutByIdFlow(workoutId).map {
         it?.let {
             this.workout = it
         }
@@ -37,10 +37,10 @@ class CreateHiitWorkoutSharedViewModel(
     }.asLiveData()
 
     init {
-        localDataSource.getHiitWorkoutById(workoutId)?.let { savedWorkout = it }
+        dataRepository.getLocalDataSource().getHiitWorkoutById(workoutId)?.let { savedWorkout = it }
 
         savedSelectedHiitExercisesCrossRefs =
-            localDataSource.getSelectedHiitExercisesCrossRefs(workoutId) as ArrayList<SelectedHiitExercisesCrossRef>
+            dataRepository.getLocalDataSource().getSelectedHiitExercisesCrossRefs(workoutId) as ArrayList<SelectedHiitExercisesCrossRef>
     }
 
     val selectedCombinationsLD: LiveData<List<HiitExercise>> =
@@ -77,8 +77,8 @@ class CreateHiitWorkoutSharedViewModel(
     fun upsertWorkout() {
         viewModelScope.launch {
             subscribe = false
-            localDataSource.upsertHiitExercisesCrossRefs(selectedHiitExercisesCrossRefs)
-            localDataSource.upsertHiitWorkout(workout)
+            dataRepository.getLocalDataSource().upsertHiitExercisesCrossRefs(selectedHiitExercisesCrossRefs)
+            dataRepository.getLocalDataSource().upsertHiitWorkout(workout)
             dbUpdateLD.value = true
         }
     }
@@ -89,19 +89,19 @@ class CreateHiitWorkoutSharedViewModel(
         if (workoutId == -1L) {
             viewModelScope.launch {
                 // Upsert the workout and assign its ID
-                val newWorkoutId = localDataSource.upsertHiitWorkout(workout)
+                val newWorkoutId = dataRepository.getLocalDataSource().upsertHiitWorkout(workout)
                 workout.id = newWorkoutId
                 // Assign the workout Id to this selected combinations
                 selectedHiitExercisesCrossRef.hiit_workout_id = newWorkoutId
                 selectedHiitExercisesCrossRefs.add(selectedHiitExercisesCrossRef)
-                localDataSource.upsertHiitExercisesCrossRef(
+                dataRepository.getLocalDataSource().upsertHiitExercisesCrossRef(
                     selectedHiitExercisesCrossRef
                 )
             }
         } else {
             selectedHiitExercisesCrossRef.hiit_workout_id = workoutId
             viewModelScope.launch {
-                localDataSource.upsertHiitExercisesCrossRef(
+                dataRepository.getLocalDataSource().upsertHiitExercisesCrossRef(
                     selectedHiitExercisesCrossRef
                 )
             }
@@ -116,7 +116,7 @@ class CreateHiitWorkoutSharedViewModel(
         }
 
         viewModelScope.launch {
-            localDataSource.deleteWorkoutCombination(selectedCombinationsCrossRef)
+            dataRepository.getLocalDataSource().deleteWorkoutCombination(selectedCombinationsCrossRef)
         }
     }
 
@@ -131,16 +131,16 @@ class CreateHiitWorkoutSharedViewModel(
     fun cancelChanges() {
         if (workoutId == -1L) {
             viewModelScope.launch {
-                localDataSource.deleteHiitWorkout(workout)
-                localDataSource.deleteHiitExercisesCrossRefs(workout.id)
+                dataRepository.getLocalDataSource().deleteHiitWorkout(workout)
+                dataRepository.getLocalDataSource().deleteHiitExercisesCrossRefs(workout.id)
                 dbUpdateLD.value = true
             }
         } else {
             viewModelScope.launch {
-                localDataSource.deleteHiitWorkout(workout)
-                localDataSource.deleteHiitExercisesCrossRefs(workout.id)
-                localDataSource.upsertHiitWorkout(savedWorkout)
-                localDataSource.upsertHiitExercisesCrossRefs(savedSelectedHiitExercisesCrossRefs)
+                dataRepository.getLocalDataSource().deleteHiitWorkout(workout)
+                dataRepository.getLocalDataSource().deleteHiitExercisesCrossRefs(workout.id)
+                dataRepository.getLocalDataSource().upsertHiitWorkout(savedWorkout)
+                dataRepository.getLocalDataSource().upsertHiitExercisesCrossRefs(savedSelectedHiitExercisesCrossRefs)
                 dbUpdateLD.value = true
             }
         }

@@ -6,13 +6,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import com.middleton.scott.cmboxing.datasource.local.LocalDataSource
+import com.middleton.scott.cmboxing.datasource.DataRepository
 import com.middleton.scott.cmboxing.datasource.local.model.Combination
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.lang.Runnable as Runnable1
 
-open class CombinationsViewModel(private val localDataSource: LocalDataSource) : ViewModel() {
+open class CombinationsViewModel(private val dataRepository: DataRepository) : ViewModel() {
     var listAnimationShownOnce = false
     var audioFileBaseDirectory = ""
     var audioFileName = ""
@@ -39,21 +39,21 @@ open class CombinationsViewModel(private val localDataSource: LocalDataSource) :
 
     fun upsertCombination(combination: Combination) {
         viewModelScope.launch {
-            localDataSource.upsertCombination(combination)
+            dataRepository.getLocalDataSource().upsertCombination(combination)
         }
     }
 
     fun deleteCombination(combinationIndex: Int): Combination {
         val combination = allCombinations[combinationIndex]
         viewModelScope.launch {
-            localDataSource.deleteCombination(combination)
+            dataRepository.getLocalDataSource().deleteCombination(combination)
             previouslyDeletedCombination = combination
         }
         return combination
     }
 
     fun getAllCombinationsLD(): LiveData<List<Combination>> {
-        return localDataSource.getCombinations().map {
+        return dataRepository.getLocalDataSource().getCombinations().map {
             allCombinations = it
             it
         }.asLiveData()
@@ -66,7 +66,7 @@ open class CombinationsViewModel(private val localDataSource: LocalDataSource) :
 
     fun undoPreviouslyDeletedCombination() {
         viewModelScope.launch {
-            localDataSource.upsertCombination(previouslyDeletedCombination)
+            dataRepository.getLocalDataSource().upsertCombination(previouslyDeletedCombination)
         }
     }
 
