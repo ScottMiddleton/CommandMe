@@ -32,3 +32,10 @@ data class HiitExercise constructor(
     var name: String,
     var file_name: String
 ) : BaseDbModel()
+
+@Entity()
+data class User constructor(
+    var email: String = "",
+    var first: String = "",
+    var last: String = ""
+    ) : BaseDbModel()

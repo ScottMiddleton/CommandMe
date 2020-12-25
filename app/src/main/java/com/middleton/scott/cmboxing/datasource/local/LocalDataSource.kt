@@ -1,7 +1,9 @@
 package com.middleton.scott.cmboxing.datasource.local
 
 import android.content.SharedPreferences
+import androidx.lifecycle.LiveData
 import com.middleton.scott.cmboxing.datasource.local.model.*
+import com.middleton.scott.cmboxing.ui.login.CreateAccountScreenViewModel
 import kotlinx.coroutines.flow.Flow
 
 class LocalDataSource(
@@ -20,6 +22,15 @@ class LocalDataSource(
             editor.putBoolean(USER_IS_LOGGED_IN_KEY, value ?: false)
             editor.apply()
         }
+
+    fun getUser() : LiveData<User> {
+       return database.userDao().getUser()
+    }
+
+    suspend fun insertUser(user: User){
+        database.userDao().nukeTable()
+        database.userDao().insert(user)
+    }
 
     // Boxing
 

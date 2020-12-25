@@ -3,58 +3,81 @@ package com.middleton.scott.cmboxing
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
-import android.view.View.GONE
-import android.view.View.VISIBLE
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.observe
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.navigation.NavigationView
+import com.google.firebase.crashlytics.internal.common.CommonUtils.hideKeyboard
 import com.middleton.scott.cmboxing.other.Constants.ACTION_SHOW_WORKOUT_SCREEN
 import com.middleton.scott.cmboxing.utils.DialogManager
 import kotlinx.android.synthetic.main.activity_main.*
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity() {
     var menu: Menu? = null
+    private lateinit var navController: NavController
+    private lateinit var appBarConfiguration: AppBarConfiguration
+
+    private val viewModel: MainViewModel by viewModel()
 
     companion object {
         var currentWorkoutId = -1L
     }
 
-    private lateinit var navController: NavController
-    private val topLevelDestinations =
-        setOf(R.id.combinationsScreen, R.id.workoutsScreen, R.id.createBoxingWorkoutScreen)
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        setupNavigationMenu()
+
         navigateToWorkoutScreenIfNeeded(intent)
 
-        val navView: BottomNavigationView = findViewById(R.id.nav_view)
+        subscribeUI()
+    }
 
-        navController = findNavController(R.id.nav_host_fragment)
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        val appBarConfiguration = AppBarConfiguration(
-            topLevelDestinations
+    private fun subscribeUI() {
+        viewModel.getUserLD().observe(this, {
+            if(it != null){
+                val navView: NavigationView = findViewById(R.id.nav_view)
+                navView.findViewById<TextView>(R.id.user_email_tv).text = it.email
+                navView.findViewById<TextView>(R.id.user_name_tv).text = (it.first + " " + it.last)
+            }
+        })
+    }
+
+    private fun setupNavigationMenu() {
+        val topLevelMenuDestinations = setOf(
+            R.id.myWorkoutsScreen,
+            R.id.combinationsScreen,
+            R.id.packs,
         )
 
-        navController.addOnDestinationChangedListener { _, destination, _ ->
-            supportActionBar?.setDisplayShowCustomEnabled(false)
-            if (!topLevelDestinations.contains(destination.id)) {
-                nav_view.visibility = GONE
-            } else {
-                nav_view.visibility = VISIBLE
-            }
+        val menuDestinations = mutableSetOf<Int>()
+        menuDestinations.addAll(topLevelMenuDestinations)
 
+        supportActionBar?.setDisplayShowTitleEnabled(true)
+        supportActionBar?.setIcon(R.drawable.ic_menu)
+
+        val navView: NavigationView = findViewById(R.id.nav_view)
+        appBarConfiguration = AppBarConfiguration(menuDestinations, drawer_layout)
+        navController = findNavController(R.id.nav_host_fragment)
+
+        setupActionBarWithNavController(navController, appBarConfiguration)
+        navView.setupWithNavController(navController)
+
+        navController.addOnDestinationChangedListener { _, destination, arguments ->
+            setupMenuVisibility(topLevelMenuDestinations.contains(destination.id))
             if (destination.id == R.id.createBoxingWorkoutScreen) {
                 val view: View = layoutInflater.inflate(R.layout.title_bar_create_workout, null)
 
@@ -65,6 +88,8 @@ class MainActivity : AppCompatActivity() {
 
                 supportActionBar?.customView = view
                 supportActionBar?.setDisplayShowCustomEnabled(true)
+            } else {
+                supportActionBar?.setDisplayShowCustomEnabled(false)
             }
 
             if (destination.id == R.id.workoutScreen) {
@@ -80,8 +105,22 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        setupActionBarWithNavController(navController, appBarConfiguration)
-        navView.setupWithNavController(navController)
+        drawer_layout.addDrawerListener(object : DrawerLayout.DrawerListener {
+            override fun onDrawerStateChanged(newState: Int) {}
+            override fun onDrawerSlide(drawerView: View, slideOffset: Float) {}
+            override fun onDrawerClosed(drawerView: View) {}
+            override fun onDrawerOpened(drawerView: View) {
+                hideKeyboard(this@MainActivity, drawer_layout)
+            }
+        })
+    }
+
+    private fun setupMenuVisibility(enableMenu: Boolean) {
+        if (enableMenu) {
+            drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+        } else {
+            drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -120,10 +159,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onSupportNavigateUp(): Boolean {
-        onBackPressed()
-        return super.onSupportNavigateUp()
-    }
+    override fun onSupportNavigateUp() = NavigationUI.navigateUp(navController, appBarConfiguration)
 
     private fun navigateToWorkoutScreenIfNeeded(intent: Intent?) {
         if (intent?.action == ACTION_SHOW_WORKOUT_SCREEN) {

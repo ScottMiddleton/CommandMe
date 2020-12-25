@@ -2,6 +2,7 @@ package com.middleton.scott.cmboxing.di
 
 import android.content.Context
 import androidx.room.Room
+import com.middleton.scott.cmboxing.MainViewModel
 import com.middleton.scott.cmboxing.datasource.DataRepository
 import com.middleton.scott.cmboxing.datasource.local.AppDatabase
 import com.middleton.scott.cmboxing.datasource.local.LocalDataSource
@@ -30,6 +31,7 @@ val appModule = module {
     single { RemoteDataSource() }
     single { DataRepository(get(), get()) }
 
+    viewModel { MainViewModel(get()) }
     viewModel { CombinationsViewModel(get()) }
     viewModel { WorkoutsViewModel(get()) }
     viewModel { (workoutId: Long) -> CreateBoxingWorkoutSharedViewModel(get(), workoutId) }

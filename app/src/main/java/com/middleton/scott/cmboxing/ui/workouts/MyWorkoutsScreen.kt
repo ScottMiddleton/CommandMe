@@ -24,10 +24,10 @@ import com.middleton.scott.cmboxing.ui.createworkout.WorkoutType
 import com.middleton.scott.cmboxing.ui.createworkout.WorkoutTypeDialog
 import com.middleton.scott.cmboxing.utils.DialogManager
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
-import kotlinx.android.synthetic.main.fragment_workouts.*
+import kotlinx.android.synthetic.main.fragment_my_workouts.*
 import org.koin.android.ext.android.inject
 
-class WorkoutsScreen : BaseFragment() {
+class MyWorkoutsScreen : BaseFragment() {
     private val viewModel: WorkoutsViewModel by inject()
     private lateinit var adapter: WorkoutsAdapter
 
@@ -40,7 +40,7 @@ class WorkoutsScreen : BaseFragment() {
         super.onCreate(savedInstanceState)
 
         adapter = WorkoutsAdapter({ workoutId ->
-            val action = WorkoutsScreenDirections.editActionWorkoutsScreenToCreateWorkoutScreen(
+            val action = MyWorkoutsScreenDirections.editActionWorkoutsScreenToCreateWorkoutScreen(
                 workoutId, false
             )
             findNavController().navigate(
@@ -57,7 +57,7 @@ class WorkoutsScreen : BaseFragment() {
                     negativeBtnTextId = R.string.ok,
                     negativeBtnClick = {
                         val action = workoutWithCombinations.boxingWorkout?.id?.let {
-                            WorkoutsScreenDirections.addCombinationsActionWorkoutsScreenToCreateWorkoutScreen(
+                            MyWorkoutsScreenDirections.addCombinationsActionWorkoutsScreenToCreateWorkoutScreen(
                                 it, true
                             )
                         }
@@ -70,7 +70,7 @@ class WorkoutsScreen : BaseFragment() {
                 )
             } else {
                 val action = workoutWithCombinations.boxingWorkout?.id?.let {
-                    WorkoutsScreenDirections.actionWorkoutsScreenToWorkoutScreen(
+                    MyWorkoutsScreenDirections.actionWorkoutsScreenToWorkoutScreen(
                         it
                     )
                 }
@@ -88,7 +88,7 @@ class WorkoutsScreen : BaseFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_workouts, container, false)
+        return inflater.inflate(R.layout.fragment_my_workouts, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -186,7 +186,7 @@ class WorkoutsScreen : BaseFragment() {
                 when (it) {
                     WorkoutType.BOXING -> {
                         val action =
-                            WorkoutsScreenDirections.addWorkoutActionWorkoutsScreenToCreateWorkoutScreen(
+                            MyWorkoutsScreenDirections.addWorkoutActionWorkoutsScreenToCreateWorkoutScreen(
                                 -1L, false
                             )
                         findNavController().navigate(

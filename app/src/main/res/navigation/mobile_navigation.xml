@@ -11,10 +11,10 @@
         app:launchSingleTop="true" />
 
     <fragment
-        android:id="@+id/workoutsScreen"
-        android:name="com.middleton.scott.cmboxing.ui.workouts.WorkoutsScreen"
-        android:label="@string/workouts"
-        tools:layout="@layout/fragment_combinations" >
+        android:id="@+id/myWorkoutsScreen"
+        android:name="com.middleton.scott.cmboxing.ui.workouts.MyWorkoutsScreen"
+        android:label="@string/my_workouts"
+        tools:layout="@layout/fragment_my_workouts" >
         <action
             android:id="@+id/action_workoutsScreen_to_workoutScreen"
             app:destination="@id/workoutScreen"
@@ -48,7 +48,7 @@
         android:id="@+id/combinationsScreen"
         android:name="com.middleton.scott.cmboxing.ui.combinations.CombinationsScreen"
         android:label="@string/combinations"
-        tools:layout="@layout/fragment_workouts" />
+        tools:layout="@layout/fragment_my_workouts" />
     <fragment
         android:id="@+id/createBoxingWorkoutScreen"
         android:name="com.middleton.scott.cmboxing.ui.createworkout.boxing.CreateBoxingWorkoutScreen"
@@ -91,7 +91,7 @@
         tools:layout="@layout/fragment_splash" >
         <action
             android:id="@+id/action_splashFragment_to_workoutsScreen"
-            app:destination="@id/workoutsScreen"
+            app:destination="@id/myWorkoutsScreen"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
@@ -122,7 +122,7 @@
         tools:layout="@layout/fragment_create_account_screen" >
         <action
             android:id="@+id/action_createAccountScreen_to_workoutsScreen"
-            app:destination="@id/workoutsScreen"
+            app:destination="@id/myWorkoutsScreen"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"

@@ -15,7 +15,7 @@
         android:fontFamily="@string/font_roboto_medium"
         android:text="Create account"
         android:textSize="24sp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="30dp"
         android:layout_marginStart="20dp"
         android:layout_marginBottom="20dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -38,10 +38,9 @@
     <LinearLayout
         android:id="@+id/linearLayout6"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="20dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
         android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/label_tv"
         tools:layout_editor_absoluteX="20dp">
 
@@ -50,7 +49,7 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
+            android:layout_marginStart="18dp"
             android:layout_marginEnd="20dp"
             android:hint="First name"
             app:endIconMode="custom"
@@ -63,7 +62,6 @@
                 android:id="@+id/first_name_et"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:autofillHints="email"
                 android:imeOptions="actionDone"
                 android:inputType="textEmailAddress" />
 
@@ -74,7 +72,7 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
+            android:layout_marginStart="18dp"
             android:layout_marginTop="20dp"
             android:layout_marginEnd="20dp"
             android:hint="@string/last_name"
@@ -88,7 +86,6 @@
                 android:id="@+id/last_name_et"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:autofillHints="email"
                 android:imeOptions="actionDone"
                 android:inputType="textEmailAddress" />
 
@@ -125,7 +122,7 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
+            android:layout_marginStart="18dp"
             android:layout_marginTop="20dp"
             android:layout_marginEnd="20dp"
             android:hint="@string/password"
@@ -149,14 +146,14 @@
         android:id="@+id/create_account_btn"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginEnd="20dp"
         android:text="@string/create_account"
         android:textAllCaps="true"
+        android:layout_marginTop="30dp"
+        android:layout_marginStart="18dp"
+        android:layout_marginEnd="18dp"
         android:textColor="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout6" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

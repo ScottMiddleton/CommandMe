@@ -1,6 +1,5 @@
 package com.middleton.scott.cmboxing.datasource.remote
 
-import android.util.Log
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException
@@ -8,7 +7,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.middleton.scott.cmboxing.R
-
+import com.middleton.scott.cmboxing.datasource.local.model.User
 
 class RemoteDataSource {
 
@@ -20,7 +19,7 @@ class RemoteDataSource {
         fun onError(error: E)
     }
 
-    fun createUserAccount(
+    fun createUserFirebaseAccount(
         email: String,
         password: String,
         callback: CallbackWithError<Boolean, Int?>
@@ -28,7 +27,6 @@ class RemoteDataSource {
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    val user = auth.currentUser
                     callback.onSuccess(true)
                 } else {
                     try {
@@ -47,20 +45,15 @@ class RemoteDataSource {
             }
     }
 
-    fun addUser(email: String?, first: String?, last: String?, uid: String?, callback: CallbackWithError<Boolean, Int?>) {
-        val user = hashMapOf(
-            "email" to email,
-            "first" to first,
-            "last" to last,
-            "uid" to uid
+    fun addUser(user: User, callback: CallbackWithError<Boolean, Int?>) {
+        val userHashMap = hashMapOf(
+            "email" to user.email,
+            "first" to user.first,
+            "last" to user.last
         )
-
-        if (email != null && uid != null) {
-            db.collection("users").document(email)
-                .set(user)
+        db.collection("users").document(user.email)
+            .set(userHashMap)
             .addOnSuccessListener { callback.onSuccess(true) }
-            .addOnFailureListener {  }
-        }
+            .addOnFailureListener { }
     }
-
 }

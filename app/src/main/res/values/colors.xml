@@ -2,6 +2,7 @@
 <resources>
     <color name="colorPrimary">#2d72a2</color>
     <color name="colorPrimaryDark">#080C1C</color>
+    <color name="primaryBackground">#121212</color>
     <color name="accent">#2d72a2</color>
     <color name="accent_faded_40">#662D72A2</color>
     <color name="accent_faded_20">#332D72A2</color>

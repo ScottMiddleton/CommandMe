@@ -4,7 +4,7 @@
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
     <string name="combinations">Combinations</string>
-    <string name="workouts">Workouts</string>
+    <string name="my_workouts">My Workouts</string>
     <string name="close">Close</string>
     <string name="stats">Stats</string>
     <string name="add_workout">Add Workout</string>
@@ -100,5 +100,6 @@
     <string name="enter_your_details_to_get_started">Enter your details to get started</string>
     <string name="password_validation_error">Your password must have at least 7 characters</string>
     <string name="email_validation_error">Please enter a valid email address</string>
+    <string name="log_out">Log out</string>
 
 </resources>

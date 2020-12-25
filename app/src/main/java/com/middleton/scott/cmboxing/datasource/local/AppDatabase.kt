@@ -9,7 +9,7 @@ import com.middleton.scott.cmboxing.datasource.local.typeconverters.CombinationF
 import com.middleton.scott.cmboxing.datasource.local.typeconverters.DateConverter
 
 @Database(
-    entities = [BoxingWorkout::class, Combination::class, SelectedCombinationsCrossRef::class, HiitWorkout::class, HiitExercise::class, SelectedHiitExercisesCrossRef::class],
+    entities = [BoxingWorkout::class, Combination::class, SelectedCombinationsCrossRef::class, HiitWorkout::class, HiitExercise::class, SelectedHiitExercisesCrossRef::class, User::class],
     version = 1,
     exportSchema = false
 )
@@ -20,6 +20,7 @@ import com.middleton.scott.cmboxing.datasource.local.typeconverters.DateConverte
 )
 
 abstract class AppDatabase : RoomDatabase() {
+    abstract fun userDao(): UserDao
     abstract fun boxingWorkoutDao(): BoxingWorkoutDao
     abstract fun combinationDao(): CombinationDao
     abstract fun selectedCombinationsCrossRefDao(): SelectedCombinationsCrossRefDao
