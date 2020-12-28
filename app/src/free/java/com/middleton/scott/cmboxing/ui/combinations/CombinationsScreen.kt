@@ -25,7 +25,7 @@ import com.airbnb.lottie.SimpleColorFilter
 import com.airbnb.lottie.model.KeyPath
 import com.airbnb.lottie.value.LottieValueCallback
 import com.middleton.scott.cmboxing.R
-import com.middleton.scott.cmboxing.datasource.local.model.Combination
+import com.middleton.scott.cmboxing.datasource.local.model.Command
 import com.middleton.scott.cmboxing.other.Constants.REQUEST_AUDIO_PERMISSION_CODE
 import com.middleton.scott.cmboxing.ui.base.BaseFragment
 import com.middleton.scott.cmboxing.utils.DialogManager
@@ -247,7 +247,7 @@ class CombinationsScreen : BaseFragment() {
         if (viewModel.recording) {
             MediaRecorderManager.stopRecording(mediaRecorder) { recordingComplete ->
                 if (recordingComplete) {
-                    if (viewModel.allCombinations.size >= 5) {
+                    if (viewModel.allCommands.size >= 5) {
                         DialogManager.showDialog(
                             requireContext(),
                             R.string.upgrade_required,
@@ -326,7 +326,7 @@ class CombinationsScreen : BaseFragment() {
         SaveCombinationDialog(
             viewModel.audioFileCompleteDirectory,
             false,
-            Combination("", 0, viewModel.audioFileName),
+            Command("", 0, viewModel.audioFileName),
             { combination ->
                 viewModel.upsertCombination(combination)
             }, {

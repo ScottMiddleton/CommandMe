@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.middleton.scott.cmboxing.datasource.DataRepository
-import com.middleton.scott.cmboxing.datasource.local.model.Combination
+import com.middleton.scott.cmboxing.datasource.local.model.Command
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.lang.Runnable as Runnable1
@@ -33,28 +33,28 @@ open class CombinationsViewModel(private val dataRepository: DataRepository) : V
         }
     }
 
-    lateinit var allCombinations: List<Combination>
-    lateinit var previouslyDeletedCombination: Combination
+    lateinit var allCommands: List<Command>
+    lateinit var previouslyDeletedCommand: Command
 
 
-    fun upsertCombination(combination: Combination) {
+    fun upsertCombination(command: Command) {
         viewModelScope.launch {
-            dataRepository.getLocalDataSource().upsertCombination(combination)
+            dataRepository.getLocalDataSource().upsertCombination(command)
         }
     }
 
-    fun deleteCombination(combinationIndex: Int): Combination {
-        val combination = allCombinations[combinationIndex]
+    fun deleteCombination(combinationIndex: Int): Command {
+        val combination = allCommands[combinationIndex]
         viewModelScope.launch {
             dataRepository.getLocalDataSource().deleteCombination(combination)
-            previouslyDeletedCombination = combination
+            previouslyDeletedCommand = combination
         }
         return combination
     }
 
-    fun getAllCombinationsLD(): LiveData<List<Combination>> {
+    fun getAllCombinationsLD(): LiveData<List<Command>> {
         return dataRepository.getLocalDataSource().getCombinations().map {
-            allCombinations = it
+            allCommands = it
             it
         }.asLiveData()
     }
@@ -66,7 +66,7 @@ open class CombinationsViewModel(private val dataRepository: DataRepository) : V
 
     fun undoPreviouslyDeletedCombination() {
         viewModelScope.launch {
-            dataRepository.getLocalDataSource().upsertCombination(previouslyDeletedCombination)
+            dataRepository.getLocalDataSource().upsertCombination(previouslyDeletedCommand)
         }
     }
 

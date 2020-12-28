@@ -10,7 +10,7 @@ import androidx.room.*
             childColumns = ["hiit_workout_id"],
             onDelete = ForeignKey.CASCADE
         ), ForeignKey(
-            entity = Combination::class,
+            entity = Command::class,
             parentColumns = ["_id"],
             childColumns = ["hiit_exercise_id"],
             onDelete = ForeignKey.CASCADE

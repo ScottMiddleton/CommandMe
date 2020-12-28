@@ -1,17 +1,13 @@
 package com.middleton.scott.cmboxing.datasource.remote
 
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
-import com.google.firebase.auth.FirebaseAuthUserCollisionException
-import com.google.firebase.auth.FirebaseAuthWeakPasswordException
-import com.google.firebase.auth.ktx.auth
+import com.google.firebase.auth.*
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.middleton.scott.cmboxing.R
 import com.middleton.scott.cmboxing.datasource.local.model.User
 
-class RemoteDataSource {
 
-    val auth = Firebase.auth
+class RemoteDataSource {
     val db = Firebase.firestore
 
     interface CallbackWithError<S, E> {
@@ -24,7 +20,7 @@ class RemoteDataSource {
         password: String,
         callback: CallbackWithError<Boolean, Int?>
     ) {
-        auth.createUserWithEmailAndPassword(email, password)
+        FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     callback.onSuccess(true)
@@ -45,6 +41,28 @@ class RemoteDataSource {
             }
     }
 
+    fun signIn(
+        email: String,
+        password: String,
+        callback: CallbackWithError<Boolean, Int?>
+    ) {
+        FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    callback.onSuccess(true)
+                } else {
+                    try {
+                        throw task.exception!!
+                    } catch (e: FirebaseAuthInvalidUserException) {
+                        callback.onError(R.string.invalid_user_exception)
+                    } catch (e: FirebaseAuthInvalidCredentialsException) {
+                        callback.onError(R.string.incorrect_password)
+                    }
+                }
+            }
+    }
+
+
     fun addUser(user: User, callback: CallbackWithError<Boolean, Int?>) {
         val userHashMap = hashMapOf(
             "email" to user.email,
@@ -55,5 +73,27 @@ class RemoteDataSource {
             .set(userHashMap)
             .addOnSuccessListener { callback.onSuccess(true) }
             .addOnFailureListener { }
+    }
+
+    fun getUserByEmail(email: String, callback: CallbackWithError<User, Int?>) {
+        val docRef = db.collection("users").document(email)
+
+        docRef.get()
+            .addOnSuccessListener { document ->
+                if (document != null) {
+                    callback.onSuccess(User(
+                        document.data?.get("email") as String,
+                        document.data?.get("first") as String,
+                        document.data?.get("last") as String
+                    ))
+                }
+            }
+            .addOnFailureListener { exception ->
+                // TODO
+            }
+    }
+
+    fun signOut() {
+        FirebaseAuth.getInstance().signOut()
     }
 }

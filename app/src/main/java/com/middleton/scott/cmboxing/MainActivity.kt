@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.Observer
 import androidx.lifecycle.observe
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
@@ -47,8 +48,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun subscribeUI() {
-        viewModel.getUserLD().observe(this, {
-            if(it != null){
+        viewModel.getUserLD().observe(this, Observer {
+            if (it != null) {
                 val navView: NavigationView = findViewById(R.id.nav_view)
                 navView.findViewById<TextView>(R.id.user_email_tv).text = it.email
                 navView.findViewById<TextView>(R.id.user_name_tv).text = (it.first + " " + it.last)
@@ -75,6 +76,11 @@ class MainActivity : AppCompatActivity() {
 
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
+        navView.findViewById<TextView>(R.id.logout_tv).setOnClickListener {
+            viewModel.logout()
+            nav_host_fragment.findNavController().navigate(R.id.action_global_login_screen)
+        }
 
         navController.addOnDestinationChangedListener { _, destination, arguments ->
             setupMenuVisibility(topLevelMenuDestinations.contains(destination.id))

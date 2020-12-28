@@ -9,7 +9,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputEditText
 import com.middleton.scott.cmboxing.R
-import com.middleton.scott.cmboxing.datasource.local.model.Combination
+import com.middleton.scott.cmboxing.datasource.local.model.Command
 import com.middleton.scott.cmboxing.datasource.local.model.SelectedCombinationsCrossRef
 
 
@@ -20,7 +20,7 @@ class CombinationsSummaryAdapter(
 
     lateinit var context: Context
 
-    private var combinations = mutableListOf<Combination>()
+    private var combinations = mutableListOf<Command>()
     private var selectedCombinationCrossRefs = ArrayList<SelectedCombinationsCrossRef>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CombinationsViewHolder {
@@ -82,10 +82,10 @@ class CombinationsSummaryAdapter(
     }
 
     fun setAdapter(
-        combinations: List<Combination>,
+        commands: List<Command>,
         selectedCombinationCrossRefs: ArrayList<SelectedCombinationsCrossRef>
     ) {
-        this.combinations = combinations as MutableList<Combination>
+        this.combinations = commands as MutableList<Command>
         this.selectedCombinationCrossRefs = selectedCombinationCrossRefs
         notifyDataSetChanged()
     }

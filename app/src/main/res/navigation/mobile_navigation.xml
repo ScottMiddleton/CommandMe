@@ -10,6 +10,13 @@
         app:destination="@id/workoutScreen"
         app:launchSingleTop="true" />
 
+    <action
+        android:id="@+id/action_global_login_screen"
+        app:destination="@id/loginScreen"
+        app:launchSingleTop="true"
+        app:popUpTo="@+id/mobile_navigation"
+        app:popUpToInclusive="true"/>
+
     <fragment
         android:id="@+id/myWorkoutsScreen"
         android:name="com.middleton.scott.cmboxing.ui.workouts.MyWorkoutsScreen"
@@ -114,6 +121,15 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_loginScreen_to_myWorkoutsScreen"
+            app:destination="@id/myWorkoutsScreen"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"
+            app:popUpTo="@+id/mobile_navigation"
+            app:popUpToInclusive="true"/>
     </fragment>
     <fragment
         android:id="@+id/createAccountScreen"

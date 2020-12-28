@@ -47,7 +47,7 @@ class MyWorkoutsScreen : BaseFragment() {
                 action
             )
         }) { workoutWithCombinations ->
-            if (workoutWithCombinations.combinations.isEmpty()) {
+            if (workoutWithCombinations.commands.isEmpty()) {
                 DialogManager.showDialog(
                     context = requireContext(),
                     messageId = R.string.no_combinations_dialog_message,

@@ -3,7 +3,6 @@ package com.middleton.scott.cmboxing.datasource.local
 import android.content.SharedPreferences
 import androidx.lifecycle.LiveData
 import com.middleton.scott.cmboxing.datasource.local.model.*
-import com.middleton.scott.cmboxing.ui.login.CreateAccountScreenViewModel
 import kotlinx.coroutines.flow.Flow
 
 class LocalDataSource(
@@ -23,11 +22,11 @@ class LocalDataSource(
             editor.apply()
         }
 
-    fun getUser() : LiveData<User> {
+    fun getCurrentUser() : LiveData<User> {
        return database.userDao().getUser()
     }
 
-    suspend fun insertUser(user: User){
+    suspend fun insertCurrentUser(user: User){
         database.userDao().nukeTable()
         database.userDao().insert(user)
     }
@@ -50,7 +49,7 @@ class LocalDataSource(
         database.boxingWorkoutDao().delete(boxingWorkout)
     }
 
-    fun getCombinations(): Flow<List<Combination>> {
+    fun getCombinations(): Flow<List<Command>> {
         return database.combinationDao().getCombinations()
     }
 
@@ -100,12 +99,12 @@ class LocalDataSource(
         return database.boxingWorkoutDao().getWorkoutById(workoutId)
     }
 
-     suspend fun upsertCombination(combination: Combination): Long {
-        return database.combinationDao().upsert(combination)
+     suspend fun upsertCombination(command: Command): Long {
+        return database.combinationDao().upsert(command)
     }
 
-     suspend fun deleteCombination(combination: Combination) {
-        database.combinationDao().delete(combination)
+     suspend fun deleteCombination(command: Command) {
+        database.combinationDao().delete(command)
     }
 
     // Hiit

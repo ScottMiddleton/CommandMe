@@ -9,7 +9,7 @@ import com.middleton.scott.cmboxing.datasource.local.typeconverters.CombinationF
 import com.middleton.scott.cmboxing.datasource.local.typeconverters.DateConverter
 
 @Database(
-    entities = [BoxingWorkout::class, Combination::class, SelectedCombinationsCrossRef::class, HiitWorkout::class, HiitExercise::class, SelectedHiitExercisesCrossRef::class, User::class],
+    entities = [BoxingWorkout::class, Command::class, SelectedCombinationsCrossRef::class, HiitWorkout::class, HiitExercise::class, SelectedHiitExercisesCrossRef::class, User::class],
     version = 1,
     exportSchema = false
 )

@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.fragment_create_account_screen.*
 import org.koin.android.ext.android.inject
 
 class CreateAccountScreen : Fragment() {
-    private val viewModel: CreateAccountScreenViewModel by inject()
+    private val viewModel: CreateAccountViewModel by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

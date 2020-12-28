@@ -6,7 +6,7 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.middleton.scott.cmboxing.datasource.DataRepository
 import com.middleton.scott.cmboxing.datasource.local.model.BoxingWorkout
-import com.middleton.scott.cmboxing.datasource.local.model.Combination
+import com.middleton.scott.cmboxing.datasource.local.model.Command
 import com.middleton.scott.cmboxing.datasource.local.model.SelectedCombinationsCrossRef
 import com.middleton.scott.cmboxing.ui.combinations.CombinationsViewModel
 import kotlinx.coroutines.flow.combine
@@ -23,7 +23,7 @@ class CreateBoxingWorkoutSharedViewModel(
     var savedWorkout = BoxingWorkout()
     var userHasAttemptedToSave = false
 
-    var selectedCombinations = ArrayList<Combination>()
+    var selectedCombinations = ArrayList<Command>()
     var selectedCombinationsCrossRefs = ArrayList<SelectedCombinationsCrossRef>()
     var savedSelectedCombinationsCrossRefs = ArrayList<SelectedCombinationsCrossRef>()
 
@@ -45,7 +45,7 @@ class CreateBoxingWorkoutSharedViewModel(
             dataRepository.getLocalDataSource().getSelectedCombinationCrossRefs(workoutId) as ArrayList<SelectedCombinationsCrossRef>
     }
 
-    val selectedCombinationsLD: LiveData<List<Combination>> =
+    val selectedCombinationsLD: LiveData<List<Command>> =
         combinationsFlow.combine(selectedCombinationCrossRefsFlow) { combinations, selectedCombinationsCrossRefs ->
             selectedCombinations.clear()
             if (workoutId != -1L) {

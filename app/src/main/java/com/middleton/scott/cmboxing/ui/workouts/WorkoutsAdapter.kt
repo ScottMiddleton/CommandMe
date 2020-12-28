@@ -38,7 +38,7 @@ class WorkoutsAdapter(
 
     override fun onBindViewHolder(holder: WorkoutsViewHolder, position: Int) {
         val workout = workoutsWithCombinations[position].boxingWorkout
-        val exercises = workoutsWithCombinations[position].combinations
+        val exercises = workoutsWithCombinations[position].commands
         holder.nameTV.text = workout?.name
         holder.editButton.setOnClickListener {
             workout?.id?.let { id -> onEditWorkout(id) }

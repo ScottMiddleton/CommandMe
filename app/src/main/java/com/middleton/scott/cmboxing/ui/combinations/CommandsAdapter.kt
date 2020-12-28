@@ -17,7 +17,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
 import com.middleton.scott.cmboxing.R
-import com.middleton.scott.cmboxing.datasource.local.model.Combination
+import com.middleton.scott.cmboxing.datasource.local.model.Command
 import com.middleton.scott.cmboxing.datasource.local.model.SelectedCombinationsCrossRef
 import java.io.IOException
 
@@ -25,14 +25,14 @@ class CommandsAdapter(
     private val audioFileDirectory: String,
     private val fragmentManager: FragmentManager,
     private val onCheckCombination: ((selectedCombinationCrossRef: SelectedCombinationsCrossRef, isChecked: Boolean) -> Unit)? = null,
-    private val onEditCombination: ((Combination) -> Unit),
-    private val onDeleteCombination: ((Combination) -> Unit)
+    private val onEditCombination: ((Command) -> Unit),
+    private val onDeleteCombination: ((Command) -> Unit)
 ) : RecyclerView.Adapter<CommandsAdapter.CombinationsViewHolder>() {
 
     lateinit var context: Context
 
-    var selectedCombinations = mutableListOf<Combination>()
-    private var allCombinations = mutableListOf<Combination>()
+    var selectedCombinations = mutableListOf<Command>()
+    private var allCombinations = mutableListOf<Command>()
     private var mediaPlayer = MediaPlayer()
 
     private var audioPlayingIndex = -1
@@ -154,12 +154,12 @@ class CommandsAdapter(
     }
 
     fun setAdapter(
-        allCombinations: List<Combination>,
-        selectedCombinations: List<Combination>?
+        allCommands: List<Command>,
+        selectedCommands: List<Command>?
     ) {
-        this.allCombinations = allCombinations as MutableList<Combination>
-        selectedCombinations?.let {
-            this.selectedCombinations = selectedCombinations as MutableList<Combination>
+        this.allCombinations = allCommands as MutableList<Command>
+        selectedCommands?.let {
+            this.selectedCombinations = selectedCommands as MutableList<Command>
         }
         this.notifyDataSetChanged()
     }

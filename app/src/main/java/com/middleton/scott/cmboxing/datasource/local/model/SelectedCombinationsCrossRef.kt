@@ -11,7 +11,7 @@ import com.middleton.scott.cmboxing.datasource.local.enums.CombinationFrequencyT
             childColumns = ["boxing_workout_id"],
             onDelete = ForeignKey.CASCADE
         ), ForeignKey(
-            entity = Combination::class,
+            entity = Command::class,
             parentColumns = ["_id"],
             childColumns = ["combination_id"],
             onDelete = ForeignKey.CASCADE
@@ -35,12 +35,12 @@ class BoxingWorkoutWithCombinations {
     @Relation(
         parentColumn = "_id",
         entityColumn = "_id",
-        entity = Combination::class,
+        entity = Command::class,
         associateBy = Junction(
             value = SelectedCombinationsCrossRef::class,
             parentColumn = "boxing_workout_id",
             entityColumn = "combination_id"
         )
     )
-    lateinit var combinations: List<Combination>
+    lateinit var commands: List<Command>
 }

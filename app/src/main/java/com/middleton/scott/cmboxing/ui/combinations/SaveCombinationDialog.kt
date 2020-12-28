@@ -14,7 +14,7 @@ import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.DialogFragment
 import com.airbnb.lottie.LottieAnimationView
 import com.middleton.scott.cmboxing.R
-import com.middleton.scott.cmboxing.datasource.local.model.Combination
+import com.middleton.scott.cmboxing.datasource.local.model.Command
 import com.middleton.scott.cmboxing.ui.createworkout.boxing.NumberPickerSecondsDialog
 import kotlinx.android.synthetic.main.dialog_save_combination.*
 import java.io.IOException
@@ -24,8 +24,8 @@ const val numberOfFieldsToValidate = 2
 class SaveCombinationDialog(
     private val audioFileDirectory: String,
     private val isEditMode: Boolean,
-    private val combination: Combination,
-    private val onSave: ((Combination) -> Unit),
+    private val command: Command,
+    private val onSave: ((Command) -> Unit),
     private val onDelete: (() -> Unit)
 ) : DialogFragment() {
     override fun onCreateView(
@@ -53,10 +53,10 @@ class SaveCombinationDialog(
 
         dialog?.setCanceledOnTouchOutside(false)
 
-        timeToCompleteMillis = combination.timeToCompleteMillis
+        timeToCompleteMillis = command.timeToCompleteMillis
 
         if (isEditMode) {
-            name_et.setText(combination.name)
+            name_et.setText(command.name)
             time_to_complete_et.setText(getSecondsTextFromMillis(timeToCompleteMillis))
             delete_btn.text = view.context.getString(R.string.cancel)
         }
@@ -67,9 +67,9 @@ class SaveCombinationDialog(
         save_btn.setOnClickListener {
             saveAttempted = true
             if (validateFields()) {
-                combination.name = name_et.text.toString()
-                combination.timeToCompleteMillis = timeToCompleteMillis
-                onSave(combination)
+                command.name = name_et.text.toString()
+                command.timeToCompleteMillis = timeToCompleteMillis
+                onSave(command)
                 dismiss()
             }
         }

@@ -1,13 +1,12 @@
 package com.middleton.scott.cmboxing.datasource
 
 import androidx.lifecycle.MutableLiveData
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.auth.FirebaseAuth
 import com.middleton.scott.cmboxing.datasource.local.LocalDataSource
 import com.middleton.scott.cmboxing.datasource.local.model.User
 import com.middleton.scott.cmboxing.datasource.remote.RemoteDataSource
 import com.middleton.scott.cmboxing.datasource.remote.ResponseData
-import com.middleton.scott.cmboxing.ui.login.CreateAccountScreenViewModel
+import com.middleton.scott.cmboxing.ui.login.CreateAccountViewModel
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
@@ -20,22 +19,23 @@ class DataRepository(
         return localDataSource
     }
 
-    fun createUserAccount(
-        user: CreateAccountScreenViewModel.User,
+    fun createUserFirebaseAuthAccount(
+        userVMModel: CreateAccountViewModel.UserVMModel,
         responseLD: MutableLiveData<ResponseData>
     ) {
         remoteDataSource.createUserFirebaseAccount(
-            user.email,
-            user.password,
+            userVMModel.email,
+            userVMModel.password,
             object : RemoteDataSource.CallbackWithError<Boolean, Int?> {
                 override fun onSuccess(model: Boolean) {
+                    localDataSource.userIsLoggedIn = true
                     responseLD.postValue(ResponseData(success = true))
-                    val authUser = Firebase.auth.currentUser
                     GlobalScope.launch {
-                        addUser(User(
-                                user.email,
-                                user.first,
-                                user.last
+                        addUserToFireStore(
+                            User(
+                                userVMModel.email,
+                                userVMModel.first,
+                                userVMModel.last
                             )
                         )
                     }
@@ -46,21 +46,55 @@ class DataRepository(
                     responseLD.postValue(ResponseData(errorResource = error))
                 }
             }
-
         )
     }
 
-    private suspend fun addUser(user: User){
+    fun addUserToFireStore(user: User) {
         remoteDataSource.addUser(user, object : RemoteDataSource.CallbackWithError<Boolean, Int?> {
             override fun onSuccess(model: Boolean) {
                 GlobalScope.launch {
-                localDataSource.insertUser(user)
+                    localDataSource.insertCurrentUser(user)
                 }
             }
 
             override fun onError(error: Int?) {
-
+                // TODO
             }
         })
+    }
+
+    fun signOut() {
+        remoteDataSource.signOut()
+        localDataSource.userIsLoggedIn = false
+    }
+
+    fun signIn(email: String, password: String, responseLD: MutableLiveData<ResponseData>) {
+        remoteDataSource.signIn(email,
+            password,
+            object : RemoteDataSource.CallbackWithError<Boolean, Int?> {
+                override fun onSuccess(model: Boolean) {
+                    localDataSource.userIsLoggedIn = true
+
+                    GlobalScope.launch {
+                        remoteDataSource.getUserByEmail(
+                            email,
+                            object : RemoteDataSource.CallbackWithError<User, Int?> {
+                                override fun onSuccess(model: User) {
+                                    GlobalScope.launch {
+                                        localDataSource.insertCurrentUser(model)
+                                        responseLD.postValue(ResponseData(success = true))
+                                    }
+                                }
+                                override fun onError(error: Int?) {
+                                    // TODO
+                                }
+                            })
+                    }
+                }
+
+                override fun onError(error: Int?) {
+                    responseLD.postValue(ResponseData(errorResource = error))
+                }
+            })
     }
 }

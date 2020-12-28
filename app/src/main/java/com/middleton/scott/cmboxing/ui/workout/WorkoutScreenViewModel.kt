@@ -7,8 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.middleton.scott.cmboxing.MainActivity
 import com.middleton.scott.cmboxing.datasource.DataRepository
-import com.middleton.scott.cmboxing.datasource.local.LocalDataSource
-import com.middleton.scott.cmboxing.datasource.local.model.Combination
+import com.middleton.scott.cmboxing.datasource.local.model.Command
 import com.middleton.scott.cmboxing.datasource.local.model.BoxingWorkoutWithCombinations
 import com.middleton.scott.cmboxing.service.ServiceAudioCommand
 import com.middleton.scott.cmboxing.service.WorkoutService.Companion.playEndBellLD
@@ -36,7 +35,7 @@ class WorkoutScreenViewModel(
     private val boxingWorkoutWithCombinations: BoxingWorkoutWithCombinations? =
         dataRepository.getLocalDataSource().getBoxingWorkoutWithCombinations(workoutId)
     val workoutName = boxingWorkoutWithCombinations?.boxingWorkout?.name
-    private var combinations: List<Combination>? = null
+    private var commands: List<Command>? = null
     private val preparationTimeSecs = boxingWorkoutWithCombinations?.boxingWorkout?.preparation_time_secs ?: 0
     private val workTimeSecs = boxingWorkoutWithCombinations?.boxingWorkout?.work_time_secs ?: 0
     private val restTimeSecs = boxingWorkoutWithCombinations?.boxingWorkout?.rest_time_secs ?: 0
@@ -70,8 +69,8 @@ class WorkoutScreenViewModel(
     val workoutStateLD: LiveData<WorkoutState>
         get() = _workoutStateLD
 
-    private val _currentCombinationLD = MutableLiveData<Combination>()
-    val currentCombinationLD: LiveData<Combination>
+    private val _currentCombinationLD = MutableLiveData<Command>()
+    val currentCommandLD: LiveData<Command>
         get() = _currentCombinationLD
 
     private var countDownTimer: CountDownTimer? = null
@@ -79,7 +78,7 @@ class WorkoutScreenViewModel(
     init {
         MainActivity.currentWorkoutId = workoutId
         workoutHasPreparation = preparationTimeSecs > 0
-        combinations = boxingWorkoutWithCombinations?.combinations
+        commands = boxingWorkoutWithCombinations?.commands
         handleCombinationFrequencies()
         initWorkout()
     }
@@ -211,11 +210,11 @@ class WorkoutScreenViewModel(
 
     private fun initNextCommand() {
         combinationsThrown++
-        val nextCombination: Combination? = getRandomCombination()
-        _currentCombinationLD.value = nextCombination
+        val nextCommand: Command? = getRandomCombination()
+        _currentCombinationLD.value = nextCommand
         serviceCommandAudioLD.value =
-            nextCombination?.file_name?.let { ServiceAudioCommand(it, audioFileBaseDirectory) }
-        val timeToCompleteCombination = nextCombination?.timeToCompleteMillis ?: 2000
+            nextCommand?.file_name?.let { ServiceAudioCommand(it, audioFileBaseDirectory) }
+        val timeToCompleteCombination = nextCommand?.timeToCompleteMillis ?: 2000
         millisUntilNextCombination = getTimeUntilNextCombination(timeToCompleteCombination)
     }
 
@@ -350,11 +349,11 @@ class WorkoutScreenViewModel(
 
     private fun handleCombinationFrequencies() {
         viewModelScope.launch {
-            val multipliedCombinationsList = mutableListOf<Combination>()
+            val multipliedCombinationsList = mutableListOf<Command>()
             val selectedCombinationsCrossRefs =
                 dataRepository.getLocalDataSource().getSelectedCombinationCrossRefs(workoutId)
 
-            combinations?.forEach { combination ->
+            commands?.forEach { combination ->
                 val frequencyType =
                     selectedCombinationsCrossRefs.firstOrNull { combination.id == it.combination_id }?.frequency
                 frequencyType?.multiplicationValue?.let {
@@ -363,14 +362,14 @@ class WorkoutScreenViewModel(
                     }
                 }
             }
-            combinations = multipliedCombinationsList
+            commands = multipliedCombinationsList
         }
     }
 
-    private fun getRandomCombination(): Combination? {
-        var randomCombination: Combination? = null
-        combinations?.let { randomCombination = it.shuffled().take(1)[0] }
-        return randomCombination
+    private fun getRandomCombination(): Command? {
+        var randomCommand: Command? = null
+        commands?.let { randomCommand = it.shuffled().take(1)[0] }
+        return randomCommand
     }
 
     private fun getTimeUntilNextCombination(timeToCompleteCombinationMillis: Long): Long {

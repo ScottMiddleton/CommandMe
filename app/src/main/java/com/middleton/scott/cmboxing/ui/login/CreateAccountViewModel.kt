@@ -3,14 +3,15 @@ package com.middleton.scott.cmboxing.ui.login
 import androidx.core.util.PatternsCompat
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.firebase.auth.FirebaseAuth
 import com.middleton.scott.cmboxing.datasource.DataRepository
 import com.middleton.scott.cmboxing.datasource.remote.ResponseData
 import com.middleton.scott.cmboxing.other.Constants.MIN_PASSWORD_LENGTH
 
 
-class CreateAccountScreenViewModel(private val dataRepository: DataRepository) : ViewModel() {
+class CreateAccountViewModel(private val dataRepository: DataRepository) : ViewModel() {
 
-    var user = User("", "", "", "")
+    var user = UserVMModel("", "", "", "")
 
     val createAccountResponseLD = MutableLiveData<ResponseData>()
 
@@ -23,7 +24,7 @@ class CreateAccountScreenViewModel(private val dataRepository: DataRepository) :
 
     fun createUserAccount() {
         if (credentialsValid) {
-            dataRepository.createUserAccount(user, createAccountResponseLD)
+            dataRepository.createUserFirebaseAuthAccount(user, createAccountResponseLD)
         } else {
             createAccountAttempted = true
             validateCredentials()
@@ -42,6 +43,6 @@ class CreateAccountScreenViewModel(private val dataRepository: DataRepository) :
         }
     }
 
-    data class User(var email: String, var first: String, var last: String, var password: String)
+    data class UserVMModel(var email: String, var first: String, var last: String, var password: String)
 
 }

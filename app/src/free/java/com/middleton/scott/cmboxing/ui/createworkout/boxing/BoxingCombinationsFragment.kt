@@ -21,7 +21,7 @@ import com.airbnb.lottie.SimpleColorFilter
 import com.airbnb.lottie.model.KeyPath
 import com.airbnb.lottie.value.LottieValueCallback
 import com.middleton.scott.cmboxing.R
-import com.middleton.scott.cmboxing.datasource.local.model.Combination
+import com.middleton.scott.cmboxing.datasource.local.model.Command
 import com.middleton.scott.cmboxing.other.Constants
 import com.middleton.scott.cmboxing.ui.base.BaseFragment
 import com.middleton.scott.cmboxing.ui.combinations.CommandsAdapter
@@ -256,7 +256,7 @@ class BoxingCombinationsFragment : BaseFragment() {
     private fun stopRecording() {
         if (viewModel.recording) {
             MediaRecorderManager.stopRecording(mediaRecorder) { recordingComplete ->
-                if(viewModel.allCombinations.size >= 5) {
+                if(viewModel.allCommands.size >= 5) {
                     Toast.makeText(requireContext(), "Free version limit", LENGTH_LONG).show()
                     val file = File(viewModel.audioFileCompleteDirectory)
                     file.delete()
@@ -321,7 +321,7 @@ class BoxingCombinationsFragment : BaseFragment() {
         SaveCombinationDialog(
             viewModel.audioFileCompleteDirectory,
             false,
-            Combination("", 0, viewModel.audioFileName),
+            Command("", 0, viewModel.audioFileName),
             { combination ->
                 viewModel.upsertCombination(combination)
             }, {

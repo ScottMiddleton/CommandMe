@@ -15,21 +15,9 @@ data class BoxingWorkout constructor(
 ) : BaseDbModel()
 
 @Entity()
-data class Combination constructor(
+data class Command constructor(
     var name: String,
     var timeToCompleteMillis: Long,
-    var file_name: String
-) : BaseDbModel()
-
-@Entity()
-data class HiitWorkout constructor(
-    var name: String = "",
-    var dateCreated: Date = Date()
-) : BaseDbModel()
-
-@Entity()
-data class HiitExercise constructor(
-    var name: String,
     var file_name: String
 ) : BaseDbModel()
 
