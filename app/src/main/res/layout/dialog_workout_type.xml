@@ -8,29 +8,20 @@
     android:padding="20dp">
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:fontFamily="@string/font_roboto_medium"
-        android:textSize="16sp"
-        android:text="Workout Type"/>
-
-    <TextView
-        android:id="@+id/boxing_btn"
+        android:id="@+id/custom_btn"
         android:layout_width="200dp"
         android:layout_gravity="center_horizontal"
         android:layout_height="64dp"
         android:background="@drawable/workout_type_btn_background"
         android:textColor="@color/white"
         android:textSize="16sp"
-        android:layout_marginTop="20dp"
         android:gravity="center"
         android:textAllCaps="true"
         android:fontFamily="@string/font_roboto_medium"
-        android:text="@string/boxing"/>
+        android:text="@string/custom"/>
 
     <TextView
-        android:id="@+id/hiit_btn"
+        android:id="@+id/packs_btn"
         android:layout_width="200dp"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
@@ -42,6 +33,5 @@
         android:gravity="center"
         android:textAllCaps="true"
         android:fontFamily="@string/font_roboto_medium"
-        android:text="@string/hiit"/>
-
+        android:text="@string/packs"/>
 </LinearLayout>

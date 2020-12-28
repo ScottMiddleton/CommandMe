@@ -30,7 +30,6 @@ import org.koin.android.ext.android.inject
 class MyWorkoutsScreen : BaseFragment() {
     private val viewModel: WorkoutsViewModel by inject()
     private lateinit var adapter: WorkoutsAdapter
-
     var undoSnackbarVisible = false
     var workoutsEmpty = true
 
@@ -40,7 +39,7 @@ class MyWorkoutsScreen : BaseFragment() {
         super.onCreate(savedInstanceState)
 
         adapter = WorkoutsAdapter({ workoutId ->
-            val action = MyWorkoutsScreenDirections.editActionWorkoutsScreenToCreateWorkoutScreen(
+            val action = MyWorkoutsScreenDirections.actionMyWorkoutsScreenToCreateWorkoutScreen(
                 workoutId, false
             )
             findNavController().navigate(
@@ -50,14 +49,14 @@ class MyWorkoutsScreen : BaseFragment() {
             if (workoutWithCombinations.commands.isEmpty()) {
                 DialogManager.showDialog(
                     context = requireContext(),
-                    messageId = R.string.no_combinations_dialog_message,
+                    messageId = R.string.no_command_dialog_message,
                     positiveBtnTextId = R.string.exit,
                     positiveBtnClick = {
                     },
                     negativeBtnTextId = R.string.ok,
                     negativeBtnClick = {
-                        val action = workoutWithCombinations.boxingWorkout?.id?.let {
-                            MyWorkoutsScreenDirections.addCombinationsActionWorkoutsScreenToCreateWorkoutScreen(
+                        val action = workoutWithCombinations.workout?.id?.let {
+                            MyWorkoutsScreenDirections.actionMyWorkoutsScreenToCreateWorkoutScreen(
                                 it, true
                             )
                         }
@@ -69,8 +68,8 @@ class MyWorkoutsScreen : BaseFragment() {
                     }
                 )
             } else {
-                val action = workoutWithCombinations.boxingWorkout?.id?.let {
-                    MyWorkoutsScreenDirections.actionWorkoutsScreenToWorkoutScreen(
+                val action = workoutWithCombinations.workout?.id?.let {
+                    MyWorkoutsScreenDirections.actionMyWorkoutsScreenToWorkoutScreen(
                         it
                     )
                 }
@@ -184,7 +183,7 @@ class MyWorkoutsScreen : BaseFragment() {
         add_workouts_btn.setOnClickListener {
             WorkoutTypeDialog {
                 when (it) {
-                    WorkoutType.BOXING -> {
+                    WorkoutType.CUSTOM -> {
                         val action =
                             MyWorkoutsScreenDirections.addWorkoutActionWorkoutsScreenToCreateWorkoutScreen(
                                 -1L, false
@@ -193,7 +192,7 @@ class MyWorkoutsScreen : BaseFragment() {
                             action
                         )
                     }
-                    WorkoutType.HIIT -> {
+                    WorkoutType.PACKS -> {
                         Toast.makeText(requireContext(), "Coming soon", LENGTH_LONG).show()
                     }
                 }

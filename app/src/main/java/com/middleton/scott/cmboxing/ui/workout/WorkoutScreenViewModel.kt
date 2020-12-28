@@ -8,7 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.middleton.scott.cmboxing.MainActivity
 import com.middleton.scott.cmboxing.datasource.DataRepository
 import com.middleton.scott.cmboxing.datasource.local.model.Command
-import com.middleton.scott.cmboxing.datasource.local.model.BoxingWorkoutWithCombinations
+import com.middleton.scott.cmboxing.datasource.local.model.WorkoutWithCommands
 import com.middleton.scott.cmboxing.service.ServiceAudioCommand
 import com.middleton.scott.cmboxing.service.WorkoutService.Companion.playEndBellLD
 import com.middleton.scott.cmboxing.service.WorkoutService.Companion.playStartBellLD
@@ -32,15 +32,15 @@ class WorkoutScreenViewModel(
     var firstTick = true
 
     var audioFileBaseDirectory = ""
-    private val boxingWorkoutWithCombinations: BoxingWorkoutWithCombinations? =
+    private val workoutWithCommands: WorkoutWithCommands? =
         dataRepository.getLocalDataSource().getBoxingWorkoutWithCombinations(workoutId)
-    val workoutName = boxingWorkoutWithCombinations?.boxingWorkout?.name
+    val workoutName = workoutWithCommands?.workout?.name
     private var commands: List<Command>? = null
-    private val preparationTimeSecs = boxingWorkoutWithCombinations?.boxingWorkout?.preparation_time_secs ?: 0
-    private val workTimeSecs = boxingWorkoutWithCombinations?.boxingWorkout?.work_time_secs ?: 0
-    private val restTimeSecs = boxingWorkoutWithCombinations?.boxingWorkout?.rest_time_secs ?: 0
-    private val numberOfRounds = boxingWorkoutWithCombinations?.boxingWorkout?.numberOfRounds ?: 0
-    private val intensity = boxingWorkoutWithCombinations?.boxingWorkout?.intensity
+    private val preparationTimeSecs = workoutWithCommands?.workout?.preparation_time_secs ?: 0
+    private val workTimeSecs = workoutWithCommands?.workout?.work_time_secs ?: 0
+    private val restTimeSecs = workoutWithCommands?.workout?.rest_time_secs ?: 0
+    private val numberOfRounds = workoutWithCommands?.workout?.numberOfRounds ?: 0
+    private val intensity = workoutWithCommands?.workout?.intensity
 
     private var millisRemainingAtPause: Long = 0
     private var millisUntilNextCombination: Long = 0
@@ -78,7 +78,7 @@ class WorkoutScreenViewModel(
     init {
         MainActivity.currentWorkoutId = workoutId
         workoutHasPreparation = preparationTimeSecs > 0
-        commands = boxingWorkoutWithCombinations?.commands
+        commands = workoutWithCommands?.commands
         handleCombinationFrequencies()
         initWorkout()
     }
@@ -355,7 +355,7 @@ class WorkoutScreenViewModel(
 
             commands?.forEach { combination ->
                 val frequencyType =
-                    selectedCombinationsCrossRefs.firstOrNull { combination.id == it.combination_id }?.frequency
+                    selectedCombinationsCrossRefs.firstOrNull { combination.id == it.command_id }?.frequency
                 frequencyType?.multiplicationValue?.let {
                     repeat(it) {
                         multipliedCombinationsList.add(combination)

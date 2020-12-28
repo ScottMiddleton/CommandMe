@@ -10,7 +10,7 @@
             android:title="@string/my_workouts" />
         <item
             android:icon="@drawable/ic_record_voice"
-            android:id="@+id/combinationsScreen"
+            android:id="@+id/commandsScreen"
             android:title="Commands" />
         <item
             android:id="@+id/packs"

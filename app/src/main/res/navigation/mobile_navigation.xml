@@ -23,7 +23,7 @@
         android:label="@string/my_workouts"
         tools:layout="@layout/fragment_my_workouts" >
         <action
-            android:id="@+id/action_workoutsScreen_to_workoutScreen"
+            android:id="@+id/action_myWorkoutsScreen_to_workoutScreen"
             app:destination="@id/workoutScreen"
             app:enterAnim="@android:anim/fade_in"
             app:exitAnim="@android:anim/fade_out"
@@ -31,34 +31,27 @@
             app:popExitAnim="@android:anim/fade_out"/>
         <action
             android:id="@+id/add_workout_action_workoutsScreen_to_createWorkoutScreen"
-            app:destination="@id/createBoxingWorkoutScreen"
+            app:destination="@id/createWorkoutScreen"
             app:exitAnim="@anim/slide_out_bottom"
             app:enterAnim="@anim/slide_in_top"
             app:popEnterAnim="@anim/slide_in_bottom"
             app:popExitAnim="@anim/slide_out_top" />
         <action
-            android:id="@+id/edit_action_workoutsScreen_to_createWorkoutScreen"
-            app:destination="@id/createBoxingWorkoutScreen"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right" />
-        <action
-            android:id="@+id/add_combinations_action_workoutsScreen_to_createWorkoutScreen"
-            app:destination="@id/createBoxingWorkoutScreen"
+            android:id="@+id/action_myWorkoutsScreen_to_createWorkoutScreen"
+            app:destination="@id/createWorkoutScreen"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
-        android:id="@+id/combinationsScreen"
-        android:name="com.middleton.scott.cmboxing.ui.combinations.CombinationsScreen"
-        android:label="@string/combinations"
+        android:id="@+id/commandsScreen"
+        android:name="com.middleton.scott.cmboxing.ui.commands.CommandsScreen"
+        android:label="@string/commands"
         tools:layout="@layout/fragment_my_workouts" />
     <fragment
-        android:id="@+id/createBoxingWorkoutScreen"
-        android:name="com.middleton.scott.cmboxing.ui.createworkout.boxing.CreateBoxingWorkoutScreen"
+        android:id="@+id/createWorkoutScreen"
+        android:name="com.middleton.scott.cmboxing.ui.createworkout.CreateWorkoutScreen"
         tools:layout="@layout/fragment_create_boxing_workout_screen">
         <argument
             android:name="workoutId"
@@ -66,19 +59,6 @@
             app:argType="long" />
         <argument
             android:name="navigateToCombinations"
-            android:defaultValue="false"
-            app:argType="boolean" />
-    </fragment>
-    <fragment
-        android:id="@+id/createHiitWorkoutScreen"
-        android:name="com.middleton.scott.cmboxing.ui.createworkout.hiit.CreateHiitWorkoutScreen"
-        tools:layout="@layout/fragment_create_hiit_workout_screen">
-        <argument
-            android:name="workoutId"
-            android:defaultValue="-1L"
-            app:argType="long" />
-        <argument
-            android:name="navigateToExercises"
             android:defaultValue="false"
             app:argType="boolean" />
     </fragment>
@@ -93,7 +73,7 @@
     </fragment>
     <fragment
         android:id="@+id/splashFragment"
-        android:name="com.middleton.scott.cmboxing.ui.splash.SplashFragment"
+        android:name="com.middleton.scott.cmboxing.ui.splash.SplashScreen"
         android:label="fragment_splash"
         tools:layout="@layout/fragment_splash" >
         <action

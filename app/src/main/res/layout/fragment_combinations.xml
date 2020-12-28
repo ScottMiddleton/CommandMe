@@ -42,7 +42,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:fontFamily="@string/font_default_roboto_regular"
-            android:text="@string/shout_your_combination_and_it_will_appear_here"
+            android:text="@string/shout_your_command_and_it_will_appear_here"
             android:textAlignment="center"
             android:textSize="18sp" />
 

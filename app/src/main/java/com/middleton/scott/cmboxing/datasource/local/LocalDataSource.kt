@@ -33,152 +33,78 @@ class LocalDataSource(
 
     // Boxing
 
-    fun getBoxingWorkoutWithCombinationsFlow(workoutId: Long): Flow<BoxingWorkoutWithCombinations?> {
-        return database.boxingWorkoutDao().getWorkoutWithCombinationsFlow(workoutId)
+    fun getBoxingWorkoutWithCombinationsFlow(workoutId: Long): Flow<WorkoutWithCommands?> {
+        return database.workoutDao().getWorkoutWithCombinationsFlow(workoutId)
     }
 
-    fun getBoxingWorkoutWithCombinations(workoutId: Long): BoxingWorkoutWithCombinations? {
-        return database.boxingWorkoutDao().getWorkoutWithCombinations(workoutId)
+    fun getBoxingWorkoutWithCombinations(workoutId: Long): WorkoutWithCommands? {
+        return database.workoutDao().getWorkoutWithCombinations(workoutId)
     }
 
-    fun getBoxingWorkouts(): Flow<List<BoxingWorkout>> {
-        return database.boxingWorkoutDao().getWorkouts()
+    fun getBoxingWorkouts(): Flow<List<Workout>> {
+        return database.workoutDao().getWorkouts()
     }
 
-    suspend fun deleteBoxingWorkout(boxingWorkout: BoxingWorkout) {
-        database.boxingWorkoutDao().delete(boxingWorkout)
+    suspend fun deleteBoxingWorkout(workout: Workout) {
+        database.workoutDao().delete(workout)
     }
 
     fun getCombinations(): Flow<List<Command>> {
-        return database.combinationDao().getCombinations()
+        return database.commandnDao().getCombinations()
     }
 
-    fun getAllBoxingWorkoutsWithCombinations(): Flow<List<BoxingWorkoutWithCombinations>> {
-        return database.boxingWorkoutDao().getAllWorkoutsWithCombinations()
+    fun getAllBoxingWorkoutsWithCombinations(): Flow<List<WorkoutWithCommands>> {
+        return database.workoutDao().getAllWorkoutsWithCombinations()
     }
 
-    fun getSelectedCombinationCrossRefsFlow(workoutId: Long): Flow<List<SelectedCombinationsCrossRef>> {
-        return database.selectedCombinationsCrossRefDao().getSelectedCombinationCrossRefsFlow(workoutId)
+    fun getSelectedCombinationCrossRefsFlow(workoutId: Long): Flow<List<SelectedCommandCrossRef>> {
+        return database.selectedCommandCrossRefDao().getSelectedCombinationCrossRefsFlow(workoutId)
     }
 
-    fun getSelectedCombinationCrossRefs(workoutId: Long): List<SelectedCombinationsCrossRef> {
-        return database.selectedCombinationsCrossRefDao().getSelectedCombinationCrossRefs(workoutId)
+    fun getSelectedCombinationCrossRefs(workoutId: Long): List<SelectedCommandCrossRef> {
+        return database.selectedCommandCrossRefDao().getSelectedCombinationCrossRefs(workoutId)
     }
 
     suspend fun upsertBoxingWorkout(
-        boxingWorkout: BoxingWorkout
+        workout: Workout
     ): Long {
-        return database.boxingWorkoutDao().upsert(boxingWorkout)
+        return database.workoutDao().upsert(workout)
     }
 
-    suspend fun upsertWorkoutCombinations(selectedCombinationCrossRefs: List<SelectedCombinationsCrossRef>) {
-        database.selectedCombinationsCrossRefDao().upsert(selectedCombinationCrossRefs)
+    suspend fun upsertWorkoutCombinations(selectedCombinationCrossRefs: List<SelectedCommandCrossRef>) {
+        database.selectedCommandCrossRefDao().upsert(selectedCombinationCrossRefs)
     }
 
-    suspend fun upsertWorkoutCombination(selectedCombinationCrossRef: SelectedCombinationsCrossRef) {
-        database.selectedCombinationsCrossRefDao().upsert(selectedCombinationCrossRef)
+    suspend fun upsertWorkoutCombination(selectedCombinationCrossRef: SelectedCommandCrossRef) {
+        database.selectedCommandCrossRefDao().upsert(selectedCombinationCrossRef)
     }
 
-    suspend fun deleteWorkoutCombination(selectedCombinationCrossRef: SelectedCombinationsCrossRef) {
-        database.selectedCombinationsCrossRefDao().delete(selectedCombinationCrossRef)
+    suspend fun deleteWorkoutCombination(selectedCombinationCrossRef: SelectedCommandCrossRef) {
+        database.selectedCommandCrossRefDao().delete(selectedCombinationCrossRef)
     }
 
      suspend fun deleteWorkoutCombinations(workoutId: Long) {
-        database.selectedCombinationsCrossRefDao().deleteByWorkoutId(workoutId)
+        database.selectedCommandCrossRefDao().deleteByWorkoutId(workoutId)
     }
 
      suspend fun deleteWorkoutCombination(combinationId: Long) {
-        database.selectedCombinationsCrossRefDao().deleteByCombinationId(combinationId)
+        database.selectedCommandCrossRefDao().deleteByCombinationId(combinationId)
     }
 
-     fun getBoxingWorkoutByIdFlow(workoutId: Long): Flow<BoxingWorkout?> {
-        return database.boxingWorkoutDao().getWorkoutByIdFlow(workoutId)
+     fun getBoxingWorkoutByIdFlow(workoutId: Long): Flow<Workout?> {
+        return database.workoutDao().getWorkoutByIdFlow(workoutId)
     }
 
-     fun getBoxingWorkoutById(workoutId: Long): BoxingWorkout? {
-        return database.boxingWorkoutDao().getWorkoutById(workoutId)
+     fun getBoxingWorkoutById(workoutId: Long): Workout? {
+        return database.workoutDao().getWorkoutById(workoutId)
     }
 
      suspend fun upsertCombination(command: Command): Long {
-        return database.combinationDao().upsert(command)
+        return database.commandnDao().upsert(command)
     }
 
      suspend fun deleteCombination(command: Command) {
-        database.combinationDao().delete(command)
-    }
-
-    // Hiit
-
-     fun getHiitWorkouts(): Flow<List<HiitWorkout>> {
-        return database.hiitWorkoutDao().getHiitWorkouts()
-    }
-
-     suspend fun deleteHiitWorkout(hiitWorkout: HiitWorkout) {
-        database.hiitWorkoutDao().delete(hiitWorkout)
-    }
-
-     fun getHiitExercises(): Flow<List<HiitExercise>> {
-        TODO("Not yet implemented")
-    }
-
-     suspend fun upsertHiitWorkout(hiitWorkout: HiitWorkout): Long {
-        TODO("Not yet implemented")
-    }
-
-     suspend fun upsertHiitExercises(hiitExercise: HiitExercise): Long {
-        TODO("Not yet implemented")
-    }
-
-     suspend fun deleteHiitExercise(hiitExercise: HiitExercise) {
-        TODO("Not yet implemented")
-    }
-
-     suspend fun upsertHiitExercisesCrossRefs(selectedHiitExercisesCrossRef: List<SelectedHiitExercisesCrossRef>) {
-        TODO("Not yet implemented")
-    }
-
-     suspend fun upsertHiitExercisesCrossRef(selectedHiitExercisesCrossRef: SelectedHiitExercisesCrossRef) {
-        TODO("Not yet implemented")
-    }
-
-     fun getSelectedHiitExercisesCrossRefsFlow(workoutId: Long): Flow<List<SelectedHiitExercisesCrossRef>> {
-        TODO("Not yet implemented")
-    }
-
-     fun getSelectedHiitExercisesCrossRefs(workoutId: Long): List<SelectedHiitExercisesCrossRef> {
-        TODO("Not yet implemented")
-    }
-
-     suspend fun deleteHiitExercisesCrossRefs(selectedHiitExercisesCrossRef: SelectedHiitExercisesCrossRef) {
-        TODO("Not yet implemented")
-    }
-
-     suspend fun deleteHiitExercisesCrossRefs(workoutId: Long) {
-        TODO("Not yet implemented")
-    }
-
-     suspend fun deleteHiitExercisesCrossRef(combinationId: Long) {
-        TODO("Not yet implemented")
-    }
-
-     fun getHiitWorkoutByIdFlow(workoutId: Long): Flow<HiitWorkout?> {
-        return database.hiitWorkoutDao().getHiitWorkoutByIdFlow(workoutId)
-    }
-
-     fun getHiitWorkoutById(workoutId: Long): HiitWorkout? {
-        TODO("Not yet implemented")
-    }
-
-     fun getHiitWorkoutWithExercisesFlow(workoutId: Long): Flow<HiitWorkoutWithExercises?> {
-        TODO("Not yet implemented")
-    }
-
-     fun getHiitWorkoutWithExercises(workoutId: Long): HiitWorkoutWithExercises? {
-        TODO("Not yet implemented")
-    }
-
-     fun getAllHiitWorkoutsWithExercises(): Flow<List<HiitWorkoutWithExercises>> {
-        TODO("Not yet implemented")
+        database.commandnDao().delete(command)
     }
 
 }

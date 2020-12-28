@@ -10,7 +10,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Observer
-import androidx.lifecycle.observe
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
@@ -60,7 +59,7 @@ class MainActivity : AppCompatActivity() {
     private fun setupNavigationMenu() {
         val topLevelMenuDestinations = setOf(
             R.id.myWorkoutsScreen,
-            R.id.combinationsScreen,
+            R.id.commandsScreen,
             R.id.packs,
         )
 
@@ -84,7 +83,7 @@ class MainActivity : AppCompatActivity() {
 
         navController.addOnDestinationChangedListener { _, destination, arguments ->
             setupMenuVisibility(topLevelMenuDestinations.contains(destination.id))
-            if (destination.id == R.id.createBoxingWorkoutScreen) {
+            if (destination.id == R.id.createWorkoutScreen) {
                 val view: View = layoutInflater.inflate(R.layout.title_bar_create_workout, null)
 
                 view.layoutParams = LinearLayout.LayoutParams(
@@ -94,8 +93,10 @@ class MainActivity : AppCompatActivity() {
 
                 supportActionBar?.customView = view
                 supportActionBar?.setDisplayShowCustomEnabled(true)
+                supportActionBar?.setDisplayHomeAsUpEnabled(false)
             } else {
                 supportActionBar?.setDisplayShowCustomEnabled(false)
+                supportActionBar?.setDisplayHomeAsUpEnabled(true)
             }
 
             if (destination.id == R.id.workoutScreen) {
@@ -150,7 +151,7 @@ class MainActivity : AppCompatActivity() {
                     {
                         navController.popBackStack()
                         navController.navigate(
-                            R.id.createBoxingWorkoutScreen,
+                            R.id.createWorkoutScreen,
                             bundleOf("workoutId" to currentWorkoutId)
                         )
                     })

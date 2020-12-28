@@ -33,9 +33,9 @@
             app:drawableStartCompat="@drawable/ic_logout"
             app:drawableTint="@color/white"
             android:text="@string/log_out"
-            android:textAllCaps="true"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="20dp"
             android:layout_gravity="center|bottom"
+            android:background="?attr/selectableItemBackgroundBorderless"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />

@@ -7,9 +7,8 @@ import com.middleton.scott.cmboxing.datasource.DataRepository
 import com.middleton.scott.cmboxing.datasource.local.AppDatabase
 import com.middleton.scott.cmboxing.datasource.local.LocalDataSource
 import com.middleton.scott.cmboxing.datasource.remote.RemoteDataSource
-import com.middleton.scott.cmboxing.ui.combinations.CombinationsViewModel
-import com.middleton.scott.cmboxing.ui.createworkout.boxing.CreateBoxingWorkoutSharedViewModel
-import com.middleton.scott.cmboxing.ui.createworkout.hiit.CreateHiitWorkoutSharedViewModel
+import com.middleton.scott.cmboxing.ui.commands.CommandsViewModel
+import com.middleton.scott.cmboxing.ui.createworkout.CreateWorkoutSharedViewModel
 import com.middleton.scott.cmboxing.ui.login.CreateAccountViewModel
 import com.middleton.scott.cmboxing.ui.login.LoginViewModel
 import com.middleton.scott.cmboxing.ui.workout.WorkoutScreenViewModel
@@ -32,10 +31,9 @@ val appModule = module {
     single { DataRepository(get(), get()) }
 
     viewModel { MainViewModel(get()) }
-    viewModel { CombinationsViewModel(get()) }
+    viewModel { CommandsViewModel(get()) }
     viewModel { WorkoutsViewModel(get()) }
-    viewModel { (workoutId: Long) -> CreateBoxingWorkoutSharedViewModel(get(), workoutId) }
-    viewModel { (workoutId: Long) -> CreateHiitWorkoutSharedViewModel(get(), workoutId) }
+    viewModel { (workoutId: Long) -> CreateWorkoutSharedViewModel(get(), workoutId) }
     viewModel { (workoutId: Long) -> WorkoutScreenViewModel(get(), workoutId) }
     viewModel { CreateAccountViewModel(get()) }
     viewModel { LoginViewModel(get()) }
