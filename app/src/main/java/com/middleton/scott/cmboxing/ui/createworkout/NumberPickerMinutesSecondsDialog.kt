@@ -11,7 +11,6 @@ import androidx.annotation.Nullable
 import androidx.fragment.app.DialogFragment
 import com.middleton.scott.cmboxing.R
 import kotlinx.android.synthetic.main.dialog_number_picker_mins_secs.*
-import kotlinx.android.synthetic.main.dialog_save_combination.save_btn
 
 class NumberPickerMinutesSecondsDialog(
     private val title: String,

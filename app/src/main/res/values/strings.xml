@@ -26,7 +26,6 @@
     <string name="command_name">Command name</string>
     <string name="delete">Delete</string>
     <string name="workout">Workout</string>
-    <string name="combos">Combos</string>
     <string name="create_workout">Create Workout</string>
     <string name="summary">Summary</string>
     <string name="weighting">Weighting</string>
@@ -103,5 +102,7 @@
     <string name="custom">custom</string>
     <string name="packs">Packs</string>
     <string name="login">Login</string>
+    <string name="recording_too_short">Recording too short. Hold the microphone to record a command.</string>
+    <string name="next">Next</string>
 
 </resources>

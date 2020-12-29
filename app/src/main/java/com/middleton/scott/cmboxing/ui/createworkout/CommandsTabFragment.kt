@@ -1,21 +1,22 @@
 package com.middleton.scott.cmboxing.ui.createworkout
 
-import SaveCombinationDialog
+import SaveCommandDialog
 import android.Manifest
 import android.content.pm.PackageManager
 import android.graphics.ColorFilter
 import android.media.MediaRecorder
 import android.os.Bundle
-import android.os.Handler
 import android.os.SystemClock
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import android.widget.Button
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
+import androidx.viewpager2.widget.ViewPager2
 import com.airbnb.lottie.LottieProperty
 import com.airbnb.lottie.SimpleColorFilter
 import com.airbnb.lottie.model.KeyPath
@@ -26,23 +27,22 @@ import com.middleton.scott.cmboxing.other.Constants
 import com.middleton.scott.cmboxing.ui.base.BaseFragment
 import com.middleton.scott.cmboxing.ui.commands.CommandsAdapter
 import com.middleton.scott.cmboxing.utils.MediaRecorderManager
-import kotlinx.android.synthetic.main.fragment_combinations.*
+import kotlinx.android.synthetic.main.fragment_commands.*
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import java.io.File
 
-class CommandsScreen : BaseFragment() {
+class CommandsTabFragment : BaseFragment() {
     private val viewModel by lazy { requireParentFragment().getViewModel<CreateWorkoutSharedViewModel>() }
     private var mediaRecorder = MediaRecorder()
     var combinationsEmpty = true
     var undoSnackbarVisible = false
     var recordingEnabled = false
 
-    private val handler = Handler()
     private lateinit var adapter: CommandsAdapter
 
     companion object {
         fun newInstance() =
-            CommandsScreen()
+            CommandsTabFragment()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -71,13 +71,13 @@ class CommandsScreen : BaseFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_combinations, container, false)
+        return inflater.inflate(R.layout.fragment_commands, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        combinations_RV.adapter = adapter
+        commands_RV.adapter = adapter
 
 //        val itemTouchHelperCallback =
 //            object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
@@ -178,21 +178,21 @@ class CommandsScreen : BaseFragment() {
         viewModel.getAllCombinationsLD().observe(viewLifecycleOwner, Observer {
             if (it.isNullOrEmpty()) {
                 combinationsEmpty = true
-                combinations_RV.visibility = View.GONE
+                commands_RV.visibility = View.GONE
                 if (!undoSnackbarVisible) {
                     empty_list_layout.visibility = View.VISIBLE
                 }
             } else {
                 combinationsEmpty = false
                 empty_list_layout.visibility = View.GONE
-                combinations_RV.visibility = View.VISIBLE
+                commands_RV.visibility = View.VISIBLE
                 if (!viewModel.listAnimationShownOnce) {
                     val controller =
                         AnimationUtils.loadLayoutAnimation(
                             context,
                             R.anim.layout_animation_fall_down
                         )
-                    combinations_RV.layoutAnimation = controller
+                    commands_RV.layoutAnimation = controller
                     viewModel.listAnimationShownOnce = true
                 }
             }
@@ -203,6 +203,12 @@ class CommandsScreen : BaseFragment() {
     }
 
     private fun setClickListeners() {
+        next_btn_include.findViewById<Button>(R.id.next_btn).setOnClickListener {
+            val viewPager =
+                parentFragment?.view?.findViewById(R.id.create_boxing_workout_vp) as ViewPager2
+            viewPager.currentItem = 2
+        }
+
         record_audio_button.setOnTouchListener { _, event ->
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
@@ -331,7 +337,7 @@ class CommandsScreen : BaseFragment() {
     }
 
     private fun showSaveCombinationDialog() {
-        SaveCombinationDialog(
+        SaveCommandDialog(
             viewModel.audioFileCompleteDirectory,
             false,
             Command("", 0, viewModel.audioFileName),

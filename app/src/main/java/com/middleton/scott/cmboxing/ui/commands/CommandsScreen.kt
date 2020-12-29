@@ -1,6 +1,6 @@
 package com.middleton.scott.cmboxing.ui.commands
 
-import SaveCombinationDialog
+import SaveCommandDialog
 import android.Manifest.permission.RECORD_AUDIO
 import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import android.content.pm.PackageManager
@@ -30,7 +30,7 @@ import com.middleton.scott.cmboxing.other.Constants.REQUEST_AUDIO_PERMISSION_COD
 import com.middleton.scott.cmboxing.ui.base.BaseFragment
 import com.middleton.scott.cmboxing.utils.MediaRecorderManager
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
-import kotlinx.android.synthetic.main.fragment_combinations.*
+import kotlinx.android.synthetic.main.fragment_commands.*
 import org.koin.android.ext.android.inject
 import java.io.File
 
@@ -50,7 +50,7 @@ class CommandsScreen : BaseFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_combinations, container, false)
+        return inflater.inflate(R.layout.fragment_commands, container, false)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,7 +75,7 @@ class CommandsScreen : BaseFragment() {
 
         setClickListeners()
 
-        combinations_RV.adapter = adapter
+        commands_RV.adapter = adapter
 
         val itemTouchHelperCallback =
             object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
@@ -148,7 +148,7 @@ class CommandsScreen : BaseFragment() {
             }
 
         val itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
-        itemTouchHelper.attachToRecyclerView(combinations_RV)
+        itemTouchHelper.attachToRecyclerView(commands_RV)
 
         subscribeUI()
 
@@ -161,21 +161,21 @@ class CommandsScreen : BaseFragment() {
         viewModel.getAllCombinationsLD().observe(viewLifecycleOwner, {
             if (it.isNullOrEmpty()) {
                 combinationsEmpty = true
-                combinations_RV.visibility = GONE
+                commands_RV.visibility = GONE
                 if (!undoSnackbarVisible) {
                     empty_list_layout.visibility = View.VISIBLE
                 }
             } else {
                 combinationsEmpty = false
                 empty_list_layout.visibility = GONE
-                combinations_RV.visibility = View.VISIBLE
+                commands_RV.visibility = View.VISIBLE
                 if (!viewModel.listAnimationShownOnce) {
                     val controller =
                         AnimationUtils.loadLayoutAnimation(
                             context,
                             R.anim.layout_animation_fall_down
                         )
-                    combinations_RV.layoutAnimation = controller
+                    commands_RV.layoutAnimation = controller
                     viewModel.listAnimationShownOnce = true
                 }
             }
@@ -253,10 +253,10 @@ class CommandsScreen : BaseFragment() {
                     } else {
                         val file = File(viewModel.audioFileCompleteDirectory)
                         file.delete()
-                        Toast.makeText(context, "Recording too short. Hold the microphone to record a combination command.", Toast.LENGTH_LONG).show()
+                        Toast.makeText(context, "Recording too short. Hold the microphone to record a command.", Toast.LENGTH_LONG).show()
                     }
                 } else {
-                    Toast.makeText(context, "Recording too short. Hold the microphone to record a combination command.", Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, getString(R.string.recording_too_short), Toast.LENGTH_LONG).show()
                     mediaRecorder = MediaRecorder()
                 }
             }
@@ -303,7 +303,7 @@ class CommandsScreen : BaseFragment() {
     }
 
     private fun showSaveCombinationDialog() {
-        SaveCombinationDialog(
+        SaveCommandDialog(
             viewModel.audioFileCompleteDirectory,
             false,
             Command("", 0, viewModel.audioFileName),

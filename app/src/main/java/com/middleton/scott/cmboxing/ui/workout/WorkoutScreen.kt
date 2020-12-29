@@ -114,7 +114,7 @@ class WorkoutScreen : BaseFragment() {
                     )
                 }
                 WorkoutState.WORK -> {
-                    combination_name_tv.visibility = VISIBLE
+                    command_name_tv.visibility = VISIBLE
                     play_command_lottie.visibility = VISIBLE
                     countdown_pb.progressTintList = ColorStateList.valueOf(
                         ContextCompat.getColor(
@@ -124,7 +124,7 @@ class WorkoutScreen : BaseFragment() {
                     )
                 }
                 WorkoutState.REST -> {
-                    combination_name_tv.visibility = INVISIBLE
+                    command_name_tv.visibility = INVISIBLE
                     play_command_lottie.visibility = VISIBLE
                     countdown_pb.progressTintList = ColorStateList.valueOf(
                         ContextCompat.getColor(
@@ -149,7 +149,7 @@ class WorkoutScreen : BaseFragment() {
         })
 
         viewModel.currentCommandLD.observe(viewLifecycleOwner, Observer {
-            combination_name_tv.text = it.name
+            command_name_tv.text = it.name
             play_command_lottie.playAnimation()
         })
     }

@@ -1,6 +1,6 @@
 package com.middleton.scott.cmboxing.ui.commands
 
-import SaveCombinationDialog
+import SaveCommandDialog
 import android.content.Context
 import android.media.MediaPlayer
 import android.util.Log
@@ -27,7 +27,7 @@ class CommandsAdapter(
     private val onCheckCombination: ((selectedCombinationCrossRef: SelectedCommandCrossRef, isChecked: Boolean) -> Unit)? = null,
     private val onEditCombination: ((Command) -> Unit),
     private val onDeleteCombination: ((Command) -> Unit)
-) : RecyclerView.Adapter<CommandsAdapter.CombinationsViewHolder>() {
+) : RecyclerView.Adapter<CommandsAdapter.CommandsViewHolder>() {
 
     lateinit var context: Context
 
@@ -38,11 +38,11 @@ class CommandsAdapter(
     private var audioPlayingIndex = -1
     private var currentPlayingAudioLottie: LottieAnimationView? = null
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CombinationsViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommandsViewHolder {
         context = parent.context
-        return CombinationsViewHolder(
+        return CommandsViewHolder(
             LayoutInflater.from(parent.context).inflate(
-                R.layout.list_item_combination,
+                R.layout.list_item_command,
                 parent,
                 false
             )
@@ -53,7 +53,7 @@ class CommandsAdapter(
         return allCombinations.size
     }
 
-    override fun onBindViewHolder(holder: CombinationsViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: CommandsViewHolder, position: Int) {
         val combination = allCombinations[position]
         holder.nameTV.text = allCombinations[position].name
 
@@ -93,7 +93,7 @@ class CommandsAdapter(
         }
 
         holder.editButton.setOnClickListener {
-            SaveCombinationDialog(
+            SaveCommandDialog(
                 (audioFileDirectory + combination.file_name),
                 true,
                 combination,
@@ -105,8 +105,8 @@ class CommandsAdapter(
         }
     }
 
-    class CombinationsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val nameTV: TextView = view.findViewById(R.id.combination_name_tv)
+    class CommandsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val nameTV: TextView = view.findViewById(R.id.command_name_tv)
         val parent: ConstraintLayout = view.findViewById(R.id.parent_cl)
         val playAudioLottie: LottieAnimationView = view.findViewById(R.id.play_audio_lottie)
         val checkBox: CheckBox = view.findViewById(R.id.checkbox)

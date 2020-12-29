@@ -12,9 +12,9 @@ import androidx.fragment.app.DialogFragment
 import com.middleton.scott.cmboxing.R
 import kotlinx.android.synthetic.main.dialog_number_picker_mins_secs.*
 import kotlinx.android.synthetic.main.dialog_number_picker_mins_secs.cancel_btn
+import kotlinx.android.synthetic.main.dialog_number_picker_mins_secs.save_btn
 import kotlinx.android.synthetic.main.dialog_number_picker_mins_secs.title_tv
 import kotlinx.android.synthetic.main.dialog_number_picker_rounds.*
-import kotlinx.android.synthetic.main.dialog_save_combination.save_btn
 
 class NumberPickerRoundsDialog(
     private val numberOfRounds: Int,

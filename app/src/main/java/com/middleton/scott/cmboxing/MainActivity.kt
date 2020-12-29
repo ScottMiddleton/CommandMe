@@ -83,21 +83,6 @@ class MainActivity : AppCompatActivity() {
 
         navController.addOnDestinationChangedListener { _, destination, arguments ->
             setupMenuVisibility(topLevelMenuDestinations.contains(destination.id))
-            if (destination.id == R.id.createWorkoutScreen) {
-                val view: View = layoutInflater.inflate(R.layout.title_bar_create_workout, null)
-
-                view.layoutParams = LinearLayout.LayoutParams(
-                    FrameLayout.LayoutParams.MATCH_PARENT,
-                    FrameLayout.LayoutParams.MATCH_PARENT
-                )
-
-                supportActionBar?.customView = view
-                supportActionBar?.setDisplayShowCustomEnabled(true)
-                supportActionBar?.setDisplayHomeAsUpEnabled(false)
-            } else {
-                supportActionBar?.setDisplayShowCustomEnabled(false)
-                supportActionBar?.setDisplayHomeAsUpEnabled(true)
-            }
 
             if (destination.id == R.id.workoutScreen) {
                 menu?.setGroupVisible(R.id.workout_menu, true)

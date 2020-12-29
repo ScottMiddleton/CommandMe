@@ -8,6 +8,7 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.Button
 import androidx.activity.OnBackPressedCallback
 import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.Observer
@@ -18,13 +19,13 @@ import com.middleton.scott.cmboxing.utils.DateTimeUtils
 import kotlinx.android.synthetic.main.fragment_summary_tab.*
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
-class SummaryScreen : BaseFragment() {
+class SummaryTabFragment : BaseFragment() {
     private val viewModel by lazy { requireParentFragment().getViewModel<CreateWorkoutSharedViewModel>() }
     private lateinit var adapter: CommmandsSummaryAdapter
 
     companion object {
         fun newInstance() =
-            SummaryScreen()
+            SummaryTabFragment()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,7 +56,7 @@ class SummaryScreen : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        combinations_summary_rv.adapter = adapter
+        command_summary_rv.adapter = adapter
 
         subscribeUI()
         setListeners()
@@ -88,13 +89,13 @@ class SummaryScreen : BaseFragment() {
                     adapter.setAdapter(it, viewModel.selectedCombinationsCrossRefs)
                     weighting_label_tv.visibility = VISIBLE
                     name_label_tv.visibility = VISIBLE
-                    combinations_summary_rv.visibility = VISIBLE
-                    add_combination_tv.visibility = GONE
+                    command_summary_rv.visibility = VISIBLE
+                    add_command_tv.visibility = GONE
                 } else {
                     weighting_label_tv.visibility = GONE
                     name_label_tv.visibility = GONE
-                    add_combination_tv.visibility = VISIBLE
-                    combinations_summary_rv.visibility = GONE
+                    add_command_tv.visibility = VISIBLE
+                    command_summary_rv.visibility = GONE
                 }
                 populateFields()
             }
@@ -110,7 +111,13 @@ class SummaryScreen : BaseFragment() {
     }
 
     private fun setListeners() {
-        workout_name_et.doAfterTextChanged {
+        next_btn_include.findViewById<Button>(R.id.next_btn).setOnClickListener {
+            val viewPager =
+                parentFragment?.view?.findViewById(R.id.create_boxing_workout_vp) as ViewPager2
+            viewPager.currentItem = 1
+        }
+
+        workout_name_et.doAfterTextChanged{
             if (viewModel.userHasAttemptedToSave) {
                 if (it.isNullOrBlank()) {
                     workout_name_til.error = getString(R.string.this_is_a_required_field)
@@ -121,13 +128,13 @@ class SummaryScreen : BaseFragment() {
             viewModel.setWorkoutName(it.toString())
         }
 
-        workout_name_et.setOnFocusChangeListener { v, hasFocus ->
-            if (!hasFocus){
+        workout_name_et.setOnFocusChangeListener{ v, hasFocus ->
+            if (!hasFocus) {
                 hideKeyboard()
             }
         }
 
-        preparation_time_et.setOnClickListener {
+        preparation_time_et.setOnClickListener{
             NumberPickerMinutesSecondsDialog(
                 getString(R.string.preparation_time),
                 viewModel.workout.preparation_time_secs,
@@ -142,7 +149,7 @@ class SummaryScreen : BaseFragment() {
             hideKeyboard()
         }
 
-        work_time_et.setOnClickListener {
+        work_time_et.setOnClickListener{
             NumberPickerMinutesSecondsDialog(
                 getString(R.string.work_time),
                 viewModel.workout.work_time_secs,
@@ -157,7 +164,7 @@ class SummaryScreen : BaseFragment() {
             hideKeyboard()
         }
 
-        rest_time_et.setOnClickListener {
+        rest_time_et.setOnClickListener{
             NumberPickerMinutesSecondsDialog(
                 getString(R.string.rest_time),
                 viewModel.workout.rest_time_secs,
@@ -172,7 +179,7 @@ class SummaryScreen : BaseFragment() {
             hideKeyboard()
         }
 
-        number_of_rounds_et.setOnClickListener {
+        number_of_rounds_et.setOnClickListener{
             NumberPickerRoundsDialog(viewModel.workout.numberOfRounds, { rounds ->
                 viewModel.setNumberOfRounds(rounds)
                 number_of_rounds_et.setText(rounds.toString())
@@ -183,7 +190,7 @@ class SummaryScreen : BaseFragment() {
             hideKeyboard()
         }
 
-        intensity_et.setOnClickListener {
+        intensity_et.setOnClickListener{
             IntensityDialog(viewModel.workout.intensity, { intensity ->
                 viewModel.setIntensity(intensity)
                 intensity_et.setText(intensity.toString())
@@ -194,8 +201,9 @@ class SummaryScreen : BaseFragment() {
             hideKeyboard()
         }
 
-        add_combination_tv.setOnClickListener {
-            val viewPager = parentFragment?.view?.findViewById(R.id.create_boxing_workout_vp) as ViewPager2
+        add_command_tv.setOnClickListener{
+            val viewPager =
+                parentFragment?.view?.findViewById(R.id.create_boxing_workout_vp) as ViewPager2
             viewPager.currentItem = 1
         }
     }
@@ -209,7 +217,7 @@ class SummaryScreen : BaseFragment() {
         viewModel.setIntensity(viewModel.workout.intensity)
     }
 
-    private fun hideKeyboard(){
+    private fun hideKeyboard() {
         val imm: InputMethodManager =
             requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(requireView().windowToken, 0)
