@@ -16,10 +16,8 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.middleton.scott.cmboxing.MainActivity
 import com.middleton.scott.cmboxing.R
 import com.middleton.scott.cmboxing.ui.base.BaseFragment
-import com.middleton.scott.cmboxing.ui.createworkout.combinations.CreateWorkoutCombinationsFragment
-import com.middleton.scott.cmboxing.ui.createworkout.summary.CreateWorkoutSummaryFragment
 import com.middleton.scott.cmboxing.utils.DialogManager
-import kotlinx.android.synthetic.main.fragment_create_workout_screen.*
+import kotlinx.android.synthetic.main.fragment_create_boxing_workout_screen.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -41,7 +39,7 @@ class CreateWorkoutScreen : BaseFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_create_workout_screen, container, false)
+        return inflater.inflate(R.layout.fragment_create_boxing_workout_screen, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -98,11 +96,11 @@ class CreateWorkoutScreen : BaseFragment() {
             if (!it) {
                 DialogManager.showDialog(
                     context = requireContext(),
-                    messageId = R.string.add_combination_dialog_message,
-                    negativeBtnTextId = R.string.add_combination,
+                    messageId = R.string.add_commands_dialog_message,
+                    negativeBtnTextId = R.string.add_command,
                     negativeBtnClick = {
                         val viewPager =
-                            parentFragment?.view?.findViewById(R.id.create_workout_vp) as ViewPager2
+                            parentFragment?.view?.findViewById(R.id.create_boxing_workout_vp) as ViewPager2
                         viewPager.currentItem = 1
                     })
             }
@@ -111,28 +109,28 @@ class CreateWorkoutScreen : BaseFragment() {
         viewModel.requiredSummaryFieldLD.observe(viewLifecycleOwner, Observer {
             if (it) {
                 val viewPager =
-                    parentFragment?.view?.findViewById(R.id.create_workout_vp) as ViewPager2
+                    parentFragment?.view?.findViewById(R.id.create_boxing_workout_vp) as ViewPager2
                 viewPager.currentItem = 0
             }
         })
     }
 
     private fun setupViewPagerAndTabLayout() {
-        create_workout_vp.adapter = object : FragmentStateAdapter(this) {
+        create_boxing_workout_vp.adapter = object : FragmentStateAdapter(this) {
             override fun getItemCount(): Int {
                 return 2
             }
 
             override fun createFragment(position: Int): Fragment {
                 return when (position) {
-                    0 -> CreateWorkoutSummaryFragment.newInstance()
-                    1 -> CreateWorkoutCombinationsFragment.newInstance()
-                    else -> CreateWorkoutSummaryFragment.newInstance()
+                    0 -> SummaryScreen.newInstance()
+                    1 -> CommandsScreen.newInstance()
+                    else -> SummaryScreen.newInstance()
                 }
             }
         }
 
-        TabLayoutMediator(tab_layout, create_workout_vp) { tab, position ->
+        TabLayoutMediator(tab_layout, create_boxing_workout_vp) { tab, position ->
             var title = ""
             when (position) {
                 0 -> title = getString(R.string.summary)
@@ -142,7 +140,7 @@ class CreateWorkoutScreen : BaseFragment() {
         }.attach()
 
         if (args.navigateToCombinations) {
-            create_workout_vp.setCurrentItem(1, false)
+            create_boxing_workout_vp.setCurrentItem(1, false)
         }
     }
 

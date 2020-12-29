@@ -34,23 +34,6 @@ android {
         }
     }
 
-    // Specifies one flavor dimension.
-    flavorDimensions "version"
-    productFlavors {
-        free {
-            // Assigns this product flavor to the "version" flavor dimension.
-            // If you are using only one dimension, this property is optional,
-            // and the plugin automatically assigns all the module's flavors to
-            // that dimension.
-            dimension "version"
-            versionNameSuffix "-free"
-        }
-        paid {
-            dimension "version"
-            versionNameSuffix "-paid"
-        }
-    }
-
 // To inline the bytecode built with JVM target 1.8 into
 // bytecode that is being built with JVM target 1.6. (e.g. navArgs)
 
@@ -67,7 +50,7 @@ dependencies {
 // AndroidX / Support library
     implementation "androidx.appcompat:appcompat:1.2.0"
     implementation "androidx.constraintlayout:constraintlayout:2.0.4"
-    implementation 'com.google.android.material:material:1.3.0-alpha03'
+    implementation 'com.google.android.material:material:1.3.0-beta01'
     implementation "androidx.core:core-ktx:1.3.2"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
@@ -82,15 +65,15 @@ dependencies {
 
     // Room database
     implementation "androidx.room:room-runtime:$room_version"
-    kapt "androidx.room:room-compiler:2.2.5"
+    kapt "androidx.room:room-compiler:2.2.6"
 
     // Kotlin Extensions and Coroutines support for Room
     implementation "androidx.room:room-ktx:$room_version"
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.9'
 
     // Android Navigation Library
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.3.1'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.3.1'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.3.2'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.3.2'
     implementation "android.arch.navigation:navigation-fragment-ktx:1.0.0"
 
     // Koin
@@ -120,7 +103,20 @@ dependencies {
     implementation 'it.xabaras.android:recyclerview-swipedecorator:1.2.3'
 
     //Firebase
-    implementation platform('com.google.firebase:firebase-bom:26.1.0')
+    // Import the BoM for the Firebase platform
+    implementation platform('com.google.firebase:firebase-bom:26.2.0')
+
+    // Declare the dependency for the Firebase Authentication library
+    // When using the BoM, you don't specify versions in Firebase library dependencies
+    implementation 'com.google.firebase:firebase-auth-ktx'
+
+    //Firestore
+    // Import the BoM for the Firebase platform
+    implementation platform('com.google.firebase:firebase-bom:26.1.1')
+
+    // Declare the dependency for the Cloud Firestore library
+    // When using the BoM, you don't specify versions in Firebase library dependencies
+    implementation 'com.google.firebase:firebase-firestore-ktx'
 
     //Crashlytics
     implementation 'com.google.firebase:firebase-crashlytics'

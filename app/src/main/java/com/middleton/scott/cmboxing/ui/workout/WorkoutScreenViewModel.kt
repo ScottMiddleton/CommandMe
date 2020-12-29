@@ -5,11 +5,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.android.gms.common.config.GservicesValue.value
 import com.middleton.scott.cmboxing.MainActivity
-import com.middleton.scott.cmboxing.datasource.local.LocalDataSource
-import com.middleton.scott.cmboxing.datasource.local.model.Combination
-import com.middleton.scott.cmboxing.datasource.local.model.WorkoutWithCombinations
+import com.middleton.scott.cmboxing.datasource.DataRepository
+import com.middleton.scott.cmboxing.datasource.local.model.Command
+import com.middleton.scott.cmboxing.datasource.local.model.WorkoutWithCommands
 import com.middleton.scott.cmboxing.service.ServiceAudioCommand
 import com.middleton.scott.cmboxing.service.WorkoutService.Companion.playEndBellLD
 import com.middleton.scott.cmboxing.service.WorkoutService.Companion.playStartBellLD
@@ -21,7 +20,7 @@ import kotlinx.coroutines.launch
 import kotlin.math.ceil
 
 class WorkoutScreenViewModel(
-    private val localDataSource: LocalDataSource,
+    private val dataRepository: DataRepository,
     val workoutId: Long
 ) : ViewModel() {
 
@@ -33,15 +32,15 @@ class WorkoutScreenViewModel(
     var firstTick = true
 
     var audioFileBaseDirectory = ""
-    private val workoutWithCombinations: WorkoutWithCombinations? =
-        localDataSource.getWorkoutWithCombinations(workoutId)
-    val workoutName = workoutWithCombinations?.workout?.name
-    private var combinations: List<Combination>? = null
-    private val preparationTimeSecs = workoutWithCombinations?.workout?.preparation_time_secs ?: 0
-    private val workTimeSecs = workoutWithCombinations?.workout?.work_time_secs ?: 0
-    private val restTimeSecs = workoutWithCombinations?.workout?.rest_time_secs ?: 0
-    private val numberOfRounds = workoutWithCombinations?.workout?.numberOfRounds ?: 0
-    private val intensity = workoutWithCombinations?.workout?.intensity
+    private val workoutWithCommands: WorkoutWithCommands? =
+        dataRepository.getLocalDataSource().getBoxingWorkoutWithCombinations(workoutId)
+    val workoutName = workoutWithCommands?.workout?.name
+    private var commands: List<Command>? = null
+    private val preparationTimeSecs = workoutWithCommands?.workout?.preparation_time_secs ?: 0
+    private val workTimeSecs = workoutWithCommands?.workout?.work_time_secs ?: 0
+    private val restTimeSecs = workoutWithCommands?.workout?.rest_time_secs ?: 0
+    private val numberOfRounds = workoutWithCommands?.workout?.numberOfRounds ?: 0
+    private val intensity = workoutWithCommands?.workout?.intensity
 
     private var millisRemainingAtPause: Long = 0
     private var millisUntilNextCombination: Long = 0
@@ -70,8 +69,8 @@ class WorkoutScreenViewModel(
     val workoutStateLD: LiveData<WorkoutState>
         get() = _workoutStateLD
 
-    private val _currentCombinationLD = MutableLiveData<Combination>()
-    val currentCombinationLD: LiveData<Combination>
+    private val _currentCombinationLD = MutableLiveData<Command>()
+    val currentCommandLD: LiveData<Command>
         get() = _currentCombinationLD
 
     private var countDownTimer: CountDownTimer? = null
@@ -79,7 +78,7 @@ class WorkoutScreenViewModel(
     init {
         MainActivity.currentWorkoutId = workoutId
         workoutHasPreparation = preparationTimeSecs > 0
-        combinations = workoutWithCombinations?.combinations
+        commands = workoutWithCommands?.commands
         handleCombinationFrequencies()
         initWorkout()
     }
@@ -211,11 +210,11 @@ class WorkoutScreenViewModel(
 
     private fun initNextCommand() {
         combinationsThrown++
-        val nextCombination: Combination? = getRandomCombination()
-        _currentCombinationLD.value = nextCombination
+        val nextCommand: Command? = getRandomCombination()
+        _currentCombinationLD.value = nextCommand
         serviceCommandAudioLD.value =
-            nextCombination?.file_name?.let { ServiceAudioCommand(it, audioFileBaseDirectory) }
-        val timeToCompleteCombination = nextCombination?.timeToCompleteMillis ?: 2000
+            nextCommand?.file_name?.let { ServiceAudioCommand(it, audioFileBaseDirectory) }
+        val timeToCompleteCombination = nextCommand?.timeToCompleteMillis ?: 2000
         millisUntilNextCombination = getTimeUntilNextCombination(timeToCompleteCombination)
     }
 
@@ -350,27 +349,27 @@ class WorkoutScreenViewModel(
 
     private fun handleCombinationFrequencies() {
         viewModelScope.launch {
-            val multipliedCombinationsList = mutableListOf<Combination>()
+            val multipliedCombinationsList = mutableListOf<Command>()
             val selectedCombinationsCrossRefs =
-                localDataSource.getSelectedCombinationCrossRefs(workoutId)
+                dataRepository.getLocalDataSource().getSelectedCombinationCrossRefs(workoutId)
 
-            combinations?.forEach { combination ->
+            commands?.forEach { combination ->
                 val frequencyType =
-                    selectedCombinationsCrossRefs.firstOrNull { combination.id == it.combination_id }?.frequency
+                    selectedCombinationsCrossRefs.firstOrNull { combination.id == it.command_id }?.frequency
                 frequencyType?.multiplicationValue?.let {
                     repeat(it) {
                         multipliedCombinationsList.add(combination)
                     }
                 }
             }
-            combinations = multipliedCombinationsList
+            commands = multipliedCombinationsList
         }
     }
 
-    private fun getRandomCombination(): Combination? {
-        var randomCombination: Combination? = null
-        combinations?.let { randomCombination = it.shuffled().take(1)[0] }
-        return randomCombination
+    private fun getRandomCombination(): Command? {
+        var randomCommand: Command? = null
+        commands?.let { randomCommand = it.shuffled().take(1)[0] }
+        return randomCommand
     }
 
     private fun getTimeUntilNextCombination(timeToCompleteCombinationMillis: Long): Long {

@@ -11,12 +11,20 @@ data class Workout constructor(
     var work_time_secs: Int = 180,
     var rest_time_secs: Int = 60,
     var intensity: Int = 5,
-    var dateCreated: Date = Date()
+    var dateCreated: Date = Date(),
+    var structured: Boolean = false
 ) : BaseDbModel()
 
 @Entity()
-data class Combination constructor(
+data class Command constructor(
     var name: String,
     var timeToCompleteMillis: Long,
     var file_name: String
 ) : BaseDbModel()
+
+@Entity()
+data class User constructor(
+    var email: String = "",
+    var first: String = "",
+    var last: String = ""
+    ) : BaseDbModel()

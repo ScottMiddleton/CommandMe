@@ -204,7 +204,7 @@
                 android:drawablePadding="10dp"
                 app:layout_goneMarginTop="12dp"
                 android:gravity="center"
-                android:text="@string/combinations"
+                android:text="@string/commands"
                 app:drawableTint="@color/primary_text_color_faded"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/divider" />
@@ -215,7 +215,7 @@
                 android:layout_height="wrap_content"
                 android:drawablePadding="8dp"
                 app:drawableTint="@color/white_faded_70"
-                android:text="@string/add_combinations_to_workout"
+                android:text="@string/add_commands_to_workout"
                 android:foreground="?attr/selectableItemBackground"
                 android:background="@drawable/list_item_combination_summary_background"
                 android:visibility="gone"

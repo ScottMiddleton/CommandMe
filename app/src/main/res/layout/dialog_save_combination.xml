@@ -18,7 +18,7 @@
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="@string/combination_name"
+        android:hint="@string/command_name"
         app:hintTextColor="@color/white"
         android:paddingBottom="10dp"
         app:layout_constraintEnd_toEndOf="parent"

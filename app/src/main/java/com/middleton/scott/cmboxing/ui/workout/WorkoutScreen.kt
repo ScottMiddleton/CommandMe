@@ -148,7 +148,7 @@ class WorkoutScreen : BaseFragment() {
             }
         })
 
-        viewModel.currentCombinationLD.observe(viewLifecycleOwner, Observer {
+        viewModel.currentCommandLD.observe(viewLifecycleOwner, Observer {
             combination_name_tv.text = it.name
             play_command_lottie.playAnimation()
         })

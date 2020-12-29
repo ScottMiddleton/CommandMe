@@ -2,6 +2,7 @@
 <resources>
     <color name="colorPrimary">#2d72a2</color>
     <color name="colorPrimaryDark">#080C1C</color>
+    <color name="primaryBackground">#121212</color>
     <color name="accent">#2d72a2</color>
     <color name="accent_faded_40">#662D72A2</color>
     <color name="accent_faded_20">#332D72A2</color>
@@ -13,9 +14,11 @@
     <color name="white">#FFF</color>
     <color name="white_faded_90">#E6FFFFFF</color>
     <color name="white_faded_70">#B3FFFFFF</color>
+    <color name="white_faded_60">#99FFFFFF</color>
     <color name="white_faded_40">#66FFFFFF</color>
     <color name="white_faded_35">#59FFFFFF</color>
     <color name="white_faded_20">#33FFFFFF</color>
+    <color name="white_faded_10">#1AFFFFFF</color>
     <color name="white_faded_5">#0DFFFFFF</color>
     <color name="primary_text_color">#FFF</color>
     <color name="primary_text_color_faded">#99FFFFFF</color>

@@ -10,16 +10,16 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.middleton.scott.cmboxing.R
-import com.middleton.scott.cmboxing.datasource.local.model.WorkoutWithCombinations
+import com.middleton.scott.cmboxing.datasource.local.model.WorkoutWithCommands
 import com.middleton.scott.cmboxing.utils.DateTimeUtils
 
 class WorkoutsAdapter(
     private val onEditWorkout: ((Long) -> Unit),
-    private val onClickWorkout: ((WorkoutWithCombinations) -> Unit)
+    private val onClickWorkout: ((WorkoutWithCommands) -> Unit)
 ) : RecyclerView.Adapter<WorkoutsAdapter.WorkoutsViewHolder>() {
 
     private lateinit var context: Context
-    private var workoutsWithCombinations = mutableListOf<WorkoutWithCombinations>()
+    private var workoutsWithCombinations = mutableListOf<WorkoutWithCommands>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WorkoutsViewHolder {
         context = parent.context
@@ -38,7 +38,7 @@ class WorkoutsAdapter(
 
     override fun onBindViewHolder(holder: WorkoutsViewHolder, position: Int) {
         val workout = workoutsWithCombinations[position].workout
-        val exercises = workoutsWithCombinations[position].combinations
+        val exercises = workoutsWithCombinations[position].commands
         holder.nameTV.text = workout?.name
         holder.editButton.setOnClickListener {
             workout?.id?.let { id -> onEditWorkout(id) }
@@ -64,8 +64,8 @@ class WorkoutsAdapter(
         val intensityTV: TextView = view.findViewById(R.id.intensity_tv)
     }
 
-    fun setAdapter(workoutsWithCombinations: List<WorkoutWithCombinations>){
-        this.workoutsWithCombinations = workoutsWithCombinations as MutableList<WorkoutWithCombinations>
+    fun setAdapter(workoutsWithCombinations: List<WorkoutWithCommands>){
+        this.workoutsWithCombinations = workoutsWithCombinations as MutableList<WorkoutWithCommands>
         notifyDataSetChanged()
     }
 }
