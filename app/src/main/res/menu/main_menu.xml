@@ -13,6 +13,7 @@
             android:id="@+id/commandsScreen"
             android:title="Commands" />
         <item
+            android:icon="@drawable/ic_packs"
             android:id="@+id/packs"
             android:title="Packs" />
     </group>

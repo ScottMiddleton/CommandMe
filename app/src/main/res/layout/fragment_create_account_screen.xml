@@ -7,33 +7,18 @@
     android:background="@drawable/primary_gradient_background">
 
     <TextView
-        android:id="@+id/title_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:drawablePadding="8dp"
-        android:fontFamily="@string/font_roboto_medium"
-        android:text="Create account"
-        android:textSize="24sp"
-        android:layout_marginTop="30dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginBottom="20dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
         android:id="@+id/label_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:drawablePadding="8dp"
-        android:textColor="@color/primary_text_color_faded"
         android:text="@string/enter_your_details_to_get_started"
-        android:textSize="14sp"
+        android:textSize="18sp"
         android:layout_marginStart="20dp"
         android:layout_marginBottom="20dp"
+        android:layout_marginTop="20dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/title_tv" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
         android:id="@+id/linearLayout6"

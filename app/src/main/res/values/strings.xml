@@ -102,5 +102,6 @@
     <string name="incorrect_password">Incorrect password</string>
     <string name="custom">custom</string>
     <string name="packs">Packs</string>
+    <string name="login">Login</string>
 
 </resources>

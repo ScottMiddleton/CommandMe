@@ -105,7 +105,7 @@ class MainActivity : AppCompatActivity() {
                 menu?.setGroupVisible(R.id.workout_menu, false)
             }
 
-            if (destination.id == R.id.splashFragment || destination.id == R.id.loginScreen || destination.id == R.id.createAccountScreen) {
+            if (destination.id == R.id.splashFragment || destination.id == R.id.loginScreen) {
                 supportActionBar?.hide()
             } else {
                 supportActionBar?.show()

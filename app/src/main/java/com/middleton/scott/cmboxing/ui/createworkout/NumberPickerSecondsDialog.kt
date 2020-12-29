@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.dialog_number_picker_secs.*
 import kotlinx.android.synthetic.main.dialog_save_combination.save_btn
 
 class NumberPickerSecondsDialog(
-    private val millis: Long = 0,
+    private val millis: Long = 2000,
     private val onSave: ((millis: Long) -> Unit),
     private val onCancel: (() -> Unit)
 ) : DialogFragment() {

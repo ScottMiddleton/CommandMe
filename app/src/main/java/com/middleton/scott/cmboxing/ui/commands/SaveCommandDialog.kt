@@ -99,7 +99,7 @@ class SaveCombinationDialog(
                 requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(requireView().windowToken, 0)
 
-            var millis = 0L
+            var millis = 2000L
             if (!time_to_complete_et.text.isNullOrBlank()) {
                 millis = timeToCompleteMillis
             }
