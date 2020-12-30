@@ -4,7 +4,7 @@
     android:id="@+id/next_btn_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white_faded_5"
+    android:background="@color/primaryBackground"
     android:orientation="vertical"
     app:layout_constraintBottom_toBottomOf="parent">
 

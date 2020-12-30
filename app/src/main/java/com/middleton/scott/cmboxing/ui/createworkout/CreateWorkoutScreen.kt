@@ -53,7 +53,7 @@ class CreateWorkoutScreen : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         tabUnselected = ContextCompat.getDrawable(view.context, R.drawable.shape_circle_faded)
-        tabSelected = ContextCompat.getDrawable(view.context, R.drawable.shape_circle)
+        tabSelected = ContextCompat.getDrawable(view.context, R.drawable.shape_circle_selected)
 
         val activity = activity as MainActivity
         activity.getCreateWorkoutCancelButton()?.setOnClickListener {

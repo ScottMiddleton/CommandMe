@@ -4,10 +4,10 @@
 
     <gradient
         android:angle="315"
-        android:endColor="@color/accent_faded_40"
-        android:startColor="@color/accent_faded_40"
+        android:endColor="@color/accent_faded_80"
+        android:startColor="@color/accent_faded_80"
         android:type="linear" />
     <size
-        android:width="32dp"
-        android:height="32dp" />
+        android:width="24dp"
+        android:height="24dp" />
 </shape>
