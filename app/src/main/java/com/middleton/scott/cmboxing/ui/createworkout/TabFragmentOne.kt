@@ -10,22 +10,24 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import androidx.activity.OnBackPressedCallback
+import androidx.core.content.ContextCompat
 import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.Observer
 import androidx.viewpager2.widget.ViewPager2
 import com.middleton.scott.cmboxing.R
 import com.middleton.scott.cmboxing.ui.base.BaseFragment
 import com.middleton.scott.cmboxing.utils.DateTimeUtils
-import kotlinx.android.synthetic.main.fragment_summary_tab.*
+import kotlinx.android.synthetic.main.fragment_tab_one.*
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
-class SummaryTabFragment : BaseFragment() {
+class TabFragmentOne : BaseFragment() {
     private val viewModel by lazy { requireParentFragment().getViewModel<CreateWorkoutSharedViewModel>() }
-    private lateinit var adapter: CommmandsSummaryAdapter
+
+    lateinit var mContext: Context
 
     companion object {
         fun newInstance() =
-            SummaryTabFragment()
+            TabFragmentOne()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,23 +42,18 @@ class SummaryTabFragment : BaseFragment() {
             }
 
         requireActivity().onBackPressedDispatcher.addCallback(this, callback)
-
-        adapter = CommmandsSummaryAdapter(childFragmentManager) { selectedCombinationCrossRef ->
-            viewModel.setCombinationFrequency(selectedCombinationCrossRef)
-        }
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_summary_tab, container, false)
+        return inflater.inflate(R.layout.fragment_tab_one, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        command_summary_rv.adapter = adapter
+        mContext = view.context
 
         subscribeUI()
         setListeners()
@@ -84,21 +81,7 @@ class SummaryTabFragment : BaseFragment() {
         })
 
         viewModel.selectedCombinationsLD.observe(viewLifecycleOwner, Observer {
-            if (viewModel.subscribe) {
-                if (!viewModel.selectedCombinations.isNullOrEmpty()) {
-                    adapter.setAdapter(it, viewModel.selectedCombinationsCrossRefs)
-                    weighting_label_tv.visibility = VISIBLE
-                    name_label_tv.visibility = VISIBLE
-                    command_summary_rv.visibility = VISIBLE
-                    add_command_tv.visibility = GONE
-                } else {
-                    weighting_label_tv.visibility = GONE
-                    name_label_tv.visibility = GONE
-                    add_command_tv.visibility = VISIBLE
-                    command_summary_rv.visibility = GONE
-                }
-                populateFields()
-            }
+            populateFields()
         })
 
         viewModel.workoutNameValidatedLD.observe(viewLifecycleOwner, Observer {
@@ -111,13 +94,23 @@ class SummaryTabFragment : BaseFragment() {
     }
 
     private fun setListeners() {
+        structured_tv.setOnClickListener {
+            handleWorkoutTypeUI(WorkoutType.STRUCTURED)
+            viewModel.setWorkoutType(WorkoutType.STRUCTURED)
+        }
+
+        random_tv.setOnClickListener {
+            handleWorkoutTypeUI(WorkoutType.RANDOM)
+            viewModel.setWorkoutType(WorkoutType.RANDOM)
+        }
+
         next_btn_include.findViewById<Button>(R.id.next_btn).setOnClickListener {
             val viewPager =
                 parentFragment?.view?.findViewById(R.id.create_boxing_workout_vp) as ViewPager2
             viewPager.currentItem = 1
         }
 
-        workout_name_et.doAfterTextChanged{
+        workout_name_et.doAfterTextChanged {
             if (viewModel.userHasAttemptedToSave) {
                 if (it.isNullOrBlank()) {
                     workout_name_til.error = getString(R.string.this_is_a_required_field)
@@ -128,13 +121,13 @@ class SummaryTabFragment : BaseFragment() {
             viewModel.setWorkoutName(it.toString())
         }
 
-        workout_name_et.setOnFocusChangeListener{ v, hasFocus ->
+        workout_name_et.setOnFocusChangeListener { v, hasFocus ->
             if (!hasFocus) {
                 hideKeyboard()
             }
         }
 
-        preparation_time_et.setOnClickListener{
+        preparation_time_et.setOnClickListener {
             NumberPickerMinutesSecondsDialog(
                 getString(R.string.preparation_time),
                 viewModel.workout.preparation_time_secs,
@@ -149,7 +142,7 @@ class SummaryTabFragment : BaseFragment() {
             hideKeyboard()
         }
 
-        work_time_et.setOnClickListener{
+        work_time_et.setOnClickListener {
             NumberPickerMinutesSecondsDialog(
                 getString(R.string.work_time),
                 viewModel.workout.work_time_secs,
@@ -164,7 +157,7 @@ class SummaryTabFragment : BaseFragment() {
             hideKeyboard()
         }
 
-        rest_time_et.setOnClickListener{
+        rest_time_et.setOnClickListener {
             NumberPickerMinutesSecondsDialog(
                 getString(R.string.rest_time),
                 viewModel.workout.rest_time_secs,
@@ -179,7 +172,7 @@ class SummaryTabFragment : BaseFragment() {
             hideKeyboard()
         }
 
-        number_of_rounds_et.setOnClickListener{
+        number_of_rounds_et.setOnClickListener {
             NumberPickerRoundsDialog(viewModel.workout.numberOfRounds, { rounds ->
                 viewModel.setNumberOfRounds(rounds)
                 number_of_rounds_et.setText(rounds.toString())
@@ -190,7 +183,7 @@ class SummaryTabFragment : BaseFragment() {
             hideKeyboard()
         }
 
-        intensity_et.setOnClickListener{
+        intensity_et.setOnClickListener {
             IntensityDialog(viewModel.workout.intensity, { intensity ->
                 viewModel.setIntensity(intensity)
                 intensity_et.setText(intensity.toString())
@@ -200,21 +193,54 @@ class SummaryTabFragment : BaseFragment() {
             )
             hideKeyboard()
         }
-
-        add_command_tv.setOnClickListener{
-            val viewPager =
-                parentFragment?.view?.findViewById(R.id.create_boxing_workout_vp) as ViewPager2
-            viewPager.currentItem = 1
-        }
     }
 
     private fun populateFields() {
+        handleWorkoutTypeUI(viewModel.workout.workout_type)
         workout_name_et.setText(viewModel.workout.name)
         viewModel.setPreparationTime(viewModel.workout.preparation_time_secs)
         viewModel.setNumberOfRounds(viewModel.workout.numberOfRounds)
         viewModel.setWorkTime(viewModel.workout.work_time_secs)
         viewModel.setRestTime(viewModel.workout.rest_time_secs)
         viewModel.setIntensity(viewModel.workout.intensity)
+    }
+
+    private fun handleWorkoutTypeUI(type: WorkoutType) {
+        if (type == WorkoutType.STRUCTURED) {
+            structured_tv.setBackgroundColor(
+                ContextCompat.getColor(
+                    mContext,
+                    R.color.accent_faded_80
+                )
+            )
+            structured_tv.setTextColor(ContextCompat.getColor(mContext, R.color.white))
+            random_tv.setBackgroundColor(ContextCompat.getColor(mContext, R.color.white_faded_10))
+            random_tv.setTextColor(
+                ContextCompat.getColor(
+                    mContext,
+                    R.color.primary_text_color_faded
+                )
+            )
+            intensity_til.visibility = GONE
+            work_time_til.visibility = GONE
+        } else if (type == WorkoutType.RANDOM) {
+            random_tv.setBackgroundColor(ContextCompat.getColor(mContext, R.color.accent_faded_80))
+            random_tv.setTextColor(ContextCompat.getColor(mContext, R.color.white))
+            structured_tv.setBackgroundColor(
+                ContextCompat.getColor(
+                    mContext,
+                    R.color.white_faded_10
+                )
+            )
+            structured_tv.setTextColor(
+                ContextCompat.getColor(
+                    mContext,
+                    R.color.primary_text_color_faded
+                )
+            )
+            intensity_til.visibility = VISIBLE
+            work_time_til.visibility = VISIBLE
+        }
     }
 
     private fun hideKeyboard() {

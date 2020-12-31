@@ -104,5 +104,7 @@
     <string name="login">Login</string>
     <string name="recording_too_short">Recording too short. Hold the microphone to record a command.</string>
     <string name="next">Next</string>
+    <string name="random">Random</string>
+    <string name="structured">Structured</string>
 
 </resources>

@@ -20,7 +20,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.middleton.scott.cmboxing.R
 import com.middleton.scott.cmboxing.ui.base.BaseFragment
-import com.middleton.scott.cmboxing.ui.createworkout.WorkoutType
+import com.middleton.scott.cmboxing.ui.createworkout.CreateWorkoutType
 import com.middleton.scott.cmboxing.ui.createworkout.WorkoutTypeDialog
 import com.middleton.scott.cmboxing.utils.DialogManager
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
@@ -183,7 +183,7 @@ class MyWorkoutsScreen : BaseFragment() {
         add_workouts_btn.setOnClickListener {
             WorkoutTypeDialog {
                 when (it) {
-                    WorkoutType.CUSTOM -> {
+                    CreateWorkoutType.CUSTOM -> {
                         val action =
                             MyWorkoutsScreenDirections.addWorkoutActionWorkoutsScreenToCreateWorkoutScreen(
                                 -1L, false
@@ -192,7 +192,7 @@ class MyWorkoutsScreen : BaseFragment() {
                             action
                         )
                     }
-                    WorkoutType.PACKS -> {
+                    CreateWorkoutType.PACKS -> {
                         Toast.makeText(requireContext(), "Coming soon", LENGTH_LONG).show()
                     }
                 }

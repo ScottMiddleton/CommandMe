@@ -7,6 +7,7 @@ import com.middleton.scott.cmboxing.datasource.local.dao.*
 import com.middleton.scott.cmboxing.datasource.local.model.*
 import com.middleton.scott.cmboxing.datasource.local.typeconverters.CommandFrequencyTypeConverter
 import com.middleton.scott.cmboxing.datasource.local.typeconverters.DateConverter
+import com.middleton.scott.cmboxing.datasource.local.typeconverters.WorkoutTypeConverter
 
 @Database(
     entities = [Workout::class, Command::class, SelectedCommandCrossRef::class, User::class],
@@ -16,7 +17,8 @@ import com.middleton.scott.cmboxing.datasource.local.typeconverters.DateConverte
 
 @TypeConverters(
     DateConverter::class,
-    CommandFrequencyTypeConverter::class
+    CommandFrequencyTypeConverter::class,
+    WorkoutTypeConverter::class
 )
 
 abstract class AppDatabase : RoomDatabase() {

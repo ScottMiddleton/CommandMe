@@ -1,7 +1,9 @@
 package com.middleton.scott.cmboxing
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.AttributeSet
 import android.view.*
 import android.widget.FrameLayout
 import android.widget.LinearLayout
@@ -38,21 +40,18 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
         setupNavigationMenu()
-
         navigateToWorkoutScreenIfNeeded(intent)
-
         subscribeUI()
     }
 
     private fun subscribeUI() {
         viewModel.getUserLD().observe(this, Observer {
-            if (it != null) {
-                val navView: NavigationView = findViewById(R.id.nav_view)
-                navView.findViewById<TextView>(R.id.user_email_tv).text = it.email
-                navView.findViewById<TextView>(R.id.user_name_tv).text = (it.first + " " + it.last)
-            }
+//            if (it != null) {
+//                val navView: NavigationView = findViewById(R.id.nav_view)
+//                navView.findViewById<TextView>(R.id.user_email_tv).text = it.email
+//                navView.findViewById<TextView>(R.id.user_name_tv).text = (it.first + " " + it.last)
+//            }
         })
     }
 

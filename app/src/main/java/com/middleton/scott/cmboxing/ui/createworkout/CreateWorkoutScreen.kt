@@ -133,9 +133,10 @@ class CreateWorkoutScreen : BaseFragment() {
 
             override fun createFragment(position: Int): Fragment {
                 return when (position) {
-                    0 -> SummaryTabFragment.newInstance()
-                    1 -> CommandsTabFragment.newInstance()
-                    else -> SummaryTabFragment.newInstance()
+                    0 -> TabFragmentOne.newInstance()
+                    1 -> TabFragmentTwo.newInstance()
+                    2 -> TabFragmentThree.newInstance()
+                    else -> TabFragmentThree.newInstance()
                 }
             }
         }

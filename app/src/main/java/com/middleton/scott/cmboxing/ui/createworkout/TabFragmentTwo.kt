@@ -31,7 +31,7 @@ import kotlinx.android.synthetic.main.fragment_commands.*
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import java.io.File
 
-class CommandsTabFragment : BaseFragment() {
+class TabFragmentTwo : BaseFragment() {
     private val viewModel by lazy { requireParentFragment().getViewModel<CreateWorkoutSharedViewModel>() }
     private var mediaRecorder = MediaRecorder()
     var combinationsEmpty = true
@@ -42,7 +42,7 @@ class CommandsTabFragment : BaseFragment() {
 
     companion object {
         fun newInstance() =
-            CommandsTabFragment()
+            TabFragmentTwo()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

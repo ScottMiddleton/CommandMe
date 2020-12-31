@@ -130,6 +130,10 @@ class CreateWorkoutSharedViewModel(
         }
     }
 
+    fun setWorkoutType(type: WorkoutType){
+        workout.workout_type = type
+    }
+
     fun setWorkoutName(name: String) {
         if (name.isNotEmpty()) {
             workout.name = name

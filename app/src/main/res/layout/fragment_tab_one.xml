@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:animateLayoutChanges="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -20,17 +21,53 @@
         android:descendantFocusability="beforeDescendants"
         android:focusable="true"
         android:focusableInTouchMode="true"
-        app:layout_constraintBottom_toTopOf="@+id/include"
+        android:animateLayoutChanges="true"
+        app:layout_constraintBottom_toTopOf="@+id/next_btn_include"
         app:layout_constraintTop_toBottomOf="@id/dividerTop">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/parent_cl"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:animateLayoutChanges="true"
             android:paddingStart="20dp"
             android:paddingTop="12dp"
             android:paddingEnd="20dp"
             android:paddingBottom="20dp">
+
+            <LinearLayout
+                android:id="@+id/workout_type_ll"
+                android:layout_width="match_parent"
+                android:layout_height="38dp"
+                android:background="@drawable/list_item_command_summary_background"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/structured_tv"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/accent_faded_80"
+                    android:gravity="center"
+                    android:text="@string/structured"
+                    android:textAlignment="gravity"
+                    android:textColor="@color/white" />
+
+                <TextView
+                    android:id="@+id/random_tv"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/white_faded_10"
+                    android:gravity="center"
+                    android:text="@string/random"
+                    android:textAlignment="gravity"
+                    android:textColor="@color/primary_text_color_faded" />
+
+            </LinearLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/workout_name_til"
@@ -44,7 +81,7 @@
                 app:hintTextColor="@color/white"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toBottomOf="@+id/workout_type_ll">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/workout_name_et"
@@ -122,7 +159,7 @@
                 app:hintTextColor="@color/white"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/number_of_rounds_til">
+                app:layout_constraintTop_toBottomOf="@+id/rest_time_til">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/work_time_et"
@@ -149,7 +186,7 @@
                 app:hintTextColor="@color/white"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/work_time_til">
+                app:layout_constraintTop_toBottomOf="@+id/number_of_rounds_til">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/rest_time_et"
@@ -176,7 +213,7 @@
                 app:hintTextColor="@color/white"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/rest_time_til">
+                app:layout_constraintTop_toBottomOf="@+id/work_time_til">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/intensity_et"
@@ -189,88 +226,6 @@
                     android:inputType="text" />
 
             </com.google.android.material.textfield.TextInputLayout>
-
-            <View
-                android:id="@+id/divider"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="20dp"
-                android:background="@color/white_faded_20"
-                app:layout_constraintTop_toBottomOf="@+id/intensity_til" />
-
-            <TextView
-                android:id="@+id/command_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:drawablePadding="10dp"
-                android:gravity="center"
-                android:text="@string/commands"
-                android:textSize="18sp"
-                app:drawableTint="@color/primary_text_color_faded"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/divider"
-                app:layout_goneMarginTop="12dp" />
-
-            <TextView
-                android:id="@+id/add_command_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/list_item_command_summary_background"
-                android:drawablePadding="8dp"
-                android:foreground="?attr/selectableItemBackground"
-                android:padding="11dp"
-                android:text="@string/add_commands_to_workout"
-                android:textColor="@color/primary_text_color_faded"
-                android:textSize="16sp"
-                android:visibility="gone"
-                app:drawableEndCompat="@drawable/ic_add_circle"
-                app:drawableTint="@color/white_faded_70"
-                app:layout_constraintStart_toStartOf="@+id/command_tv"
-                app:layout_constraintTop_toBottomOf="@+id/command_tv" />
-
-            <TextView
-                android:id="@+id/name_label_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginStart="13dp"
-                android:layout_marginTop="12dp"
-                android:text="@string/name"
-                android:textColor="@color/primary_text_color_faded"
-                android:textSize="14sp"
-                android:visibility="invisible"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/command_tv" />
-
-            <TextView
-                android:id="@+id/weighting_label_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginEnd="28dp"
-                android:text="@string/frequency"
-                android:textColor="@color/primary_text_color_faded"
-                android:textSize="14sp"
-                android:visibility="invisible"
-                app:layout_constraintBottom_toBottomOf="@+id/name_label_tv"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/name_label_tv" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/command_summary_rv"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="10dp"
-                android:background="@drawable/list_item_command_summary_background"
-                android:paddingBottom="6dp"
-                android:visibility="gone"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/name_label_tv"
-                tools:listitem="@layout/list_item_command_summary" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -8,6 +8,6 @@
         android:startColor="@color/white_faded_20"
         android:type="linear" />
     <size
-        android:width="24dp"
-        android:height="24dp" />
+        android:width="32dp"
+        android:height="32dp" />
 </shape>
