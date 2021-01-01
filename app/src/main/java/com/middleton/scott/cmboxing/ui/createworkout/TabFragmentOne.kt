@@ -84,11 +84,16 @@ class TabFragmentOne : BaseFragment() {
             populateFields()
         })
 
-        viewModel.workoutNameValidatedLD.observe(viewLifecycleOwner, Observer {
+        viewModel.tabOneValidatedLD.observe(viewLifecycleOwner, Observer {
             if (it) {
-                workout_name_til.isErrorEnabled = false
+                if (viewModel.userHasAttemptedToProceedOne) {
+                    workout_name_til.isErrorEnabled = false
+                }
             } else {
-                workout_name_til.error = getString(R.string.this_is_a_required_field)
+
+                if (viewModel.userHasAttemptedToProceedOne) {
+                    workout_name_til.error = getString(R.string.this_is_a_required_field)
+                }
             }
         })
     }
@@ -105,20 +110,19 @@ class TabFragmentOne : BaseFragment() {
         }
 
         next_btn_include.findViewById<Button>(R.id.next_btn).setOnClickListener {
-            val viewPager =
-                parentFragment?.view?.findViewById(R.id.create_boxing_workout_vp) as ViewPager2
-            viewPager.currentItem = 1
+            if (viewModel.tabOneValidatedLD.value == true) {
+                val viewPager =
+                    parentFragment?.view?.findViewById(R.id.create_boxing_workout_vp) as ViewPager2
+                viewPager.currentItem = 1
+            } else {
+                viewModel.userHasAttemptedToProceedOne = true
+                viewModel.validateTabOne()
+            }
         }
 
         workout_name_et.doAfterTextChanged {
-            if (viewModel.userHasAttemptedToSave) {
-                if (it.isNullOrBlank()) {
-                    workout_name_til.error = getString(R.string.this_is_a_required_field)
-                } else {
-                    workout_name_til.error = null
-                }
-            }
             viewModel.setWorkoutName(it.toString())
+            viewModel.validateTabOne()
         }
 
         workout_name_et.setOnFocusChangeListener { v, hasFocus ->

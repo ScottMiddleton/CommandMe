@@ -5,6 +5,7 @@
     <color name="primaryBackground">#121212</color>
     <color name="accent">#2d72a2</color>
     <color name="accent_faded_80">#CC2D72A2</color>
+    <color name="accent_faded_50">#802D72A2</color>
     <color name="accent_faded_20">#332D72A2</color>
     <color name="accent_faded_5">#0D2D72A2</color>
     <color name="black">#000000</color>

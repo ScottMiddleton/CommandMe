@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.lifecycle.Observer
+import com.google.firebase.crashlytics.internal.common.CommonUtils.hideKeyboard
 import com.middleton.scott.cmboxing.R
 import com.middleton.scott.cmboxing.ui.base.BaseFragment
 import kotlinx.android.synthetic.main.fragment_tab_three.*
@@ -51,12 +52,8 @@ class TabFragmentThree : BaseFragment() {
             if (viewModel.subscribe) {
                 if (!viewModel.selectedCombinations.isNullOrEmpty()) {
                     adapter.setAdapter(it, viewModel.selectedCombinationsCrossRefs)
-                    weighting_label_tv.visibility = View.VISIBLE
-                    name_label_tv.visibility = View.VISIBLE
                     command_summary_rv.visibility = View.VISIBLE
                 } else {
-                    weighting_label_tv.visibility = View.GONE
-                    name_label_tv.visibility = View.GONE
                     command_summary_rv.visibility = View.GONE
                 }
             }
@@ -65,7 +62,8 @@ class TabFragmentThree : BaseFragment() {
 
     private fun setClickListeners() {
         save_btn_include.findViewById<Button>(R.id.save_btn).setOnClickListener {
-            // save workout
+            hideKeyboard(context, view)
+            viewModel.validateSaveAttempt()
         }
     }
 }

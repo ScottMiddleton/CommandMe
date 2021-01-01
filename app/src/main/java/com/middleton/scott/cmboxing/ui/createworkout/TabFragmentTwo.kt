@@ -26,8 +26,11 @@ import com.middleton.scott.cmboxing.datasource.local.model.Command
 import com.middleton.scott.cmboxing.other.Constants
 import com.middleton.scott.cmboxing.ui.base.BaseFragment
 import com.middleton.scott.cmboxing.ui.commands.CommandsAdapter
+import com.middleton.scott.cmboxing.utils.DialogManager
 import com.middleton.scott.cmboxing.utils.MediaRecorderManager
 import kotlinx.android.synthetic.main.fragment_commands.*
+import kotlinx.android.synthetic.main.fragment_commands.next_btn_include
+import kotlinx.android.synthetic.main.fragment_tab_one.*
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import java.io.File
 
@@ -57,6 +60,7 @@ class TabFragmentTwo : BaseFragment() {
                 } else {
                     viewModel.removeCombination(selectedCombinationCrossRef)
                 }
+                viewModel.validateTabTwo()
             },
             {
                 viewModel.upsertCombination(it)
@@ -198,15 +202,25 @@ class TabFragmentTwo : BaseFragment() {
             }
             adapter.setAdapter(it, viewModel.selectedCombinations)
         })
-
-        viewModel.selectedCombinationsLD.observe(viewLifecycleOwner, {})
     }
 
     private fun setClickListeners() {
         next_btn_include.findViewById<Button>(R.id.next_btn).setOnClickListener {
-            val viewPager =
-                parentFragment?.view?.findViewById(R.id.create_boxing_workout_vp) as ViewPager2
-            viewPager.currentItem = 2
+            if (viewModel.tabTwoValidated) {
+                val viewPager =
+                    parentFragment?.view?.findViewById(R.id.create_boxing_workout_vp) as ViewPager2
+                viewPager.currentItem = 2
+            } else {
+                DialogManager.showDialog(
+                    context = requireContext(),
+                    messageId = R.string.add_commands_dialog_message,
+                    negativeBtnTextId = R.string.add_command,
+                    negativeBtnClick = {
+                        val viewPager =
+                            parentFragment?.view?.findViewById(R.id.create_boxing_workout_vp) as ViewPager2
+                        viewPager.currentItem = 1
+                    })
+            }
         }
 
         record_audio_button.setOnTouchListener { _, event ->

@@ -5,8 +5,9 @@ import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -16,7 +17,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import com.middleton.scott.cmboxing.MainActivity
+import com.google.firebase.crashlytics.internal.common.CommonUtils.hideKeyboard
 import com.middleton.scott.cmboxing.R
 import com.middleton.scott.cmboxing.ui.base.BaseFragment
 import com.middleton.scott.cmboxing.utils.DialogManager
@@ -34,8 +35,10 @@ class CreateWorkoutScreen : BaseFragment() {
         )
     }
 
-    var tabUnselected: Drawable? = null
-    var tabSelected: Drawable? = null
+    var tabComplete: Drawable? = null
+    var tabIncomplete: Drawable? = null
+
+    lateinit var mContext: Context
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,19 +55,15 @@ class CreateWorkoutScreen : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        tabUnselected = ContextCompat.getDrawable(view.context, R.drawable.shape_circle_faded)
-        tabSelected = ContextCompat.getDrawable(view.context, R.drawable.shape_circle_selected)
+        mContext = view.context
 
-        val activity = activity as MainActivity
-        activity.getCreateWorkoutCancelButton()?.setOnClickListener {
-            hideKeyboard()
+        close_btn.setOnClickListener {
+            hideKeyboard(view.context, view)
             viewModel.onCancel()
         }
 
-        activity.getCreateWorkoutSaveButton()?.setOnClickListener {
-            hideKeyboard()
-            viewModel.validateSaveAttempt()
-        }
+        tabIncomplete = ContextCompat.getDrawable(view.context, R.drawable.shape_circle_incomplete)
+        tabComplete = ContextCompat.getDrawable(view.context, R.drawable.shape_circle_complete)
 
         subscribeUI()
 
@@ -72,15 +71,6 @@ class CreateWorkoutScreen : BaseFragment() {
     }
 
     private fun subscribeUI() {
-        viewModel.workoutLD.observe(viewLifecycleOwner, Observer {
-            val activity = activity as MainActivity
-            if (it.name == "") {
-                activity.setCreateWorkoutActionBarTitle(getString(R.string.create_workout))
-            } else {
-                activity.setCreateWorkoutActionBarTitle(viewModel.workout.name)
-            }
-        })
-
         viewModel.dbUpdateLD.observe(viewLifecycleOwner, Observer {
             findNavController().popBackStack()
         })
@@ -99,20 +89,6 @@ class CreateWorkoutScreen : BaseFragment() {
                     })
             } else {
                 findNavController().popBackStack()
-            }
-        })
-
-        viewModel.combinationsValidatedLD.observe(viewLifecycleOwner, Observer {
-            if (!it) {
-                DialogManager.showDialog(
-                    context = requireContext(),
-                    messageId = R.string.add_commands_dialog_message,
-                    negativeBtnTextId = R.string.add_command,
-                    negativeBtnClick = {
-                        val viewPager =
-                            parentFragment?.view?.findViewById(R.id.create_boxing_workout_vp) as ViewPager2
-                        viewPager.currentItem = 1
-                    })
             }
         })
 
@@ -152,11 +128,74 @@ class CreateWorkoutScreen : BaseFragment() {
                 super.onPageScrolled(position, positionOffset, positionOffsetPixels)
 
                 for (i in 0 until tab_layout.tabCount) {
-                    val currentTab = tab_layout.getTabAt(i)?.customView?.textView
-                    if (i == position) {
-                        currentTab?.background = tabSelected
-                    } else {
-                        currentTab?.background = tabUnselected
+                    val currentTab = tab_layout.getTabAt(i)?.customView
+                    when {
+                        i < position -> {
+                            currentTab?.textView?.background = tabComplete
+                            currentTab?.divider_left?.setBackgroundColor(
+                                ContextCompat.getColor(
+                                    mContext,
+                                    R.color.accent_faded_80
+                                )
+                            )
+                            currentTab?.divider_right?.setBackgroundColor(
+                                ContextCompat.getColor(
+                                    mContext,
+                                    R.color.accent_faded_80
+                                )
+                            )
+                        }
+                        i == position -> {
+                            currentTab?.textView?.background = tabComplete
+                            currentTab?.divider_left?.setBackgroundColor(
+                                ContextCompat.getColor(
+                                    mContext,
+                                    R.color.accent_faded_80
+                                )
+                            )
+                            currentTab?.divider_right?.setBackgroundColor(
+                                ContextCompat.getColor(
+                                    mContext,
+                                    R.color.white_faded_20
+                                )
+                            )
+                        }
+                        else -> {
+                            currentTab?.textView?.background = tabIncomplete
+                            currentTab?.divider_left?.setBackgroundColor(
+                                ContextCompat.getColor(
+                                    mContext,
+                                    R.color.white_faded_20
+                                )
+                            )
+                            currentTab?.divider_right?.setBackgroundColor(
+                                ContextCompat.getColor(
+                                    mContext,
+                                    R.color.white_faded_20
+                                )
+                            )
+                        }
+                    }
+                }
+
+                when (position) {
+                    0 -> {
+                        instruction_tv.text = ""
+                        instruction_tv.visibility = GONE
+                    }
+                    1 -> {
+                        instruction_tv.text = "Check the commands you would like to include"
+                        instruction_tv.visibility = VISIBLE
+                    }
+                    2 -> {
+                        instruction_tv.visibility = VISIBLE
+                        if (viewModel.workout.structured) {
+                            instruction_tv.text = "Order your commands"
+                        } else {
+                            instruction_tv.text =
+                                "Edit the frequency your commands are played"
+                        }
+
                     }
                 }
             }
@@ -184,16 +223,12 @@ class CreateWorkoutScreen : BaseFragment() {
             tab?.customView = customView
         }
 
+        tab_layout.getTabAt(0)?.customView?.divider_left?.visibility = GONE
+        tab_layout.getTabAt(2)?.customView?.divider_right?.visibility = GONE
         tab_layout.tabRippleColor = null
 
         if (args.navigateToCombinations) {
             create_boxing_workout_vp.setCurrentItem(1, false)
         }
-    }
-
-    private fun hideKeyboard() {
-        val imm: InputMethodManager =
-            requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(requireView().windowToken, 0)
     }
 }

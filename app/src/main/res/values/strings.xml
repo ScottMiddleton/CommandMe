@@ -64,7 +64,7 @@
     <string name="save_and_exit">Save and exit</string>
     <string name="yes_cancel">Yes, cancel</string>
     <string name="this_is_a_required_field">This is a required field.</string>
-    <string name="add_commands_dialog_message">You need to add at least one command to save this workout</string>
+    <string name="add_commands_dialog_message">You need to add at least one command to progress</string>
     <string name="greater_than_zero">Must be greater than zero.</string>
     <string name="add_a_workout_and_it_will_show_up_here">Add a workout and it will show up here.</string>
     <string name="create_a_workout">Create a Workout!</string>

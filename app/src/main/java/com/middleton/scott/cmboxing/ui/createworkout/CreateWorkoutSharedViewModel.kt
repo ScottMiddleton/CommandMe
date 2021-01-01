@@ -21,6 +21,7 @@ class CreateWorkoutSharedViewModel(
     var subscribe = true
     var workout = Workout()
     var savedWorkout = Workout()
+    var userHasAttemptedToProceedOne = false
     var userHasAttemptedToSave = false
 
     var selectedCombinations = ArrayList<Command>()
@@ -72,8 +73,8 @@ class CreateWorkoutSharedViewModel(
     val intensityLD = MutableLiveData<Int>()
     val dbUpdateLD = MutableLiveData<Boolean>()
     val showCancellationDialogLD = MutableLiveData<Boolean>()
-    val workoutNameValidatedLD = MutableLiveData<Boolean>()
-    val combinationsValidatedLD = MutableLiveData<Boolean>()
+    val tabOneValidatedLD = MutableLiveData<Boolean>()
+    var tabTwoValidated = false
     val requiredSummaryFieldLD = MutableLiveData<Boolean>()
 
     fun upsertWorkout() {
@@ -198,13 +199,6 @@ class CreateWorkoutSharedViewModel(
 
     fun validateSaveAttempt() {
         userHasAttemptedToSave = true
-        if (workout.name.isNullOrBlank()) {
-            workoutNameValidatedLD.value = false
-        }
-
-        if (selectedCombinations.isEmpty()) {
-            combinationsValidatedLD.value = false
-        }
 
         if (selectedCombinations.isNotEmpty() && !workout.name.isNullOrBlank()) {
             upsertWorkout()
@@ -213,5 +207,13 @@ class CreateWorkoutSharedViewModel(
         if (selectedCombinations.isNotEmpty() && workout.name.isNullOrBlank()) {
             requiredSummaryFieldLD.value = true
         }
+    }
+
+    fun validateTabOne() {
+        tabOneValidatedLD.value = workout.name.isNotBlank()
+    }
+
+    fun validateTabTwo() {
+        tabTwoValidated = selectedCombinations.isNotEmpty()
     }
 }

@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/splashFragment">
+    app:startDestination="@+id/splashScreen">
 
     <action
         android:id="@+id/action_global_workout_screen"
@@ -48,7 +48,7 @@
         android:id="@+id/commandsScreen"
         android:name="com.middleton.scott.cmboxing.ui.commands.CommandsScreen"
         android:label="@string/commands"
-        tools:layout="@layout/fragment_my_workouts" />
+        tools:layout="@layout/fragment_commands" />
     <fragment
         android:id="@+id/createWorkoutScreen"
         android:name="com.middleton.scott.cmboxing.ui.createworkout.CreateWorkoutScreen"
@@ -73,9 +73,8 @@
             app:argType="long" />
     </fragment>
     <fragment
-        android:id="@+id/splashFragment"
+        android:id="@+id/splashScreen"
         android:name="com.middleton.scott.cmboxing.ui.splash.SplashScreen"
-        android:label="fragment_splash"
         tools:layout="@layout/fragment_splash" >
         <action
             android:id="@+id/action_splashFragment_to_workoutsScreen"
