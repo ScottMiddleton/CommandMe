@@ -31,6 +31,7 @@ import com.middleton.scott.cmboxing.utils.MediaRecorderManager
 import kotlinx.android.synthetic.main.fragment_commands.*
 import kotlinx.android.synthetic.main.fragment_commands.next_btn_include
 import kotlinx.android.synthetic.main.fragment_tab_one.*
+import kotlinx.android.synthetic.main.fragment_tab_three.*
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import java.io.File
 
@@ -202,6 +203,10 @@ class TabFragmentTwo : BaseFragment() {
             }
             adapter.setAdapter(it, viewModel.selectedCombinations)
         })
+
+        viewModel.selectedCombinationsLD.observe(viewLifecycleOwner, Observer {
+            viewModel.validateTabTwo()
+        })
     }
 
     private fun setClickListeners() {
@@ -285,15 +290,23 @@ class TabFragmentTwo : BaseFragment() {
                 if (recordingComplete) {
                     viewModel.timeSwapBuff += viewModel.timeInMilliseconds
                     viewModel.customHandler.removeCallbacks(viewModel.updateTimerThread)
-                    if(viewModel.timeSwapBuff > 500){
+                    if (viewModel.timeSwapBuff > 500) {
                         showSaveCombinationDialog()
                     } else {
                         val file = File(viewModel.audioFileCompleteDirectory)
                         file.delete()
-                        Toast.makeText(context, "Recording too short. Hold the microphone to record a combination command.", Toast.LENGTH_LONG).show()
+                        Toast.makeText(
+                            context,
+                            "Recording too short. Hold the microphone to record a combination command.",
+                            Toast.LENGTH_LONG
+                        ).show()
                     }
                 } else {
-                    Toast.makeText(context, "Recording too short. Hold the microphone to record a combination command.", Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        context,
+                        "Recording too short. Hold the microphone to record a combination command.",
+                        Toast.LENGTH_LONG
+                    ).show()
                     mediaRecorder = MediaRecorder()
                 }
             }

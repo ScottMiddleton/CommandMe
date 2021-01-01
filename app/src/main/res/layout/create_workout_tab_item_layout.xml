@@ -11,7 +11,7 @@
     <View
         android:id="@+id/divider_left"
         android:layout_width="0dp"
-        android:layout_height="2dp"
+        android:layout_height="3dp"
         android:layout_gravity="center_vertical"
         android:background="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -39,7 +39,7 @@
     <View
         android:id="@+id/divider_right"
         android:layout_width="0dp"
-        android:layout_height="2dp"
+        android:layout_height="3dp"
         android:layout_gravity="center_vertical"
         android:background="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"

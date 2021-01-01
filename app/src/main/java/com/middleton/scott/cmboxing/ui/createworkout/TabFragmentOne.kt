@@ -80,7 +80,7 @@ class TabFragmentOne : BaseFragment() {
             intensity_et.setText(it.toString())
         })
 
-        viewModel.selectedCombinationsLD.observe(viewLifecycleOwner, Observer {
+        viewModel.workoutLD.observe(viewLifecycleOwner, Observer {
             populateFields()
         })
 
