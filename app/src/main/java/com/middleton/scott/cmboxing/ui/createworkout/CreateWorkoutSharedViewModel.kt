@@ -74,8 +74,8 @@ class CreateWorkoutSharedViewModel(
     val intensityLD = MutableLiveData<Int>()
     val dbUpdateLD = MutableLiveData<Boolean>()
     val showCancellationDialogLD = MutableLiveData<Boolean>()
-    val tabOneValidatedLD = MutableLiveData<Boolean>()
-    val tabTwoValidatedLD = MutableLiveData<Boolean>()
+    val tabOneValidatedLD = MutableLiveData(false)
+    val tabTwoValidatedLD = MutableLiveData(false)
     val requiredSummaryFieldLD = MutableLiveData<Boolean>()
 
     fun upsertWorkout() {

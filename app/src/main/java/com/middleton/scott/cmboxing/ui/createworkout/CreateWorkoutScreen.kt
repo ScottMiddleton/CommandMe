@@ -250,8 +250,8 @@ class CreateWorkoutScreen : BaseFragment() {
                                 viewModel.validateTabOne()
                             } else if (viewModel.tabTwoValidatedLD.value == false && viewModel.tabOneValidatedLD.value == true) {
                                 viewModel.userHasAttemptedToProceedTwo = true
-                                if (create_boxing_workout_vp.currentItem == 1) {
-                                    create_boxing_workout_vp.setCurrentItem(2, true)
+                                if (create_boxing_workout_vp.currentItem == 0) {
+                                    create_boxing_workout_vp.setCurrentItem(1, true)
                                 }
                                 viewModel.validateTabTwo()
                             }
