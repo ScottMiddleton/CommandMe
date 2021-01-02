@@ -266,6 +266,7 @@ class CreateWorkoutScreen : BaseFragment() {
         tab_layout.tabRippleColor = null
 
         if (args.navigateToCombinations) {
+            viewModel.tabOneValidatedLD.value = true
             create_boxing_workout_vp.setCurrentItem(1, false)
         }
     }
