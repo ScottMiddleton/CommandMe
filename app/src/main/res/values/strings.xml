@@ -106,5 +106,8 @@
     <string name="next">Next</string>
     <string name="random">Random</string>
     <string name="structured">Structured</string>
+    <string name="tab_two_instructions">Check the commands you would like to include</string>
+    <string name="tab_three_structured_instructions">Order your commands</string>
+    <string name="tab_three_random_instructions">Edit the frequency your commands are played</string>
 
 </resources>

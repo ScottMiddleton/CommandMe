@@ -184,16 +184,16 @@ class CreateWorkoutScreen : BaseFragment() {
                         instruction_tv.visibility = GONE
                     }
                     1 -> {
-                        instruction_tv.text = "Check the commands you would like to include"
+                        instruction_tv.text = getString(R.string.tab_two_instructions)
                         instruction_tv.visibility = VISIBLE
                     }
                     2 -> {
                         instruction_tv.visibility = VISIBLE
                         if (viewModel.workout.structured) {
-                            instruction_tv.text = "Order your commands"
+                            instruction_tv.text = getString(R.string.tab_three_structured_instructions)
                         } else {
                             instruction_tv.text =
-                                "Edit the frequency your commands are played"
+                                getString(R.string.tab_three_random_instructions)
                         }
 
                     }
@@ -213,6 +213,7 @@ class CreateWorkoutScreen : BaseFragment() {
             tab.text = title
         }.attach()
 
+        // Set up custom view for tabs
         for (i in 0 until tab_layout.tabCount) {
             val tab: TabLayout.Tab? = tab_layout.getTabAt(i)
             val customView = LayoutInflater.from(context).inflate(
@@ -221,6 +222,25 @@ class CreateWorkoutScreen : BaseFragment() {
             )
             customView.textView.text = (i + 1).toString()
             tab?.customView = customView
+        }
+
+        // Set touch listeners for tabs
+        for (i in 0 until tab_layout.tabCount) {
+            val currentTab = tab_layout.getTabAt(i)?.customView
+            when(i){
+                1 -> { currentTab?.setOnTouchListener { _, _ ->
+                    if (viewModel.tabOneValidatedLD.value == true) {
+                        create_boxing_workout_vp.setCurrentItem(1, true)
+                    } else {
+                        viewModel.validateTabOne()
+                    }
+                    true
+                }}
+                2 -> { currentTab?.setOnTouchListener { view, motionEvent ->
+
+                    true
+                }}
+            }
         }
 
         tab_layout.getTabAt(0)?.customView?.divider_left?.visibility = GONE
