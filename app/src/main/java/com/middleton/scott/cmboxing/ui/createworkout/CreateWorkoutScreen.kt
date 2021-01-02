@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -81,12 +82,10 @@ class CreateWorkoutScreen : BaseFragment() {
                     requireContext(),
                     R.string.cancel_this_workout,
                     R.string.unsaved_dialog_message,
-                    R.string.save_and_exit,
-                    { viewModel.validateSaveAttempt() },
                     R.string.yes_cancel,
-                    {
-                        viewModel.cancelChanges()
-                    })
+                    {viewModel.cancelChanges()},
+                    R.string.no,
+                    {})
             } else {
                 findNavController().popBackStack()
             }
@@ -230,18 +229,17 @@ class CreateWorkoutScreen : BaseFragment() {
             val currentTab = tab_layout.getTabAt(i)?.customView?.parent_cl
             when (i) {
                 1 -> {
-                    currentTab?.setOnTouchListener { _, _ ->
+                    currentTab?.setOnClickListener {
                         if (viewModel.tabOneValidatedLD.value == true) {
                             create_boxing_workout_vp.setCurrentItem(1, true)
                         } else {
                             viewModel.userHasAttemptedToProceedOne = true
                             viewModel.validateTabOne()
                         }
-                        true
                     }
                 }
                 2 -> {
-                    currentTab?.setOnTouchListener { _, _ ->
+                    currentTab?.setOnClickListener {
                         if (viewModel.tabTwoValidatedLD.value == true && viewModel.tabOneValidatedLD.value == true) {
                             create_boxing_workout_vp.setCurrentItem(2, true)
                         } else {
@@ -256,7 +254,6 @@ class CreateWorkoutScreen : BaseFragment() {
                                 viewModel.validateTabTwo()
                             }
                         }
-                        true
                     }
                 }
             }

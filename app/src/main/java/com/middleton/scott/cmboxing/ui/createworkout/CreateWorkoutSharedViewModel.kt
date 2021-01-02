@@ -198,18 +198,6 @@ class CreateWorkoutSharedViewModel(
             !(savedWorkout == workout && savedSelectedCombinationsCrossRefs == selectedCombinationsCrossRefs)
     }
 
-    fun validateSaveAttempt() {
-        userHasAttemptedToSave = true
-
-        if (selectedCombinations.isNotEmpty() && !workout.name.isNullOrBlank()) {
-            upsertWorkout()
-        }
-
-        if (selectedCombinations.isNotEmpty() && workout.name.isNullOrBlank()) {
-            requiredSummaryFieldLD.value = true
-        }
-    }
-
     fun validateTabOne() {
         tabOneValidatedLD.value = workout.name.isNotBlank()
     }

@@ -63,7 +63,7 @@ class TabFragmentThree : BaseFragment() {
     private fun setClickListeners() {
         save_btn_include.findViewById<Button>(R.id.save_btn).setOnClickListener {
             hideKeyboard(context, view)
-            viewModel.validateSaveAttempt()
+            viewModel.upsertWorkout()
         }
     }
 }
