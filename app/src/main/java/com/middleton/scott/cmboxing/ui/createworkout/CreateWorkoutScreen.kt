@@ -190,7 +190,8 @@ class CreateWorkoutScreen : BaseFragment() {
                     2 -> {
                         instruction_tv.visibility = VISIBLE
                         if (viewModel.workout.structured) {
-                            instruction_tv.text = getString(R.string.tab_three_structured_instructions)
+                            instruction_tv.text =
+                                getString(R.string.tab_three_structured_instructions)
                         } else {
                             instruction_tv.text =
                                 getString(R.string.tab_three_random_instructions)
@@ -226,21 +227,41 @@ class CreateWorkoutScreen : BaseFragment() {
 
         // Set touch listeners for tabs
         for (i in 0 until tab_layout.tabCount) {
-            val currentTab = tab_layout.getTabAt(i)?.customView
-            when(i){
-                1 -> { currentTab?.setOnTouchListener { _, _ ->
-                    if (viewModel.tabOneValidatedLD.value == true) {
-                        create_boxing_workout_vp.setCurrentItem(1, true)
-                    } else {
-                        viewModel.validateTabOne()
+            val currentTab = tab_layout.getTabAt(i)?.customView?.parent_cl
+            when (i) {
+                1 -> {
+                    currentTab?.setOnTouchListener { _, _ ->
+                        if (viewModel.tabOneValidatedLD.value == true) {
+                            create_boxing_workout_vp.setCurrentItem(1, true)
+                        } else {
+                            viewModel.userHasAttemptedToProceedOne = true
+                            viewModel.validateTabOne()
+                        }
+                        true
                     }
-                    true
-                }}
-                2 -> { currentTab?.setOnTouchListener { view, motionEvent ->
-
-                    true
-                }}
+                }
+                2 -> {
+                    currentTab?.setOnTouchListener { _, _ ->
+                        if (viewModel.tabTwoValidatedLD.value == true && viewModel.tabOneValidatedLD.value == true) {
+                            create_boxing_workout_vp.setCurrentItem(2, true)
+                        } else {
+                            if (viewModel.tabOneValidatedLD.value == false) {
+                                viewModel.userHasAttemptedToProceedOne = true
+                                viewModel.validateTabOne()
+                            } else if (viewModel.tabTwoValidatedLD.value == false && viewModel.tabOneValidatedLD.value == true) {
+                                viewModel.userHasAttemptedToProceedTwo = true
+                                if (create_boxing_workout_vp.currentItem == 1) {
+                                    create_boxing_workout_vp.setCurrentItem(2, true)
+                                }
+                                viewModel.validateTabTwo()
+                            }
+                        }
+                        true
+                    }
+                }
             }
+
+            create_boxing_workout_vp.isUserInputEnabled = false
         }
 
         tab_layout.getTabAt(0)?.customView?.divider_left?.visibility = GONE

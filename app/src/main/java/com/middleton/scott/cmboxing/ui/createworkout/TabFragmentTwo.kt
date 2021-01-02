@@ -16,6 +16,7 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
+import androidx.lifecycle.observe
 import androidx.viewpager2.widget.ViewPager2
 import com.airbnb.lottie.LottieProperty
 import com.airbnb.lottie.SimpleColorFilter
@@ -207,24 +208,30 @@ class TabFragmentTwo : BaseFragment() {
         viewModel.selectedCombinationsLD.observe(viewLifecycleOwner, Observer {
             viewModel.validateTabTwo()
         })
+
+        viewModel.tabTwoValidatedLD.observe(viewLifecycleOwner, Observer {
+            if (!it) {
+                if (viewModel.userHasAttemptedToProceedTwo) {
+                    DialogManager.showDialog(
+                        context = requireContext(),
+                        messageId = R.string.add_commands_dialog_message,
+                        negativeBtnTextId = R.string.add_command,
+                        negativeBtnClick = {})
+                    viewModel.userHasAttemptedToProceedTwo = false
+                }
+            }
+        })
     }
 
     private fun setClickListeners() {
         next_btn_include.findViewById<Button>(R.id.next_btn).setOnClickListener {
-            if (viewModel.tabTwoValidated) {
+            viewModel.userHasAttemptedToProceedTwo = true
+            if (viewModel.tabTwoValidatedLD.value == true) {
                 val viewPager =
                     parentFragment?.view?.findViewById(R.id.create_boxing_workout_vp) as ViewPager2
                 viewPager.currentItem = 2
             } else {
-                DialogManager.showDialog(
-                    context = requireContext(),
-                    messageId = R.string.add_commands_dialog_message,
-                    negativeBtnTextId = R.string.add_command,
-                    negativeBtnClick = {
-                        val viewPager =
-                            parentFragment?.view?.findViewById(R.id.create_boxing_workout_vp) as ViewPager2
-                        viewPager.currentItem = 1
-                    })
+                viewModel.validateTabTwo()
             }
         }
 

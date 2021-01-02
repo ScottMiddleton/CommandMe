@@ -22,6 +22,7 @@ class CreateWorkoutSharedViewModel(
     var workout = Workout()
     var savedWorkout = Workout()
     var userHasAttemptedToProceedOne = false
+    var userHasAttemptedToProceedTwo = false
     var userHasAttemptedToSave = false
 
     var selectedCombinations = ArrayList<Command>()
@@ -74,7 +75,7 @@ class CreateWorkoutSharedViewModel(
     val dbUpdateLD = MutableLiveData<Boolean>()
     val showCancellationDialogLD = MutableLiveData<Boolean>()
     val tabOneValidatedLD = MutableLiveData<Boolean>()
-    var tabTwoValidated = false
+    val tabTwoValidatedLD = MutableLiveData<Boolean>()
     val requiredSummaryFieldLD = MutableLiveData<Boolean>()
 
     fun upsertWorkout() {
@@ -214,6 +215,6 @@ class CreateWorkoutSharedViewModel(
     }
 
     fun validateTabTwo() {
-        tabTwoValidated = selectedCombinations.isNotEmpty()
+        tabTwoValidatedLD.value = selectedCombinations.isNotEmpty()
     }
 }
