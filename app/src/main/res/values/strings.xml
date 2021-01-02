@@ -59,7 +59,7 @@
     <string name="deleted_snackbar">%1$s has been deleted</string>
     <string name="undo">Undo</string>
     <string name="cancel">Cancel</string>
-    <string name="cancel_this_workout">Cancel this workout?</string>
+    <string name="cancel_this_workout">Cancel changes?</string>
     <string name="unsaved_dialog_message">The changes you have made to this workout are unsaved and will be lost.</string>
     <string name="save_and_exit">Save and exit</string>
     <string name="yes_cancel">Yes, cancel</string>
