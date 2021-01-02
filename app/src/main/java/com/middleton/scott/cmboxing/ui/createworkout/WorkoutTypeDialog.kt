@@ -13,7 +13,7 @@ import com.middleton.scott.cmboxing.R
 import kotlinx.android.synthetic.main.dialog_workout_type.*
 
 class WorkoutTypeDialog(
-    private val onChoice: ((WorkoutType) -> Unit)
+    private val onChoice: ((CreateWorkoutType) -> Unit)
 ) : DialogFragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,12 +33,12 @@ class WorkoutTypeDialog(
 
     private fun setClickListeners() {
         custom_btn.setOnClickListener {
-            onChoice(WorkoutType.CUSTOM)
+            onChoice(CreateWorkoutType.CUSTOM)
             dismiss()
         }
 
         packs_btn.setOnClickListener {
-            onChoice(WorkoutType.PACKS)
+            onChoice(CreateWorkoutType.PACKS)
             dismiss()
         }
     }

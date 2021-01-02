@@ -16,12 +16,12 @@ import com.airbnb.lottie.LottieAnimationView
 import com.middleton.scott.cmboxing.R
 import com.middleton.scott.cmboxing.datasource.local.model.Command
 import com.middleton.scott.cmboxing.ui.createworkout.NumberPickerSecondsDialog
-import kotlinx.android.synthetic.main.dialog_save_combination.*
+import kotlinx.android.synthetic.main.dialog_save_command.*
 import java.io.IOException
 
 const val numberOfFieldsToValidate = 2
 
-class SaveCombinationDialog(
+class SaveCommandDialog(
     private val audioFileDirectory: String,
     private val isEditMode: Boolean,
     private val command: Command,
@@ -32,7 +32,7 @@ class SaveCombinationDialog(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.dialog_save_combination, container)
+        return inflater.inflate(R.layout.dialog_save_command, container)
     }
 
     private var timeToCompleteMillis: Long = 0L

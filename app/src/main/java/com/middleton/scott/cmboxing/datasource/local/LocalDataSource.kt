@@ -50,7 +50,7 @@ class LocalDataSource(
     }
 
     fun getCombinations(): Flow<List<Command>> {
-        return database.commandnDao().getCombinations()
+        return database.commandnDao().getCommands()
     }
 
     fun getAllBoxingWorkoutsWithCombinations(): Flow<List<WorkoutWithCommands>> {

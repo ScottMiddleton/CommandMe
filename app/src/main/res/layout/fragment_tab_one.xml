@@ -1,47 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:animateLayoutChanges="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <View
-        android:id="@+id/divider1"
+        android:id="@+id/dividerTop"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_gravity="top"
-        android:background="@color/white_faded_20" />
+        android:background="@color/white_faded_20"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:descendantFocusability="beforeDescendants"
         android:focusable="true"
         android:focusableInTouchMode="true"
-        android:descendantFocusability="beforeDescendants">
+        android:animateLayoutChanges="true"
+        app:layout_constraintBottom_toTopOf="@+id/next_btn_include"
+        app:layout_constraintTop_toBottomOf="@id/dividerTop">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/parent_cl"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="12dp"
+            android:animateLayoutChanges="true"
             android:paddingStart="20dp"
+            android:paddingTop="20dp"
             android:paddingEnd="20dp"
             android:paddingBottom="20dp">
+
+            <LinearLayout
+                android:id="@+id/workout_type_ll"
+                android:layout_width="match_parent"
+                android:layout_height="38dp"
+                android:background="@drawable/rounded_stroke_background"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/structured_tv"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/accent_faded_80"
+                    android:gravity="center"
+                    android:text="@string/structured"
+                    android:textAlignment="gravity"
+                    android:textColor="@color/white" />
+
+                <TextView
+                    android:id="@+id/random_tv"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/white_faded_10"
+                    android:gravity="center"
+                    android:text="@string/random"
+                    android:textAlignment="gravity"
+                    android:textColor="@color/primary_text_color_faded" />
+
+            </LinearLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/workout_name_til"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 android:hint="@string/name"
                 app:endIconDrawable="@drawable/ic_edit"
-                android:layout_marginTop="8dp"
                 app:endIconMode="custom"
                 app:hintTextColor="@color/white"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toBottomOf="@+id/workout_type_ll">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/workout_name_et"
@@ -57,8 +97,8 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/preparation_time"
                 android:layout_marginTop="8dp"
+                android:hint="@string/preparation_time"
                 app:endIconDrawable="@drawable/ic_time"
                 app:endIconMode="custom"
                 app:hintAnimationEnabled="false"
@@ -71,10 +111,10 @@
                     android:id="@+id/preparation_time_et"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:foreground="?attr/selectableItemBackground"
                     android:clickable="true"
                     android:cursorVisible="false"
                     android:focusable="false"
+                    android:foreground="?attr/selectableItemBackground"
                     android:inputType="text" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -84,8 +124,8 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/rounds"
                 android:layout_marginTop="8dp"
+                android:hint="@string/rounds"
                 app:endIconDrawable="@drawable/ic_bell"
                 app:endIconMode="custom"
                 app:hintAnimationEnabled="false"
@@ -98,10 +138,10 @@
                     android:id="@+id/number_of_rounds_et"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:foreground="?attr/selectableItemBackground"
                     android:clickable="true"
                     android:cursorVisible="false"
                     android:focusable="false"
+                    android:foreground="?attr/selectableItemBackground"
                     android:inputType="text" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -113,22 +153,22 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:hint="@string/work_time"
-                app:hintAnimationEnabled="false"
                 app:endIconDrawable="@drawable/ic_boxer_24dp"
                 app:endIconMode="custom"
+                app:hintAnimationEnabled="false"
                 app:hintTextColor="@color/white"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/number_of_rounds_til">
+                app:layout_constraintTop_toBottomOf="@+id/rest_time_til">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/work_time_et"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:foreground="?attr/selectableItemBackground"
                     android:clickable="true"
                     android:cursorVisible="false"
                     android:focusable="false"
+                    android:foreground="?attr/selectableItemBackground"
                     android:inputType="text" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -140,22 +180,22 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:hint="@string/rest_time"
-                app:hintAnimationEnabled="false"
                 app:endIconDrawable="@drawable/ic_stool"
                 app:endIconMode="custom"
+                app:hintAnimationEnabled="false"
                 app:hintTextColor="@color/white"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/work_time_til">
+                app:layout_constraintTop_toBottomOf="@+id/number_of_rounds_til">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/rest_time_et"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:foreground="?attr/selectableItemBackground"
                     android:clickable="true"
                     android:cursorVisible="false"
                     android:focusable="false"
+                    android:foreground="?attr/selectableItemBackground"
                     android:inputType="text" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -165,112 +205,35 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/intensity"
                 android:layout_marginTop="8dp"
+                android:hint="@string/intensity"
                 app:endIconDrawable="@drawable/ic_intensity"
                 app:endIconMode="custom"
-                app:hintTextColor="@color/white"
                 app:hintAnimationEnabled="false"
+                app:hintTextColor="@color/white"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/rest_time_til">
+                app:layout_constraintTop_toBottomOf="@+id/work_time_til">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/intensity_et"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:foreground="?attr/selectableItemBackground"
                     android:clickable="true"
                     android:cursorVisible="false"
                     android:focusable="false"
+                    android:foreground="?attr/selectableItemBackground"
                     android:inputType="text" />
 
             </com.google.android.material.textfield.TextInputLayout>
-
-            <View
-                android:id="@+id/divider"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/white_faded_20"
-                android:layout_marginTop="20dp"
-                app:layout_constraintTop_toBottomOf="@+id/intensity_til" />
-
-            <TextView
-                android:id="@+id/combination_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:textSize="18sp"
-                android:drawablePadding="10dp"
-                app:layout_goneMarginTop="12dp"
-                android:gravity="center"
-                android:text="@string/commands"
-                app:drawableTint="@color/primary_text_color_faded"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/divider" />
-
-            <TextView
-                android:id="@+id/add_combination_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:drawablePadding="8dp"
-                app:drawableTint="@color/white_faded_70"
-                android:text="@string/add_commands_to_workout"
-                android:foreground="?attr/selectableItemBackground"
-                android:background="@drawable/list_item_combination_summary_background"
-                android:visibility="gone"
-                android:layout_marginTop="8dp"
-                android:textSize="16sp"
-                android:padding="11dp"
-                android:textColor="@color/primary_text_color_faded"
-                app:layout_constraintStart_toStartOf="@+id/combination_tv"
-                app:layout_constraintTop_toBottomOf="@+id/combination_tv"
-                app:drawableEndCompat="@drawable/ic_add_circle" />
-
-            <TextView
-                android:id="@+id/name_label_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="12dp"
-                android:layout_marginStart="13dp"
-                android:text="@string/name"
-                android:visibility="invisible"
-                android:textColor="@color/primary_text_color_faded"
-                android:textSize="14sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/combination_tv" />
-
-            <TextView
-                android:id="@+id/weighting_label_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginEnd="28dp"
-                android:text="@string/frequency"
-                android:visibility="invisible"
-                android:textColor="@color/primary_text_color_faded"
-                android:textSize="14sp"
-                app:layout_constraintBottom_toBottomOf="@+id/name_label_tv"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/name_label_tv" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/combinations_summary_rv"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/list_item_combination_summary_background"
-                android:paddingBottom="6dp"
-                android:visibility="gone"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/name_label_tv"
-                android:layout_marginBottom="10dp"
-                tools:listitem="@layout/list_item_combination_summary" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </ScrollView>
 
-</FrameLayout>
+    <include
+        android:id="@+id/next_btn_include"
+        layout="@layout/include_layout_next_btn"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

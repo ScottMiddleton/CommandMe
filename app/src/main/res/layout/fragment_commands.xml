@@ -51,8 +51,10 @@
     <LinearLayout
         android:id="@+id/linearLayout5"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/next_btn_include"
+        app:layout_constraintTop_toTopOf="parent">
 
         <View
             android:id="@+id/view2"
@@ -62,12 +64,12 @@
             app:layout_constraintTop_toTopOf="@+id/punch_bag_iv" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/combinations_RV"
+            android:id="@+id/commands_RV"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="visible"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/list_item_combination" />
+            tools:listitem="@layout/list_item_command" />
 
     </LinearLayout>
 
@@ -76,14 +78,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/linearLayout5"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/record_audio_button"
-            android:layout_width="130dp"
-            android:layout_height="130dp"
+            android:layout_width="110dp"
+            android:layout_height="110dp"
             android:layout_gravity="center_horizontal"
             app:lottie_fileName="record_button_lottie.json"
             app:lottie_loop="true"
@@ -132,5 +134,10 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </LinearLayout>
+
+    <include
+        android:id="@+id/next_btn_include"
+        layout="@layout/include_layout_next_btn"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

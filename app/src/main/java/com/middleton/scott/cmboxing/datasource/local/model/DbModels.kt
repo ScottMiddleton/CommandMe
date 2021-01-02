@@ -1,10 +1,12 @@
 package com.middleton.scott.cmboxing.datasource.local.model
 
 import androidx.room.Entity
+import com.middleton.scott.cmboxing.ui.createworkout.WorkoutType
 import java.util.*
 
 @Entity()
 data class Workout constructor(
+    var workout_type: WorkoutType = WorkoutType.STRUCTURED,
     var name: String = "",
     var preparation_time_secs: Int = 10,
     var numberOfRounds: Int = 5,

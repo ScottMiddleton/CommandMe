@@ -4,7 +4,8 @@
     <color name="colorPrimaryDark">#080C1C</color>
     <color name="primaryBackground">#121212</color>
     <color name="accent">#2d72a2</color>
-    <color name="accent_faded_40">#662D72A2</color>
+    <color name="accent_faded_80">#CC2D72A2</color>
+    <color name="accent_faded_50">#802D72A2</color>
     <color name="accent_faded_20">#332D72A2</color>
     <color name="accent_faded_5">#0D2D72A2</color>
     <color name="black">#000000</color>
@@ -26,7 +27,7 @@
 
     <color name="list_item_color">#12FFFFFF</color>
     <color name="edit_item_color">#34000000</color>
-    <color name="dialog_background">#272727</color>
+    <color name="dialog_background">#1C1C1C</color>
     <color name="red">#A6FF0000</color>
     <color name="yellow">#B3FFEB3B</color>
 

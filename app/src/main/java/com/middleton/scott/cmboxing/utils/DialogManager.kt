@@ -3,6 +3,7 @@ package com.middleton.scott.cmboxing.utils
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.InsetDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
@@ -10,6 +11,7 @@ import android.view.View.VISIBLE
 import android.widget.TextView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.middleton.scott.cmboxing.R
+
 
 object DialogManager {
     fun showDialog(
@@ -42,10 +44,12 @@ object DialogManager {
         val positiveBtn = dialogView.findViewById<TextView>(R.id.positive_btn)
         val negativeBtn = dialogView.findViewById<TextView>(R.id.negative_btn)
 
-
         negativeBtn.text = context.getString(negativeBtnTextId)
 
         val alertDialog = builder.create()
+        val back = ColorDrawable(Color.TRANSPARENT)
+        val inset = InsetDrawable(back, 80)
+        alertDialog.window?.setBackgroundDrawable(inset)
 
         if (positiveBtnClick == null) {
             positiveBtn.visibility = GONE
@@ -67,8 +71,6 @@ object DialogManager {
                 negativeBtnClick()
             }
         }
-
-        alertDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
         alertDialog.show()
     }

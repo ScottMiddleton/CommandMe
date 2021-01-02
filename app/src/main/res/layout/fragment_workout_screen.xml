@@ -188,7 +188,7 @@
             app:lottie_fileName="lottie_command_speaker.json" />
 
         <TextView
-            android:id="@+id/combination_name_tv"
+            android:id="@+id/command_name_tv"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"

@@ -9,6 +9,6 @@ import kotlinx.coroutines.flow.Flow
 abstract class CommandDao: BaseDao<Command>() {
 
     @Query("SELECT * FROM command")
-    abstract fun getCombinations(): Flow<List<Command>>
+    abstract fun getCommands(): Flow<List<Command>>
 }
 

@@ -45,7 +45,7 @@
     </FrameLayout>
 
     <TextView
-        android:id="@+id/combination_name_tv"
+        android:id="@+id/command_name_tv"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"

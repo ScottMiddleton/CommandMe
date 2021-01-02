@@ -21,6 +21,8 @@ class CreateWorkoutSharedViewModel(
     var subscribe = true
     var workout = Workout()
     var savedWorkout = Workout()
+    var userHasAttemptedToProceedOne = false
+    var userHasAttemptedToProceedTwo = false
     var userHasAttemptedToSave = false
 
     var selectedCombinations = ArrayList<Command>()
@@ -72,8 +74,8 @@ class CreateWorkoutSharedViewModel(
     val intensityLD = MutableLiveData<Int>()
     val dbUpdateLD = MutableLiveData<Boolean>()
     val showCancellationDialogLD = MutableLiveData<Boolean>()
-    val workoutNameValidatedLD = MutableLiveData<Boolean>()
-    val combinationsValidatedLD = MutableLiveData<Boolean>()
+    val tabOneValidatedLD = MutableLiveData(false)
+    val tabTwoValidatedLD = MutableLiveData(false)
     val requiredSummaryFieldLD = MutableLiveData<Boolean>()
 
     fun upsertWorkout() {
@@ -128,6 +130,10 @@ class CreateWorkoutSharedViewModel(
         viewModelScope.launch {
             dataRepository.getLocalDataSource().deleteWorkoutCombination(selectedCommandCrossRef)
         }
+    }
+
+    fun setWorkoutType(type: WorkoutType){
+        workout.workout_type = type
     }
 
     fun setWorkoutName(name: String) {
@@ -192,22 +198,11 @@ class CreateWorkoutSharedViewModel(
             !(savedWorkout == workout && savedSelectedCombinationsCrossRefs == selectedCombinationsCrossRefs)
     }
 
-    fun validateSaveAttempt() {
-        userHasAttemptedToSave = true
-        if (workout.name.isNullOrBlank()) {
-            workoutNameValidatedLD.value = false
-        }
+    fun validateTabOne() {
+        tabOneValidatedLD.value = workout.name.isNotBlank()
+    }
 
-        if (selectedCombinations.isEmpty()) {
-            combinationsValidatedLD.value = false
-        }
-
-        if (selectedCombinations.isNotEmpty() && !workout.name.isNullOrBlank()) {
-            upsertWorkout()
-        }
-
-        if (selectedCombinations.isNotEmpty() && workout.name.isNullOrBlank()) {
-            requiredSummaryFieldLD.value = true
-        }
+    fun validateTabTwo() {
+        tabTwoValidatedLD.value = selectedCombinations.isNotEmpty()
     }
 }

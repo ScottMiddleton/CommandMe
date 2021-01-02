@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.textfield.TextInputEditText
 import com.middleton.scott.cmboxing.R
 import com.middleton.scott.cmboxing.datasource.local.model.Command
 import com.middleton.scott.cmboxing.datasource.local.model.SelectedCommandCrossRef
@@ -16,18 +15,18 @@ import com.middleton.scott.cmboxing.datasource.local.model.SelectedCommandCrossR
 class CommmandsSummaryAdapter(
     private val fragmentManager: FragmentManager,
     private val onEditFrequency: ((selectedCommandCrossRef: SelectedCommandCrossRef) -> Unit)
-) : RecyclerView.Adapter<CommmandsSummaryAdapter.CombinationsViewHolder>() {
+) : RecyclerView.Adapter<CommmandsSummaryAdapter.CommandsViewHolder>() {
 
     lateinit var context: Context
 
     private var combinations = mutableListOf<Command>()
     private var selectedCombinationCrossRefs = ArrayList<SelectedCommandCrossRef>()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CombinationsViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommandsViewHolder {
         context = parent.context
-        return CombinationsViewHolder(
+        return CommandsViewHolder(
             LayoutInflater.from(parent.context).inflate(
-                R.layout.list_item_combination_summary,
+                R.layout.list_item_command_summary,
                 parent,
                 false
             )
@@ -38,19 +37,19 @@ class CommmandsSummaryAdapter(
         return combinations.size
     }
 
-    override fun onBindViewHolder(holder: CombinationsViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: CommandsViewHolder, position: Int) {
         val combination = combinations[position]
         holder.nameTV.text = combinations[position].name
 
 
-        holder.frequencyET.setOnClickListener {
+        holder.frequencyTV.setOnClickListener {
             FrequencyDialog {frequencyType ->
                 val selectedCombinationsCrossRef = SelectedCommandCrossRef(
                     workout_id = -1,
                     command_id = combination.id,
                     frequency = frequencyType
                 )
-                holder.frequencyET.setText(frequencyType.textResId)
+                holder.frequencyTV.setText(frequencyType.textResId)
                 onEditFrequency(selectedCombinationsCrossRef)
             }.show(
                 fragmentManager,
@@ -63,14 +62,14 @@ class CommmandsSummaryAdapter(
                 // This is the frequency for this combination
                 val combinationFrequencyType = workoutCombinations.frequency
 
-                holder.frequencyET.setText(context.getString(combinationFrequencyType.textResId))
+                holder.frequencyTV.setText(context.getString(combinationFrequencyType.textResId))
             }
         }
     }
 
-    class CombinationsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val nameTV: TextView = view.findViewById(R.id.combination_name_tv)
-        val frequencyET = view.findViewById(R.id.frequency_et) as TextInputEditText
+    class CommandsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val nameTV: TextView = view.findViewById(R.id.command_name_tv)
+        val frequencyTV = view.findViewById(R.id.frequency_tv) as TextView
     }
 
     override fun getItemId(position: Int): Long {

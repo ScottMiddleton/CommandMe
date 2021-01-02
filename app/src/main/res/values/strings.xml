@@ -26,7 +26,6 @@
     <string name="command_name">Command name</string>
     <string name="delete">Delete</string>
     <string name="workout">Workout</string>
-    <string name="combos">Combos</string>
     <string name="create_workout">Create Workout</string>
     <string name="summary">Summary</string>
     <string name="weighting">Weighting</string>
@@ -60,12 +59,12 @@
     <string name="deleted_snackbar">%1$s has been deleted</string>
     <string name="undo">Undo</string>
     <string name="cancel">Cancel</string>
-    <string name="cancel_this_workout">Cancel this workout?</string>
+    <string name="cancel_this_workout">Cancel changes?</string>
     <string name="unsaved_dialog_message">The changes you have made to this workout are unsaved and will be lost.</string>
     <string name="save_and_exit">Save and exit</string>
     <string name="yes_cancel">Yes, cancel</string>
     <string name="this_is_a_required_field">This is a required field.</string>
-    <string name="add_commands_dialog_message">You need to add at least one command to save this workout</string>
+    <string name="add_commands_dialog_message">You need to add at least one command to progress</string>
     <string name="greater_than_zero">Must be greater than zero.</string>
     <string name="add_a_workout_and_it_will_show_up_here">Add a workout and it will show up here.</string>
     <string name="create_a_workout">Create a Workout!</string>
@@ -103,5 +102,13 @@
     <string name="custom">custom</string>
     <string name="packs">Packs</string>
     <string name="login">Login</string>
+    <string name="recording_too_short">Recording too short. Hold the microphone to record a command.</string>
+    <string name="next">Next</string>
+    <string name="random">Random</string>
+    <string name="structured">Structured</string>
+    <string name="tab_two_instructions">Check the commands you would like to include</string>
+    <string name="tab_three_structured_instructions">Order your commands</string>
+    <string name="tab_three_random_instructions">Edit the frequency your commands are played</string>
+    <string name="no">No</string>
 
 </resources>
