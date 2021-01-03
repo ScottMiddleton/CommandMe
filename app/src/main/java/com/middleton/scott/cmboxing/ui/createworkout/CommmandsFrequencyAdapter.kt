@@ -12,10 +12,10 @@ import com.middleton.scott.cmboxing.datasource.local.model.Command
 import com.middleton.scott.cmboxing.datasource.local.model.SelectedCommandCrossRef
 
 
-class CommmandsSummaryAdapter(
+class CommmandsFrequencyAdapter(
     private val fragmentManager: FragmentManager,
     private val onEditFrequency: ((selectedCommandCrossRef: SelectedCommandCrossRef) -> Unit)
-) : RecyclerView.Adapter<CommmandsSummaryAdapter.CommandsViewHolder>() {
+) : RecyclerView.Adapter<CommmandsFrequencyAdapter.CommandsViewHolder>() {
 
     lateinit var context: Context
 
@@ -26,7 +26,7 @@ class CommmandsSummaryAdapter(
         context = parent.context
         return CommandsViewHolder(
             LayoutInflater.from(parent.context).inflate(
-                R.layout.list_item_command_summary,
+                R.layout.list_item_command_frequency,
                 parent,
                 false
             )

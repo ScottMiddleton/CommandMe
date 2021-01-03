@@ -15,7 +15,20 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/command_summary_rv"
+        android:id="@+id/random_rv"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:paddingBottom="6dp"
+        android:layout_marginTop="1dp"
+        android:visibility="gone"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toTopOf="@+id/save_btn_include"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:listitem="@layout/list_item_command_frequency" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/structured_rv"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:paddingBottom="6dp"
@@ -24,7 +37,7 @@
         app:layout_constraintBottom_toTopOf="@+id/save_btn_include"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:listitem="@layout/list_item_command_summary" />
+        tools:listitem="@layout/list_item_round" />
 
     <include
         android:id="@+id/save_btn_include"

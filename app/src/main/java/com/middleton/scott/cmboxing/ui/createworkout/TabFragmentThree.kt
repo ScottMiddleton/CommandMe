@@ -15,7 +15,8 @@ import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 class TabFragmentThree : BaseFragment() {
     private val viewModel by lazy { requireParentFragment().getViewModel<CreateWorkoutSharedViewModel>() }
-    private lateinit var adapter: CommmandsSummaryAdapter
+    private lateinit var commandsFrequencyAdapter: CommmandsFrequencyAdapter
+    private lateinit var roundsAdapter: RoundsAdapter
     lateinit var mContext: Context
 
     companion object {
@@ -25,9 +26,11 @@ class TabFragmentThree : BaseFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        adapter = CommmandsSummaryAdapter(childFragmentManager) { selectedCombinationCrossRef ->
+        commandsFrequencyAdapter = CommmandsFrequencyAdapter(childFragmentManager) { selectedCombinationCrossRef ->
             viewModel.setCombinationFrequency(selectedCombinationCrossRef)
         }
+
+        roundsAdapter = RoundsAdapter()
     }
 
     override fun onCreateView(
@@ -41,7 +44,9 @@ class TabFragmentThree : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        command_summary_rv.adapter = adapter
+        random_rv.adapter = commandsFrequencyAdapter
+        structured_rv.adapter = roundsAdapter
+
         subscribeUI()
 
         setClickListeners()
@@ -51,10 +56,10 @@ class TabFragmentThree : BaseFragment() {
         viewModel.selectedCombinationsLD.observe(viewLifecycleOwner, Observer {
             if (viewModel.subscribe) {
                 if (!viewModel.selectedCombinations.isNullOrEmpty()) {
-                    adapter.setAdapter(it, viewModel.selectedCombinationsCrossRefs)
-                    command_summary_rv.visibility = View.VISIBLE
+                    commandsFrequencyAdapter.setAdapter(it, viewModel.selectedCombinationsCrossRefs)
+                    random_rv.visibility = View.GONE
                 } else {
-                    command_summary_rv.visibility = View.GONE
+                    random_rv.visibility = View.GONE
                 }
             }
         })

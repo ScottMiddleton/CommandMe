@@ -13,8 +13,7 @@ data class Workout constructor(
     var work_time_secs: Int = 180,
     var rest_time_secs: Int = 60,
     var intensity: Int = 5,
-    var dateCreated: Date = Date(),
-    var structured: Boolean = false
+    var dateCreated: Date = Date()
 ) : BaseDbModel()
 
 @Entity()

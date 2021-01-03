@@ -99,6 +99,9 @@ dependencies {
     // viewpager2
     implementation 'androidx.viewpager2:viewpager2:1.0.0'
 
+    // Expandable layout
+    implementation 'net.cachapa.expandablelayout:expandablelayout:2.9.2'
+
     // Swipe Decorator
     implementation 'it.xabaras.android:recyclerview-swipedecorator:1.2.3'
 

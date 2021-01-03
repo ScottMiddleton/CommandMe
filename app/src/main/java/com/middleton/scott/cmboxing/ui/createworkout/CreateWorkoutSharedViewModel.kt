@@ -23,7 +23,6 @@ class CreateWorkoutSharedViewModel(
     var savedWorkout = Workout()
     var userHasAttemptedToProceedOne = false
     var userHasAttemptedToProceedTwo = false
-    var userHasAttemptedToSave = false
 
     var selectedCombinations = ArrayList<Command>()
     var selectedCombinationsCrossRefs = ArrayList<SelectedCommandCrossRef>()

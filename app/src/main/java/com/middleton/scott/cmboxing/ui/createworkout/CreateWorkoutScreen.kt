@@ -83,7 +83,7 @@ class CreateWorkoutScreen : BaseFragment() {
                     R.string.cancel_this_workout,
                     R.string.unsaved_dialog_message,
                     R.string.yes_cancel,
-                    {viewModel.cancelChanges()},
+                    { viewModel.cancelChanges() },
                     R.string.no,
                     {})
             } else {
@@ -188,14 +188,16 @@ class CreateWorkoutScreen : BaseFragment() {
                     }
                     2 -> {
                         instruction_tv.visibility = VISIBLE
-                        if (viewModel.workout.structured) {
-                            instruction_tv.text =
-                                getString(R.string.tab_three_structured_instructions)
-                        } else {
-                            instruction_tv.text =
-                                getString(R.string.tab_three_random_instructions)
+                        when (viewModel.workout.workout_type) {
+                            WorkoutType.STRUCTURED -> {
+                                instruction_tv.text =
+                                    getString(R.string.tab_three_structured_instructions)
+                            }
+                            WorkoutType.RANDOM -> {
+                                instruction_tv.text =
+                                    getString(R.string.tab_three_random_instructions)
+                            }
                         }
-
                     }
                 }
             }
