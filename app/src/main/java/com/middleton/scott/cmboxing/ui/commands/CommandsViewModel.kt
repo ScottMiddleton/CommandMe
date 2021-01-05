@@ -39,21 +39,21 @@ open class CommandsViewModel(private val dataRepository: DataRepository) : ViewM
 
     fun upsertCombination(command: Command) {
         viewModelScope.launch {
-            dataRepository.getLocalDataSource().upsertCombination(command)
+            dataRepository.getLocalDataSource().upsertCommand(command)
         }
     }
 
     fun deleteCombination(combinationIndex: Int): Command {
         val combination = allCommands[combinationIndex]
         viewModelScope.launch {
-            dataRepository.getLocalDataSource().deleteCombination(combination)
+            dataRepository.getLocalDataSource().deleteCommand(combination)
             previouslyDeletedCommand = combination
         }
         return combination
     }
 
     fun getAllCombinationsLD(): LiveData<List<Command>> {
-        return dataRepository.getLocalDataSource().getCombinations().map {
+        return dataRepository.getLocalDataSource().getCommands().map {
             allCommands = it
             it
         }.asLiveData()
@@ -66,7 +66,7 @@ open class CommandsViewModel(private val dataRepository: DataRepository) : ViewM
 
     fun undoPreviouslyDeletedCombination() {
         viewModelScope.launch {
-            dataRepository.getLocalDataSource().upsertCombination(previouslyDeletedCommand)
+            dataRepository.getLocalDataSource().upsertCommand(previouslyDeletedCommand)
         }
     }
 

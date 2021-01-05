@@ -16,7 +16,6 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
-import androidx.lifecycle.observe
 import androidx.viewpager2.widget.ViewPager2
 import com.airbnb.lottie.LottieProperty
 import com.airbnb.lottie.SimpleColorFilter
@@ -31,8 +30,6 @@ import com.middleton.scott.cmboxing.utils.DialogManager
 import com.middleton.scott.cmboxing.utils.MediaRecorderManager
 import kotlinx.android.synthetic.main.fragment_commands.*
 import kotlinx.android.synthetic.main.fragment_commands.next_btn_include
-import kotlinx.android.synthetic.main.fragment_tab_one.*
-import kotlinx.android.synthetic.main.fragment_tab_three.*
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import java.io.File
 
@@ -58,9 +55,9 @@ class TabFragmentTwo : BaseFragment() {
             parentFragmentManager,
             { selectedCombinationCrossRef, isChecked ->
                 if (isChecked) {
-                    viewModel.addCombination(selectedCombinationCrossRef)
+                    viewModel.addSelectedCommand(selectedCombinationCrossRef)
                 } else {
-                    viewModel.removeCombination(selectedCombinationCrossRef)
+                    viewModel.removeSelectedCommand(selectedCombinationCrossRef)
                 }
                 viewModel.validateTabTwo()
             },
@@ -202,10 +199,10 @@ class TabFragmentTwo : BaseFragment() {
                     viewModel.listAnimationShownOnce = true
                 }
             }
-            adapter.setAdapter(it, viewModel.selectedCombinations)
+            adapter.setAdapter(it, viewModel.selectedCommands)
         })
 
-        viewModel.selectedCombinationsLD.observe(viewLifecycleOwner, Observer {
+        viewModel.selectedCommandsLD.observe(viewLifecycleOwner, Observer {
             viewModel.validateTabTwo()
         })
 

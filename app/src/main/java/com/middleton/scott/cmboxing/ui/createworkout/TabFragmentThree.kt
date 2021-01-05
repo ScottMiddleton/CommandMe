@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.*
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.lifecycle.Observer
@@ -11,6 +12,7 @@ import com.google.firebase.crashlytics.internal.common.CommonUtils.hideKeyboard
 import com.middleton.scott.cmboxing.R
 import com.middleton.scott.cmboxing.ui.base.BaseFragment
 import kotlinx.android.synthetic.main.fragment_tab_three.*
+import kotlinx.android.synthetic.main.list_item_round.*
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 class TabFragmentThree : BaseFragment() {
@@ -53,14 +55,25 @@ class TabFragmentThree : BaseFragment() {
     }
 
     private fun subscribeUI() {
-        viewModel.selectedCombinationsLD.observe(viewLifecycleOwner, Observer {
+        viewModel.selectedCommandsLD.observe(viewLifecycleOwner, Observer {
             if (viewModel.subscribe) {
-                if (!viewModel.selectedCombinations.isNullOrEmpty()) {
-                    commandsFrequencyAdapter.setAdapter(it, viewModel.selectedCombinationsCrossRefs)
-                    random_rv.visibility = View.GONE
+                if (!viewModel.selectedCommands.isNullOrEmpty()) {
+                    commandsFrequencyAdapter.setAdapter(it, viewModel.selectedCommandCrossRefs)
+                    round_commands_rv.visibility = GONE
                 } else {
-                    random_rv.visibility = View.GONE
+                    round_commands_rv.visibility = GONE
                 }
+            }
+        })
+
+        viewModel.structuredCommandCrossRefsLD.observe(viewLifecycleOwner, Observer {
+            if(it.isNotEmpty()){
+                roundsAdapter.setAdapter(viewModel.selectedCommands, it)
+                round_commands_rv.visibility = VISIBLE
+                empty_state_body_tv.visibility = INVISIBLE
+            } else {
+                round_commands_rv.visibility = GONE
+                empty_state_body_tv.visibility = VISIBLE
             }
         })
     }

@@ -33,7 +33,7 @@ class WorkoutScreenViewModel(
 
     var audioFileBaseDirectory = ""
     private val workoutWithCommands: WorkoutWithCommands? =
-        dataRepository.getLocalDataSource().getBoxingWorkoutWithCombinations(workoutId)
+        dataRepository.getLocalDataSource().getWorkoutWithCombinations(workoutId)
     val workoutName = workoutWithCommands?.workout?.name
     private var commands: List<Command>? = null
     private val preparationTimeSecs = workoutWithCommands?.workout?.preparation_time_secs ?: 0

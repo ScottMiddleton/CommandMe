@@ -110,5 +110,7 @@
     <string name="tab_three_structured_instructions">Order your commands</string>
     <string name="tab_three_random_instructions">Edit the frequency your commands are played</string>
     <string name="no">No</string>
+    <string name="this_round_is_empty_click_the_plus_button_to_add_your_commands">This round is empty. Click the plus button to add your commands.</string>
+    <string name="this_round_does_not_contain_any_commands">This round does not contain any commands</string>
 
 </resources>

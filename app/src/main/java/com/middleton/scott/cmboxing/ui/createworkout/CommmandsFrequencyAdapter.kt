@@ -19,7 +19,7 @@ class CommmandsFrequencyAdapter(
 
     lateinit var context: Context
 
-    private var combinations = mutableListOf<Command>()
+    private var commands = mutableListOf<Command>()
     private var selectedCombinationCrossRefs = ArrayList<SelectedCommandCrossRef>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommandsViewHolder {
@@ -34,12 +34,12 @@ class CommmandsFrequencyAdapter(
     }
 
     override fun getItemCount(): Int {
-        return combinations.size
+        return commands.size
     }
 
     override fun onBindViewHolder(holder: CommandsViewHolder, position: Int) {
-        val combination = combinations[position]
-        holder.nameTV.text = combinations[position].name
+        val combination = commands[position]
+        holder.nameTV.text = commands[position].name
 
 
         holder.frequencyTV.setOnClickListener {
@@ -84,7 +84,7 @@ class CommmandsFrequencyAdapter(
         commands: List<Command>,
         selectedCombinationCrossRefs: ArrayList<SelectedCommandCrossRef>
     ) {
-        this.combinations = commands as MutableList<Command>
+        this.commands = commands as MutableList<Command>
         this.selectedCombinationCrossRefs = selectedCombinationCrossRefs
         notifyDataSetChanged()
     }
