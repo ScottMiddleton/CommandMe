@@ -47,19 +47,21 @@ class RoundsAdapter(
                 holder.expandableLayout.expand(true)
                 holder.frequencyIB.setImageResource(R.drawable.ic_remove)
             }
+        }
 
-            val roundCommandCrossRefs = structuredCommandCrossRefs.filter {
-                it.round == position + 1
-            }
+        holder.roundTV.text = "Round" + " " + (position + 1).toString()
 
-            if(roundCommandCrossRefs.isNotEmpty()){
-                holder.emptyStateTV.visibility = GONE
-                holder.roundCommandsRV.visibility = VISIBLE
-                holder.roundCommandsRV.adapter = RoundCommandsAdapter(commands, roundCommandCrossRefs)
-            } else {
-                holder.emptyStateTV.visibility = VISIBLE
-                holder.roundCommandsRV.visibility = GONE
-            }
+        val roundCommandCrossRefs = structuredCommandCrossRefs.filter {
+            it.round == position + 1
+        }
+
+        if (roundCommandCrossRefs.isNotEmpty()) {
+            holder.emptyStateTV.visibility = GONE
+            holder.roundCommandsRV.visibility = VISIBLE
+            holder.roundCommandsRV.adapter = RoundCommandsAdapter(commands, roundCommandCrossRefs)
+        } else {
+            holder.emptyStateTV.visibility = VISIBLE
+            holder.roundCommandsRV.visibility = GONE
         }
     }
 
@@ -68,6 +70,7 @@ class RoundsAdapter(
         val frequencyIB: ImageButton = view.findViewById(R.id.expand_collapse_button)
         val roundCommandsRV: RecyclerView = view.findViewById(R.id.round_commands_rv)
         val emptyStateTV: TextView = view.findViewById(R.id.empty_state_body_tv)
+        val roundTV: TextView = view.findViewById(R.id.round_tv)
     }
 
     override fun getItemId(position: Int): Long {
