@@ -49,9 +49,12 @@ class TabFragmentThree : BaseFragment() {
         random_rv.adapter = commandsFrequencyAdapter
         structured_rv.adapter = roundsAdapter
 
-        subscribeUI()
-
         setClickListeners()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        subscribeUI()
     }
 
     private fun subscribeUI() {

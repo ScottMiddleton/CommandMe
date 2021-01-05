@@ -174,11 +174,11 @@ class CreateWorkoutSharedViewModel(
                 selectedCommandCrossRef
             )
 
-            dataRepository.getLocalDataSource().upsertStructuredCommand(
+            dataRepository.getLocalDataSource().insertStructuredCommand(
                 StructuredCommandCrossRef(
                     workoutId,
                     selectedCommandCrossRef.command_id,
-                    1, 30, 0
+                    2, 60, 1
                 )
             )
         }
