@@ -174,12 +174,16 @@ class CreateWorkoutSharedViewModel(
                 selectedCommandCrossRef
             )
 
-            dataRepository.getLocalDataSource().insertStructuredCommand(
-                StructuredCommandCrossRef(
-                    workoutId,
-                    selectedCommandCrossRef.command_id,
-                    2, 60, 1
-                )
+            val sc = StructuredCommandCrossRef(
+                workoutId,
+                selectedCommandCrossRef.command_id,
+                2, 1000, 1
+            )
+
+            sc.id = 8
+
+            dataRepository.getLocalDataSource().upsertStructuredCommand(
+                sc
             )
         }
     }

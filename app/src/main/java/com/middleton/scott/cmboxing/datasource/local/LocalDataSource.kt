@@ -81,7 +81,7 @@ class LocalDataSource(
         database.selectedCommandCrossRefDao().upsert(selectedCombinationCrossRef)
     }
 
-    suspend fun insertStructuredCommand(structuredCommandCrossRef: StructuredCommandCrossRef) {
+    suspend fun upsertStructuredCommand(structuredCommandCrossRef: StructuredCommandCrossRef) {
         database.structuredCommandCrossRefDao().upsert(structuredCommandCrossRef)
     }
 
