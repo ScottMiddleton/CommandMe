@@ -55,7 +55,12 @@ class TabFragmentOne : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
         mContext = view.context
 
-        subscribeUI()
+        viewModel.subscribeLD.observe(viewLifecycleOwner, Observer {
+            if (it) {
+                subscribeUI()
+            }
+        })
+
         setListeners()
     }
 

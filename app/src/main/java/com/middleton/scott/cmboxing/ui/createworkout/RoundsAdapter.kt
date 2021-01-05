@@ -3,8 +3,10 @@ package com.middleton.scott.cmboxing.ui.createworkout
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.*
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.middleton.scott.cmboxing.R
 import com.middleton.scott.cmboxing.datasource.local.model.Command
@@ -17,6 +19,7 @@ class RoundsAdapter(
 
     lateinit var context: Context
 
+    private var roundCount = 0
     private var commands = mutableListOf<Command>()
     private var structuredCommandCrossRefs = ArrayList<StructuredCommandCrossRef>()
 
@@ -32,7 +35,7 @@ class RoundsAdapter(
     }
 
     override fun getItemCount(): Int {
-        return 10
+        return roundCount
     }
 
     override fun onBindViewHolder(holder: RoundViewHolder, position: Int) {
@@ -49,7 +52,14 @@ class RoundsAdapter(
                 it.round == position + 1
             }
 
-            holder.roundCommandsRV.adapter = RoundCommandsAdapter(commands, roundCommandCrossRefs)
+            if(roundCommandCrossRefs.isNotEmpty()){
+                holder.emptyStateTV.visibility = GONE
+                holder.roundCommandsRV.visibility = VISIBLE
+                holder.roundCommandsRV.adapter = RoundCommandsAdapter(commands, roundCommandCrossRefs)
+            } else {
+                holder.emptyStateTV.visibility = VISIBLE
+                holder.roundCommandsRV.visibility = GONE
+            }
         }
     }
 
@@ -57,6 +67,7 @@ class RoundsAdapter(
         val expandableLayout: ExpandableLayout = view.findViewById(R.id.expandable_layout)
         val frequencyIB: ImageButton = view.findViewById(R.id.expand_collapse_button)
         val roundCommandsRV: RecyclerView = view.findViewById(R.id.round_commands_rv)
+        val emptyStateTV: TextView = view.findViewById(R.id.empty_state_body_tv)
     }
 
     override fun getItemId(position: Int): Long {
@@ -68,9 +79,11 @@ class RoundsAdapter(
     }
 
     fun setAdapter(
+        roundCount: Int,
         commands: List<Command>,
         structuredCommandCrossRefs: List<StructuredCommandCrossRef>
     ) {
+        this.roundCount = roundCount
         this.commands = commands as MutableList<Command>
         this.structuredCommandCrossRefs = structuredCommandCrossRefs as ArrayList
         notifyDataSetChanged()

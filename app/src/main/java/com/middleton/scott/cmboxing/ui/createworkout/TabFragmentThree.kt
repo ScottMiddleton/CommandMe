@@ -59,21 +59,17 @@ class TabFragmentThree : BaseFragment() {
             if (viewModel.subscribe) {
                 if (!viewModel.selectedCommands.isNullOrEmpty()) {
                     commandsFrequencyAdapter.setAdapter(it, viewModel.selectedCommandCrossRefs)
-                    round_commands_rv.visibility = GONE
                 } else {
-                    round_commands_rv.visibility = GONE
                 }
             }
         })
 
         viewModel.structuredCommandCrossRefsLD.observe(viewLifecycleOwner, Observer {
             if(it.isNotEmpty()){
-                roundsAdapter.setAdapter(viewModel.selectedCommands, it)
-                round_commands_rv.visibility = VISIBLE
-                empty_state_body_tv.visibility = INVISIBLE
+                roundsAdapter.setAdapter(viewModel.workout.numberOfRounds, viewModel.selectedCommands, it)
+                structured_rv.visibility = VISIBLE
             } else {
-                round_commands_rv.visibility = GONE
-                empty_state_body_tv.visibility = VISIBLE
+                structured_rv.visibility = GONE
             }
         })
     }
