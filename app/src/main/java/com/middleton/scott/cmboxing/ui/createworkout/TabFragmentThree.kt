@@ -4,7 +4,8 @@ import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.*
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.lifecycle.Observer
@@ -12,7 +13,6 @@ import com.google.firebase.crashlytics.internal.common.CommonUtils.hideKeyboard
 import com.middleton.scott.cmboxing.R
 import com.middleton.scott.cmboxing.ui.base.BaseFragment
 import kotlinx.android.synthetic.main.fragment_tab_three.*
-import kotlinx.android.synthetic.main.list_item_round.*
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 class TabFragmentThree : BaseFragment() {
@@ -31,7 +31,6 @@ class TabFragmentThree : BaseFragment() {
         commandsFrequencyAdapter = CommmandsFrequencyAdapter(childFragmentManager) { selectedCombinationCrossRef ->
             viewModel.setCombinationFrequency(selectedCombinationCrossRef)
         }
-
         roundsAdapter = RoundsAdapter()
     }
 

@@ -2,20 +2,22 @@ package com.middleton.scott.cmboxing.ui.createworkout
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
-import android.view.View.*
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.OnItemTouchListener
 import com.middleton.scott.cmboxing.R
 import com.middleton.scott.cmboxing.datasource.local.model.Command
 import com.middleton.scott.cmboxing.datasource.local.model.StructuredCommandCrossRef
 import net.cachapa.expandablelayout.ExpandableLayout
 
 
-class RoundsAdapter(
-) : RecyclerView.Adapter<RoundsAdapter.RoundViewHolder>() {
+class RoundsAdapter : RecyclerView.Adapter<RoundsAdapter.RoundViewHolder>() {
 
     lateinit var context: Context
 

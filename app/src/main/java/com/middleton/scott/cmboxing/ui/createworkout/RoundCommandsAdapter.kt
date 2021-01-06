@@ -28,7 +28,7 @@ class RoundCommandsAdapter(
         context = parent.context
         return RoundCommandViewHolder(
             LayoutInflater.from(parent.context).inflate(
-                R.layout.list_item_command,
+                R.layout.list_item_round_command,
                 parent,
                 false
             )
@@ -40,9 +40,13 @@ class RoundCommandsAdapter(
     }
 
     override fun onBindViewHolder(holder: RoundCommandViewHolder, position: Int) {
+        val currentCommand = commands.first { structuredCombinationCrossRefs[position].command_id == it.id }
+
+        holder.commandNameTV.text = currentCommand.name
     }
 
     class RoundCommandViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val commandNameTV = view.findViewById<TextView>(R.id.command_name_tv)
     }
 
     override fun getItemId(position: Int): Long {
