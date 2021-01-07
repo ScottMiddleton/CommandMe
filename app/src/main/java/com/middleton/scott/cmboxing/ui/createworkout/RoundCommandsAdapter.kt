@@ -4,22 +4,17 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
-import androidx.core.content.ContextCompat
-import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.middleton.scott.cmboxing.R
 import com.middleton.scott.cmboxing.datasource.local.model.Command
-import com.middleton.scott.cmboxing.datasource.local.model.SelectedCommandCrossRef
 import com.middleton.scott.cmboxing.datasource.local.model.StructuredCommandCrossRef
-import net.cachapa.expandablelayout.ExpandableLayout
 
 
 class RoundCommandsAdapter(
     val commands: List<Command>,
-    val structuredCombinationCrossRefs: List<StructuredCommandCrossRef>
+    val structuredCombinationCrossRefs: ArrayList<StructuredCommandCrossRef>
 ) : RecyclerView.Adapter<RoundCommandsAdapter.RoundCommandViewHolder>() {
 
     lateinit var context: Context
@@ -46,14 +41,8 @@ class RoundCommandsAdapter(
     }
 
     class RoundCommandViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val commandNameTV = view.findViewById<TextView>(R.id.command_name_tv)
+        val commandNameTV: TextView = view.findViewById(R.id.command_name_tv)
+        val dragBtn: ImageButton  = view.findViewById(R.id.drag_btn)
     }
 
-    override fun getItemId(position: Int): Long {
-        return position.toLong()
-    }
-
-    override fun getItemViewType(position: Int): Int {
-        return position
-    }
 }

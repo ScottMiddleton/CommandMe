@@ -1,6 +1,5 @@
 package com.middleton.scott.cmboxing.ui.createworkout
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -19,7 +18,6 @@ class TabFragmentThree : BaseFragment() {
     private val viewModel by lazy { requireParentFragment().getViewModel<CreateWorkoutSharedViewModel>() }
     private lateinit var commandsFrequencyAdapter: CommmandsFrequencyAdapter
     private lateinit var roundsAdapter: RoundsAdapter
-    lateinit var mContext: Context
 
     companion object {
         fun newInstance() =

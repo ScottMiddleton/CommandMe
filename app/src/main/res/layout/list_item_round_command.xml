@@ -6,10 +6,10 @@
     android:id="@+id/parent_cl"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="6dp"
+    android:layout_marginStart="8dp"
     android:layout_marginTop="6dp"
-    android:layout_marginEnd="6dp"
-    android:background="@drawable/list_item_background_dark">
+    android:layout_marginEnd="8dp"
+    android:background="@drawable/rounded_stroke_background">
 
     <FrameLayout
         android:id="@+id/play_fl"
@@ -49,17 +49,28 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
         android:layout_marginTop="12dp"
         android:layout_marginBottom="12dp"
-        android:fontFamily="@string/font_roboto_medium"
-        android:textSize="17sp"
-        android:maxLines="1"
         android:ellipsize="end"
+        android:fontFamily="@string/font_roboto_medium"
+        android:maxLines="1"
+        android:textSize="17sp"
+        android:paddingEnd="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/checkbox_fl"
+        app:layout_constraintEnd_toStartOf="@+id/drag_btn"
         app:layout_constraintStart_toEndOf="@+id/play_fl"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Combination 1234" />
+
+    <ImageButton
+        android:id="@+id/drag_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:src="@drawable/ic_drag"
+        android:background="@color/transparent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
