@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer
 import com.google.firebase.crashlytics.internal.common.CommonUtils.hideKeyboard
 import com.middleton.scott.cmboxing.R
 import com.middleton.scott.cmboxing.ui.base.BaseFragment
+import kotlinx.android.synthetic.main.fragment_tab_one.*
 import kotlinx.android.synthetic.main.fragment_tab_three.*
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
@@ -46,12 +47,8 @@ class TabFragmentThree : BaseFragment() {
         random_rv.adapter = commandsFrequencyAdapter
         structured_rv.adapter = roundsAdapter
 
-        setClickListeners()
-    }
-
-    override fun onResume() {
-        super.onResume()
         subscribeUI()
+        setClickListeners()
     }
 
     private fun subscribeUI() {
@@ -59,6 +56,7 @@ class TabFragmentThree : BaseFragment() {
             if (viewModel.subscribe) {
                 if (!viewModel.selectedCommands.isNullOrEmpty()) {
                     commandsFrequencyAdapter.setAdapter(it, viewModel.selectedCommandCrossRefs)
+                    setRoundsAdapterFromVMData()
                 } else {
                 }
             }
@@ -72,6 +70,29 @@ class TabFragmentThree : BaseFragment() {
                 structured_rv.visibility = GONE
             }
         })
+
+        viewModel.numberOfRoundsLD.observe(viewLifecycleOwner, Observer {
+            setRoundsAdapterFromVMData()
+        })
+
+        viewModel.workoutTypeLD.observe(viewLifecycleOwner, Observer {
+            when(it){
+                WorkoutType.RANDOM -> {
+                    random_rv.visibility = VISIBLE
+                    structured_rv.visibility = GONE
+                }
+                WorkoutType.STRUCTURED -> {
+                    random_rv.visibility = GONE
+                    structured_rv.visibility = VISIBLE
+                }
+                else -> {}
+            }
+            setRoundsAdapterFromVMData()
+        })
+    }
+
+    private fun setRoundsAdapterFromVMData(){
+        roundsAdapter.setAdapter(viewModel.workout.numberOfRounds, viewModel.selectedCommands, viewModel.structuredCommandCrossRefs)
     }
 
     private fun setClickListeners() {

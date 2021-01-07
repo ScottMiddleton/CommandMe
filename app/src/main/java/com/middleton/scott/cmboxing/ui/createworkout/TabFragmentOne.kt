@@ -223,7 +223,7 @@ class TabFragmentOne : BaseFragment() {
                 )
             )
             structured_tv.setTextColor(ContextCompat.getColor(mContext, R.color.white))
-            random_tv.setBackgroundColor(ContextCompat.getColor(mContext, R.color.white_faded_10))
+            random_tv.setBackgroundColor(ContextCompat.getColor(mContext, R.color.white_faded_5))
             random_tv.setTextColor(
                 ContextCompat.getColor(
                     mContext,
@@ -238,7 +238,7 @@ class TabFragmentOne : BaseFragment() {
             structured_tv.setBackgroundColor(
                 ContextCompat.getColor(
                     mContext,
-                    R.color.white_faded_10
+                    R.color.white_faded_5
                 )
             )
             structured_tv.setTextColor(

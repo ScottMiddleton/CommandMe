@@ -202,10 +202,6 @@ class TabFragmentTwo : BaseFragment() {
             adapter.setAdapter(it, viewModel.selectedCommands)
         })
 
-        viewModel.selectedCommandsLD.observe(viewLifecycleOwner, Observer {
-            viewModel.validateTabTwo()
-        })
-
         viewModel.tabTwoValidatedLD.observe(viewLifecycleOwner, Observer {
             if (!it) {
                 if (viewModel.userHasAttemptedToProceedTwo) {

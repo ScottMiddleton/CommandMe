@@ -91,6 +91,10 @@ class CreateWorkoutScreen : BaseFragment() {
             }
         })
 
+        viewModel.selectedCommandsLD.observe(viewLifecycleOwner, Observer {
+            viewModel.validateTabTwo()
+        })
+
         viewModel.requiredSummaryFieldLD.observe(viewLifecycleOwner, Observer {
             if (it) {
                 val viewPager =

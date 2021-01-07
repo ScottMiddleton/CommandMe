@@ -35,6 +35,7 @@ class CreateWorkoutSharedViewModel(
     lateinit var selectedCommandsLD: LiveData<List<Command>>
     lateinit var structuredCommandCrossRefsLD: LiveData<List<StructuredCommandCrossRef>>
 
+    val workoutTypeLD = MutableLiveData<WorkoutType>()
     val preparationTimeLD = MutableLiveData<Int>()
     val numberOfRoundsLD = MutableLiveData<Int>()
     val workTimeSecsLD = MutableLiveData<Int>()
@@ -101,7 +102,6 @@ class CreateWorkoutSharedViewModel(
                 subscribeLD.value = true
             }
         } else {
-
             selectedCommandCrossRefsFlow = dataRepository.getLocalDataSource()
                 .getSelectedCombinationCrossRefsFlow(workoutId)
             workoutLD =
@@ -142,7 +142,6 @@ class CreateWorkoutSharedViewModel(
                         structuredCommandCrossRefs = it as ArrayList<StructuredCommandCrossRef>
                         it
                     }.asLiveData()
-
             subscribeLD.value = true
         }
     }
@@ -196,6 +195,7 @@ class CreateWorkoutSharedViewModel(
 
     fun setWorkoutType(type: WorkoutType) {
         workout.workout_type = type
+        workoutTypeLD.value = type
     }
 
     fun setWorkoutName(name: String) {

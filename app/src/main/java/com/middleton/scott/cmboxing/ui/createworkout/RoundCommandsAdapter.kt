@@ -35,9 +35,9 @@ class RoundCommandsAdapter(
     }
 
     override fun onBindViewHolder(holder: RoundCommandViewHolder, position: Int) {
-        val currentCommand = commands.first { structuredCombinationCrossRefs[position].command_id == it.id }
+        val currentCommand = commands.firstOrNull() { structuredCombinationCrossRefs[position].command_id == it.id }
 
-        holder.commandNameTV.text = currentCommand.name
+        holder.commandNameTV.text = currentCommand?.name
     }
 
     class RoundCommandViewHolder(view: View) : RecyclerView.ViewHolder(view) {
