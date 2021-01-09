@@ -74,7 +74,7 @@ dependencies {
     // Android Navigation Library
     implementation 'androidx.navigation:navigation-fragment-ktx:2.3.2'
     implementation 'androidx.navigation:navigation-ui-ktx:2.3.2'
-    implementation "android.arch.navigation:navigation-fragment-ktx:1.0.0"
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.0.0-rc02'
 
     // Koin
     implementation "org.koin:koin-android:$koin_version"

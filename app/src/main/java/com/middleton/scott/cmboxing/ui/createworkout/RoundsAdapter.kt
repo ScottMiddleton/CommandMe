@@ -31,7 +31,7 @@ class RoundsAdapter : RecyclerView.Adapter<RoundsAdapter.RoundViewHolder>() {
                 R.layout.list_item_round,
                 parent,
                 false
-            ), commands
+            )
         )
     }
 
@@ -56,31 +56,44 @@ class RoundsAdapter : RecyclerView.Adapter<RoundsAdapter.RoundViewHolder>() {
             it.round == position + 1
         }
 
-        val adapter = RoundCommandsAdapter(
-            holder.commands,
-            roundCommandCrossRefs as ArrayList<StructuredCommandCrossRef>
-        )
-
         if (roundCommandCrossRefs.isNotEmpty()) {
             holder.emptyStateTV.visibility = GONE
             holder.roundCommandsRV.visibility = VISIBLE
-            holder.roundCommandsRV.adapter = adapter
+            holder.instructionTV.visibility = VISIBLE
         } else {
             holder.emptyStateTV.visibility = VISIBLE
             holder.roundCommandsRV.visibility = GONE
+            holder.instructionTV.visibility = GONE
         }
 
-        holder.itemTouchHelper.attachToRecyclerView(holder.roundCommandsRV)
+        holder.bind(roundCommandCrossRefs, commands)
     }
 
-    class RoundViewHolder(view: View, commands: List<Command>) : RecyclerView.ViewHolder(view) {
+    class RoundViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val expandableLayout: ExpandableLayout = view.findViewById(R.id.expandable_layout)
         val frequencyIB: ImageButton = view.findViewById(R.id.expand_collapse_button)
         val roundCommandsRV: RecyclerView = view.findViewById(R.id.round_commands_rv)
         val emptyStateTV: TextView = view.findViewById(R.id.empty_state_body_tv)
         val roundTV: TextView = view.findViewById(R.id.round_tv)
+        val instructionTV: TextView = view.findViewById(R.id.reorder_instruction_tv)
 
-        val commands = commands
+        lateinit var adapter: RoundCommandsAdapter
+
+        fun bind(
+            roundCommandCrossRefs: List<StructuredCommandCrossRef>,
+            commands: MutableList<Command>
+        ) {
+            adapter = RoundCommandsAdapter(
+                commands,
+                roundCommandCrossRefs as ArrayList<StructuredCommandCrossRef>,
+            )
+
+            if (roundCommandCrossRefs.isNotEmpty()) {
+                roundCommandsRV.adapter = adapter
+            }
+
+            itemTouchHelper.attachToRecyclerView(roundCommandsRV)
+        }
 
         val itemTouchHelperCallback: Callback =
             object : ItemTouchHelper.SimpleCallback(
@@ -94,13 +107,25 @@ class RoundsAdapter : RecyclerView.Adapter<RoundsAdapter.RoundViewHolder>() {
                         END,
             ) {
 
+                override fun onSelectedChanged(
+                    viewHolder: RecyclerView.ViewHolder?,
+                    actionState: Int
+                ) {
+                    if (viewHolder is RoundCommandsAdapter.RoundCommandViewHolder) {
+                        adapter.setBackgroundSelected(viewHolder)
+                    }
+                    super.onSelectedChanged(viewHolder, actionState)
+
+                }
+
                 override fun onMove(
                     recyclerView: RecyclerView,
                     viewHolder: RecyclerView.ViewHolder,
                     target: RecyclerView.ViewHolder
                 ): Boolean {
                     // Notify your adapter that an item is moved from x position to y position
-                    roundCommandsRV.adapter?.notifyItemMoved(
+
+                    adapter.notifyItemMoved(
                         viewHolder.adapterPosition,
                         target.adapterPosition
                     )
@@ -129,11 +154,15 @@ class RoundsAdapter : RecyclerView.Adapter<RoundsAdapter.RoundViewHolder>() {
                     super.clearView(recyclerView, viewHolder)
                     // Called by the ItemTouchHelper when the user interaction with an element is over and it also completed its animation
                     // This is a good place to send update to your backend about changes
+                    if (viewHolder is RoundCommandsAdapter.RoundCommandViewHolder) {
+                        adapter.setBackgroundUnselected(viewHolder)
+                    }
                 }
             }
 
         val itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
     }
+
 
     fun setAdapter(
         roundCount: Int,

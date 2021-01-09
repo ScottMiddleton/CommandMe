@@ -3,11 +3,11 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/parent_cl"
+    android:id="@+id/round_command_parent_cl"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="8dp"
-    android:layout_marginTop="6dp"
+    android:layout_marginBottom="6dp"
     android:layout_marginEnd="8dp"
     android:background="@drawable/rounded_stroke_background">
 
@@ -60,7 +60,7 @@
         app:layout_constraintEnd_toStartOf="@+id/drag_btn"
         app:layout_constraintStart_toEndOf="@+id/play_fl"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="Combination 1234" />
+        tools:text="Round 1" />
 
     <ImageButton
         android:id="@+id/drag_btn"

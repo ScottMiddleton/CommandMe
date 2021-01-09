@@ -11,7 +11,6 @@ import androidx.lifecycle.Observer
 import com.google.firebase.crashlytics.internal.common.CommonUtils.hideKeyboard
 import com.middleton.scott.cmboxing.R
 import com.middleton.scott.cmboxing.ui.base.BaseFragment
-import kotlinx.android.synthetic.main.fragment_tab_one.*
 import kotlinx.android.synthetic.main.fragment_tab_three.*
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 

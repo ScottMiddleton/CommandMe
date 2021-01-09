@@ -28,6 +28,7 @@
     <color name="list_item_color">#12FFFFFF</color>
     <color name="edit_item_color">#34000000</color>
     <color name="dialog_background">#1C1C1C</color>
+    <color name="dialog_background_highlighted">#313131</color>
     <color name="red">#A6FF0000</color>
     <color name="yellow">#B3FFEB3B</color>
 
