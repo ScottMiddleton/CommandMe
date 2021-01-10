@@ -1,5 +1,6 @@
 package com.middleton.scott.cmboxing.ui.login
 
+import android.text.TextUtils
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,6 +10,8 @@ import kotlinx.coroutines.launch
 
 class LoginViewModel(private val dataRepository: DataRepository) : ViewModel() {
 
+    var loginAttempted = false
+
     var email: String = ""
     var password: String = ""
 
@@ -17,9 +20,23 @@ class LoginViewModel(private val dataRepository: DataRepository) : ViewModel() {
     val passwordValidLD = MutableLiveData<Boolean>()
     val emailValidLD = MutableLiveData<Boolean>()
 
-    fun login(){
-        viewModelScope.launch {
-        dataRepository.signIn(email, password, signInResponseLD)}
+    fun login() {
+        loginAttempted = true
+        validate()
+        if (emailValidLD.value == true && passwordValidLD.value == true) {
+            viewModelScope.launch {
+                dataRepository.signIn(email, password, signInResponseLD)
+            }
+        }
     }
 
+    fun validate() {
+        if (loginAttempted) {
+            emailValidLD.value =
+                (!TextUtils.isEmpty(email) && android.util.Patterns.EMAIL_ADDRESS.matcher(email)
+                    .matches())
+
+            passwordValidLD.value = password.count() >= 7
+        }
+    }
 }

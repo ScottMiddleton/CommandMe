@@ -22,7 +22,7 @@ import com.middleton.scott.cmboxing.datasource.local.model.SelectedCommandCrossR
 import java.io.IOException
 
 class CommandsAdapter(
-    private val audioFileDirectory: String,
+    private val audioFileBaseDirectory: String,
     private val fragmentManager: FragmentManager,
     private val onCheckCombination: ((selectedCombinationCrossRef: SelectedCommandCrossRef, isChecked: Boolean) -> Unit)? = null,
     private val onEditCombination: ((Command) -> Unit),
@@ -94,7 +94,7 @@ class CommandsAdapter(
 
         holder.editButton.setOnClickListener {
             SaveCommandDialog(
-                (audioFileDirectory + combination.file_name),
+                (audioFileBaseDirectory + combination.file_name),
                 true,
                 combination,
                 { combination ->
@@ -118,7 +118,7 @@ class CommandsAdapter(
         mediaPlayer.reset()
         mediaPlayer = MediaPlayer().apply {
             try {
-                setDataSource(audioFileDirectory + fileName)
+                setDataSource(audioFileBaseDirectory + fileName)
                 prepare()
                 this.setOnCompletionListener {
                     audioPlayingIndex = -1

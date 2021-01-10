@@ -113,5 +113,7 @@
     <string name="this_round_is_empty_click_the_plus_button_to_add_your_commands">This round is empty. Click the plus button to add your commands.</string>
     <string name="this_round_does_not_contain_any_commands">This round does not contain any commands</string>
     <string name="press_and_hold_to_reorder_commands">Press and hold to reorder commands</string>
+    <string name="apply">Apply</string>
+    <string name="confirm">Comfirm</string>
 
 </resources>

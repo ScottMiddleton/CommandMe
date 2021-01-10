@@ -11,16 +11,19 @@ import kotlinx.coroutines.flow.Flow
 abstract class StructuredCommandCrossRefDao : BaseDao<StructuredCommandCrossRef>() {
 
     @Query("SELECT * FROM structured_commands WHERE workout_id = :workoutId")
-    abstract fun getStructuredCombinationCrossRefsFlow(workoutId: Long) : Flow<List<StructuredCommandCrossRef>>
+    abstract fun getStructuredCommandCrossRefsFlow(workoutId: Long) : Flow<List<StructuredCommandCrossRef>>
 
     @Query("SELECT * FROM structured_commands WHERE workout_id = :workoutId")
-    abstract fun getStructuredCombinationCrossRefs(workoutId: Long) : LiveData<List<StructuredCommandCrossRef>>
+    abstract fun getStructuredCommandCrossRefs(workoutId: Long) : LiveData<List<StructuredCommandCrossRef>>
+
+    @Query("SELECT * FROM structured_commands WHERE workout_id = :workoutId")
+    abstract fun getSelectedCombinationCrossRefs(workoutId: Long) : List<StructuredCommandCrossRef>
 
     @Query("DELETE FROM structured_commands WHERE workout_id = :workoutId")
     abstract suspend fun deleteByWorkoutId(workoutId: Long)
 
-    @Query("DELETE FROM structured_commands WHERE workout_id = :commandId")
-    abstract suspend fun deleteByCombinationId(commandId: Long)
+    @Query("DELETE FROM structured_commands WHERE command_id = :commandId")
+    abstract suspend fun deleteByCommandId(commandId: Long)
 
     @Query("DELETE FROM structured_commands WHERE round = :round")
     abstract suspend fun deleteByRound(round: Int)

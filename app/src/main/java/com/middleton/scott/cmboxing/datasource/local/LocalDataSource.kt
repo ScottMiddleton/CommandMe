@@ -63,8 +63,12 @@ class LocalDataSource(
         return database.selectedCommandCrossRefDao().getSelectedCombinationCrossRefs(workoutId)
     }
 
+    fun getStructuredCombinationCrossRefs(workoutId: Long): List<StructuredCommandCrossRef> {
+        return database.structuredCommandCrossRefDao().getSelectedCombinationCrossRefs(workoutId)
+    }
+
     fun getStructuredCombinationCrossRefsFlow(workoutId: Long): Flow<List<StructuredCommandCrossRef>> {
-        return database.structuredCommandCrossRefDao().getStructuredCombinationCrossRefsFlow(workoutId)
+        return database.structuredCommandCrossRefDao().getStructuredCommandCrossRefsFlow(workoutId)
     }
 
     suspend fun upsertWorkout(
@@ -77,24 +81,33 @@ class LocalDataSource(
         database.selectedCommandCrossRefDao().upsert(selectedCombinationCrossRefs)
     }
 
-    suspend fun upsertWorkoutCommand(selectedCombinationCrossRef: SelectedCommandCrossRef) {
+    suspend fun upsertSelectedCommandCrossRef(selectedCombinationCrossRef: SelectedCommandCrossRef) {
         database.selectedCommandCrossRefDao().upsert(selectedCombinationCrossRef)
     }
 
-    suspend fun upsertStructuredCommand(structuredCommandCrossRef: StructuredCommandCrossRef) {
+    suspend fun upsertStructuredCommandCrossRef(structuredCommandCrossRef: StructuredCommandCrossRef) {
         database.structuredCommandCrossRefDao().upsert(structuredCommandCrossRef)
     }
 
-    suspend fun deleteWorkoutCommand(selectedCombinationCrossRef: SelectedCommandCrossRef) {
-        database.selectedCommandCrossRefDao().delete(selectedCombinationCrossRef)
+    suspend fun upsertStructuredCommandCrossRefs(structuredCommandCrossRefs: List<StructuredCommandCrossRef>) {
+        database.structuredCommandCrossRefDao().upsert(structuredCommandCrossRefs)
     }
 
-     suspend fun deleteWorkoutCombinations(workoutId: Long) {
+    suspend fun deleteStructuredCommandCrossRef(structuredCommandCrossRef: StructuredCommandCrossRef) {
+        database.structuredCommandCrossRefDao().delete(structuredCommandCrossRef)
+    }
+
+
+    suspend fun deleteSelectedCommandCrossRef(selectedCommandCrossRef: SelectedCommandCrossRef) {
+        database.selectedCommandCrossRefDao().delete(selectedCommandCrossRef)
+    }
+
+     suspend fun deleteStructuredCommandCrossRefById(commandId: Long) {
+        database.structuredCommandCrossRefDao().deleteByCommandId(commandId)
+    }
+
+    suspend fun deleteSelectedCommandCrossRefById(workoutId: Long) {
         database.selectedCommandCrossRefDao().deleteByWorkoutId(workoutId)
-    }
-
-     suspend fun deleteWorkoutCommandById(combinationId: Long) {
-        database.selectedCommandCrossRefDao().deleteByCombinationId(combinationId)
     }
 
      fun getWorkoutByIdFlow(workoutId: Long): Flow<Workout?> {

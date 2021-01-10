@@ -46,10 +46,12 @@ class LoginScreen : Fragment() {
 
         email_et.doAfterTextChanged {
             viewModel.email = it.toString()
+            viewModel.validate()
         }
 
         password_et.doAfterTextChanged {
             viewModel.password = it.toString()
+            viewModel.validate()
         }
     }
 

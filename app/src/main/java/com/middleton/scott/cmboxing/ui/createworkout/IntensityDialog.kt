@@ -31,6 +31,7 @@ class IntensityDialog(
         intensity_seekbar.progress = intensityProgress
         intensity_value_pb.progress = intensityProgress
         intensity_value_tv.text = intensityProgress.toString()
+
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog?.window?.setSoftInputMode(
             WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE

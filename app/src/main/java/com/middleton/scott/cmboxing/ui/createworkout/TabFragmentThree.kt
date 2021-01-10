@@ -10,13 +10,15 @@ import android.widget.Button
 import androidx.lifecycle.Observer
 import com.google.firebase.crashlytics.internal.common.CommonUtils.hideKeyboard
 import com.middleton.scott.cmboxing.R
+import com.middleton.scott.cmboxing.datasource.local.model.Command
+import com.middleton.scott.cmboxing.datasource.local.model.StructuredCommandCrossRef
 import com.middleton.scott.cmboxing.ui.base.BaseFragment
 import kotlinx.android.synthetic.main.fragment_tab_three.*
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 class TabFragmentThree : BaseFragment() {
     private val viewModel by lazy { requireParentFragment().getViewModel<CreateWorkoutSharedViewModel>() }
-    private lateinit var commandsFrequencyAdapter: CommmandsFrequencyAdapter
+    private lateinit var commandsFrequencyAdapter: CommandsFrequencyAdapter
     private lateinit var roundsAdapter: RoundsAdapter
 
     companion object {
@@ -26,10 +28,10 @@ class TabFragmentThree : BaseFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        commandsFrequencyAdapter = CommmandsFrequencyAdapter(childFragmentManager) { selectedCombinationCrossRef ->
-            viewModel.setCombinationFrequency(selectedCombinationCrossRef)
-        }
-        roundsAdapter = RoundsAdapter()
+        commandsFrequencyAdapter =
+            CommandsFrequencyAdapter(childFragmentManager) { selectedCombinationCrossRef ->
+                viewModel.setCombinationFrequency(selectedCombinationCrossRef)
+            }
     }
 
     override fun onCreateView(
@@ -43,6 +45,12 @@ class TabFragmentThree : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        roundsAdapter = RoundsAdapter(viewModel.audioFileBaseDirectory, parentFragmentManager, {
+            viewModel.addStructuredCommandCrossRefs(it)
+        }, {
+            viewModel.upsertStructuredCommandCrossRef(it)
+        })
+
         random_rv.adapter = commandsFrequencyAdapter
         structured_rv.adapter = roundsAdapter
 
@@ -55,27 +63,35 @@ class TabFragmentThree : BaseFragment() {
             if (viewModel.subscribe) {
                 if (!viewModel.selectedCommands.isNullOrEmpty()) {
                     commandsFrequencyAdapter.setAdapter(it, viewModel.selectedCommandCrossRefs)
-                    setRoundsAdapterFromVMData()
-                } else {
+                    setRoundsAdapterFromVMData(
+                        viewModel.workout.numberOfRounds,
+                        it,
+                        viewModel.structuredCommandCrossRefs
+                    )
                 }
             }
         })
 
         viewModel.structuredCommandCrossRefsLD.observe(viewLifecycleOwner, Observer {
-            if(it.isNotEmpty()){
-                roundsAdapter.setAdapter(viewModel.workout.numberOfRounds, viewModel.selectedCommands, it)
-                structured_rv.visibility = VISIBLE
-            } else {
-                structured_rv.visibility = GONE
+            if (it.isNotEmpty()) {
+                setRoundsAdapterFromVMData(
+                    viewModel.workout.numberOfRounds,
+                    viewModel.selectedCommands,
+                    it
+                )
             }
         })
 
         viewModel.numberOfRoundsLD.observe(viewLifecycleOwner, Observer {
-            setRoundsAdapterFromVMData()
+            setRoundsAdapterFromVMData(
+                it,
+                viewModel.selectedCommands,
+                viewModel.structuredCommandCrossRefs
+            )
         })
 
         viewModel.workoutTypeLD.observe(viewLifecycleOwner, Observer {
-            when(it){
+            when (it) {
                 WorkoutType.RANDOM -> {
                     random_rv.visibility = VISIBLE
                     structured_rv.visibility = GONE
@@ -84,14 +100,20 @@ class TabFragmentThree : BaseFragment() {
                     random_rv.visibility = GONE
                     structured_rv.visibility = VISIBLE
                 }
-                else -> {}
             }
-            setRoundsAdapterFromVMData()
         })
     }
 
-    private fun setRoundsAdapterFromVMData(){
-        roundsAdapter.setAdapter(viewModel.workout.numberOfRounds, viewModel.selectedCommands, viewModel.structuredCommandCrossRefs)
+    private fun setRoundsAdapterFromVMData(
+        roundCount: Int,
+        selectedCommands: List<Command>,
+        structuredCommandCrossRefs: List<StructuredCommandCrossRef>
+    ) {
+        roundsAdapter.setAdapter(
+            roundCount,
+            selectedCommands,
+            structuredCommandCrossRefs
+        )
     }
 
     private fun setClickListeners() {

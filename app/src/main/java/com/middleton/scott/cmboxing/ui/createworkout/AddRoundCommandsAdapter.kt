@@ -2,37 +2,44 @@ package com.middleton.scott.cmboxing.ui.createworkout
 
 import android.content.Context
 import android.media.MediaPlayer
+import android.os.Build
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
+import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
 import com.middleton.scott.cmboxing.R
 import com.middleton.scott.cmboxing.datasource.local.model.Command
+import com.middleton.scott.cmboxing.datasource.local.model.SelectedCommandCrossRef
 import com.middleton.scott.cmboxing.datasource.local.model.StructuredCommandCrossRef
+import com.middleton.scott.cmboxing.utils.customviews.CounterView
+import kotlinx.android.synthetic.main.counter_layout.view.*
 import java.io.IOException
+import java.util.ArrayList
 
-class RoundCommandsAdapter(
-    private val context: Context,
+class AddRoundCommandsAdapter(
     private val audioFileDirectory: String,
-    val commands: List<Command>,
-    val structuredCombinationCrossRefs: List<StructuredCommandCrossRef>,
-    private val onEditStructuredCommandCrossRef: ((StructuredCommandCrossRef) -> Unit)
-) : RecyclerView.Adapter<RoundCommandsAdapter.RoundCommandViewHolder>() {
+    val commands: List<Command>
+) : RecyclerView.Adapter<AddRoundCommandsAdapter.AddRoundCommandsViewHolder>() {
 
+    lateinit var context: Context
     private var mediaPlayer = MediaPlayer()
+
+    val commandCountList: MutableList<CommandCount> = arrayListOf()
 
     private var audioPlayingIndex = -1
     private var currentPlayingAudioLottie: LottieAnimationView? = null
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RoundCommandViewHolder {
-        return RoundCommandViewHolder(
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AddRoundCommandsViewHolder {
+        context = parent.context
+        return AddRoundCommandsViewHolder(
             LayoutInflater.from(parent.context).inflate(
-                R.layout.list_item_round_command,
+                R.layout.list_item_add_round_command,
                 parent,
                 false
             )
@@ -40,14 +47,24 @@ class RoundCommandsAdapter(
     }
 
     override fun getItemCount(): Int {
-        return structuredCombinationCrossRefs.size
+        return commands.size
     }
 
-    override fun onBindViewHolder(holder: RoundCommandViewHolder, position: Int) {
-        val currentCommand =
-            commands.firstOrNull { structuredCombinationCrossRefs[position].command_id == it.id }
+    override fun onBindViewHolder(holder: AddRoundCommandsViewHolder, position: Int) {
+        val command = commands[position]
+        holder.nameTV.text = commands[position].name
 
-        holder.commandNameTV.text = currentCommand?.name
+        holder.countView.count_TV.doAfterTextChanged { editable ->
+            val count = editable.toString().toInt()
+
+            val commandCount = commandCountList.firstOrNull { it.command.id == command.id }
+
+            if(commandCount != null){
+                commandCount.count = count
+            } else {
+                commandCountList.add(CommandCount(command, count))
+            }
+        }
 
         val playAudioLottie = holder.playAudioLottie
         playAudioLottie.speed = 3f
@@ -56,13 +73,20 @@ class RoundCommandsAdapter(
             if (!mediaPlayer.isPlaying || audioPlayingIndex != position) {
                 handlePlayAnimationLottie(true, currentPlayingAudioLottie)
                 handlePlayAnimationLottie(false, playAudioLottie)
-                currentCommand?.file_name?.let { fileName -> startPlaying(fileName, playAudioLottie) }
+                startPlaying(commands[position].file_name, playAudioLottie)
                 currentPlayingAudioLottie = playAudioLottie
                 audioPlayingIndex = position
             } else {
                 stopPlaying(playAudioLottie)
             }
         }
+    }
+
+    class AddRoundCommandsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val nameTV: TextView = view.findViewById(R.id.round_command_name_tv)
+        val parent: ConstraintLayout = view.findViewById(R.id.parent_cl)
+        val playAudioLottie: LottieAnimationView = view.findViewById(R.id.play_audio_lottie)
+        val countView: CounterView = view.findViewById(R.id.round_command_count_cv)
     }
 
     private fun startPlaying(fileName: String, playAudioLottie: LottieAnimationView) {
@@ -105,34 +129,13 @@ class RoundCommandsAdapter(
         }
     }
 
-    fun setBackgroundSelected(viewHolder: RoundCommandViewHolder) {
-        viewHolder.parent.background =
-            ContextCompat.getDrawable(context, R.drawable.rounded_stroke_background_highighted)
+    override fun getItemId(position: Int): Long {
+        return position.toLong()
     }
 
-    fun setBackgroundUnselected(viewHolder: RoundCommandViewHolder) {
-        viewHolder.parent.background =
-            ContextCompat.getDrawable(context, R.drawable.rounded_stroke_background)
+    override fun getItemViewType(position: Int): Int {
+        return position
     }
 
-    class RoundCommandViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val parent: ConstraintLayout = view.findViewById(R.id.round_command_parent_cl)
-        val commandNameTV: TextView = view.findViewById(R.id.command_name_tv)
-        val playAudioLottie: LottieAnimationView = view.findViewById(R.id.play_audio_lottie)
-    }
-
-    fun onPositionChanged(startPosition: Int, endPosition: Int) {
-        notifyItemMoved(
-            startPosition,
-            endPosition
-        )
-        val startCrossRef = structuredCombinationCrossRefs[startPosition]
-        val endCrossRef = structuredCombinationCrossRefs[endPosition]
-
-        startCrossRef.position_index = endPosition
-        endCrossRef.position_index = startPosition
-
-        onEditStructuredCommandCrossRef(startCrossRef)
-        onEditStructuredCommandCrossRef(endCrossRef)
-    }
+    data class CommandCount(var command: Command, var count: Int)
 }
