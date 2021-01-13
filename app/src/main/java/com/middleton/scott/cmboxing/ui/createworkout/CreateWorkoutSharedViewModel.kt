@@ -48,7 +48,7 @@ class CreateWorkoutSharedViewModel(
     val tabTwoValidatedLD = MutableLiveData(false)
     val requiredSummaryFieldLD = MutableLiveData<Boolean>()
 
-    val subscribeLD = MutableLiveData<Boolean>(false)
+    val subscribeLD = MutableLiveData(false)
 
     init {
         if (workoutId == -1L) {
@@ -206,13 +206,14 @@ class CreateWorkoutSharedViewModel(
         }
     }
 
-    fun addStructuredCommandCrossRefs(addedStructuredCommandCrossRefs: List<StructuredCommandCrossRef>) {
+    fun upsertStructuredCommandCrossRefs(structuredCommandCrossRefs: List<StructuredCommandCrossRef>) {
         viewModelScope.launch {
-            addedStructuredCommandCrossRefs.forEach {
-                it.workout_id = workoutId
+            structuredCommandCrossRefs.forEachIndexed { index, structuredCommandCrossRef ->
+                structuredCommandCrossRef.workout_id = workoutId
+                structuredCommandCrossRef.position_index = index
             }
             dataRepository.getLocalDataSource()
-                .upsertStructuredCommandCrossRefs(addedStructuredCommandCrossRefs)
+                .upsertStructuredCommandCrossRefs(structuredCommandCrossRefs)
         }
     }
 

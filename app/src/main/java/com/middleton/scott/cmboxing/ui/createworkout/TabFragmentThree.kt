@@ -46,15 +46,21 @@ class TabFragmentThree : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         roundsAdapter = RoundsAdapter(viewModel.audioFileBaseDirectory, parentFragmentManager, {
-            viewModel.addStructuredCommandCrossRefs(it)
+            viewModel.upsertStructuredCommandCrossRefs(it)
         }, {
             viewModel.upsertStructuredCommandCrossRef(it)
+        }, {
+            viewModel.upsertStructuredCommandCrossRefs(it)
         })
 
         random_rv.adapter = commandsFrequencyAdapter
         structured_rv.adapter = roundsAdapter
 
-        subscribeUI()
+        viewModel.subscribeLD.observe(viewLifecycleOwner, Observer {
+            if (it) {
+                subscribeUI()
+            }
+        })
         setClickListeners()
     }
 

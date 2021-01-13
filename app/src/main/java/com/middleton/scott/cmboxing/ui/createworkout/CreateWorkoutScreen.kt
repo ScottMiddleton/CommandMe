@@ -65,9 +65,13 @@ class CreateWorkoutScreen : BaseFragment() {
         tabIncomplete = ContextCompat.getDrawable(view.context, R.drawable.shape_circle_incomplete)
         tabComplete = ContextCompat.getDrawable(view.context, R.drawable.shape_circle_complete)
 
-        subscribeUI()
-
         setupViewPagerAndTabLayout()
+
+        viewModel.subscribeLD.observe(viewLifecycleOwner, Observer {
+            if (it) {
+                subscribeUI()
+            }
+        })
     }
 
     private fun subscribeUI() {

@@ -21,8 +21,9 @@ class RoundCommandsAdapter(
     private val context: Context,
     private val audioFileDirectory: String,
     val commands: List<Command>,
-    private val structuredCombinationCrossRefs: List<StructuredCommandCrossRef>,
-    private val onEditStructuredCommandCrossRef: ((StructuredCommandCrossRef) -> Unit)
+    val structuredCombinationCrossRefs: List<StructuredCommandCrossRef>,
+    private val onEditStructuredCommandCrossRef: ((StructuredCommandCrossRef) -> Unit),
+    val onPositionsChanged: ((List<StructuredCommandCrossRef>) -> Unit)
 ) : RecyclerView.Adapter<RoundCommandsAdapter.RoundCommandViewHolder>() {
 
     private var mediaPlayer = MediaPlayer()
@@ -132,15 +133,10 @@ class RoundCommandsAdapter(
             startPosition,
             endPosition
         )
-        val startCrossRef = structuredCombinationCrossRefs[startPosition]
-        val endCrossRef = structuredCombinationCrossRefs[endPosition]
-
-        startCrossRef.position_index = endPosition
-        endCrossRef.position_index = startPosition
-
-        onEditStructuredCommandCrossRef(startCrossRef)
-        onEditStructuredCommandCrossRef(endCrossRef)
-
         Collections.swap(structuredCombinationCrossRefs, startPosition, endPosition)
+    }
+
+    fun onPositionsChanged(){
+        onPositionsChanged(structuredCombinationCrossRefs)
     }
 }

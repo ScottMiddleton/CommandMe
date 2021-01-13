@@ -25,7 +25,8 @@ class RoundsAdapter(
     private val audioFileBaseDirectory: String,
     private val fragmentManager: FragmentManager,
     private val onApplyRoundCommands: ((List<StructuredCommandCrossRef>) -> Unit),
-    private val onEditStructuredCommandCrossRef: ((StructuredCommandCrossRef) -> Unit)
+    private val onEditStructuredCommandCrossRef: ((StructuredCommandCrossRef) -> Unit),
+    private val onPositionsChanged: ((List<StructuredCommandCrossRef>) -> Unit)
 ) : RecyclerView.Adapter<RoundsAdapter.RoundViewHolder>() {
 
     lateinit var context: Context
@@ -93,7 +94,8 @@ class RoundsAdapter(
             audioFileBaseDirectory,
             structuredCommandCrossRefs,
             selectedCommands,
-            onEditStructuredCommandCrossRef
+            onEditStructuredCommandCrossRef,
+            onPositionsChanged
         )
     }
 
@@ -113,14 +115,16 @@ class RoundsAdapter(
             audioFileBaseDirectory: String,
             structuredCommandCrossRefs: List<StructuredCommandCrossRef>,
             commands: MutableList<Command>,
-            onEditStructuredCommandCrossRef: ((StructuredCommandCrossRef) -> Unit)
+            onEditStructuredCommandCrossRef: ((StructuredCommandCrossRef) -> Unit),
+            onPositionsChanged: ((List<StructuredCommandCrossRef>) -> Unit)
         ) {
             adapter = RoundCommandsAdapter(
                 context,
                 audioFileBaseDirectory,
                 commands,
                 structuredCommandCrossRefs,
-                onEditStructuredCommandCrossRef
+                onEditStructuredCommandCrossRef,
+                onPositionsChanged
             )
 
             if (!structuredCommandCrossRefs.isNullOrEmpty()) {
@@ -205,6 +209,8 @@ class RoundsAdapter(
                     if (viewHolder is RoundCommandsAdapter.RoundCommandViewHolder) {
                         adapter.setBackgroundUnselected(viewHolder)
                     }
+
+                    adapter.onPositionsChanged()
                 }
 
                 override fun onChildDraw(

@@ -169,10 +169,14 @@ class TabFragmentTwo : BaseFragment() {
 //        val itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
 //        itemTouchHelper.attachToRecyclerView(combinations_RV)
 
-        subscribeUI()
-
         viewModel.audioFileBaseDirectory =
             context?.getExternalFilesDir(null)?.absolutePath + "/"
+
+        viewModel.subscribeLD.observe(viewLifecycleOwner, Observer {
+            if (it) {
+                subscribeUI()
+            }
+        })
 
         setClickListeners()
     }
