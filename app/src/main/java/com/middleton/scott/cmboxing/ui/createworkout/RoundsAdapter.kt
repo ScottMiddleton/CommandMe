@@ -19,7 +19,6 @@ import com.middleton.scott.cmboxing.R
 import com.middleton.scott.cmboxing.datasource.local.model.Command
 import com.middleton.scott.cmboxing.datasource.local.model.StructuredCommandCrossRef
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
-import kotlinx.android.synthetic.main.fragment_my_workouts.*
 import net.cachapa.expandablelayout.ExpandableLayout
 
 class RoundsAdapter(
@@ -33,7 +32,7 @@ class RoundsAdapter(
 
     private var roundCount = 0
     var selectedCommands = mutableListOf<Command>()
-    private var structuredCommandCrossRefs = ArrayList<StructuredCommandCrossRef>()
+    var structuredCommandCrossRefs = ArrayList<StructuredCommandCrossRef>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RoundViewHolder {
         context = parent.context
@@ -63,11 +62,11 @@ class RoundsAdapter(
 
         holder.roundTV.text = context.getString(R.string.round) + " " + (position + 1).toString()
 
-        val roundCommandCrossRefs = structuredCommandCrossRefs.filter {
+        val structuredCommandCrossRefs = structuredCommandCrossRefs.filter {
             it.round == position + 1
         }.sortedBy { it.position_index }
 
-        if (roundCommandCrossRefs.isNotEmpty()) {
+        if (structuredCommandCrossRefs.isNotEmpty()) {
             holder.emptyStateTV.visibility = GONE
             holder.roundCommandsRV.visibility = VISIBLE
             holder.instructionTV.visibility = VISIBLE
@@ -80,6 +79,7 @@ class RoundsAdapter(
         holder.addCommandsBtn.setOnClickListener {
             AddRoundCommandDialog(
                 audioFileBaseDirectory,
+                structuredCommandCrossRefs.size,
                 position + 1,
                 selectedCommands,
                 onApplyRoundCommands
@@ -91,14 +91,14 @@ class RoundsAdapter(
 
         holder.bind(
             audioFileBaseDirectory,
-            roundCommandCrossRefs,
+            structuredCommandCrossRefs,
             selectedCommands,
             onEditStructuredCommandCrossRef
         )
     }
 
     class RoundViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val context = view.context
+        val context: Context = view.context
         val expandableLayout: ExpandableLayout = view.findViewById(R.id.expandable_layout)
         val frequencyIB: ImageButton = view.findViewById(R.id.expand_collapse_button)
         val roundCommandsRV: RecyclerView = view.findViewById(R.id.round_commands_rv)
@@ -247,7 +247,7 @@ class RoundsAdapter(
                 }
             }
 
-        val itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
+        private val itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
     }
 
 

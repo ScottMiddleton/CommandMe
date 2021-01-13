@@ -16,6 +16,7 @@ import kotlinx.android.synthetic.main.dialog_add_round_commands.*
 
 class AddRoundCommandDialog(
     private val audioFileBaseDirectory: String,
+    private val currentNumberOfStructuredCrossRefs: Int,
     private val round: Int,
     val commands: List<Command>,
     private val onApply: ((List<StructuredCommandCrossRef>) -> Unit)
@@ -57,6 +58,7 @@ class AddRoundCommandDialog(
 
         confirm_btn.setOnClickListener {
             val structuredCommandCrossRefs: MutableList<StructuredCommandCrossRef> = arrayListOf()
+            var index = currentNumberOfStructuredCrossRefs
             adapter.commandCountList.forEach { commandCount ->
                 repeat(commandCount.count) {
                     structuredCommandCrossRefs.add(
@@ -64,9 +66,11 @@ class AddRoundCommandDialog(
                             -1,
                             commandCount.command.id,
                             round,
-                            commandCount.command.timeToCompleteMillis
+                            commandCount.command.timeToCompleteMillis,
+                            index
                         )
                     )
+                    index ++
                 }
             }
             dismiss()

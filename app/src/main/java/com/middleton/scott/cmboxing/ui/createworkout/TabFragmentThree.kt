@@ -73,7 +73,7 @@ class TabFragmentThree : BaseFragment() {
         })
 
         viewModel.structuredCommandCrossRefsLD.observe(viewLifecycleOwner, Observer {
-            if (it.isNotEmpty()) {
+            if (it.isNotEmpty() && roundsAdapter.structuredCommandCrossRefs.size != it.size) {
                 setRoundsAdapterFromVMData(
                     viewModel.workout.numberOfRounds,
                     viewModel.selectedCommands,

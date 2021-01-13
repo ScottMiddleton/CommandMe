@@ -208,11 +208,8 @@ class CreateWorkoutSharedViewModel(
 
     fun addStructuredCommandCrossRefs(addedStructuredCommandCrossRefs: List<StructuredCommandCrossRef>) {
         viewModelScope.launch {
-            var index = structuredCommandCrossRefs.size
             addedStructuredCommandCrossRefs.forEach {
                 it.workout_id = workoutId
-                it.position_index = index
-                index++
             }
             dataRepository.getLocalDataSource()
                 .upsertStructuredCommandCrossRefs(addedStructuredCommandCrossRefs)

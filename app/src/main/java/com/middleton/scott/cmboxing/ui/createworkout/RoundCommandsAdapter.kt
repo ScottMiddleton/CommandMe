@@ -15,12 +15,13 @@ import com.middleton.scott.cmboxing.R
 import com.middleton.scott.cmboxing.datasource.local.model.Command
 import com.middleton.scott.cmboxing.datasource.local.model.StructuredCommandCrossRef
 import java.io.IOException
+import java.util.*
 
 class RoundCommandsAdapter(
     private val context: Context,
     private val audioFileDirectory: String,
     val commands: List<Command>,
-    val structuredCombinationCrossRefs: List<StructuredCommandCrossRef>,
+    private val structuredCombinationCrossRefs: List<StructuredCommandCrossRef>,
     private val onEditStructuredCommandCrossRef: ((StructuredCommandCrossRef) -> Unit)
 ) : RecyclerView.Adapter<RoundCommandsAdapter.RoundCommandViewHolder>() {
 
@@ -56,7 +57,12 @@ class RoundCommandsAdapter(
             if (!mediaPlayer.isPlaying || audioPlayingIndex != position) {
                 handlePlayAnimationLottie(true, currentPlayingAudioLottie)
                 handlePlayAnimationLottie(false, playAudioLottie)
-                currentCommand?.file_name?.let { fileName -> startPlaying(fileName, playAudioLottie) }
+                currentCommand?.file_name?.let { fileName ->
+                    startPlaying(
+                        fileName,
+                        playAudioLottie
+                    )
+                }
                 currentPlayingAudioLottie = playAudioLottie
                 audioPlayingIndex = position
             } else {
@@ -134,5 +140,7 @@ class RoundCommandsAdapter(
 
         onEditStructuredCommandCrossRef(startCrossRef)
         onEditStructuredCommandCrossRef(endCrossRef)
+
+        Collections.swap(structuredCombinationCrossRefs, startPosition, endPosition)
     }
 }
