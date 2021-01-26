@@ -14,7 +14,7 @@ import com.middleton.scott.cmboxing.datasource.local.model.Command
 import com.middleton.scott.cmboxing.datasource.local.model.StructuredCommandCrossRef
 import kotlinx.android.synthetic.main.dialog_add_round_commands.*
 
-class AddRoundCommandDialog(
+class PasteRoundDialog(
     private val audioFileBaseDirectory: String,
     private val currentNumberOfStructuredCrossRefs: Int,
     private val round: Int,
@@ -34,7 +34,7 @@ class AddRoundCommandDialog(
             commands
         )
 
-        return inflater.inflate(R.layout.dialog_add_round_commands, container)
+        return inflater.inflate(R.layout.dialog_paste_round, container)
     }
 
     override fun onViewCreated(view: View, @Nullable savedInstanceState: Bundle?) {

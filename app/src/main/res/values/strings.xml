@@ -51,7 +51,7 @@
     <string name="very_rare">Very Rare</string>
     <string name="round">Round</string>
     <string name="of">of</string>
-    <string name="time_to_complete">Time to complete</string>
+    <string name="time_to_complete">Default time to complete</string>
     <string name="remaining">remaining</string>
     <string name="elapsed">Elapsed</string>
     <string name="restart">Restart</string>
@@ -115,5 +115,7 @@
     <string name="press_and_hold_to_reorder_commands">Press and hold to reorder commands</string>
     <string name="apply">Apply</string>
     <string name="confirm">Comfirm</string>
+    <string name="time_allocated">Time allocated</string>
+    <string name="check_the_rounds_you_would_like_to_paste">Check the rounds you would like to paste</string>
 
 </resources>

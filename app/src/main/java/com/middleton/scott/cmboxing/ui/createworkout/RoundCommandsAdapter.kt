@@ -3,25 +3,29 @@ package com.middleton.scott.cmboxing.ui.createworkout
 import android.content.Context
 import android.media.MediaPlayer
 import android.util.Log
+import android.util.TimeUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
 import com.middleton.scott.cmboxing.R
 import com.middleton.scott.cmboxing.datasource.local.model.Command
 import com.middleton.scott.cmboxing.datasource.local.model.StructuredCommandCrossRef
+import com.middleton.scott.cmboxing.utils.DateTimeUtils
 import java.io.IOException
 import java.util.*
 
 class RoundCommandsAdapter(
     private val context: Context,
+    private val childFragmentManager: FragmentManager,
     private val audioFileDirectory: String,
     val commands: List<Command>,
-    val structuredCombinationCrossRefs: List<StructuredCommandCrossRef>,
+    private val structuredCombinationCrossRefs: List<StructuredCommandCrossRef>,
     private val onEditStructuredCommandCrossRef: ((StructuredCommandCrossRef) -> Unit),
     val onPositionsChanged: ((List<StructuredCommandCrossRef>) -> Unit)
 ) : RecyclerView.Adapter<RoundCommandsAdapter.RoundCommandViewHolder>() {
@@ -46,8 +50,8 @@ class RoundCommandsAdapter(
     }
 
     override fun onBindViewHolder(holder: RoundCommandViewHolder, position: Int) {
-        val currentCommand =
-            commands.firstOrNull { structuredCombinationCrossRefs[position].command_id == it.id }
+        val crossRef = structuredCombinationCrossRefs[position]
+        val currentCommand = commands.firstOrNull { crossRef.command_id == it.id }
 
         holder.commandNameTV.text = currentCommand?.name
 
@@ -68,6 +72,22 @@ class RoundCommandsAdapter(
                 audioPlayingIndex = position
             } else {
                 stopPlaying(playAudioLottie)
+            }
+        }
+
+        currentCommand?.let { command ->
+            holder.timeTV.text = DateTimeUtils.toMinuteSeconds(crossRef.time_allocated_secs)
+
+            holder.timeTV.setOnClickListener {
+                NumberPickerMinutesSecondsDialog(context.getString(R.string.time_allocated),
+                    crossRef.time_allocated_secs,
+                    { newSecs ->
+                        command.timeToCompleteSecs = newSecs
+                        crossRef.time_allocated_secs = newSecs
+                        onPositionsChanged(structuredCombinationCrossRefs)
+                        holder.timeTV.text = DateTimeUtils.toMinuteSeconds(newSecs)
+                    },
+                    {}).show(childFragmentManager, null)
             }
         }
     }
@@ -126,6 +146,9 @@ class RoundCommandsAdapter(
         val parent: ConstraintLayout = view.findViewById(R.id.round_command_parent_cl)
         val commandNameTV: TextView = view.findViewById(R.id.command_name_tv)
         val playAudioLottie: LottieAnimationView = view.findViewById(R.id.play_audio_lottie)
+        val timeTV: TextView = view.findViewById(R.id.time_allocated_tv)
+
+        lateinit var structuredCommandCrossRef: StructuredCommandCrossRef
     }
 
     fun onPositionChanged(startPosition: Int, endPosition: Int) {
@@ -136,7 +159,7 @@ class RoundCommandsAdapter(
         Collections.swap(structuredCombinationCrossRefs, startPosition, endPosition)
     }
 
-    fun onPositionsChanged(){
+    fun onPositionsChanged() {
         onPositionsChanged(structuredCombinationCrossRefs)
     }
 }

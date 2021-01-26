@@ -90,8 +90,13 @@ class RoundsAdapter(
             )
         }
 
+        holder.copyBtn.setOnClickListener {
+
+        }
+
         holder.bind(
             audioFileBaseDirectory,
+            fragmentManager,
             structuredCommandCrossRefs,
             selectedCommands,
             onEditStructuredCommandCrossRef,
@@ -108,11 +113,13 @@ class RoundsAdapter(
         val roundTV: TextView = view.findViewById(R.id.round_tv)
         val instructionTV: TextView = view.findViewById(R.id.reorder_instruction_tv)
         val addCommandsBtn: LinearLayout = view.findViewById(R.id.add_commands_btn)
+        val copyBtn: LinearLayout = view.findViewById(R.id.copy_btn)
 
         lateinit var adapter: RoundCommandsAdapter
 
         fun bind(
             audioFileBaseDirectory: String,
+            fragmentManager: FragmentManager,
             structuredCommandCrossRefs: List<StructuredCommandCrossRef>,
             commands: MutableList<Command>,
             onEditStructuredCommandCrossRef: ((StructuredCommandCrossRef) -> Unit),
@@ -120,6 +127,7 @@ class RoundsAdapter(
         ) {
             adapter = RoundCommandsAdapter(
                 context,
+                fragmentManager,
                 audioFileBaseDirectory,
                 commands,
                 structuredCommandCrossRefs,

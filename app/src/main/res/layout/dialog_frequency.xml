@@ -19,7 +19,7 @@
         android:layout_marginEnd="40dp"
         android:layout_marginStart="40dp"
         android:layout_gravity="center"
-        android:background="@drawable/workout_type_btn_background"
+        android:background="@drawable/round_command_time_btn_background"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -33,7 +33,7 @@
         android:padding="10dp"
         android:layout_gravity="center"
         android:layout_marginBottom="8dp"
-        android:background="@drawable/workout_type_btn_background"
+        android:background="@drawable/round_command_time_btn_background"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -47,7 +47,7 @@
         android:padding="10dp"
         android:layout_gravity="center"
         android:layout_marginBottom="8dp"
-        android:background="@drawable/workout_type_btn_background"
+        android:background="@drawable/round_command_time_btn_background"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -61,7 +61,7 @@
         android:padding="10dp"
         android:layout_gravity="center"
         android:layout_marginBottom="8dp"
-        android:background="@drawable/workout_type_btn_background"
+        android:background="@drawable/round_command_time_btn_background"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -75,7 +75,7 @@
         android:padding="10dp"
         android:layout_gravity="center"
         android:layout_marginBottom="20dp"
-        android:background="@drawable/workout_type_btn_background"
+        android:background="@drawable/round_command_time_btn_background"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

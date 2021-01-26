@@ -11,7 +11,7 @@ data class StructuredCommandCrossRef constructor(
     var workout_id: Long,
     val command_id: Long,
     val round: Int,
-    val time_allocated_millis: Long,
+    var time_allocated_secs: Int,
     var position_index: Int = -1
 ) : BaseDbModel()
 

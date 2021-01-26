@@ -19,7 +19,7 @@ data class Workout constructor(
 @Entity()
 data class Command constructor(
     var name: String,
-    var timeToCompleteMillis: Long,
+    var timeToCompleteSecs: Int,
     var file_name: String
 ) : BaseDbModel()
 

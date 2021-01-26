@@ -15,7 +15,7 @@
     tools:layout_editor_absoluteX="12dp">
 
     <ImageButton
-        android:id="@+id/copy_paste_button"
+        android:id="@+id/copy_btn"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:background="@drawable/edit_btn_background"
@@ -40,7 +40,7 @@
         android:text="Round 1"
         android:textSize="18sp"
         app:layout_constraintEnd_toStartOf="@+id/expand_collapse_button"
-        app:layout_constraintStart_toEndOf="@+id/copy_paste_button"
+        app:layout_constraintStart_toEndOf="@+id/copy_btn"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
