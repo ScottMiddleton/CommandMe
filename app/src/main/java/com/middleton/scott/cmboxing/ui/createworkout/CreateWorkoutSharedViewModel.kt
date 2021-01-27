@@ -217,6 +217,13 @@ class CreateWorkoutSharedViewModel(
         }
     }
 
+    fun pasteStructuredCommandCrossRefs(copiedRound: Int, roundsToPasteList: List<Int>) {
+        viewModelScope.launch {
+            dataRepository.getLocalDataSource()
+                .pasteStructuredCommandCrossRefs(copiedRound, roundsToPasteList)
+        }
+    }
+
     fun setWorkoutType(type: WorkoutType) {
         workout.workout_type = type
         workoutTypeLD.value = type

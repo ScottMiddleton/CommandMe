@@ -9,10 +9,10 @@
     android:layout_marginStart="12dp"
     android:layout_marginTop="6dp"
     android:layout_marginEnd="12dp"
-    android:background="@drawable/list_item_background">
+    android:background="@drawable/list_item_background_dark_faded">
 
     <TextView
-        android:id="@+id/command_name_tv"
+        android:id="@+id/round_name_tv"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"

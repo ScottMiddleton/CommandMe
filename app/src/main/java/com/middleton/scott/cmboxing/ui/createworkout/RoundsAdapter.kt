@@ -24,9 +24,10 @@ import net.cachapa.expandablelayout.ExpandableLayout
 class RoundsAdapter(
     private val audioFileBaseDirectory: String,
     private val fragmentManager: FragmentManager,
-    private val onApplyRoundCommands: ((List<StructuredCommandCrossRef>) -> Unit),
+    private val onApplyStructuredCommandCrossRefs: ((List<StructuredCommandCrossRef>) -> Unit),
     private val onEditStructuredCommandCrossRef: ((StructuredCommandCrossRef) -> Unit),
-    private val onPositionsChanged: ((List<StructuredCommandCrossRef>) -> Unit)
+    private val onPositionsChanged: ((List<StructuredCommandCrossRef>) -> Unit),
+    private val onPasteStructuredCommandCrossRefs: ( (copiedRound: Int, List<Int>) -> Unit)
 ) : RecyclerView.Adapter<RoundsAdapter.RoundViewHolder>() {
 
     lateinit var context: Context
@@ -61,7 +62,7 @@ class RoundsAdapter(
             }
         }
 
-        holder.roundTV.text = context.getString(R.string.round) + " " + (position + 1).toString()
+        holder.roundTV.text = context.getString(R.string.round_number, (position + 1).toString())
 
         val structuredCommandCrossRefs = structuredCommandCrossRefs.filter {
             it.round == position + 1
@@ -83,7 +84,7 @@ class RoundsAdapter(
                 structuredCommandCrossRefs.size,
                 position + 1,
                 selectedCommands,
-                onApplyRoundCommands
+                onApplyStructuredCommandCrossRefs
             ).show(
                 fragmentManager,
                 null
@@ -91,7 +92,9 @@ class RoundsAdapter(
         }
 
         holder.copyBtn.setOnClickListener {
-
+            PasteRoundDialog(position + 1, roundCount) {
+                onPasteStructuredCommandCrossRefs(position + 1, it)
+            }.show(fragmentManager, null)
         }
 
         holder.bind(
@@ -113,7 +116,7 @@ class RoundsAdapter(
         val roundTV: TextView = view.findViewById(R.id.round_tv)
         val instructionTV: TextView = view.findViewById(R.id.reorder_instruction_tv)
         val addCommandsBtn: LinearLayout = view.findViewById(R.id.add_commands_btn)
-        val copyBtn: LinearLayout = view.findViewById(R.id.copy_btn)
+        val copyBtn: ImageButton = view.findViewById(R.id.copy_btn)
 
         lateinit var adapter: RoundCommandsAdapter
 

@@ -22,6 +22,8 @@
     <string name="new_command">New command</string>
     <string name="edit">Edit</string>
     <string name="rounds_combos">%1$s rounds - %2$s combos </string>
+    <string name="round_copied">Round %1$s copied</string>
+    <string name="round_number">Round %1$s</string>
     <string name="name_and_save">Name and save</string>
     <string name="command_name">Command name</string>
     <string name="delete">Delete</string>
@@ -117,5 +119,7 @@
     <string name="confirm">Comfirm</string>
     <string name="time_allocated">Time allocated</string>
     <string name="check_the_rounds_you_would_like_to_paste">Check the rounds you would like to paste</string>
+    <string name="select_all">Select All</string>
+    <string name="paste">Paste</string>
 
 </resources>

@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@drawable/list_item_background_solid"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/list_item_background_solid"
+    android:orientation="vertical">
 
     <FrameLayout
         android:id="@+id/title_fl"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
@@ -40,33 +41,64 @@
         android:id="@+id/view2"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/white_faded_20"
-        app:layout_constraintTop_toBottomOf="@+id/title_fl" />
+        android:layout_marginTop="10dp"
+        android:layout_below="@id/description_tv"
+        android:background="@color/white_faded_20" />
 
     <TextView
         android:id="@+id/description_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:textAlignment="center"
-        app:layout_constraintTop_toBottomOf="@id/view2"
-        android:text="@string/check_the_rounds_you_would_like_to_paste" />
+        android:textSize="14sp"
+        android:paddingEnd="20dp"
+        android:paddingStart="20dp"
+        android:layout_below="@id/title_fl"
+        android:text="@string/check_the_rounds_you_would_like_to_paste"
+        android:textAlignment="center" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/select_all"
+        android:layout_marginEnd="10dp"
+        android:gravity="center"
+        android:textSize="16sp"
+        android:layout_alignTop="@id/select_all_cb"
+        android:layout_alignBottom="@id/select_all_cb"
+        android:layout_toStartOf="@id/select_all_cb"
+        android:layout_below="@id/description_tv"/>
+
+    <CheckBox
+        android:id="@+id/select_all_cb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/view2"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="25dp"
+        android:minWidth="0dp"
+        android:minHeight="0dp"
+        android:scaleX="1.1"
+        android:scaleY="1.1" />
+
 
     <LinearLayout
         android:id="@+id/linearLayout5"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/select_all_cb"
+        android:layout_above="@+id/apply_btn_layout"
         android:orientation="vertical"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintBottom_toTopOf="@id/apply_btn_layout"
-        app:layout_constraintTop_toBottomOf="@id/description_tv">
+        app:layout_constraintTop_toBottomOf="@id/select_all_cb">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/add_round_commands_RV"
+            android:id="@+id/paste_round_RV"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/list_item_add_round_command" />
+            tools:listitem="@layout/list_item_paste_round" />
 
     </LinearLayout>
 
@@ -86,15 +118,15 @@
             android:background="@color/white_faded_20" />
 
         <Button
-            android:id="@+id/confirm_btn"
+            android:id="@+id/paste_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="30dp"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="30dp"
             android:layout_marginBottom="10dp"
-            android:text="@string/confirm"
+            android:text="@string/paste"
             android:textColor="@color/white" />
     </LinearLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>

@@ -10,7 +10,7 @@ import com.middleton.scott.cmboxing.datasource.local.enums.CommandFrequencyType
 data class StructuredCommandCrossRef constructor(
     var workout_id: Long,
     val command_id: Long,
-    val round: Int,
+    var round: Int,
     var time_allocated_secs: Int,
     var position_index: Int = -1
 ) : BaseDbModel()

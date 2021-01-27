@@ -10,36 +10,41 @@ import android.view.ViewGroup
 import androidx.annotation.Nullable
 import androidx.fragment.app.DialogFragment
 import com.middleton.scott.cmboxing.R
-import com.middleton.scott.cmboxing.datasource.local.model.Command
-import com.middleton.scott.cmboxing.datasource.local.model.StructuredCommandCrossRef
-import kotlinx.android.synthetic.main.dialog_add_round_commands.*
+import kotlinx.android.synthetic.main.dialog_paste_round.*
 
 class PasteRoundDialog(
-    private val audioFileBaseDirectory: String,
-    private val currentNumberOfStructuredCrossRefs: Int,
-    private val round: Int,
-    val commands: List<Command>,
-    private val onApply: ((List<StructuredCommandCrossRef>) -> Unit)
+    private val copiedRound: Int,
+    private val roundCount: Int,
+    private val onPaste: ((roundsToPaste: List<Int>) -> Unit)
 ) : DialogFragment() {
 
-    lateinit var adapter: AddRoundCommandsAdapter
+    lateinit var adapter: PasteRoundsAdapter
+
+    private var roundsToPaste = mutableListOf<Int>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
 
-        adapter = AddRoundCommandsAdapter(
-            audioFileBaseDirectory,
-            commands
-        )
+        val rounds = mutableListOf<Int>()
+
+        repeat(roundCount) {
+            rounds.add(it + 1)
+        }
+
+        rounds.remove(copiedRound)
+
+        adapter = PasteRoundsAdapter(rounds) {
+            roundsToPaste = it
+        }
 
         return inflater.inflate(R.layout.dialog_paste_round, container)
     }
 
     override fun onViewCreated(view: View, @Nullable savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        add_round_commands_RV.adapter = adapter
+        paste_round_RV.adapter = adapter
         setClickListeners()
 
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -48,7 +53,16 @@ class PasteRoundDialog(
         val inset = InsetDrawable(back, 0, 240, 0, 240)
         dialog?.window?.setBackgroundDrawable(inset)
 
-        round_tv.text = context?.getString(R.string.round) + " " + round.toString()
+        round_tv.text = view.context.getString(R.string.round_copied, copiedRound.toString())
+
+        paste_btn.setOnClickListener {
+            onPaste(roundsToPaste)
+            dismiss()
+        }
+
+        select_all_cb.setOnCheckedChangeListener { _, isChecked ->
+            adapter.selectAllChecked(isChecked)
+        }
     }
 
     private fun setClickListeners() {
@@ -56,25 +70,7 @@ class PasteRoundDialog(
             dismiss()
         }
 
-        confirm_btn.setOnClickListener {
-            val structuredCommandCrossRefs: MutableList<StructuredCommandCrossRef> = arrayListOf()
-            var index = currentNumberOfStructuredCrossRefs
-            adapter.commandCountList.forEach { commandCount ->
-                repeat(commandCount.count) {
-                    structuredCommandCrossRefs.add(
-                        StructuredCommandCrossRef(
-                            -1,
-                            commandCount.command.id,
-                            round,
-                            commandCount.command.timeToCompleteSecs,
-                            index
-                        )
-                    )
-                    index ++
-                }
-            }
-            dismiss()
-            onApply(structuredCommandCrossRefs)
+        paste_btn.setOnClickListener {
         }
     }
 }

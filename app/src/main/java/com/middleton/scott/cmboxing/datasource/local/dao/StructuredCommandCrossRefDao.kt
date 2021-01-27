@@ -14,7 +14,10 @@ abstract class StructuredCommandCrossRefDao : BaseDao<StructuredCommandCrossRef>
     abstract fun getStructuredCommandCrossRefsFlow(workoutId: Long) : Flow<List<StructuredCommandCrossRef>>
 
     @Query("SELECT * FROM structured_commands WHERE workout_id = :workoutId")
-    abstract fun getStructuredCommandCrossRefs(workoutId: Long) : LiveData<List<StructuredCommandCrossRef>>
+    abstract fun getStructuredCommandCrossRefsLD(workoutId: Long) : LiveData<List<StructuredCommandCrossRef>>
+
+    @Query("SELECT * FROM structured_commands WHERE round = :round")
+    abstract fun getStructuredCommandCrossRefsByRound(round: Int) : List<StructuredCommandCrossRef>
 
     @Query("SELECT * FROM structured_commands WHERE workout_id = :workoutId")
     abstract fun getSelectedCombinationCrossRefs(workoutId: Long) : List<StructuredCommandCrossRef>

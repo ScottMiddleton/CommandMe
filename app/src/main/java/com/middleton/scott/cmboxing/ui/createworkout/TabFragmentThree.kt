@@ -51,6 +51,8 @@ class TabFragmentThree : BaseFragment() {
             viewModel.upsertStructuredCommandCrossRef(it)
         }, {
             viewModel.upsertStructuredCommandCrossRefs(it)
+        }, { copiedRound, roundsToPasteList ->
+            viewModel.pasteStructuredCommandCrossRefs(copiedRound, roundsToPasteList)
         })
 
         random_rv.adapter = commandsFrequencyAdapter

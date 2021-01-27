@@ -4,6 +4,7 @@ import android.content.SharedPreferences
 import androidx.lifecycle.LiveData
 import com.middleton.scott.cmboxing.datasource.local.model.*
 import kotlinx.coroutines.flow.Flow
+import java.util.ArrayList
 
 class LocalDataSource(
     private val sharedPreferences: SharedPreferences,
@@ -126,6 +127,23 @@ class LocalDataSource(
         database.commandDao().delete(command)
     }
 
+    suspend fun pasteStructuredCommandCrossRefs(copiedRound: Int, roundsToPaste: List<Int>){
+        val copiedRefs = database.structuredCommandCrossRefDao().getStructuredCommandCrossRefsByRound(copiedRound)
 
+        roundsToPaste.forEach { round ->
+            database.structuredCommandCrossRefDao().deleteByRound(round)
 
+            if(copiedRefs.isNotEmpty()){
+                val newRoundRefs = ArrayList<StructuredCommandCrossRef>()
+
+                copiedRefs?.forEach {
+                    it.round = round
+                    it.id = 0
+                    newRoundRefs.add(it)
+                }
+
+                database.structuredCommandCrossRefDao().insert(newRoundRefs)
+            }
+        }
+    }
 }
