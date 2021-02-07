@@ -65,6 +65,8 @@ class TabFragmentThree : BaseFragment() {
                     parentFragmentManager,
                     null
                 )
+            }, {
+                viewModel.deleteStructuredCommandCrossRef(it)
             })
 
         random_rv.adapter = commandsFrequencyAdapter

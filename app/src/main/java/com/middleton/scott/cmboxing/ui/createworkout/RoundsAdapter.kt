@@ -25,6 +25,7 @@ class RoundsAdapter(
     private val onPositionsChanged: ((List<StructuredCommandCrossRef>) -> Unit),
     private val onShowPasteDialog: ((copiedRound: Int) -> Unit),
     private val onShowAddRoundCommandDialog: ((round: Int) -> Unit),
+    private val onCommandDeleted: ((StructuredCommandCrossRef)) -> Unit
 ) : RecyclerView.Adapter<RoundsAdapter.RoundViewHolder>() {
 
     lateinit var context: Context
@@ -75,7 +76,8 @@ class RoundsAdapter(
                 audioFileBaseDirectory,
                 currentStructuredCommandCrossRefs,
                 selectedCommands,
-                onPositionsChanged
+                onPositionsChanged,
+                onCommandDeleted
             )
         } else {
             holder.emptyStateTV.visibility = VISIBLE
@@ -90,8 +92,6 @@ class RoundsAdapter(
         holder.copyBtn.setOnClickListener {
             onShowPasteDialog(position + 1)
         }
-
-
     }
 
     class RoundViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -110,13 +110,15 @@ class RoundsAdapter(
             audioFileBaseDirectory: String,
             structuredCommandCrossRefs: List<StructuredCommandCrossRef>,
             commands: MutableList<Command>,
-            onPositionsChanged: ((List<StructuredCommandCrossRef>) -> Unit)
+            onPositionsChanged: ((List<StructuredCommandCrossRef>) -> Unit),
+            onCommandDeleted: ((StructuredCommandCrossRef)) -> Unit
         ) {
             adapter = RoundCommandsAdapter(
                 audioFileBaseDirectory,
                 commands,
                 structuredCommandCrossRefs,
-                onPositionsChanged
+                onPositionsChanged,
+                onCommandDeleted
             )
 
             roundCommandsRV.adapter = adapter
@@ -168,24 +170,8 @@ class RoundsAdapter(
                 }
 
                 override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-//                    undo_btn.visibility = VISIBLE
-//                    undo_tv.visibility = VISIBLE
-//                    undoSnackbarVisible = true
-//
-//                    val position = viewHolder.adapterPosition
-//                    val workout = viewModel.deleteWorkout(position)
-//
-//                    undo_tv.text = getString(R.string.deleted_snackbar, workout.name)
-//
-//                    handler.removeCallbacksAndMessages(null)
-//                    handler.postDelayed({
-//                        undo_btn?.visibility = GONE
-//                        undo_tv?.visibility = GONE
-//                        undoSnackbarVisible = false
-//                        if (workoutsEmpty) {
-//                            empty_list_layout?.visibility = VISIBLE
-//                        }
-//                    }, 3000)
+                    val position = viewHolder.adapterPosition
+                    adapter.onDelete(position)
                 }
 
                 override fun clearView(
@@ -258,9 +244,5 @@ class RoundsAdapter(
     fun setSelectedRounds(selectedCommands: List<Command>) {
         this.selectedCommands = selectedCommands as MutableList<Command>
         notifyDataSetChanged()
-    }
-
-    fun getStructuredCommandCrossRefsSize(): Int {
-        return structuredCommandCrossRefs.size
     }
 }

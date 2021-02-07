@@ -23,12 +23,13 @@ import java.util.*
 class RoundCommandsAdapter(
     private val audioFileDirectory: String,
     val commands: List<Command>,
-    private val structuredCombinationCrossRefs: List<StructuredCommandCrossRef>,
-    val onPositionsChanged: ((List<StructuredCommandCrossRef>) -> Unit)
+    private val structuredCommandCrossRefs: List<StructuredCommandCrossRef>,
+    val onPositionsChanged: ((List<StructuredCommandCrossRef>) -> Unit),
+    val onCommandDeleted: ((StructuredCommandCrossRef)) -> Unit
 ) : RecyclerView.Adapter<RoundCommandsAdapter.RoundCommandViewHolder>() {
 
     private var mediaPlayer = MediaPlayer()
-    private lateinit var context: Context
+    private var context: Context? = null
 
     private var audioPlayingIndex = -1
     private var currentPlayingAudioLottie: LottieAnimationView? = null
@@ -45,11 +46,11 @@ class RoundCommandsAdapter(
     }
 
     override fun getItemCount(): Int {
-        return structuredCombinationCrossRefs.size
+        return structuredCommandCrossRefs.size
     }
 
     override fun onBindViewHolder(holder: RoundCommandViewHolder, position: Int) {
-        val crossRef = structuredCombinationCrossRefs[position]
+        val crossRef = structuredCommandCrossRefs[position]
         val currentCommand = commands.firstOrNull { crossRef.command_id == it.id }
 
         holder.commandNameTV.text = currentCommand?.name
@@ -78,15 +79,18 @@ class RoundCommandsAdapter(
             holder.timeTV.text = DateTimeUtils.toMinuteSeconds(crossRef.time_allocated_secs)
 
             holder.timeTV.setOnClickListener {
-                NumberPickerMinutesSecondsDialog(context.getString(R.string.time_allocated),
-                    crossRef.time_allocated_secs,
-                    { newSecs ->
-                        command.timeToCompleteSecs = newSecs
-                        crossRef.time_allocated_secs = newSecs
-                        onPositionsChanged(structuredCombinationCrossRefs)
-                        holder.timeTV.text = DateTimeUtils.toMinuteSeconds(newSecs)
-                    },
-                    {}).show((context as AppCompatActivity).supportFragmentManager, null)
+                context?.getString(R.string.time_allocated)?.let { it1 ->
+                    NumberPickerMinutesSecondsDialog(
+                        it1,
+                        crossRef.time_allocated_secs,
+                        { newSecs ->
+                            command.timeToCompleteSecs = newSecs
+                            crossRef.time_allocated_secs = newSecs
+                            onPositionsChanged(structuredCommandCrossRefs)
+                            holder.timeTV.text = DateTimeUtils.toMinuteSeconds(newSecs)
+                        },
+                        {}).show((context as AppCompatActivity).supportFragmentManager, null)
+                }
             }
         }
     }
@@ -133,12 +137,14 @@ class RoundCommandsAdapter(
 
     fun setBackgroundSelected(viewHolder: RoundCommandViewHolder) {
         viewHolder.parent.background =
-            ContextCompat.getDrawable(context, R.drawable.rounded_stroke_background_highighted)
+            context?.let { ContextCompat.getDrawable(it, R.drawable.rounded_stroke_background_highighted) }
     }
 
     fun setBackgroundUnselected(viewHolder: RoundCommandViewHolder) {
-        viewHolder.parent.background =
-            ContextCompat.getDrawable(context, R.drawable.rounded_stroke_background)
+        context?.let {
+            viewHolder.parent.background =
+                ContextCompat.getDrawable(it, R.drawable.rounded_stroke_background)
+        }
     }
 
     class RoundCommandViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -146,8 +152,6 @@ class RoundCommandsAdapter(
         val commandNameTV: TextView = view.findViewById(R.id.command_name_tv)
         val playAudioLottie: LottieAnimationView = view.findViewById(R.id.play_audio_lottie)
         val timeTV: TextView = view.findViewById(R.id.time_allocated_tv)
-
-        lateinit var structuredCommandCrossRef: StructuredCommandCrossRef
     }
 
     fun onPositionChanged(startPosition: Int, endPosition: Int) {
@@ -155,10 +159,14 @@ class RoundCommandsAdapter(
             startPosition,
             endPosition
         )
-        Collections.swap(structuredCombinationCrossRefs, startPosition, endPosition)
+        Collections.swap(structuredCommandCrossRefs, startPosition, endPosition)
     }
 
     fun onPositionsChanged() {
-        onPositionsChanged(structuredCombinationCrossRefs)
+        onPositionsChanged(structuredCommandCrossRefs)
+    }
+
+    fun onDelete(position: Int){
+        onCommandDeleted(structuredCommandCrossRefs[position])
     }
 }

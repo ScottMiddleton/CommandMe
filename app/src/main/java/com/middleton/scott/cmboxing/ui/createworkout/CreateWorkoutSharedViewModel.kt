@@ -205,10 +205,10 @@ class CreateWorkoutSharedViewModel(
         }
     }
 
-    fun upsertStructuredCommandCrossRef(structuredCommandCrossRef: StructuredCommandCrossRef) {
+    fun deleteStructuredCommandCrossRef(structuredCommandCrossRef: StructuredCommandCrossRef) {
         viewModelScope.launch {
             dataRepository.getLocalDataSource()
-                .upsertStructuredCommandCrossRef(structuredCommandCrossRef)
+                .deleteStructuredCommandCrossRef(structuredCommandCrossRef)
         }
     }
 
