@@ -38,7 +38,7 @@ class WorkoutScreenViewModel(
     private var commands: List<Command>? = null
     private val preparationTimeSecs = workoutWithCommands?.workout?.preparation_time_secs ?: 0
     private val workTimeSecs = workoutWithCommands?.workout?.work_time_secs ?: 0
-    private val restTimeSecs = workoutWithCommands?.workout?.rest_time_secs ?: 0
+    private val restTimeSecs = workoutWithCommands?.workout?.default_rest_time_secs ?: 0
     private val numberOfRounds = workoutWithCommands?.workout?.numberOfRounds ?: 0
     private val intensity = workoutWithCommands?.workout?.intensity
 

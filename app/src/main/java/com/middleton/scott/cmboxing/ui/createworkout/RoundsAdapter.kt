@@ -11,7 +11,6 @@ import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ItemTouchHelper.*
 import androidx.recyclerview.widget.RecyclerView
@@ -23,18 +22,16 @@ import net.cachapa.expandablelayout.ExpandableLayout
 
 class RoundsAdapter(
     private val audioFileBaseDirectory: String,
-    private val fragmentManager: FragmentManager,
-    private val onApplyStructuredCommandCrossRefs: ((List<StructuredCommandCrossRef>) -> Unit),
-    private val onEditStructuredCommandCrossRef: ((StructuredCommandCrossRef) -> Unit),
     private val onPositionsChanged: ((List<StructuredCommandCrossRef>) -> Unit),
-    private val onPasteStructuredCommandCrossRefs: ( (copiedRound: Int, List<Int>) -> Unit)
+    private val onShowPasteDialog: ((copiedRound: Int) -> Unit),
+    private val onShowAddRoundCommandDialog: ((round: Int) -> Unit),
 ) : RecyclerView.Adapter<RoundsAdapter.RoundViewHolder>() {
 
     lateinit var context: Context
 
     private var roundCount = 0
     var selectedCommands = mutableListOf<Command>()
-    var structuredCommandCrossRefs = ArrayList<StructuredCommandCrossRef>()
+    private var structuredCommandCrossRefs = ArrayList<StructuredCommandCrossRef>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RoundViewHolder {
         context = parent.context
@@ -64,14 +61,22 @@ class RoundsAdapter(
 
         holder.roundTV.text = context.getString(R.string.round_number, (position + 1).toString())
 
-        val structuredCommandCrossRefs = structuredCommandCrossRefs.filter {
+        val structuredCommandCrossRefsCopy = structuredCommandCrossRefs
+
+        val currentStructuredCommandCrossRefs = structuredCommandCrossRefsCopy.filter {
             it.round == position + 1
         }.sortedBy { it.position_index }
 
-        if (structuredCommandCrossRefs.isNotEmpty()) {
+        if (!currentStructuredCommandCrossRefs.isNullOrEmpty()) {
             holder.emptyStateTV.visibility = GONE
             holder.roundCommandsRV.visibility = VISIBLE
             holder.instructionTV.visibility = VISIBLE
+            holder.bind(
+                audioFileBaseDirectory,
+                currentStructuredCommandCrossRefs,
+                selectedCommands,
+                onPositionsChanged
+            )
         } else {
             holder.emptyStateTV.visibility = VISIBLE
             holder.roundCommandsRV.visibility = GONE
@@ -79,36 +84,17 @@ class RoundsAdapter(
         }
 
         holder.addCommandsBtn.setOnClickListener {
-            AddRoundCommandDialog(
-                audioFileBaseDirectory,
-                structuredCommandCrossRefs.size,
-                position + 1,
-                selectedCommands,
-                onApplyStructuredCommandCrossRefs
-            ).show(
-                fragmentManager,
-                null
-            )
+            onShowAddRoundCommandDialog(position + 1)
         }
 
         holder.copyBtn.setOnClickListener {
-            PasteRoundDialog(position + 1, roundCount) {
-                onPasteStructuredCommandCrossRefs(position + 1, it)
-            }.show(fragmentManager, null)
+            onShowPasteDialog(position + 1)
         }
 
-        holder.bind(
-            audioFileBaseDirectory,
-            fragmentManager,
-            structuredCommandCrossRefs,
-            selectedCommands,
-            onEditStructuredCommandCrossRef,
-            onPositionsChanged
-        )
+
     }
 
     class RoundViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val context: Context = view.context
         val expandableLayout: ExpandableLayout = view.findViewById(R.id.expandable_layout)
         val frequencyIB: ImageButton = view.findViewById(R.id.expand_collapse_button)
         val roundCommandsRV: RecyclerView = view.findViewById(R.id.round_commands_rv)
@@ -122,26 +108,18 @@ class RoundsAdapter(
 
         fun bind(
             audioFileBaseDirectory: String,
-            fragmentManager: FragmentManager,
             structuredCommandCrossRefs: List<StructuredCommandCrossRef>,
             commands: MutableList<Command>,
-            onEditStructuredCommandCrossRef: ((StructuredCommandCrossRef) -> Unit),
             onPositionsChanged: ((List<StructuredCommandCrossRef>) -> Unit)
         ) {
             adapter = RoundCommandsAdapter(
-                context,
-                fragmentManager,
                 audioFileBaseDirectory,
                 commands,
                 structuredCommandCrossRefs,
-                onEditStructuredCommandCrossRef,
                 onPositionsChanged
             )
 
-            if (!structuredCommandCrossRefs.isNullOrEmpty()) {
-                roundCommandsRV.adapter = adapter
-            }
-
+            roundCommandsRV.adapter = adapter
             itemTouchHelper.attachToRecyclerView(roundCommandsRV)
         }
 
@@ -267,15 +245,22 @@ class RoundsAdapter(
         private val itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
     }
 
-
-    fun setAdapter(
-        roundCount: Int,
-        selectedCommands: List<Command>,
-        structuredCommandCrossRefs: List<StructuredCommandCrossRef>
-    ) {
-        this.roundCount = roundCount
-        this.selectedCommands = selectedCommands as MutableList<Command>
+    fun setStructuredCommandCrossRefs(structuredCommandCrossRefs: List<StructuredCommandCrossRef>) {
         this.structuredCommandCrossRefs = structuredCommandCrossRefs as ArrayList
         notifyDataSetChanged()
+    }
+
+    fun setRoundCount(roundCount: Int) {
+        this.roundCount = roundCount
+        notifyDataSetChanged()
+    }
+
+    fun setSelectedRounds(selectedCommands: List<Command>) {
+        this.selectedCommands = selectedCommands as MutableList<Command>
+        notifyDataSetChanged()
+    }
+
+    fun getStructuredCommandCrossRefsSize(): Int {
+        return structuredCommandCrossRefs.size
     }
 }

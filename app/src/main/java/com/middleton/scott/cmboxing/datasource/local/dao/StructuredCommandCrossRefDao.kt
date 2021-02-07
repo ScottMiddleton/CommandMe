@@ -16,8 +16,8 @@ abstract class StructuredCommandCrossRefDao : BaseDao<StructuredCommandCrossRef>
     @Query("SELECT * FROM structured_commands WHERE workout_id = :workoutId")
     abstract fun getStructuredCommandCrossRefsLD(workoutId: Long) : LiveData<List<StructuredCommandCrossRef>>
 
-    @Query("SELECT * FROM structured_commands WHERE round = :round")
-    abstract fun getStructuredCommandCrossRefsByRound(round: Int) : List<StructuredCommandCrossRef>
+    @Query("SELECT * FROM structured_commands WHERE round = :round AND workout_id = :workoutId")
+    abstract fun getStructuredCommandCrossRefsByRound(round: Int, workoutId: Long) : List<StructuredCommandCrossRef>
 
     @Query("SELECT * FROM structured_commands WHERE workout_id = :workoutId")
     abstract fun getSelectedCombinationCrossRefs(workoutId: Long) : List<StructuredCommandCrossRef>
@@ -28,6 +28,6 @@ abstract class StructuredCommandCrossRefDao : BaseDao<StructuredCommandCrossRef>
     @Query("DELETE FROM structured_commands WHERE command_id = :commandId")
     abstract suspend fun deleteByCommandId(commandId: Long)
 
-    @Query("DELETE FROM structured_commands WHERE round = :round")
-    abstract suspend fun deleteByRound(round: Int)
+    @Query("DELETE FROM structured_commands WHERE round = :round AND workout_id = :workoutId")
+    abstract suspend fun deleteByRound(round: Int, workoutId: Long)
 }

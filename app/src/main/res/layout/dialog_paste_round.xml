@@ -53,6 +53,7 @@
         android:paddingEnd="20dp"
         android:paddingStart="20dp"
         android:layout_below="@id/title_fl"
+        android:textColor="@color/primary_text_color_faded"
         android:text="@string/check_the_rounds_you_would_like_to_paste"
         android:textAlignment="center" />
 

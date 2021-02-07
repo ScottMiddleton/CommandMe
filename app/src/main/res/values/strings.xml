@@ -14,7 +14,7 @@
     <string name="preparation_time">Preparation Time</string>
     <string name="work_time">Work Time</string>
     <string name="intensity">Intensity</string>
-    <string name="rest_time">Rest Time</string>
+    <string name="rest_between_rounds">Rest Between Rounds</string>
     <string name="rounds">Rounds</string>
     <string name="complete">Complete</string>
     <string name="save">Save</string>
@@ -121,5 +121,7 @@
     <string name="check_the_rounds_you_would_like_to_paste">Check the rounds you would like to paste</string>
     <string name="select_all">Select All</string>
     <string name="paste">Paste</string>
+    <string name="total_length">Total Length:</string>
+    <string name="rest">Rest:</string>
 
 </resources>

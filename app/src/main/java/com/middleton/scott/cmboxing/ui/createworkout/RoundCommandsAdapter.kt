@@ -3,14 +3,13 @@ package com.middleton.scott.cmboxing.ui.createworkout
 import android.content.Context
 import android.media.MediaPlayer
 import android.util.Log
-import android.util.TimeUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
 import com.middleton.scott.cmboxing.R
@@ -20,22 +19,22 @@ import com.middleton.scott.cmboxing.utils.DateTimeUtils
 import java.io.IOException
 import java.util.*
 
+
 class RoundCommandsAdapter(
-    private val context: Context,
-    private val childFragmentManager: FragmentManager,
     private val audioFileDirectory: String,
     val commands: List<Command>,
     private val structuredCombinationCrossRefs: List<StructuredCommandCrossRef>,
-    private val onEditStructuredCommandCrossRef: ((StructuredCommandCrossRef) -> Unit),
     val onPositionsChanged: ((List<StructuredCommandCrossRef>) -> Unit)
 ) : RecyclerView.Adapter<RoundCommandsAdapter.RoundCommandViewHolder>() {
 
     private var mediaPlayer = MediaPlayer()
+    private lateinit var context: Context
 
     private var audioPlayingIndex = -1
     private var currentPlayingAudioLottie: LottieAnimationView? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RoundCommandViewHolder {
+        context = parent.context
         return RoundCommandViewHolder(
             LayoutInflater.from(parent.context).inflate(
                 R.layout.list_item_round_command,
@@ -87,7 +86,7 @@ class RoundCommandsAdapter(
                         onPositionsChanged(structuredCombinationCrossRefs)
                         holder.timeTV.text = DateTimeUtils.toMinuteSeconds(newSecs)
                     },
-                    {}).show(childFragmentManager, null)
+                    {}).show((context as AppCompatActivity).supportFragmentManager, null)
             }
         }
     }

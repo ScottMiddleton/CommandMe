@@ -2,6 +2,7 @@ package com.middleton.scott.cmboxing.utils
 
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 object DateTimeUtils {
 
@@ -48,5 +49,16 @@ object DateTimeUtils {
 
     fun toMinuteSeconds(seconds: Int): String {
         return minutesSecondsFormat.format(seconds * 1000)
+    }
+
+    fun toHoursMinuteSeconds(millis: Long): String {
+        return String.format(
+            "%02d:%02d:%02d",
+            TimeUnit.MILLISECONDS.toHours(millis),
+            TimeUnit.MILLISECONDS.toMinutes(millis) -
+                    TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis)), // The change is in this line
+            TimeUnit.MILLISECONDS.toSeconds(millis) -
+                    TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis))
+        );
     }
 }

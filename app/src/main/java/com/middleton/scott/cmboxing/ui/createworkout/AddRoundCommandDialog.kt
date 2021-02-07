@@ -48,7 +48,7 @@ class AddRoundCommandDialog(
         val inset = InsetDrawable(back, 0, 240, 0, 240)
         dialog?.window?.setBackgroundDrawable(inset)
 
-        round_tv.text = context?.getString(R.string.round) + " " + round.toString()
+        round_tv.text = getString(R.string.round_number, round.toString())
     }
 
     private fun setClickListeners() {

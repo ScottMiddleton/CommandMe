@@ -159,7 +159,7 @@
                 app:hintTextColor="@color/white"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/rest_time_til">
+                app:layout_constraintTop_toBottomOf="@+id/rest_between_rounds_til">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/work_time_et"
@@ -174,12 +174,12 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/rest_time_til"
+                android:id="@+id/rest_between_rounds_til"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:hint="@string/rest_time"
+                android:hint="@string/rest_between_rounds"
                 app:endIconDrawable="@drawable/ic_stool"
                 app:endIconMode="custom"
                 app:hintAnimationEnabled="false"
@@ -189,7 +189,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/number_of_rounds_til">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/rest_time_et"
+                    android:id="@+id/rest_between_rounds_et"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:clickable="true"

@@ -13,6 +13,7 @@ import com.middleton.scott.cmboxing.R
 import com.middleton.scott.cmboxing.datasource.local.model.Command
 import com.middleton.scott.cmboxing.datasource.local.model.StructuredCommandCrossRef
 import com.middleton.scott.cmboxing.ui.base.BaseFragment
+import com.middleton.scott.cmboxing.utils.DateTimeUtils
 import kotlinx.android.synthetic.main.fragment_tab_three.*
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
@@ -45,15 +46,26 @@ class TabFragmentThree : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        roundsAdapter = RoundsAdapter(viewModel.audioFileBaseDirectory, parentFragmentManager, {
+        roundsAdapter = RoundsAdapter(viewModel.audioFileBaseDirectory, {
             viewModel.upsertStructuredCommandCrossRefs(it)
-        }, {
-            viewModel.upsertStructuredCommandCrossRef(it)
-        }, {
-            viewModel.upsertStructuredCommandCrossRefs(it)
-        }, { copiedRound, roundsToPasteList ->
-            viewModel.pasteStructuredCommandCrossRefs(copiedRound, roundsToPasteList)
-        })
+        },
+            { copiedRound ->
+                PasteRoundDialog(copiedRound, viewModel.workout.numberOfRounds) {
+                    viewModel.pasteStructuredCommandCrossRefs(copiedRound, it)
+                }.show(parentFragmentManager, null)
+            }, { round ->
+                AddRoundCommandDialog(
+                    viewModel.audioFileBaseDirectory,
+                    viewModel.structuredCommandCrossRefs.size,
+                    round,
+                    viewModel.selectedCommands
+                ) {
+                    viewModel.upsertStructuredCommandCrossRefs(it)
+                }.show(
+                    parentFragmentManager,
+                    null
+                )
+            })
 
         random_rv.adapter = commandsFrequencyAdapter
         structured_rv.adapter = roundsAdapter
@@ -71,31 +83,24 @@ class TabFragmentThree : BaseFragment() {
             if (viewModel.subscribe) {
                 if (!viewModel.selectedCommands.isNullOrEmpty()) {
                     commandsFrequencyAdapter.setAdapter(it, viewModel.selectedCommandCrossRefs)
-                    setRoundsAdapterFromVMData(
-                        viewModel.workout.numberOfRounds,
-                        it,
-                        viewModel.structuredCommandCrossRefs
-                    )
+                    roundsAdapter.setSelectedRounds(it)
                 }
             }
         })
 
         viewModel.structuredCommandCrossRefsLD.observe(viewLifecycleOwner, Observer {
-            if (it.isNotEmpty() && roundsAdapter.structuredCommandCrossRefs.size != it.size) {
-                setRoundsAdapterFromVMData(
-                    viewModel.workout.numberOfRounds,
-                    viewModel.selectedCommands,
-                    it
-                )
+            viewModel.setTotalLength(it)
+            if (viewModel.setRoundsAdapter) {
+                roundsAdapter.setStructuredCommandCrossRefs(it)
             }
         })
 
+        viewModel.totalLengthSecsLD.observe(viewLifecycleOwner, Observer {
+            total_length_tv.text = DateTimeUtils.toHoursMinuteSeconds((it * 1000).toLong())
+        })
+
         viewModel.numberOfRoundsLD.observe(viewLifecycleOwner, Observer {
-            setRoundsAdapterFromVMData(
-                it,
-                viewModel.selectedCommands,
-                viewModel.structuredCommandCrossRefs
-            )
+            roundsAdapter.setRoundCount(it)
         })
 
         viewModel.workoutTypeLD.observe(viewLifecycleOwner, Observer {
@@ -110,18 +115,6 @@ class TabFragmentThree : BaseFragment() {
                 }
             }
         })
-    }
-
-    private fun setRoundsAdapterFromVMData(
-        roundCount: Int,
-        selectedCommands: List<Command>,
-        structuredCommandCrossRefs: List<StructuredCommandCrossRef>
-    ) {
-        roundsAdapter.setAdapter(
-            roundCount,
-            selectedCommands,
-            structuredCommandCrossRefs
-        )
     }
 
     private fun setClickListeners() {

@@ -77,8 +77,8 @@ class TabFragmentOne : BaseFragment() {
             work_time_et.setText(DateTimeUtils.toMinuteSeconds(it))
         })
 
-        viewModel.restTimeSecsLD.observe(viewLifecycleOwner, Observer {
-            rest_time_et.setText(DateTimeUtils.toMinuteSeconds(it))
+        viewModel.defaultRestTimeSecsLD.observe(viewLifecycleOwner, Observer {
+            rest_between_rounds_et.setText(DateTimeUtils.toMinuteSeconds(it))
         })
 
         viewModel.intensityLD.observe(viewLifecycleOwner, Observer {
@@ -166,13 +166,13 @@ class TabFragmentOne : BaseFragment() {
             hideKeyboard()
         }
 
-        rest_time_et.setOnClickListener {
+        rest_between_rounds_et.setOnClickListener {
             NumberPickerMinutesSecondsDialog(
-                getString(R.string.rest_time),
-                viewModel.workout.rest_time_secs,
+                getString(R.string.rest_between_rounds),
+                viewModel.workout.default_rest_time_secs,
                 { seconds ->
-                    viewModel.setRestTime(seconds)
-                    rest_time_et.setText(DateTimeUtils.toMinuteSeconds(seconds))
+                    viewModel.setDefaultRestTime(seconds)
+                    rest_between_rounds_et.setText(DateTimeUtils.toMinuteSeconds(seconds))
                 },
                 {}).show(
                 childFragmentManager,
@@ -210,7 +210,7 @@ class TabFragmentOne : BaseFragment() {
         viewModel.setPreparationTime(viewModel.workout.preparation_time_secs)
         viewModel.setNumberOfRounds(viewModel.workout.numberOfRounds)
         viewModel.setWorkTime(viewModel.workout.work_time_secs)
-        viewModel.setRestTime(viewModel.workout.rest_time_secs)
+        viewModel.setDefaultRestTime(viewModel.workout.default_rest_time_secs)
         viewModel.setIntensity(viewModel.workout.intensity)
     }
 
@@ -230,6 +230,7 @@ class TabFragmentOne : BaseFragment() {
                     R.color.primary_text_color_faded
                 )
             )
+            rest_between_rounds_til.visibility = GONE
             intensity_til.visibility = GONE
             work_time_til.visibility = GONE
         } else if (type == WorkoutType.RANDOM) {
@@ -247,6 +248,7 @@ class TabFragmentOne : BaseFragment() {
                     R.color.primary_text_color_faded
                 )
             )
+            rest_between_rounds_til.visibility = VISIBLE
             intensity_til.visibility = VISIBLE
             work_time_til.visibility = VISIBLE
         }

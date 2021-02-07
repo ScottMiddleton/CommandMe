@@ -32,7 +32,7 @@ class CreateWorkoutSharedViewModel(
     private val commandsFlow = dataRepository.getLocalDataSource().getCommands()
 
     lateinit var selectedCommandCrossRefsFlow: Flow<List<SelectedCommandCrossRef>>
-    lateinit var workoutLD: LiveData<Workout>
+    lateinit var workoutLD: LiveData<Workout?>
     lateinit var selectedCommandsLD: LiveData<List<Command>>
     lateinit var structuredCommandCrossRefsLD: LiveData<List<StructuredCommandCrossRef>>
 
@@ -40,21 +40,26 @@ class CreateWorkoutSharedViewModel(
     val preparationTimeLD = MutableLiveData<Int>()
     val numberOfRoundsLD = MutableLiveData<Int>()
     val workTimeSecsLD = MutableLiveData<Int>()
-    val restTimeSecsLD = MutableLiveData<Int>()
+    val defaultRestTimeSecsLD = MutableLiveData<Int>(60)
     val intensityLD = MutableLiveData<Int>()
     val dbUpdateLD = MutableLiveData<Boolean>()
     val showCancellationDialogLD = MutableLiveData<Boolean>()
     val tabOneValidatedLD = MutableLiveData(false)
     val tabTwoValidatedLD = MutableLiveData(false)
     val requiredSummaryFieldLD = MutableLiveData<Boolean>()
+    val totalLengthSecsLD = MutableLiveData(0)
 
     val subscribeLD = MutableLiveData(false)
+    var setRoundsAdapter = true
 
     init {
+        // If a new workout
         if (workoutId == -1L) {
             viewModelScope.launch {
 
+                // Insert a new workout
                 val newWorkoutId = dataRepository.getLocalDataSource().upsertWorkout(workout)
+
 
                 dataRepository.getLocalDataSource().getWorkoutById(newWorkoutId)
                     ?.let { savedWorkout = it }
@@ -66,7 +71,7 @@ class CreateWorkoutSharedViewModel(
                             workoutTypeLD.value = it.workout_type
                             numberOfRoundsLD.value = it.numberOfRounds
                         }
-                        workout
+                        it
                     }.asLiveData()
 
                 selectedCommandCrossRefsFlow = dataRepository.getLocalDataSource()
@@ -109,17 +114,18 @@ class CreateWorkoutSharedViewModel(
                 subscribeLD.value = true
             }
         } else {
+            // If an existing workout
             selectedCommandCrossRefsFlow = dataRepository.getLocalDataSource()
                 .getSelectedCombinationCrossRefsFlow(workoutId)
-            workoutLD =
-                dataRepository.getLocalDataSource().getWorkoutByIdFlow(workoutId).map {
-                    it?.let {
-                        workout = it
-                        workoutTypeLD.value = it.workout_type
-                        numberOfRoundsLD.value = it.numberOfRounds
-                    }
-                    workout
-                }.asLiveData()
+
+            workoutLD = dataRepository.getLocalDataSource().getWorkoutByIdFlow(workoutId).map {
+                it?.let {
+                    workout = it
+                    workoutTypeLD.value = it.workout_type
+                    numberOfRoundsLD.value = it.numberOfRounds
+                }
+                it
+            }.asLiveData()
 
             dataRepository.getLocalDataSource().getWorkoutById(workoutId)
                 ?.let { savedWorkout = it }
@@ -211,16 +217,51 @@ class CreateWorkoutSharedViewModel(
             structuredCommandCrossRefs.forEachIndexed { index, structuredCommandCrossRef ->
                 structuredCommandCrossRef.workout_id = workoutId
                 structuredCommandCrossRef.position_index = index
+
             }
             dataRepository.getLocalDataSource()
                 .upsertStructuredCommandCrossRefs(structuredCommandCrossRefs)
         }
     }
 
-    fun pasteStructuredCommandCrossRefs(copiedRound: Int, roundsToPasteList: List<Int>) {
+    fun pasteStructuredCommandCrossRefs(copiedRound: Int, roundsToPaste: List<Int>) {
+        val copiedRefs = mutableListOf<StructuredCommandCrossRef>()
+        val crossRefs = structuredCommandCrossRefs
+
+        // Get the cross refs for the copied round
+        crossRefs.forEach {
+            if (it.round == copiedRound) {
+                copiedRefs.add(it)
+            }
+        }
+
+        // Delete the cross refs for the rounds to paste before pasting
+        roundsToPaste.forEach { round ->
+            crossRefs.removeAll { it.round == round }
+        }
+
+        // Copy the refs by changing the round value for each
+        roundsToPaste.forEach { round ->
+            if (copiedRefs.isNotEmpty()) {
+                copiedRefs.forEach {
+                    crossRefs.add(
+                        StructuredCommandCrossRef(
+                            workoutId,
+                            it.command_id,
+                            round,
+                            it.time_allocated_secs,
+                            it.position_index
+                        )
+                    )
+                }
+            }
+        }
+
         viewModelScope.launch {
-            dataRepository.getLocalDataSource()
-                .pasteStructuredCommandCrossRefs(copiedRound, roundsToPasteList)
+            setRoundsAdapter = false
+            dataRepository.getLocalDataSource().deleteStructuredCommandCrossRefs(workoutId)
+            setRoundsAdapter = true
+            dataRepository.getLocalDataSource().upsertStructuredCommandCrossRefs(crossRefs)
         }
     }
 
@@ -256,10 +297,10 @@ class CreateWorkoutSharedViewModel(
         }
     }
 
-    fun setRestTime(restTimeSecs: Int) {
+    fun setDefaultRestTime(restTimeSecs: Int) {
         if (restTimeSecs >= 0) {
-            workout.rest_time_secs = restTimeSecs
-            restTimeSecsLD.value = restTimeSecs
+            workout.default_rest_time_secs = restTimeSecs
+            defaultRestTimeSecsLD.value = restTimeSecs
         }
     }
 
@@ -292,5 +333,15 @@ class CreateWorkoutSharedViewModel(
 
     fun validateTabTwo() {
         tabTwoValidatedLD.value = selectedCommandCrossRefs.isNotEmpty()
+    }
+
+    fun setTotalLength(structuredCommandCrossRefs: List<StructuredCommandCrossRef>) {
+        var totalTimeSecs = 0
+        if (structuredCommandCrossRefs.isNotEmpty()) {
+            structuredCommandCrossRefs.forEach {
+                totalTimeSecs += it.time_allocated_secs
+            }
+        }
+        totalLengthSecsLD.value = totalTimeSecs
     }
 }
