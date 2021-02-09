@@ -14,7 +14,7 @@
     <string name="preparation_time">Preparation Time</string>
     <string name="work_time">Work Time</string>
     <string name="intensity">Intensity</string>
-    <string name="rest_time">Rest Time</string>
+    <string name="rest_between_rounds">Rest Between Rounds</string>
     <string name="rounds">Rounds</string>
     <string name="complete">Complete</string>
     <string name="save">Save</string>
@@ -22,6 +22,8 @@
     <string name="new_command">New command</string>
     <string name="edit">Edit</string>
     <string name="rounds_combos">%1$s rounds - %2$s combos </string>
+    <string name="round_copied">Round %1$s copied</string>
+    <string name="round_number">Round %1$s</string>
     <string name="name_and_save">Name and save</string>
     <string name="command_name">Command name</string>
     <string name="delete">Delete</string>
@@ -51,7 +53,7 @@
     <string name="very_rare">Very Rare</string>
     <string name="round">Round</string>
     <string name="of">of</string>
-    <string name="time_to_complete">Time to complete</string>
+    <string name="time_to_complete">Default time to complete</string>
     <string name="remaining">remaining</string>
     <string name="elapsed">Elapsed</string>
     <string name="restart">Restart</string>
@@ -107,8 +109,19 @@
     <string name="random">Random</string>
     <string name="structured">Structured</string>
     <string name="tab_two_instructions">Check the commands you would like to include</string>
-    <string name="tab_three_structured_instructions">Order your commands</string>
+    <string name="tab_three_structured_instructions">Customise your rounds</string>
     <string name="tab_three_random_instructions">Edit the frequency your commands are played</string>
     <string name="no">No</string>
+    <string name="this_round_is_empty_click_the_plus_button_to_add_your_commands">This round is empty. Click the plus button to add your commands.</string>
+    <string name="this_round_does_not_contain_any_commands">This round does not contain any commands</string>
+    <string name="press_and_hold_to_reorder_commands">Press and hold to reorder commands</string>
+    <string name="apply">Apply</string>
+    <string name="confirm">Comfirm</string>
+    <string name="time_allocated">Time allocated</string>
+    <string name="check_the_rounds_you_would_like_to_paste">Check the rounds you would like to paste</string>
+    <string name="select_all">Select All</string>
+    <string name="paste">Paste</string>
+    <string name="total_length">Total Length:</string>
+    <string name="rest">Rest:</string>
 
 </resources>

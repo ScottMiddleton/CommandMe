@@ -48,8 +48,7 @@ class WorkoutScreen : BaseFragment() {
         sendCommandToService(ACTION_START_OR_RESUME_SERVICE)
         initRoundProgressView()
         (activity as MainActivity).supportActionBar?.title = viewModel.workoutName
-        viewModel.audioFileBaseDirectory =
-            view.context.getExternalFilesDir(null)?.absolutePath + "/"
+        viewModel.audioFileBaseDirectory = view.context.getExternalFilesDir(null)?.absolutePath + "/"
         total_rounds_count_tv.text = viewModel.getTotalRounds().toString()
         remaining_tv.text = DateTimeUtils.toMinuteSeconds(viewModel.totalWorkoutSecs)
         subscribeUI()

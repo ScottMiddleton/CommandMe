@@ -16,7 +16,7 @@ class WorkoutsViewModel(private val dataRepository: DataRepository) : ViewModel(
     private lateinit var previouslyDeletedWorkout: Workout
 
     fun getWorkoutsWithCombinationsLD(): LiveData<List<WorkoutWithCommands>> {
-        return dataRepository.getLocalDataSource().getAllBoxingWorkoutsWithCombinations().map {
+        return dataRepository.getLocalDataSource().getAllWorkoutsWithCombinations().map {
             allWorkouts.clear()
             it.forEach { workoutWithCombinations ->
                 workoutWithCombinations.workout?.let { workout ->
@@ -29,7 +29,7 @@ class WorkoutsViewModel(private val dataRepository: DataRepository) : ViewModel(
     fun deleteWorkout(position: Int): Workout {
         val workout = allWorkouts[position]
         viewModelScope.launch {
-            dataRepository.getLocalDataSource().deleteBoxingWorkout(workout)
+            dataRepository.getLocalDataSource().deleteWorkout(workout)
         }
         previouslyDeletedWorkout = workout
         return workout
@@ -37,11 +37,11 @@ class WorkoutsViewModel(private val dataRepository: DataRepository) : ViewModel(
 
     fun undoPreviouslyDeletedWorkout() {
         viewModelScope.launch {
-            dataRepository.getLocalDataSource().upsertBoxingWorkout(previouslyDeletedWorkout)
+            dataRepository.getLocalDataSource().upsertWorkout(previouslyDeletedWorkout)
         }
     }
 
     fun getWorkout(workoutId: Long): Workout? {
-        return dataRepository.getLocalDataSource().getBoxingWorkoutById(workoutId)
+        return dataRepository.getLocalDataSource().getWorkoutById(workoutId)
     }
 }

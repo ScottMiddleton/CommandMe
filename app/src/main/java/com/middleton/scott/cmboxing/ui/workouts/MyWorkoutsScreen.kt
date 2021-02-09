@@ -168,7 +168,7 @@ class MyWorkoutsScreen : BaseFragment() {
                             )
                         )
                         .setIconHorizontalMargin(20)
-                        .addActionIcon(R.drawable.ic_workout_delete_sweep)
+                        .addActionIcon(R.drawable.ic_delete_sweep_large)
                         .create()
                         .decorate()
                 }

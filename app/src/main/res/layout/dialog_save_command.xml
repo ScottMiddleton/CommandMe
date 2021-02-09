@@ -41,7 +41,6 @@
         android:hint="@string/time_to_complete"
         android:paddingBottom="10dp"
         app:hintTextColor="@color/white"
-        app:suffixText="Seconds"
         app:suffixTextColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

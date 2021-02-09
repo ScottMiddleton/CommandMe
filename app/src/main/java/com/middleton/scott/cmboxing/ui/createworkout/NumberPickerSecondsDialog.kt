@@ -24,7 +24,6 @@ class NumberPickerSecondsDialog(
     ): View {
         return inflater.inflate(R.layout.dialog_number_picker_secs, container)
     }
-
     override fun onViewCreated(view: View, @Nullable savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         secs_np.maxValue = 59

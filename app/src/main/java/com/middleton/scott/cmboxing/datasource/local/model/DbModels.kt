@@ -11,16 +11,15 @@ data class Workout constructor(
     var preparation_time_secs: Int = 10,
     var numberOfRounds: Int = 5,
     var work_time_secs: Int = 180,
-    var rest_time_secs: Int = 60,
+    var default_rest_time_secs: Int = 60,
     var intensity: Int = 5,
-    var dateCreated: Date = Date(),
-    var structured: Boolean = false
+    var dateCreated: Date = Date()
 ) : BaseDbModel()
 
 @Entity()
 data class Command constructor(
     var name: String,
-    var timeToCompleteMillis: Long,
+    var timeToCompleteSecs: Int,
     var file_name: String
 ) : BaseDbModel()
 

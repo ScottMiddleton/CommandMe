@@ -1,48 +1,45 @@
-package com.middleton.scott.cmboxing.ui.commands
+package com.middleton.scott.cmboxing.ui.createworkout
 
-import SaveCommandDialog
 import android.content.Context
 import android.media.MediaPlayer
+import android.os.Build
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.GONE
-import android.view.View.VISIBLE
 import android.view.ViewGroup
-import android.widget.CheckBox
-import android.widget.ImageButton
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.fragment.app.FragmentManager
+import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
 import com.middleton.scott.cmboxing.R
 import com.middleton.scott.cmboxing.datasource.local.model.Command
 import com.middleton.scott.cmboxing.datasource.local.model.SelectedCommandCrossRef
+import com.middleton.scott.cmboxing.datasource.local.model.StructuredCommandCrossRef
+import com.middleton.scott.cmboxing.utils.customviews.CounterView
+import kotlinx.android.synthetic.main.counter_layout.view.*
 import java.io.IOException
+import java.util.ArrayList
 
-class CommandsAdapter(
-    private val audioFileBaseDirectory: String,
-    private val fragmentManager: FragmentManager,
-    private val onCheckCombination: ((selectedCombinationCrossRef: SelectedCommandCrossRef, isChecked: Boolean) -> Unit)? = null,
-    private val onEditCombination: ((Command) -> Unit),
-    private val onDeleteCombination: ((Command) -> Unit)
-) : RecyclerView.Adapter<CommandsAdapter.CommandsViewHolder>() {
+class AddRoundCommandsAdapter(
+    private val audioFileDirectory: String,
+    val commands: List<Command>
+) : RecyclerView.Adapter<AddRoundCommandsAdapter.AddRoundCommandsViewHolder>() {
 
     lateinit var context: Context
-
-    var selectedCombinations = mutableListOf<Command>()
-    private var allCombinations = mutableListOf<Command>()
     private var mediaPlayer = MediaPlayer()
+
+    val commandCountList: MutableList<CommandCount> = arrayListOf()
 
     private var audioPlayingIndex = -1
     private var currentPlayingAudioLottie: LottieAnimationView? = null
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommandsViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AddRoundCommandsViewHolder {
         context = parent.context
-        return CommandsViewHolder(
+        return AddRoundCommandsViewHolder(
             LayoutInflater.from(parent.context).inflate(
-                R.layout.list_item_command,
+                R.layout.list_item_add_round_command,
                 parent,
                 false
             )
@@ -50,30 +47,22 @@ class CommandsAdapter(
     }
 
     override fun getItemCount(): Int {
-        return allCombinations.size
+        return commands.size
     }
 
-    override fun onBindViewHolder(holder: CommandsViewHolder, position: Int) {
-        val combination = allCombinations[position]
-        holder.nameTV.text = allCombinations[position].name
+    override fun onBindViewHolder(holder: AddRoundCommandsViewHolder, position: Int) {
+        val command = commands[position]
+        holder.nameTV.text = commands[position].name
 
-        val selectedCombination = selectedCombinations.firstOrNull {
-            it.id == combination.id
-        }
+        holder.countView.count_TV.doAfterTextChanged { editable ->
+            val count = editable.toString().toInt()
 
-        val isChecked = selectedCombination != null
+            val commandCount = commandCountList.firstOrNull { it.command.id == command.id }
 
-        holder.checkBox.isChecked = isChecked
-
-        if (onCheckCombination == null) {
-            holder.checkBox.visibility = GONE
-        } else {
-            holder.checkBox.visibility = VISIBLE
-            holder.checkBox.setOnCheckedChangeListener { _, checked ->
-                onCheckCombination.invoke(
-                    SelectedCommandCrossRef(workout_id = -1, command_id = combination.id),
-                    checked
-                )
+            if(commandCount != null){
+                commandCount.count = count
+            } else {
+                commandCountList.add(CommandCount(command, count))
             }
         }
 
@@ -84,33 +73,20 @@ class CommandsAdapter(
             if (!mediaPlayer.isPlaying || audioPlayingIndex != position) {
                 handlePlayAnimationLottie(true, currentPlayingAudioLottie)
                 handlePlayAnimationLottie(false, playAudioLottie)
-                startPlaying(allCombinations[position].file_name, playAudioLottie)
+                startPlaying(commands[position].file_name, playAudioLottie)
                 currentPlayingAudioLottie = playAudioLottie
                 audioPlayingIndex = position
             } else {
                 stopPlaying(playAudioLottie)
             }
         }
-
-        holder.editButton.setOnClickListener {
-            SaveCommandDialog(
-                (audioFileBaseDirectory + combination.file_name),
-                true,
-                combination,
-                { combination ->
-                    onEditCombination(combination)
-                }, {
-                    onDeleteCombination(combination)
-                }).show(fragmentManager, "")
-        }
     }
 
-    class CommandsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val nameTV: TextView = view.findViewById(R.id.command_name_tv)
+    class AddRoundCommandsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val nameTV: TextView = view.findViewById(R.id.round_command_name_tv)
         val parent: ConstraintLayout = view.findViewById(R.id.parent_cl)
         val playAudioLottie: LottieAnimationView = view.findViewById(R.id.play_audio_lottie)
-        val checkBox: CheckBox = view.findViewById(R.id.checkbox)
-        val editButton: ImageButton = view.findViewById(R.id.edit_btn)
+        val countView: CounterView = view.findViewById(R.id.round_command_count_cv)
     }
 
     private fun startPlaying(fileName: String, playAudioLottie: LottieAnimationView) {
@@ -118,7 +94,7 @@ class CommandsAdapter(
         mediaPlayer.reset()
         mediaPlayer = MediaPlayer().apply {
             try {
-                setDataSource(audioFileBaseDirectory + fileName)
+                setDataSource(audioFileDirectory + fileName)
                 prepare()
                 this.setOnCompletionListener {
                     audioPlayingIndex = -1
@@ -153,17 +129,6 @@ class CommandsAdapter(
         }
     }
 
-    fun setAdapter(
-        allCommands: List<Command>,
-        selectedCommands: List<Command>?
-    ) {
-        this.allCombinations = allCommands as MutableList<Command>
-        selectedCommands?.let {
-            this.selectedCombinations = selectedCommands as MutableList<Command>
-        }
-        this.notifyDataSetChanged()
-    }
-
     override fun getItemId(position: Int): Long {
         return position.toLong()
     }
@@ -171,4 +136,6 @@ class CommandsAdapter(
     override fun getItemViewType(position: Int): Int {
         return position
     }
+
+    data class CommandCount(var command: Command, var count: Int)
 }

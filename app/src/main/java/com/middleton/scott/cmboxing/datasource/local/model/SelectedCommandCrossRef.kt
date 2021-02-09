@@ -4,7 +4,7 @@ import androidx.room.*
 import com.middleton.scott.cmboxing.datasource.local.enums.CommandFrequencyType
 
 @Entity(
-    tableName = "workout_commands", primaryKeys = ["workout_id", "command_id"], foreignKeys = [
+    tableName = "selected_commands", primaryKeys = ["workout_id", "command_id"], foreignKeys = [
         ForeignKey(
             entity = Workout::class,
             parentColumns = ["_id"],

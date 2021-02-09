@@ -10,6 +10,11 @@ android {
     compileSdkVersion 30
     buildToolsVersion "29.0.3"
 
+    compileOptions {
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
+    }
+
     defaultConfig {
         applicationId "com.middleton.scott.cmboxing"
         minSdkVersion 21
@@ -74,7 +79,7 @@ dependencies {
     // Android Navigation Library
     implementation 'androidx.navigation:navigation-fragment-ktx:2.3.2'
     implementation 'androidx.navigation:navigation-ui-ktx:2.3.2'
-    implementation "android.arch.navigation:navigation-fragment-ktx:1.0.0"
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.0.0-rc02'
 
     // Koin
     implementation "org.koin:koin-android:$koin_version"
@@ -88,7 +93,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-crashlytics:17.3.0'
 
     // Testing
-    testImplementation "junit:junit:4.13"
+    testImplementation "junit:junit:4.13.1"
     androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$kotlin_coroutines"
     androidTestImplementation "androidx.test.ext:junit:1.1.2"
     androidTestImplementation "androidx.test.espresso:espresso-core:3.3.0"
@@ -98,6 +103,9 @@ dependencies {
 
     // viewpager2
     implementation 'androidx.viewpager2:viewpager2:1.0.0'
+
+    // Expandable layout
+    implementation 'net.cachapa.expandablelayout:expandablelayout:2.9.2'
 
     // Swipe Decorator
     implementation 'it.xabaras.android:recyclerview-swipedecorator:1.2.3'
@@ -122,4 +130,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-crashlytics'
     implementation 'com.google.firebase:firebase-analytics'
 
+    implementation "androidx.core:core-ktx:1.3.2"
+
+    implementation 'com.google.android.gms:play-services-base:17.5.0'
 }

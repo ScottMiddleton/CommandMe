@@ -15,7 +15,9 @@ import androidx.fragment.app.DialogFragment
 import com.airbnb.lottie.LottieAnimationView
 import com.middleton.scott.cmboxing.R
 import com.middleton.scott.cmboxing.datasource.local.model.Command
+import com.middleton.scott.cmboxing.ui.createworkout.NumberPickerMinutesSecondsDialog
 import com.middleton.scott.cmboxing.ui.createworkout.NumberPickerSecondsDialog
+import com.middleton.scott.cmboxing.utils.DateTimeUtils
 import kotlinx.android.synthetic.main.dialog_save_command.*
 import java.io.IOException
 
@@ -35,7 +37,7 @@ class SaveCommandDialog(
         return inflater.inflate(R.layout.dialog_save_command, container)
     }
 
-    private var timeToCompleteMillis: Long = 0L
+    private var timeToCompleteSecs: Int = 0
     private var saveAttempted = false
     private var mediaPlayer = MediaPlayer()
 
@@ -53,11 +55,11 @@ class SaveCommandDialog(
 
         dialog?.setCanceledOnTouchOutside(false)
 
-        timeToCompleteMillis = command.timeToCompleteMillis
+        timeToCompleteSecs = command.timeToCompleteSecs
 
         if (isEditMode) {
             name_et.setText(command.name)
-            time_to_complete_et.setText(getSecondsTextFromMillis(timeToCompleteMillis))
+            time_to_complete_et.setText(DateTimeUtils.toMinuteSeconds(timeToCompleteSecs))
             delete_btn.text = view.context.getString(R.string.cancel)
         }
         setClickListeners()
@@ -68,7 +70,7 @@ class SaveCommandDialog(
             saveAttempted = true
             if (validateFields()) {
                 command.name = name_et.text.toString()
-                command.timeToCompleteMillis = timeToCompleteMillis
+                command.timeToCompleteSecs = timeToCompleteSecs
                 onSave(command)
                 dismiss()
             }
@@ -99,17 +101,17 @@ class SaveCommandDialog(
                 requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(requireView().windowToken, 0)
 
-            var millis = 2000L
+            var secs = 10
             if (!time_to_complete_et.text.isNullOrBlank()) {
-                millis = timeToCompleteMillis
+                secs = timeToCompleteSecs
             }
 
-            NumberPickerSecondsDialog(millis, { newMillis ->
-                timeToCompleteMillis = newMillis
-                time_to_complete_et.setText(getSecondsTextFromMillis(newMillis))
+            NumberPickerMinutesSecondsDialog("Title", secs, { newSecs ->
+                timeToCompleteSecs = newSecs
+                time_to_complete_et.setText(DateTimeUtils.toMinuteSeconds(newSecs))
                 name_et.clearFocus()
                 if (saveAttempted) {
-                    if (timeToCompleteMillis <= 0) {
+                    if (timeToCompleteSecs <= 0) {
                         time_to_complete_til.error = getString(R.string.greater_than_zero)
                     } else {
                         time_to_complete_til.isErrorEnabled = false
@@ -131,14 +133,6 @@ class SaveCommandDialog(
         }
     }
 
-    private fun getSecondsTextFromMillis(millis: Long): String {
-        return if ((millis % 1000) == 0L) {
-            (millis / 1000).toString()
-        } else {
-            (millis / 1000.0).toString()
-        }
-    }
-
     private fun validateFields(): Boolean {
         var validFieldsCount = numberOfFieldsToValidate
 
@@ -147,7 +141,7 @@ class SaveCommandDialog(
             validFieldsCount--
         }
 
-        if (timeToCompleteMillis <= 0) {
+        if (timeToCompleteSecs <= 0) {
             time_to_complete_til.error = getString(R.string.greater_than_zero)
             validFieldsCount--
         }

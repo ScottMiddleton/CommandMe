@@ -10,7 +10,7 @@ import com.middleton.scott.cmboxing.datasource.local.typeconverters.DateConverte
 import com.middleton.scott.cmboxing.datasource.local.typeconverters.WorkoutTypeConverter
 
 @Database(
-    entities = [Workout::class, Command::class, SelectedCommandCrossRef::class, User::class],
+    entities = [Workout::class, Command::class, SelectedCommandCrossRef::class, StructuredCommandCrossRef::class, User::class],
     version = 1,
     exportSchema = false
 )
@@ -24,6 +24,7 @@ import com.middleton.scott.cmboxing.datasource.local.typeconverters.WorkoutTypeC
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
     abstract fun workoutDao(): WorkoutDao
-    abstract fun commandnDao(): CommandDao
+    abstract fun commandDao(): CommandDao
     abstract fun selectedCommandCrossRefDao(): SelectedCommandCrossRefDao
+    abstract fun structuredCommandCrossRefDao(): StructuredCommandCrossRefDao
 }

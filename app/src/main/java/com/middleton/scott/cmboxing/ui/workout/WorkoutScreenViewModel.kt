@@ -33,17 +33,17 @@ class WorkoutScreenViewModel(
 
     var audioFileBaseDirectory = ""
     private val workoutWithCommands: WorkoutWithCommands? =
-        dataRepository.getLocalDataSource().getBoxingWorkoutWithCombinations(workoutId)
+        dataRepository.getLocalDataSource().getWorkoutWithCombinations(workoutId)
     val workoutName = workoutWithCommands?.workout?.name
     private var commands: List<Command>? = null
     private val preparationTimeSecs = workoutWithCommands?.workout?.preparation_time_secs ?: 0
     private val workTimeSecs = workoutWithCommands?.workout?.work_time_secs ?: 0
-    private val restTimeSecs = workoutWithCommands?.workout?.rest_time_secs ?: 0
+    private val restTimeSecs = workoutWithCommands?.workout?.default_rest_time_secs ?: 0
     private val numberOfRounds = workoutWithCommands?.workout?.numberOfRounds ?: 0
     private val intensity = workoutWithCommands?.workout?.intensity
 
     private var millisRemainingAtPause: Long = 0
-    private var millisUntilNextCombination: Long = 0
+    private var millisUntilNextCombination: Int = 0
     private var totalSecondsElapsed: Int = 0
     private var roundProgress: Int = -1
     var totalWorkoutSecs = getTotalWorkoutLengthSecs()
@@ -158,7 +158,7 @@ class WorkoutScreenViewModel(
                 override fun onFinish() {
                     onSecondElapsed()
 
-                    millisUntilNextCombination = 0L
+                    millisUntilNextCombination = 0
 
                     when (workoutStateLD.value) {
                         WorkoutState.PREPARE -> {
@@ -214,7 +214,7 @@ class WorkoutScreenViewModel(
         _currentCombinationLD.value = nextCommand
         serviceCommandAudioLD.value =
             nextCommand?.file_name?.let { ServiceAudioCommand(it, audioFileBaseDirectory) }
-        val timeToCompleteCombination = nextCommand?.timeToCompleteMillis ?: 2000
+        val timeToCompleteCombination = nextCommand?.timeToCompleteSecs ?: 2
         millisUntilNextCombination = getTimeUntilNextCombination(timeToCompleteCombination)
     }
 
@@ -372,44 +372,43 @@ class WorkoutScreenViewModel(
         return randomCommand
     }
 
-    private fun getTimeUntilNextCombination(timeToCompleteCombinationMillis: Long): Long {
-        var amountToAdjustMillis = 0L
+    private fun getTimeUntilNextCombination(timeToCompleteCombinationSecs: Int): Int {
+        var amountToAdjustMillis = 0
+        val millis = timeToCompleteCombinationSecs * 1000
 
         when (intensity) {
-            10 -> amountToAdjustMillis = -(timeToCompleteCombinationMillis / 100) * 40
-            9 -> amountToAdjustMillis = -(timeToCompleteCombinationMillis / 100) * 30
-            8 -> amountToAdjustMillis = -(timeToCompleteCombinationMillis / 100) * 20
-            7 -> amountToAdjustMillis = -(timeToCompleteCombinationMillis / 100) * 10
-            6 -> amountToAdjustMillis = -(timeToCompleteCombinationMillis / 100) * 5
+            10 -> amountToAdjustMillis = -(millis / 100) * 100
+            9 -> amountToAdjustMillis = -(millis / 100) * 80
+            8 -> amountToAdjustMillis = -(millis / 100) * 60
+            7 -> amountToAdjustMillis = -(millis / 100) * 25
+            6 -> amountToAdjustMillis = -(millis / 100) * 10
             5 -> amountToAdjustMillis = 0
-            4 -> amountToAdjustMillis = (timeToCompleteCombinationMillis / 100) * 10
-            3 -> amountToAdjustMillis = (timeToCompleteCombinationMillis / 100) * 20
-            2 -> amountToAdjustMillis = (timeToCompleteCombinationMillis / 100) * 30
-            1 -> amountToAdjustMillis = (timeToCompleteCombinationMillis / 100) * 40
+            4 -> amountToAdjustMillis = (millis / 100) * 10
+            3 -> amountToAdjustMillis = (millis / 100) * 20
+            2 -> amountToAdjustMillis = (millis / 100) * 35
+            1 -> amountToAdjustMillis = (millis / 100) * 50
         }
 
-        val adjustedTimeToCompleteCombination =
-            timeToCompleteCombinationMillis + amountToAdjustMillis
-        return adjustedTimeToCompleteCombination + calculateCommandTimeBufferMillis()
+        return millis + amountToAdjustMillis
     }
 
-    private fun calculateCommandTimeBufferMillis(): Long {
-        var timeBuffer = 3000L
-        when (intensity) {
-            10 -> timeBuffer = 1.times(500).minus(500).toLong()
-            9 -> timeBuffer = 2.times(500).minus(500).toLong()
-            8 -> timeBuffer = 3.times(500).minus(500).toLong()
-            7 -> timeBuffer = 4.times(500).minus(500).toLong()
-            6 -> timeBuffer = 5.times(500).minus(500).toLong()
-            5 -> timeBuffer = 6.times(500).minus(500).toLong()
-            4 -> timeBuffer = 7.times(500).minus(500).toLong()
-            3 -> timeBuffer = 8.times(500).minus(500).toLong()
-            2 -> timeBuffer = 9.times(500).minus(500).toLong()
-            1 -> timeBuffer = 10.times(500).minus(500).toLong()
-        }
-
-        return timeBuffer
-    }
+//    private fun calculateCommandTimeBufferMillis(): Long {
+//        var timeBuffer = 3000L
+//        when (intensity) {
+//            10 -> timeBuffer = 1.times(500).minus(500).toLong()
+//            9 -> timeBuffer = 2.times(500).minus(500).toLong()
+//            8 -> timeBuffer = 3.times(500).minus(500).toLong()
+//            7 -> timeBuffer = 4.times(500).minus(500).toLong()
+//            6 -> timeBuffer = 5.times(500).minus(500).toLong()
+//            5 -> timeBuffer = 6.times(500).minus(500).toLong()
+//            4 -> timeBuffer = 7.times(500).minus(500).toLong()
+//            3 -> timeBuffer = 8.times(500).minus(500).toLong()
+//            2 -> timeBuffer = 9.times(500).minus(500).toLong()
+//            1 -> timeBuffer = 10.times(500).minus(500).toLong()
+//        }
+//
+//        return timeBuffer
+//    }
 
     private fun getTotalWorkoutLengthSecs(): Int {
         return (workTimeSecs * numberOfRounds) + (restTimeSecs * numberOfRounds) - restTimeSecs

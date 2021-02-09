@@ -9,14 +9,16 @@ object MediaRecorderManager {
     fun startRecording(mediaRecorder: MediaRecorder, audioFileOutput: String) {
         try {
             mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC)
-            mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
-            mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_WB)
+            mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
+            mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
             mediaRecorder.setOutputFile(audioFileOutput)
             mediaRecorder.prepare()
             mediaRecorder.start()
         } catch (e: IllegalStateException) {
             e.printStackTrace()
         } catch (e: IOException) {
+            e.printStackTrace()
+        } catch (e: java.lang.RuntimeException) {
             e.printStackTrace()
         }
     }

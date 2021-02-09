@@ -125,11 +125,11 @@ class MainActivity : AppCompatActivity() {
                     })
                 true
             }
-            R.id.home -> {
-                onBackPressed()
-                finish()
-                true
-            }
+//            R.id.home -> {
+//                onBackPressed()
+//                finish()
+//                true
+//            }
             else -> super.onOptionsItemSelected(item)
         }
     }

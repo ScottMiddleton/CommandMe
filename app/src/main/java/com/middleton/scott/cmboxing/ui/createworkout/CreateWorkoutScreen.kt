@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -66,9 +65,13 @@ class CreateWorkoutScreen : BaseFragment() {
         tabIncomplete = ContextCompat.getDrawable(view.context, R.drawable.shape_circle_incomplete)
         tabComplete = ContextCompat.getDrawable(view.context, R.drawable.shape_circle_complete)
 
-        subscribeUI()
-
         setupViewPagerAndTabLayout()
+
+        viewModel.subscribeLD.observe(viewLifecycleOwner, Observer {
+            if (it) {
+                subscribeUI()
+            }
+        })
     }
 
     private fun subscribeUI() {
@@ -83,12 +86,16 @@ class CreateWorkoutScreen : BaseFragment() {
                     R.string.cancel_this_workout,
                     R.string.unsaved_dialog_message,
                     R.string.yes_cancel,
-                    {viewModel.cancelChanges()},
+                    { viewModel.cancelChanges() },
                     R.string.no,
                     {})
             } else {
                 findNavController().popBackStack()
             }
+        })
+
+        viewModel.selectedCommandsLD.observe(viewLifecycleOwner, Observer {
+            viewModel.validateTabTwo()
         })
 
         viewModel.requiredSummaryFieldLD.observe(viewLifecycleOwner, Observer {
@@ -188,14 +195,16 @@ class CreateWorkoutScreen : BaseFragment() {
                     }
                     2 -> {
                         instruction_tv.visibility = VISIBLE
-                        if (viewModel.workout.structured) {
-                            instruction_tv.text =
-                                getString(R.string.tab_three_structured_instructions)
-                        } else {
-                            instruction_tv.text =
-                                getString(R.string.tab_three_random_instructions)
+                        when (viewModel.workout.workout_type) {
+                            WorkoutType.STRUCTURED -> {
+                                instruction_tv.text =
+                                    getString(R.string.tab_three_structured_instructions)
+                            }
+                            WorkoutType.RANDOM -> {
+                                instruction_tv.text =
+                                    getString(R.string.tab_three_random_instructions)
+                            }
                         }
-
                     }
                 }
             }
