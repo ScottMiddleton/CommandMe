@@ -16,7 +16,7 @@ class WorkoutsViewModel(private val dataRepository: DataRepository) : ViewModel(
     private lateinit var previouslyDeletedWorkout: Workout
 
     fun getWorkoutsWithCombinationsLD(): LiveData<List<WorkoutWithCommands>> {
-        return dataRepository.getLocalDataSource().getAllWorkoutsWithCombinations().map {
+        return dataRepository.getLocalDataSource().getAllWorkoutsWithCommands().map {
             allWorkouts.clear()
             it.forEach { workoutWithCombinations ->
                 workoutWithCombinations.workout?.let { workout ->

@@ -32,16 +32,8 @@ class LocalDataSource(
         database.userDao().insert(user)
     }
 
-    fun getWorkoutWithCombinationsFlow(workoutId: Long): Flow<WorkoutWithCommands?> {
-        return database.workoutDao().getWorkoutWithCombinationsFlow(workoutId)
-    }
-
-    fun getWorkoutWithCombinations(workoutId: Long): WorkoutWithCommands? {
+    fun getWorkoutWithCommands(workoutId: Long): WorkoutWithCommands {
         return database.workoutDao().getWorkoutWithCombinations(workoutId)
-    }
-
-    fun getWorkouts(): Flow<List<Workout>> {
-        return database.workoutDao().getWorkouts()
     }
 
     suspend fun deleteWorkout(workout: Workout) {
@@ -52,23 +44,23 @@ class LocalDataSource(
         return database.commandDao().getCommands()
     }
 
-    fun getAllWorkoutsWithCombinations(): Flow<List<WorkoutWithCommands>> {
+    fun getAllWorkoutsWithCommands(): Flow<List<WorkoutWithCommands>> {
         return database.workoutDao().getAllWorkoutsWithCombinations()
     }
 
-    fun getSelectedCombinationCrossRefsFlow(workoutId: Long): Flow<List<SelectedCommandCrossRef>> {
+    fun getSelectedCommandCrossRefsFlow(workoutId: Long): Flow<List<SelectedCommandCrossRef>> {
         return database.selectedCommandCrossRefDao().getSelectedCombinationCrossRefsFlow(workoutId)
     }
 
-    fun getSelectedCombinationCrossRefs(workoutId: Long): List<SelectedCommandCrossRef> {
+    fun getSelectedCommandCrossRefs(workoutId: Long): List<SelectedCommandCrossRef> {
         return database.selectedCommandCrossRefDao().getSelectedCombinationCrossRefs(workoutId)
     }
 
-    fun getStructuredCombinationCrossRefs(workoutId: Long): List<StructuredCommandCrossRef> {
+    fun getStructuredCommandCrossRefs(workoutId: Long): List<StructuredCommandCrossRef> {
         return database.structuredCommandCrossRefDao().getSelectedCombinationCrossRefs(workoutId)
     }
 
-    fun getStructuredCombinationCrossRefsFlow(workoutId: Long): Flow<List<StructuredCommandCrossRef>> {
+    fun getStructuredCommandCrossRefsFlow(workoutId: Long): Flow<List<StructuredCommandCrossRef>> {
         return database.structuredCommandCrossRefDao().getStructuredCommandCrossRefsFlow(workoutId)
     }
 
@@ -84,10 +76,6 @@ class LocalDataSource(
 
     suspend fun upsertSelectedCommandCrossRef(selectedCombinationCrossRef: SelectedCommandCrossRef) {
         database.selectedCommandCrossRefDao().upsert(selectedCombinationCrossRef)
-    }
-
-    suspend fun upsertStructuredCommandCrossRef(structuredCommandCrossRef: StructuredCommandCrossRef) {
-        database.structuredCommandCrossRefDao().upsert(structuredCommandCrossRef)
     }
 
     suspend fun upsertStructuredCommandCrossRefs(structuredCommandCrossRefs: List<StructuredCommandCrossRef>) {

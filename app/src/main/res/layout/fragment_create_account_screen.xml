@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/primary_gradient_background">
 
     <TextView
@@ -11,12 +11,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
         android:drawablePadding="8dp"
         android:text="@string/enter_your_details_to_get_started"
         android:textSize="18sp"
-        android:layout_marginStart="20dp"
-        android:layout_marginBottom="20dp"
-        android:layout_marginTop="20dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -127,18 +127,36 @@
 
     </LinearLayout>
 
-    <Button
-        android:id="@+id/create_account_btn"
+    <FrameLayout
+        android:id="@+id/create_account_fl"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:text="@string/create_account"
-        android:textAllCaps="true"
+        android:layout_marginStart="20dp"
         android:layout_marginTop="30dp"
-        android:layout_marginStart="18dp"
-        android:layout_marginEnd="18dp"
-        android:textColor="@color/white"
+        android:layout_marginEnd="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout6" />
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout6">
+
+        <Button
+            android:id="@+id/create_account_btn"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="@string/create_account"
+            android:textAllCaps="true"
+            android:textColor="@color/white" />
+
+        <ProgressBar
+            android:id="@+id/create_account_progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="4dp"
+            android:elevation="2dp"
+            android:visibility="gone"
+            android:indeterminate="true"
+            android:indeterminateTint="@color/white" />
+
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

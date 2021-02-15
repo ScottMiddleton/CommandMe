@@ -4,6 +4,8 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.widget.doAfterTextChanged
@@ -34,6 +36,8 @@ class LoginScreen : Fragment() {
 
     private fun setClickListeners() {
         login_btn.setOnClickListener {
+            login_progress_bar.visibility = VISIBLE
+            login_btn.text = ""
             viewModel.login()
         }
 
@@ -64,6 +68,8 @@ class LoginScreen : Fragment() {
                     action
                 )
             } else {
+                login_progress_bar.visibility = GONE
+                login_btn.text = getString(R.string.log_in)
                 Toast.makeText(
                     requireContext(), it.getErrorString(requireContext()),
                     Toast.LENGTH_LONG
@@ -76,6 +82,8 @@ class LoginScreen : Fragment() {
                 email_til.error = null
             } else {
                 email_til.error = getString(R.string.email_validation_error)
+                login_progress_bar.visibility = GONE
+                login_btn.text = getString(R.string.log_in)
             }
         })
 
@@ -84,6 +92,8 @@ class LoginScreen : Fragment() {
                 password_til.error = null
             } else {
                 password_til.error = getString(R.string.password_validation_error)
+                login_progress_bar.visibility = GONE
+                login_btn.text = getString(R.string.log_in)
             }
         })
     }

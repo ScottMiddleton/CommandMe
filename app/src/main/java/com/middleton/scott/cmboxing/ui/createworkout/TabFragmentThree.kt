@@ -14,6 +14,7 @@ import com.middleton.scott.cmboxing.datasource.local.model.Command
 import com.middleton.scott.cmboxing.datasource.local.model.StructuredCommandCrossRef
 import com.middleton.scott.cmboxing.ui.base.BaseFragment
 import com.middleton.scott.cmboxing.utils.DateTimeUtils
+import kotlinx.android.synthetic.main.fragment_tab_one.*
 import kotlinx.android.synthetic.main.fragment_tab_three.*
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
@@ -91,7 +92,7 @@ class TabFragmentThree : BaseFragment() {
         })
 
         viewModel.structuredCommandCrossRefsLD.observe(viewLifecycleOwner, Observer {
-            viewModel.setTotalLength(it)
+            viewModel.setTotalLength()
             if (viewModel.setRoundsAdapter) {
                 roundsAdapter.setStructuredCommandCrossRefs(it)
             }
@@ -102,7 +103,13 @@ class TabFragmentThree : BaseFragment() {
         })
 
         viewModel.numberOfRoundsLD.observe(viewLifecycleOwner, Observer {
+            viewModel.setTotalLength()
             roundsAdapter.setRoundCount(it)
+        })
+
+        viewModel.defaultRestTimeSecsLD.observe(viewLifecycleOwner, Observer {
+            viewModel.setTotalLength()
+            round_rest_tv.text = DateTimeUtils.toMinuteSeconds(it)
         })
 
         viewModel.workoutTypeLD.observe(viewLifecycleOwner, Observer {
@@ -123,6 +130,19 @@ class TabFragmentThree : BaseFragment() {
         save_btn_include.findViewById<Button>(R.id.save_btn).setOnClickListener {
             hideKeyboard(context, view)
             viewModel.upsertWorkout()
+        }
+
+        round_rest_ll.setOnClickListener {
+            NumberPickerMinutesSecondsDialog(
+                getString(R.string.rest_between_rounds),
+                viewModel.workout.default_rest_time_secs,
+                { seconds ->
+                    viewModel.setDefaultRestTime(seconds)
+                },
+                {}).show(
+                childFragmentManager,
+                null
+            )
         }
     }
 }

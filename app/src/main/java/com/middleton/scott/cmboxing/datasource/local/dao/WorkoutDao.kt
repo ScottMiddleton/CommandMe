@@ -18,7 +18,7 @@ abstract class WorkoutDao : BaseDao<Workout>() {
     abstract fun getWorkoutWithCombinationsFlow(id: Long): Flow<WorkoutWithCommands?>
 
     @Query("SELECT * FROM workout WHERE _id = :id")
-    abstract fun getWorkoutWithCombinations(id: Long): WorkoutWithCommands?
+    abstract fun getWorkoutWithCombinations(id: Long): WorkoutWithCommands
 
     @Query("SELECT * FROM workout WHERE _id = :id")
     abstract fun getWorkoutByIdFlow(id: Long): Flow<Workout?>

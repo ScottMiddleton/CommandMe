@@ -230,7 +230,6 @@ class TabFragmentOne : BaseFragment() {
                     R.color.primary_text_color_faded
                 )
             )
-            rest_between_rounds_til.visibility = GONE
             intensity_til.visibility = GONE
             work_time_til.visibility = GONE
         } else if (type == WorkoutType.RANDOM) {
@@ -248,7 +247,6 @@ class TabFragmentOne : BaseFragment() {
                     R.color.primary_text_color_faded
                 )
             )
-            rest_between_rounds_til.visibility = VISIBLE
             intensity_til.visibility = VISIBLE
             work_time_til.visibility = VISIBLE
         }

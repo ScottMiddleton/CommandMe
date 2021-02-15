@@ -28,9 +28,9 @@ import kotlinx.android.synthetic.main.fragment_workout_screen.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-class WorkoutScreen : BaseFragment() {
-    private val args: WorkoutScreenArgs by navArgs()
-    private val viewModel: WorkoutScreenViewModel by viewModel { parametersOf(args.workoutId) }
+class RandomWorkoutScreen : BaseFragment() {
+    private val args: RandomWorkoutScreenArgs by navArgs()
+    private val viewModel: RandomWorkoutScreenViewModel by viewModel { parametersOf(args.workoutId) }
 
     private var mediaPlayer = MediaPlayer()
 
@@ -58,17 +58,17 @@ class WorkoutScreen : BaseFragment() {
     override fun onResume() {
         super.onResume()
         // This is to ensure that the round progress bars update after the app has been backgrounded
-        if (viewModel.workoutStateLD.value == WorkoutState.REST) {
+        if (viewModel.randomWorkoutStateLD.value == RandomWorkoutState.REST) {
             repeat(viewModel.getCurrentRound()) { index ->
                 val seekbar = round_progress_ll.getChildAt(index) as SeekBar?
                 seekbar?.thumb?.mutate()?.alpha = 255
-                seekbar?.progress = viewModel.getCountdownProgressBarMax(WorkoutState.WORK)
+                seekbar?.progress = viewModel.getCountdownProgressBarMax(RandomWorkoutState.WORK)
             }
-        } else if (viewModel.workoutStateLD.value == WorkoutState.WORK) {
+        } else if (viewModel.randomWorkoutStateLD.value == RandomWorkoutState.WORK) {
             repeat(viewModel.getCurrentRound()) { index ->
                 val seekbar = round_progress_ll.getChildAt(index - 1) as SeekBar?
                 seekbar?.thumb?.mutate()?.alpha = 255
-                seekbar?.progress = viewModel.getCountdownProgressBarMax(WorkoutState.WORK)
+                seekbar?.progress = viewModel.getCountdownProgressBarMax(RandomWorkoutState.WORK)
             }
         }
     }
@@ -98,12 +98,12 @@ class WorkoutScreen : BaseFragment() {
             remaining_tv.text = DateTimeUtils.toMinuteSeconds(viewModel.totalWorkoutSecs - it)
         })
 
-        viewModel.workoutStateLD.observe(viewLifecycleOwner, Observer {
+        viewModel.randomWorkoutStateLD.observe(viewLifecycleOwner, Observer {
             workout_state_tv.text = it.toString()
             countdown_pb.max = viewModel.getCountdownProgressBarMax(it)
 
             when (it) {
-                WorkoutState.PREPARE -> {
+                RandomWorkoutState.PREPARE -> {
                     play_command_lottie.visibility = GONE
                     countdown_pb.progressTintList = ColorStateList.valueOf(
                         ContextCompat.getColor(
@@ -112,7 +112,7 @@ class WorkoutScreen : BaseFragment() {
                         )
                     )
                 }
-                WorkoutState.WORK -> {
+                RandomWorkoutState.WORK -> {
                     command_name_tv.visibility = VISIBLE
                     play_command_lottie.visibility = VISIBLE
                     countdown_pb.progressTintList = ColorStateList.valueOf(
@@ -122,7 +122,7 @@ class WorkoutScreen : BaseFragment() {
                         )
                     )
                 }
-                WorkoutState.REST -> {
+                RandomWorkoutState.REST -> {
                     command_name_tv.visibility = INVISIBLE
                     play_command_lottie.visibility = VISIBLE
                     countdown_pb.progressTintList = ColorStateList.valueOf(
@@ -132,7 +132,7 @@ class WorkoutScreen : BaseFragment() {
                         )
                     )
                 }
-                WorkoutState.COMPLETE -> {
+                RandomWorkoutState.COMPLETE -> {
                     handlePlayAnimationLottie(true)
                     mediaPlayer.stop()
                     WorkoutCompleteDialog(
@@ -209,7 +209,7 @@ class WorkoutScreen : BaseFragment() {
             seekBar.setPadding(0, 0, 0, 0)
             seekBar.thumb = thumb
             seekBar.layoutParams = params
-            seekBar.max = viewModel.getCountdownProgressBarMax(WorkoutState.WORK)
+            seekBar.max = viewModel.getCountdownProgressBarMax(RandomWorkoutState.WORK)
             seekBar.scaleY = 12f
             seekBar.progress = 0
             seekBar.progressTintList = ColorStateList.valueOf(

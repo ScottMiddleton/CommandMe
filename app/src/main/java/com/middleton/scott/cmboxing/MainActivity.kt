@@ -67,7 +67,7 @@ class MainActivity : AppCompatActivity() {
         navController.addOnDestinationChangedListener { _, destination, _ ->
             setupMenuVisibility(topLevelMenuDestinations.contains(destination.id))
 
-            if (destination.id == R.id.workoutScreen) {
+            if (destination.id == R.id.randomWorkoutScreen) {
                 menu?.setGroupVisible(R.id.workout_menu, true)
             } else {
                 menu?.setGroupVisible(R.id.workout_menu, false)

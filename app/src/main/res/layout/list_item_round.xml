@@ -7,11 +7,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="12dp"
-    android:layout_marginTop="8dp"
     android:layout_marginEnd="12dp"
+    android:layout_marginTop="7dp"
     android:background="@drawable/list_item_background"
-    app:layout_constraintTop_toTopOf="parent"
-    tools:layout_editor_absoluteX="12dp">
+    app:layout_constraintTop_toTopOf="parent">
 
     <ImageButton
         android:id="@+id/copy_btn"
@@ -35,12 +34,13 @@
         android:fontFamily="@string/font_roboto_medium"
         android:maxLines="1"
         android:paddingStart="12dp"
-        android:text="Round 1"
+        android:paddingEnd="6dp"
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/expandable_layout"
         app:layout_constraintEnd_toStartOf="@+id/expand_collapse_button"
         app:layout_constraintStart_toEndOf="@+id/copy_btn"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Round 1" />
 
     <ImageButton
         android:id="@+id/expand_collapse_button"
@@ -174,7 +174,6 @@
                     android:textSize="14sp" />
 
             </LinearLayout>
-
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

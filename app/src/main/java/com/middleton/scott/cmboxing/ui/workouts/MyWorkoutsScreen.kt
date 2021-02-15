@@ -15,12 +15,14 @@ import android.widget.Toast.LENGTH_LONG
 import androidx.core.content.ContextCompat
 import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.Observer
+import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.middleton.scott.cmboxing.R
 import com.middleton.scott.cmboxing.ui.base.BaseFragment
 import com.middleton.scott.cmboxing.ui.createworkout.CreateWorkoutType
+import com.middleton.scott.cmboxing.ui.createworkout.WorkoutType
 import com.middleton.scott.cmboxing.ui.createworkout.WorkoutTypeDialog
 import com.middleton.scott.cmboxing.utils.DialogManager
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
@@ -42,44 +44,63 @@ class MyWorkoutsScreen : BaseFragment() {
             val action = MyWorkoutsScreenDirections.actionMyWorkoutsScreenToCreateWorkoutScreen(
                 workoutId, false
             )
-            findNavController().navigate(
-                action
-            )
-        }) { workoutWithCombinations ->
-            if (workoutWithCombinations.commands.isEmpty()) {
-                DialogManager.showDialog(
-                    context = requireContext(),
-                    messageId = R.string.no_command_dialog_message,
-                    positiveBtnTextId = R.string.exit,
-                    positiveBtnClick = {
-                    },
-                    negativeBtnTextId = R.string.ok,
-                    negativeBtnClick = {
-                        val action = workoutWithCombinations.workout?.id?.let {
-                            MyWorkoutsScreenDirections.actionMyWorkoutsScreenToCreateWorkoutScreen(
-                                it, true
-                            )
+            action.let {
+                findNavController().navigate(
+                    it
+                )
+            }
+        },
+            { workoutWithCombinations, workoutType ->
+                if (workoutWithCombinations.commands.isEmpty()) {
+                    DialogManager.showDialog(
+                        context = requireContext(),
+                        messageId = R.string.no_command_dialog_message,
+                        positiveBtnTextId = R.string.exit,
+                        positiveBtnClick = {
+                        },
+                        negativeBtnTextId = R.string.ok,
+                        negativeBtnClick = {
+                            val action = workoutWithCombinations.workout?.id?.let {
+                                MyWorkoutsScreenDirections.actionMyWorkoutsScreenToCreateWorkoutScreen(
+                                    it, true
+                                )
+                            }
+                            action?.let {
+                                findNavController().navigate(
+                                    it
+                                )
+                            }
                         }
-                        action?.let {
-                            findNavController().navigate(
-                                it
-                            )
+                    )
+                } else {
+                    when (workoutType) {
+                        WorkoutType.STRUCTURED -> {
+                            val action = workoutWithCombinations.workout?.id?.let {
+                                MyWorkoutsScreenDirections.actionMyWorkoutsScreenToStructuredWorkoutScreen(
+                                    it
+                                )
+                            }
+                            if (action != null) {
+                                findNavController().navigate(
+                                    action
+                                )
+                            }
+                        }
+                        WorkoutType.RANDOM -> {
+                            val action = workoutWithCombinations.workout?.id?.let {
+                                MyWorkoutsScreenDirections.actionMyWorkoutsScreenToRandomWorkoutScreen(
+                                    it
+                                )
+                            }
+                            if (action != null) {
+                                findNavController().navigate(
+                                    action
+                                )
+                            }
                         }
                     }
-                )
-            } else {
-                val action = workoutWithCombinations.workout?.id?.let {
-                    MyWorkoutsScreenDirections.actionMyWorkoutsScreenToWorkoutScreen(
-                        it
-                    )
                 }
-                if (action != null) {
-                    findNavController().navigate(
-                        action
-                    )
-                }
-            }
-        }
+            })
     }
 
     override fun onCreateView(
@@ -181,24 +202,13 @@ class MyWorkoutsScreen : BaseFragment() {
         subscribeUI()
 
         add_workouts_btn.setOnClickListener {
-            WorkoutTypeDialog {
-                when (it) {
-                    CreateWorkoutType.CUSTOM -> {
-                        val action =
-                            MyWorkoutsScreenDirections.addWorkoutActionWorkoutsScreenToCreateWorkoutScreen(
-                                -1L, false
-                            )
-                        findNavController().navigate(
-                            action
-                        )
-                    }
-                    CreateWorkoutType.PACKS -> {
-                        Toast.makeText(requireContext(), "Coming soon", LENGTH_LONG).show()
-                    }
-                }
-            }.show(childFragmentManager, null)
-
-
+            val action =
+                MyWorkoutsScreenDirections.addWorkoutActionWorkoutsScreenToCreateWorkoutScreen(
+                    -1L, false
+                )
+            findNavController().navigate(
+                action
+            )
         }
     }
 

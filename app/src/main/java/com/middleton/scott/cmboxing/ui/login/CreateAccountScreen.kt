@@ -11,6 +11,12 @@ import androidx.core.widget.doAfterTextChanged
 import androidx.navigation.fragment.findNavController
 import com.middleton.scott.cmboxing.R
 import kotlinx.android.synthetic.main.fragment_create_account_screen.*
+import kotlinx.android.synthetic.main.fragment_create_account_screen.create_account_btn
+import kotlinx.android.synthetic.main.fragment_create_account_screen.email_et
+import kotlinx.android.synthetic.main.fragment_create_account_screen.email_til
+import kotlinx.android.synthetic.main.fragment_create_account_screen.password_et
+import kotlinx.android.synthetic.main.fragment_create_account_screen.password_til
+import kotlinx.android.synthetic.main.fragment_login_screen.*
 import org.koin.android.ext.android.inject
 
 class CreateAccountScreen : Fragment() {
@@ -51,6 +57,8 @@ class CreateAccountScreen : Fragment() {
         }
 
         create_account_btn.setOnClickListener {
+            create_account_progress_bar.visibility = View.VISIBLE
+            create_account_btn.text = ""
             viewModel.createUserAccount()
         }
     }
@@ -63,6 +71,8 @@ class CreateAccountScreen : Fragment() {
                     action
                 )
             } else {
+                create_account_progress_bar.visibility = View.GONE
+                create_account_btn.text = getString(R.string.create_account)
                 Toast.makeText(requireContext(), it.getErrorString(requireContext()), LENGTH_LONG).show()
             }
         })
@@ -71,6 +81,8 @@ class CreateAccountScreen : Fragment() {
             if(it){
                 email_til.error = null
             } else {
+                create_account_progress_bar.visibility = View.GONE
+                create_account_btn.text = getString(R.string.create_account)
                 email_til.error = getString(R.string.email_validation_error)
             }
         })
@@ -79,6 +91,8 @@ class CreateAccountScreen : Fragment() {
             if(it){
                 password_til.error = null
             } else {
+                create_account_progress_bar.visibility = View.GONE
+                create_account_btn.text = getString(R.string.create_account)
                 password_til.error = getString(R.string.password_validation_error)
             }
         })

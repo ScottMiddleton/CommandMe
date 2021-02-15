@@ -19,7 +19,7 @@ import com.middleton.scott.cmboxing.utils.DateTimeUtils
 import kotlinx.coroutines.launch
 import kotlin.math.ceil
 
-class WorkoutScreenViewModel(
+class RandomWorkoutScreenViewModel(
     private val dataRepository: DataRepository,
     val workoutId: Long
 ) : ViewModel() {
@@ -33,7 +33,7 @@ class WorkoutScreenViewModel(
 
     var audioFileBaseDirectory = ""
     private val workoutWithCommands: WorkoutWithCommands? =
-        dataRepository.getLocalDataSource().getWorkoutWithCombinations(workoutId)
+        dataRepository.getLocalDataSource().getWorkoutWithCommands(workoutId)
     val workoutName = workoutWithCommands?.workout?.name
     private var commands: List<Command>? = null
     private val preparationTimeSecs = workoutWithCommands?.workout?.preparation_time_secs ?: 0
@@ -65,8 +65,8 @@ class WorkoutScreenViewModel(
     val currentRoundLD: LiveData<Int>
         get() = _currentRoundLD
 
-    private val _workoutStateLD = MutableLiveData<WorkoutState>()
-    val workoutStateLD: LiveData<WorkoutState>
+    private val _workoutStateLD = MutableLiveData<RandomWorkoutState>()
+    val randomWorkoutStateLD: LiveData<RandomWorkoutState>
         get() = _workoutStateLD
 
     private val _currentCombinationLD = MutableLiveData<Command>()
@@ -90,32 +90,32 @@ class WorkoutScreenViewModel(
     private fun initWorkout() {
         if (workoutHasPreparation) {
             setCurrentRound(0)
-            initWorkoutState(WorkoutState.PREPARE)
+            initWorkoutState(RandomWorkoutState.PREPARE)
         } else {
             setCurrentRound(1)
-            initWorkoutState(WorkoutState.WORK)
+            initWorkoutState(RandomWorkoutState.WORK)
         }
         totalSecondsElapsed = getTotalSecondsElapsed()
         _totalSecondsElapsedLD.value = totalSecondsElapsed
     }
 
-    private fun initWorkoutState(state: WorkoutState) {
-        _workoutStateLD.value = state
-        serviceWorkoutStateLD.value = state
+    private fun initWorkoutState(stateRandom: RandomWorkoutState) {
+        _workoutStateLD.value = stateRandom
+        serviceWorkoutStateLD.value = stateRandom
 
         // If is last round
-        when (state) {
-            WorkoutState.PREPARE -> {
+        when (stateRandom) {
+            RandomWorkoutState.PREPARE -> {
                 _countdownSecondsLD.value = preparationTimeSecs
                 millisRemainingAtPause = preparationTimeSecs * 1000L
             }
-            WorkoutState.WORK -> {
+            RandomWorkoutState.WORK -> {
                 roundProgress = 0
                 _roundProgressLD.value = roundProgress
                 _countdownSecondsLD.value = workTimeSecs
                 millisRemainingAtPause = workTimeSecs * 1000L
             }
-            WorkoutState.REST -> {
+            RandomWorkoutState.REST -> {
                 if (currentRound >= numberOfRounds) {
                     onComplete()
                 } else {
@@ -126,10 +126,10 @@ class WorkoutScreenViewModel(
         }
 
         if (workoutInProgress) {
-            when (state) {
-                WorkoutState.PREPARE -> initCountdown(preparationTimeSecs * 1000L)
-                WorkoutState.WORK -> initCountdown(workTimeSecs * 1000L)
-                WorkoutState.REST -> initCountdown(restTimeSecs * 1000L)
+            when (stateRandom) {
+                RandomWorkoutState.PREPARE -> initCountdown(preparationTimeSecs * 1000L)
+                RandomWorkoutState.WORK -> initCountdown(workTimeSecs * 1000L)
+                RandomWorkoutState.REST -> initCountdown(restTimeSecs * 1000L)
             }
         }
     }
@@ -147,7 +147,7 @@ class WorkoutScreenViewModel(
         workoutInProgress = true
         firstTick = true
 
-        if (workoutStateLD.value == WorkoutState.WORK) {
+        if (randomWorkoutStateLD.value == RandomWorkoutState.WORK) {
             playStartBellLD.value = true
         }
 
@@ -160,20 +160,20 @@ class WorkoutScreenViewModel(
 
                     millisUntilNextCombination = 0
 
-                    when (workoutStateLD.value) {
-                        WorkoutState.PREPARE -> {
+                    when (randomWorkoutStateLD.value) {
+                        RandomWorkoutState.PREPARE -> {
                             setCurrentRound(currentRound + 1)
-                            initWorkoutState(WorkoutState.WORK)
+                            initWorkoutState(RandomWorkoutState.WORK)
                         }
 
-                        WorkoutState.WORK -> {
-                            initWorkoutState(WorkoutState.REST)
+                        RandomWorkoutState.WORK -> {
+                            initWorkoutState(RandomWorkoutState.REST)
                             playEndBellLD.value = true
                         }
 
-                        WorkoutState.REST -> {
+                        RandomWorkoutState.REST -> {
                             setCurrentRound(currentRound + 1)
-                            initWorkoutState(WorkoutState.WORK)
+                            initWorkoutState(RandomWorkoutState.WORK)
                         }
                     }
 
@@ -196,7 +196,7 @@ class WorkoutScreenViewModel(
                     }
                     firstTick = false
 
-                    if (workoutStateLD.value == WorkoutState.WORK) {
+                    if (randomWorkoutStateLD.value == RandomWorkoutState.WORK) {
                         if (millisUntilNextCombination <= 0L) {
                             initNextCommand()
                         } else {
@@ -219,12 +219,12 @@ class WorkoutScreenViewModel(
     }
 
     private fun onSecondElapsed() {
-        if (workoutStateLD.value == WorkoutState.WORK) {
+        if (randomWorkoutStateLD.value == RandomWorkoutState.WORK) {
             roundProgress++
             _roundProgressLD.value = roundProgress
         }
 
-        if (workoutStateLD.value != WorkoutState.PREPARE) {
+        if (randomWorkoutStateLD.value != RandomWorkoutState.PREPARE) {
             totalSecondsElapsed++
             _totalSecondsElapsedLD.value = totalSecondsElapsed
         }
@@ -236,21 +236,21 @@ class WorkoutScreenViewModel(
             countDownTimer?.cancel()
         }
 
-        when (workoutStateLD.value) {
-            WorkoutState.PREPARE -> {
+        when (randomWorkoutStateLD.value) {
+            RandomWorkoutState.PREPARE -> {
                 setCurrentRound(currentRound + 1)
-                initWorkoutState(WorkoutState.WORK)
+                initWorkoutState(RandomWorkoutState.WORK)
             }
 
-            WorkoutState.WORK -> {
-                roundProgress = getCountdownProgressBarMax(WorkoutState.WORK)
+            RandomWorkoutState.WORK -> {
+                roundProgress = getCountdownProgressBarMax(RandomWorkoutState.WORK)
                 _roundProgressLD.value = roundProgress
-                initWorkoutState(WorkoutState.REST)
+                initWorkoutState(RandomWorkoutState.REST)
             }
 
-            WorkoutState.REST -> {
+            RandomWorkoutState.REST -> {
                 setCurrentRound(currentRound + 1)
-                initWorkoutState(WorkoutState.WORK)
+                initWorkoutState(RandomWorkoutState.WORK)
             }
         }
 
@@ -272,31 +272,31 @@ class WorkoutScreenViewModel(
             countDownTimer?.cancel()
         }
 
-        when (workoutStateLD.value) {
-            WorkoutState.PREPARE -> {
-                initWorkoutState(WorkoutState.PREPARE)
+        when (randomWorkoutStateLD.value) {
+            RandomWorkoutState.PREPARE -> {
+                initWorkoutState(RandomWorkoutState.PREPARE)
             }
-            WorkoutState.WORK -> {
+            RandomWorkoutState.WORK -> {
                 roundProgress = 0
                 _roundProgressLD.value = roundProgress
                 if (restartOnPrevious) {
-                    initWorkoutState(WorkoutState.WORK)
+                    initWorkoutState(RandomWorkoutState.WORK)
                     restartOnPrevious = false
                 } else {
                     setCurrentRound(currentRound - 1)
                     if (currentRound < 1) {
-                        initWorkoutState(WorkoutState.PREPARE)
+                        initWorkoutState(RandomWorkoutState.PREPARE)
                     } else {
-                        initWorkoutState(WorkoutState.REST)
+                        initWorkoutState(RandomWorkoutState.REST)
                     }
                 }
             }
-            WorkoutState.REST -> {
+            RandomWorkoutState.REST -> {
                 if (restartOnPrevious) {
-                    initWorkoutState(WorkoutState.REST)
+                    initWorkoutState(RandomWorkoutState.REST)
                     restartOnPrevious = false
                 } else {
-                    initWorkoutState(WorkoutState.WORK)
+                    initWorkoutState(RandomWorkoutState.WORK)
                 }
             }
         }
@@ -310,12 +310,12 @@ class WorkoutScreenViewModel(
             initCountdown(millisRemainingAtPause)
         } else {
             var timeSecs = 0
-            when (workoutStateLD.value) {
-                WorkoutState.PREPARE -> timeSecs = preparationTimeSecs
-                WorkoutState.WORK -> timeSecs = workTimeSecs
-                WorkoutState.REST -> timeSecs = restTimeSecs
+            when (randomWorkoutStateLD.value) {
+                RandomWorkoutState.PREPARE -> timeSecs = preparationTimeSecs
+                RandomWorkoutState.WORK -> timeSecs = workTimeSecs
+                RandomWorkoutState.REST -> timeSecs = restTimeSecs
             }
-            if (workoutStateLD.value != WorkoutState.PREPARE) {
+            if (randomWorkoutStateLD.value != RandomWorkoutState.PREPARE) {
                 playStartBellLD.value = true
             }
             initCountdown(timeSecs * 1000L)
@@ -334,15 +334,15 @@ class WorkoutScreenViewModel(
         }
 
         workoutInProgress = false
-        _workoutStateLD.value = WorkoutState.COMPLETE
-        serviceWorkoutStateLD.value = WorkoutState.COMPLETE
+        _workoutStateLD.value = RandomWorkoutState.COMPLETE
+        serviceWorkoutStateLD.value = RandomWorkoutState.COMPLETE
     }
 
-    fun getCountdownProgressBarMax(workoutState: WorkoutState): Int {
-        return when (workoutState) {
-            WorkoutState.PREPARE -> preparationTimeSecs
-            WorkoutState.WORK -> workTimeSecs
-            WorkoutState.REST -> restTimeSecs
+    fun getCountdownProgressBarMax(randomWorkoutState: RandomWorkoutState): Int {
+        return when (randomWorkoutState) {
+            RandomWorkoutState.PREPARE -> preparationTimeSecs
+            RandomWorkoutState.WORK -> workTimeSecs
+            RandomWorkoutState.REST -> restTimeSecs
             else -> 0
         }
     }
@@ -351,7 +351,7 @@ class WorkoutScreenViewModel(
         viewModelScope.launch {
             val multipliedCombinationsList = mutableListOf<Command>()
             val selectedCombinationsCrossRefs =
-                dataRepository.getLocalDataSource().getSelectedCombinationCrossRefs(workoutId)
+                dataRepository.getLocalDataSource().getSelectedCommandCrossRefs(workoutId)
 
             commands?.forEach { combination ->
                 val frequencyType =
@@ -416,15 +416,15 @@ class WorkoutScreenViewModel(
 
     private fun getTotalSecondsElapsed(): Int {
         var totalSecondsElapsed = 0
-        when (workoutStateLD.value) {
-            WorkoutState.PREPARE -> {
+        when (randomWorkoutStateLD.value) {
+            RandomWorkoutState.PREPARE -> {
                 totalSecondsElapsed = 0
             }
-            WorkoutState.WORK -> {
+            RandomWorkoutState.WORK -> {
                 totalSecondsElapsed = (currentRound - 1) * (workTimeSecs + restTimeSecs)
             }
 
-            WorkoutState.REST -> {
+            RandomWorkoutState.REST -> {
                 totalSecondsElapsed =
                     ((currentRound) * workTimeSecs) + ((currentRound - 1) * restTimeSecs)
             }

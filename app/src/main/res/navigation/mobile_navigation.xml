@@ -7,7 +7,7 @@
 
     <action
         android:id="@+id/action_global_workout_screen"
-        app:destination="@id/workoutScreen"
+        app:destination="@id/randomWorkoutScreen"
         app:launchSingleTop="true" />
 
     <action
@@ -15,25 +15,32 @@
         app:destination="@id/loginScreen"
         app:launchSingleTop="true"
         app:popUpTo="@+id/mobile_navigation"
-        app:popUpToInclusive="true"/>
+        app:popUpToInclusive="true" />
 
     <fragment
         android:id="@+id/myWorkoutsScreen"
         android:name="com.middleton.scott.cmboxing.ui.workouts.MyWorkoutsScreen"
         android:label="@string/my_workouts"
-        tools:layout="@layout/fragment_my_workouts" >
+        tools:layout="@layout/fragment_my_workouts">
         <action
-            android:id="@+id/action_myWorkoutsScreen_to_workoutScreen"
-            app:destination="@id/workoutScreen"
+            android:id="@+id/action_myWorkoutsScreen_to_randomWorkoutScreen"
+            app:destination="@id/randomWorkoutScreen"
             app:enterAnim="@android:anim/fade_in"
             app:exitAnim="@android:anim/fade_out"
             app:popEnterAnim="@android:anim/fade_in"
-            app:popExitAnim="@android:anim/fade_out"/>
+            app:popExitAnim="@android:anim/fade_out" />
+        <action
+            android:id="@+id/action_myWorkoutsScreen_to_structuredWorkoutScreen"
+            app:destination="@id/structuredWorkoutScreen"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out" />
         <action
             android:id="@+id/add_workout_action_workoutsScreen_to_createWorkoutScreen"
             app:destination="@id/createWorkoutScreen"
-            app:exitAnim="@anim/slide_out_bottom"
             app:enterAnim="@anim/slide_in_top"
+            app:exitAnim="@anim/slide_out_bottom"
             app:popEnterAnim="@anim/slide_in_bottom"
             app:popExitAnim="@anim/slide_out_top" />
         <action
@@ -64,8 +71,18 @@
             app:argType="boolean" />
     </fragment>
     <fragment
-        android:id="@+id/workoutScreen"
-        android:name="com.middleton.scott.cmboxing.ui.workout.WorkoutScreen"
+        android:id="@+id/randomWorkoutScreen"
+        android:name="com.middleton.scott.cmboxing.ui.workout.RandomWorkoutScreen"
+        tools:layout="@layout/fragment_workout_screen">
+        <argument
+            android:name="workoutId"
+            android:defaultValue="-1L"
+            app:argType="long" />
+    </fragment>
+    <fragment
+        android:id="@+id/structuredWorkoutScreen"
+        android:name="com.middleton.scott.cmboxing.ui.workout.StructuredWorkoutScreen"
+        android:label="fragment_structured_workout_screen"
         tools:layout="@layout/fragment_workout_screen">
         <argument
             android:name="workoutId"
@@ -75,7 +92,7 @@
     <fragment
         android:id="@+id/splashScreen"
         android:name="com.middleton.scott.cmboxing.ui.splash.SplashScreen"
-        tools:layout="@layout/fragment_splash" >
+        tools:layout="@layout/fragment_splash">
         <action
             android:id="@+id/action_splashFragment_to_workoutsScreen"
             app:destination="@id/myWorkoutsScreen"
@@ -93,14 +110,14 @@
         android:id="@+id/loginScreen"
         android:name="com.middleton.scott.cmboxing.ui.login.LoginScreen"
         android:label="@string/login"
-        tools:layout="@layout/fragment_login_screen" >
+        tools:layout="@layout/fragment_login_screen">
         <action
             android:id="@+id/action_loginScreen_to_createAccountScreen"
             app:destination="@id/createAccountScreen"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"/>
+            app:popExitAnim="@anim/slide_out_right" />
         <action
             android:id="@+id/action_loginScreen_to_myWorkoutsScreen"
             app:destination="@id/myWorkoutsScreen"
@@ -109,13 +126,13 @@
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right"
             app:popUpTo="@+id/mobile_navigation"
-            app:popUpToInclusive="true"/>
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/createAccountScreen"
         android:name="com.middleton.scott.cmboxing.ui.login.CreateAccountScreen"
         android:label="@string/create_account"
-        tools:layout="@layout/fragment_create_account_screen" >
+        tools:layout="@layout/fragment_create_account_screen">
         <action
             android:id="@+id/action_createAccountScreen_to_workoutsScreen"
             app:destination="@id/myWorkoutsScreen"
@@ -124,6 +141,6 @@
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right"
             app:popUpTo="@+id/mobile_navigation"
-            app:popUpToInclusive="true"/>
+            app:popUpToInclusive="true" />
     </fragment>
 </navigation>

@@ -27,7 +27,7 @@ import com.middleton.scott.cmboxing.other.Constants.ACTION_STOP_SERVICE
 import com.middleton.scott.cmboxing.other.Constants.NOTIFICATION_CHANNEL_ID
 import com.middleton.scott.cmboxing.other.Constants.NOTIFICATION_CHANNEL_NAME
 import com.middleton.scott.cmboxing.other.Constants.NOTIFICATION_ID
-import com.middleton.scott.cmboxing.ui.workout.WorkoutState
+import com.middleton.scott.cmboxing.ui.workout.RandomWorkoutState
 import java.io.IOException
 
 class WorkoutService : LifecycleService() {
@@ -44,7 +44,7 @@ class WorkoutService : LifecycleService() {
     lateinit var notificationManager: NotificationManager
 
     companion object {
-        val serviceWorkoutStateLD = MutableLiveData<WorkoutState>()
+        val serviceWorkoutStateLD = MutableLiveData<RandomWorkoutState>()
         val serviceCountdownSecondsLD = MutableLiveData<String>()
         val serviceCommandAudioLD = MutableLiveData<ServiceAudioCommand>()
         val playStartBellLD = MutableLiveData<Boolean>()

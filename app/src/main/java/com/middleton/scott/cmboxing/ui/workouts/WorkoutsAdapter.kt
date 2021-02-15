@@ -11,11 +11,12 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.middleton.scott.cmboxing.R
 import com.middleton.scott.cmboxing.datasource.local.model.WorkoutWithCommands
+import com.middleton.scott.cmboxing.ui.createworkout.WorkoutType
 import com.middleton.scott.cmboxing.utils.DateTimeUtils
 
 class WorkoutsAdapter(
     private val onEditWorkout: ((Long) -> Unit),
-    private val onClickWorkout: ((WorkoutWithCommands) -> Unit)
+    private val onClickWorkout: ((WorkoutWithCommands, WorkoutType) -> Unit)
 ) : RecyclerView.Adapter<WorkoutsAdapter.WorkoutsViewHolder>() {
 
     private lateinit var context: Context
@@ -44,7 +45,7 @@ class WorkoutsAdapter(
             workout?.id?.let { id -> onEditWorkout(id) }
         }
         holder.parent.setOnClickListener {
-            onClickWorkout(workoutsWithCombinations[position])
+            onClickWorkout(workoutsWithCombinations[position], workout!!.workout_type)
         }
         holder.dateTV.text = workout?.dateCreated?.let { DateTimeUtils.toDayMonthYear(it) }
         holder.roundsCombosTV.text = context.getString(R.string.rounds_combos, workout?.numberOfRounds.toString(), exercises.size.toString())
