@@ -34,7 +34,7 @@ class StructuredWorkoutScreenViewModel(
     private var commands = workoutWithCommands.commands
     private val preparationTimeSecs = workoutWithCommands.workout?.preparation_time_secs ?: 0
     private val restTimeSecs = workoutWithCommands.workout?.default_rest_time_secs ?: 0
-    private val numberOfRounds = workoutWithCommands.workout?.numberOfRounds ?: 0
+    val numberOfRounds = workoutWithCommands.workout?.numberOfRounds ?: 0
     var audioFileBaseDirectory = ""
 
     // Flags
@@ -46,13 +46,12 @@ class StructuredWorkoutScreenViewModel(
 
 
     private var millisRemainingAtPause: Long = 0
-    private var totalSecondsElapsed: Int = 0
 
 //    var totalWorkoutSecs = getTotalWorkoutLengthSecs()
 
-//    private val _totalSecondsElapsedLD = MutableLiveData<Int>()
-//    val totalSecondsElapsedLD: LiveData<Int>
-//        get() = _totalSecondsElapsedLD
+    private val _totalSecondsElapsedLD = MutableLiveData<Int>()
+    val totalSecondsElapsedLD: LiveData<Int>
+        get() = _totalSecondsElapsedLD
 
     private val _countdownSecondsLD = MutableLiveData<Int>()
     val countdownSecondsLD: LiveData<Int>
@@ -88,7 +87,7 @@ class StructuredWorkoutScreenViewModel(
         } else {
             initWorkoutState(RandomWorkoutState.WORK)
         }
-        totalSecondsElapsed = getTotalSecondsElapsed()
+        getTotalSecondsElapsed()
     }
 
     private fun initWorkoutState(state: RandomWorkoutState) {
@@ -164,13 +163,13 @@ class StructuredWorkoutScreenViewModel(
                     restartOnPrevious = countdownMillis - millisUntilFinished > 1000
 
                     if (!firstTick) {
-//                        onSecondElapsed()
+                        onSecondElapsed()
                     }
                     firstTick = false
                 }
 
                 override fun onFinish() {
-//                    onSecondElapsed()
+                    onSecondElapsed()
 
                     when (workoutStateLD.value) {
                         RandomWorkoutState.PREPARE -> {
@@ -218,18 +217,17 @@ class StructuredWorkoutScreenViewModel(
         }
     }
 
-//    private fun onSecondElapsed() {
+    private fun onSecondElapsed() {
 //        if (workoutStateLD.value == RandomWorkoutState.WORK) {
 //            val progress = _roundProgressLD.value
-//            _roundProgressLD.value = progress?.plus(1)
-//        }
-//
-//        if (workoutStateLD.value != RandomWorkoutState.PREPARE) {
-//            totalSecondsElapsed++
-//            _totalSecondsElapsedLD.value = totalSecondsElapsed
+//            _roundProgressLD.value = progress.plus(1)
 //        }
 
-//    }
+        if (workoutStateLD.value != RandomWorkoutState.PREPARE) {
+            val totalSecondsElapsed = _totalSecondsElapsedLD.value!!
+            _totalSecondsElapsedLD.value = totalSecondsElapsed + 1
+        }
+    }
 
 //    fun onNext() {
 //        if (workoutHasBegun) {
@@ -352,32 +350,44 @@ class StructuredWorkoutScreenViewModel(
     }
 
 
-    private fun getTotalSecondsElapsed(): Int {
-//        var totalSecondsElapsed = 0
-//        when (randomWorkoutStateLD.value) {
-//            RandomWorkoutState.PREPARE -> {
-//                totalSecondsElapsed = 0
-//            }
-//            RandomWorkoutState.WORK -> {
-//                totalSecondsElapsed = (currentRound - 1) * (workTimeSecs + restTimeSecs)
-//            }
-//
-//            RandomWorkoutState.REST -> {
-//                totalSecondsElapsed =
-//                    ((currentRound) * workTimeSecs) + ((currentRound - 1) * restTimeSecs)
-//            }
-//        }
-//        return totalSecondsElapsed
-//        _totalSecondsElapsedLD.value = totalSecondsElapsed
-        return 1000
+    private fun getTotalSecondsElapsed() {
+        var totalSecondsElapsed = 0
+        when (_workoutStateLD.value) {
+            RandomWorkoutState.PREPARE -> {
+                totalSecondsElapsed = 0
+            }
+            RandomWorkoutState.WORK, RandomWorkoutState.REST -> {
+                var indexToGetTime = currentCommandCrossRefIndex - 1
+                var totalCommandTimeSecs = 0
+                repeat(currentCommandCrossRefIndex) {
+                    totalCommandTimeSecs =
+                        structuredCommandCrossRefs[indexToGetTime].time_allocated_secs
+                    indexToGetTime--
+                }
+
+                val currentRound = _currentRoundLD.value!!
+                totalSecondsElapsed = totalCommandTimeSecs + ((currentRound - 1) * restTimeSecs)
+            }
+        }
+        _totalSecondsElapsedLD.value = totalSecondsElapsed
     }
 
-//    fun getTotalRounds(): Int {
-//        return numberOfRounds
-//    }
+    fun getTotalWorkoutSecs(): Int {
+        var totalTimeSecs = 0
+        if (structuredCommandCrossRefs.isNotEmpty()) {
+            structuredCommandCrossRefs.forEach {
+                totalTimeSecs += it.time_allocated_secs
+            }
+        }
 
-//    fun getCurrentRound(): Int {
-//        return currentCommandCrossRef.round
-//    }
+        val restBetweenRounds = restTimeSecs
+        val totalRestTime = restBetweenRounds * (numberOfRounds - 1)
 
+        return totalTimeSecs + totalRestTime
+    }
+
+    fun getNumberOfCommandsInRound(): Int {
+        val roundCrossRefs = structuredCommandCrossRefs.filter {it.round == currentCommandCrossRef.round}
+        return roundCrossRefs.size
+    }
 }

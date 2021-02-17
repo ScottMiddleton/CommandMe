@@ -47,8 +47,9 @@ class StructuredWorkoutScreen : BaseFragment() {
 //        sendCommandToService(ACTION_START_OR_RESUME_SERVICE)
 //        initRoundProgressView()
         (activity as MainActivity).supportActionBar?.title = viewModel.workoutName
-        viewModel.audioFileBaseDirectory = view.context.getExternalFilesDir(null)?.absolutePath + "/"
-//        total_rounds_count_tv.text = viewModel.getTotalRounds().toString()
+        viewModel.audioFileBaseDirectory =
+            view.context.getExternalFilesDir(null)?.absolutePath + "/"
+        total_rounds_count_tv.text = viewModel.numberOfRounds.toString()
 //        remaining_tv.text = DateTimeUtils.toMinuteSeconds(viewModel.totalWorkoutSecs)
         subscribeUI()
         setClickListeners()
@@ -92,10 +93,10 @@ class StructuredWorkoutScreen : BaseFragment() {
 //            seekbar.progress = it
 //        })
 
-//        viewModel.totalSecondsElapsedLD.observe(viewLifecycleOwner, Observer {
-//            elapsed_tv.text = DateTimeUtils.toMinuteSeconds(it)
-//            remaining_tv.text = DateTimeUtils.toMinuteSeconds(viewModel.totalWorkoutSecs - it)
-//        })
+        viewModel.totalSecondsElapsedLD.observe(viewLifecycleOwner, Observer {
+            elapsed_tv.text = DateTimeUtils.toMinuteSeconds(it)
+            remaining_tv.text = DateTimeUtils.toMinuteSeconds(viewModel.getTotalWorkoutSecs() - it)
+        })
 
         viewModel.workoutStateLD.observe(viewLifecycleOwner, Observer {
 
@@ -103,6 +104,7 @@ class StructuredWorkoutScreen : BaseFragment() {
 
             when (it) {
                 RandomWorkoutState.PREPARE -> {
+                    command_number_tv.text = ""
                     workout_state_tv.text = it.toString()
                     play_command_lottie.visibility = GONE
                     countdown_pb.progressTintList = ColorStateList.valueOf(
@@ -114,6 +116,11 @@ class StructuredWorkoutScreen : BaseFragment() {
                 }
                 RandomWorkoutState.WORK -> {
                     workout_state_tv.text = ""
+                    command_number_tv.text = getString(
+                        R.string.command_number,
+                        (viewModel.currentCommandCrossRef.position_index + 1).toString(),
+                        viewModel.getNumberOfCommandsInRound().toString()
+                    )
                     command_name_tv.visibility = VISIBLE
                     play_command_lottie.visibility = VISIBLE
                     countdown_pb.progressTintList = ColorStateList.valueOf(
@@ -125,8 +132,9 @@ class StructuredWorkoutScreen : BaseFragment() {
                 }
                 RandomWorkoutState.REST -> {
                     workout_state_tv.text = it.toString()
+                    command_number_tv.text = ""
                     command_name_tv.visibility = INVISIBLE
-                    play_command_lottie.visibility = VISIBLE
+                    play_command_lottie.visibility = GONE
                     countdown_pb.progressTintList = ColorStateList.valueOf(
                         ContextCompat.getColor(
                             requireContext(),
@@ -136,7 +144,10 @@ class StructuredWorkoutScreen : BaseFragment() {
                 }
 
                 RandomWorkoutState.COMPLETE -> {
+                    command_number_tv.text = ""
                     workout_state_tv.text = it.toString()
+                    command_name_tv.visibility = INVISIBLE
+                    play_command_lottie.visibility = GONE
                     handlePlayAnimationLottie(true)
                     mediaPlayer.stop()
 //                    WorkoutCompleteDialog(
@@ -191,7 +202,6 @@ class StructuredWorkoutScreen : BaseFragment() {
             start_workout_lottie.playAnimation()
         }
     }
-
 
 
 //    private fun initRoundProgressView() {
