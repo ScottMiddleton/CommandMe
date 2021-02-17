@@ -19,7 +19,7 @@ abstract class StructuredCommandCrossRefDao : BaseDao<StructuredCommandCrossRef>
     @Query("SELECT * FROM structured_commands WHERE round = :round AND workout_id = :workoutId")
     abstract fun getStructuredCommandCrossRefsByRound(round: Int, workoutId: Long) : List<StructuredCommandCrossRef>
 
-    @Query("SELECT * FROM structured_commands WHERE workout_id = :workoutId ORDER BY round AND position_index")
+    @Query("SELECT * FROM structured_commands WHERE workout_id = :workoutId ORDER BY round, position_index")
     abstract fun getSelectedCombinationCrossRefs(workoutId: Long) : List<StructuredCommandCrossRef>
 
     @Query("DELETE FROM structured_commands WHERE workout_id = :workoutId")

@@ -82,7 +82,6 @@
     <fragment
         android:id="@+id/structuredWorkoutScreen"
         android:name="com.middleton.scott.cmboxing.ui.workout.StructuredWorkoutScreen"
-        android:label="fragment_structured_workout_screen"
         tools:layout="@layout/fragment_workout_screen">
         <argument
             android:name="workoutId"
