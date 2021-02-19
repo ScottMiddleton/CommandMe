@@ -269,17 +269,19 @@ class StructuredWorkoutScreenViewModel(
             }
             RandomWorkoutState.WORK -> {
                 _roundProgressLD.value = 0
+                currentCommandCrossRefIndex --
                 if (restartCommandOnPrevious) {
-                    currentCommandCrossRefIndex --
                     initNextCommand()
                     restartCommandOnPrevious = false
                 } else {
 //                    _currentRoundLD.value = currentRoundLD.value!! - 1
-                    if (currentRoundLD.value!! == 1) {
+                    if (currentRoundLD.value!! == 1 && currentCommandCrossRef.position_index == 0) {
                         initWorkoutState(RandomWorkoutState.PREPARE)
+                    } else if (currentCommandCrossRef.position_index == 0){
+                        initWorkoutState(RandomWorkoutState.REST)
                     } else {
-//                        initWorkoutState(RandomWorkoutState.REST)
-                        currentCommandCrossRefIndex - currentCommandCrossRefIndex - 2
+                        currentCommandCrossRefIndex --
+                        setCurrentRoundProgress()
                         initNextCommand()
                     }
                 }
