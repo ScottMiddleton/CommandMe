@@ -27,7 +27,7 @@ class StructuredWorkoutScreenViewModel(
     private val structuredCommandCrossRefs =
         dataRepository.getLocalDataSource().getStructuredCommandCrossRefs(workoutId)
     var currentCommandCrossRef: StructuredCommandCrossRef = structuredCommandCrossRefs[0]
-    var currentCommandCrossRefIndex = -1
+    var currentCommandCrossRefIndex = 0
     private val workoutWithCommands: WorkoutWithCommands =
         dataRepository.getLocalDataSource().getWorkoutWithCommands(workoutId)
     val workoutName = workoutWithCommands.workout?.name
@@ -92,7 +92,6 @@ class StructuredWorkoutScreenViewModel(
     private fun initWorkoutState(state: RandomWorkoutState) {
         serviceWorkoutStateLD.value = state
 
-        // If is last round
         when (state) {
             RandomWorkoutState.PREPARE -> {
                 _countdownSecondsLD.value = preparationTimeSecs
@@ -116,7 +115,9 @@ class StructuredWorkoutScreenViewModel(
                     _workoutStateLD.value = state
                     initCountdown(preparationTimeSecs * 1000L)
                 }
-                RandomWorkoutState.WORK -> initNextCommand()
+                RandomWorkoutState.WORK -> {
+                    initCommand(currentCommandCrossRefIndex)
+                }
                 RandomWorkoutState.REST -> {
                     _workoutStateLD.value = state
                     initCountdown(restTimeSecs * 1000L)
@@ -162,6 +163,7 @@ class StructuredWorkoutScreenViewModel(
                     if (!firstTick) {
                         onSecondElapsed()
                     }
+
                     firstTick = false
                 }
 
@@ -174,12 +176,12 @@ class StructuredWorkoutScreenViewModel(
                         }
 
                         RandomWorkoutState.WORK -> {
-                            initNextCommand()
+                            currentCommandCrossRefIndex++
+                            initCommand(currentCommandCrossRefIndex)
                         }
 
                         RandomWorkoutState.REST -> {
                             _currentRoundLD.value = currentRoundLD.value!! + 1
-                            _roundProgressLD.value = 0
                             initWorkoutState(RandomWorkoutState.WORK)
                         }
                     }
@@ -189,28 +191,32 @@ class StructuredWorkoutScreenViewModel(
             }.start()
     }
 
-    private fun initNextCommand() {
+    private fun initCommand(commandIndex: Int) {
         when {
-            structuredCommandCrossRefs.size == currentCommandCrossRefIndex + 1 -> {
+            structuredCommandCrossRefs.size == commandIndex -> {
                 // If workout complete
+                // Set the round progress to max
+                _roundProgressLD.value = getLengthOfRoundSecs(currentRoundLD.value!!)
                 initWorkoutState(RandomWorkoutState.COMPLETE)
             }
-            _currentRoundLD.value == structuredCommandCrossRefs[currentCommandCrossRefIndex + 1].round - 1 &&  workoutHasRest -> {
+            _currentRoundLD.value == structuredCommandCrossRefs[commandIndex].round - 1 && workoutHasRest -> {
                 // If round complete
+                // Set the round progress to max
+                _roundProgressLD.value = getLengthOfRoundSecs(currentRoundLD.value!!)
+
                 initWorkoutState(RandomWorkoutState.REST)
             }
             else -> {
                 // If another command in round
-                currentCommandCrossRefIndex++
-                currentCommandCrossRef = structuredCommandCrossRefs[currentCommandCrossRefIndex]
-                val nextCommand = commands.firstOrNull { it.id == currentCommandCrossRef.command_id }
+                currentCommandCrossRef = structuredCommandCrossRefs[commandIndex]
+                val nextCommand =
+                    commands.firstOrNull { it.id == currentCommandCrossRef.command_id }
                 _currentCommandLD.value = nextCommand
-                serviceCommandAudioLD.value = nextCommand?.file_name?.let { ServiceAudioCommand(it, audioFileBaseDirectory) }
+                serviceCommandAudioLD.value =
+                    nextCommand?.file_name?.let { ServiceAudioCommand(it, audioFileBaseDirectory) }
                 _workoutStateLD.value = RandomWorkoutState.WORK
                 _currentRoundLD.value = currentCommandCrossRef.round
-                if(currentCommandCrossRef.position_index == 0){
-                    _roundProgressLD.value = 0
-                }
+                setCurrentRoundProgress()
                 initCountdown((currentCommandCrossRef.time_allocated_secs * 1000).toLong())
             }
         }
@@ -228,6 +234,13 @@ class StructuredWorkoutScreenViewModel(
         }
     }
 
+    fun onRestart() {
+        workoutHasBegun = false
+        workoutInProgress = false
+        currentCommandCrossRefIndex = 0
+        initWorkout()
+    }
+
     fun onNext() {
         if (workoutHasBegun) {
             countDownTimer?.cancel()
@@ -239,8 +252,8 @@ class StructuredWorkoutScreenViewModel(
             }
 
             RandomWorkoutState.WORK -> {
-                setCurrentRoundProgress()
-                initNextCommand()
+                currentCommandCrossRefIndex++
+                initCommand(currentCommandCrossRefIndex)
             }
 
             RandomWorkoutState.REST -> {
@@ -248,12 +261,6 @@ class StructuredWorkoutScreenViewModel(
                 initWorkoutState(RandomWorkoutState.WORK)
             }
         }
-    }
-
-    fun onRestart() {
-        workoutHasBegun = false
-        workoutInProgress = false
-        initWorkout()
     }
 
     fun onPrevious() {
@@ -268,21 +275,26 @@ class StructuredWorkoutScreenViewModel(
                 initWorkoutState(RandomWorkoutState.PREPARE)
             }
             RandomWorkoutState.WORK -> {
-                _roundProgressLD.value = 0
-                currentCommandCrossRefIndex --
                 if (restartCommandOnPrevious) {
-                    initNextCommand()
+                    // If restart command
+                    initCommand(currentCommandCrossRefIndex)
                     restartCommandOnPrevious = false
                 } else {
-//                    _currentRoundLD.value = currentRoundLD.value!! - 1
-                    if (currentRoundLD.value!! == 1 && currentCommandCrossRef.position_index == 0) {
-                        initWorkoutState(RandomWorkoutState.PREPARE)
-                    } else if (currentCommandCrossRef.position_index == 0){
-                        initWorkoutState(RandomWorkoutState.REST)
-                    } else {
-                        currentCommandCrossRefIndex --
-                        setCurrentRoundProgress()
-                        initNextCommand()
+                    when {
+                        currentCommandCrossRefIndex == 0 -> {
+                            // If first command in workout
+                            initWorkoutState(RandomWorkoutState.PREPARE)
+                        }
+                        currentCommandCrossRefIndex != 0 && currentCommandCrossRef.position_index == 0 -> {
+                            // If first command in round
+                            _currentRoundLD.value = _currentRoundLD.value!! - 1
+                            initWorkoutState(RandomWorkoutState.REST)
+                        }
+                        else -> {
+                            // If go to previous command
+                            currentCommandCrossRefIndex--
+                            initCommand(currentCommandCrossRefIndex)
+                        }
                     }
                 }
             }
@@ -291,7 +303,8 @@ class StructuredWorkoutScreenViewModel(
                     initWorkoutState(RandomWorkoutState.REST)
                     restartCommandOnPrevious = false
                 } else {
-                    initWorkoutState(RandomWorkoutState.WORK)
+                    currentCommandCrossRefIndex--
+                    initCommand(currentCommandCrossRefIndex)
                 }
             }
         }
@@ -327,6 +340,7 @@ class StructuredWorkoutScreenViewModel(
         }
 
         workoutInProgress = false
+        _countdownSecondsLD.value = 0
         _workoutStateLD.value = RandomWorkoutState.COMPLETE
         serviceWorkoutStateLD.value = RandomWorkoutState.COMPLETE
     }
@@ -352,13 +366,20 @@ class StructuredWorkoutScreenViewModel(
         return roundSecs
     }
 
+
+    /**
+     * This function sets the progress of the round bar by taking the getting the current rounds
+     * command cross refs and multiplying all the cross ref time_allocated values, prior to the
+     * current cross ref
+     */
     private fun setCurrentRoundProgress() {
-        val roundCrossRefs = structuredCommandCrossRefs.filter {it.round == currentRoundLD.value!!}
+        val roundCrossRefs =
+            structuredCommandCrossRefs.filter { it.round == currentRoundLD.value!! }
 
         var roundProgress = 0
 
         roundCrossRefs.forEach lit@{
-            if (it.position_index > currentCommandCrossRef.position_index) return@lit
+            if (it.position_index >= structuredCommandCrossRefs[currentCommandCrossRefIndex].position_index) return@lit
 
             roundProgress += it.time_allocated_secs
         }

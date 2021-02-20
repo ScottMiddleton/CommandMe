@@ -14,6 +14,7 @@ import android.widget.LinearLayout
 import android.widget.SeekBar
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.middleton.scott.cmboxing.MainActivity
 import com.middleton.scott.cmboxing.R
@@ -147,14 +148,14 @@ class StructuredWorkoutScreen : BaseFragment() {
                     play_command_lottie.visibility = GONE
                     handlePlayAnimationLottie(true)
                     mediaPlayer.stop()
-//                    WorkoutCompleteDialog(
-//                        viewModel.totalWorkoutSecs,
-//                        0,
-//                        {
-//                            initRoundProgressView()
-//                            viewModel.onRestart()
-//                        },
-//                        { findNavController().popBackStack() }).show(childFragmentManager, null)
+                    WorkoutCompleteDialog(
+                        viewModel.totalWorkoutLengthSecs,
+                        0,
+                        {
+                            initRoundProgressView()
+                            viewModel.onRestart()
+                        },
+                        { findNavController().popBackStack() }).show(childFragmentManager, null)
                 }
             }
         })
