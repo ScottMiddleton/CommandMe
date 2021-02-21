@@ -46,7 +46,7 @@ class MainActivity : AppCompatActivity() {
         val topLevelMenuDestinations = setOf(
             R.id.myWorkoutsScreen,
             R.id.commandsScreen,
-            R.id.packs,
+            R.id.packsScreen,
         )
 
         val menuDestinations = mutableSetOf<Int>()

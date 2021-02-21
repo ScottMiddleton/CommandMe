@@ -142,4 +142,9 @@
             app:popUpTo="@+id/mobile_navigation"
             app:popUpToInclusive="true" />
     </fragment>
+    <fragment
+        android:id="@+id/packsScreen"
+        android:name="com.middleton.scott.cmboxing.PacksScreen"
+        android:label="Packs Marketplace"
+        tools:layout="@layout/fragment_packs_screen" />
 </navigation>

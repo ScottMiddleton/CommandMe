@@ -11,11 +11,11 @@
         <item
             android:icon="@drawable/ic_record_voice"
             android:id="@+id/commandsScreen"
-            android:title="Commands" />
+            android:title="@string/commands" />
         <item
             android:icon="@drawable/ic_packs"
-            android:id="@+id/packs"
-            android:title="Packs" />
+            android:id="@+id/packsScreen"
+            android:title="@string/packs" />
     </group>
 
 </menu>
