@@ -19,7 +19,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.middleton.scott.cmboxing.MainActivity
 import com.middleton.scott.cmboxing.R
-import com.middleton.scott.cmboxing.other.Constants.ACTION_START_OR_RESUME_SERVICE
+import com.middleton.scott.cmboxing.other.Constants.ACTION_START_OR_RESUME_RANDOM_SERVICE
 import com.middleton.scott.cmboxing.other.Constants.ACTION_STOP_SERVICE
 import com.middleton.scott.cmboxing.service.WorkoutService
 import com.middleton.scott.cmboxing.ui.base.BaseFragment
@@ -45,7 +45,7 @@ class RandomWorkoutScreen : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         requireActivity().volumeControlStream = AudioManager.STREAM_MUSIC
-        sendCommandToService(ACTION_START_OR_RESUME_SERVICE)
+        sendCommandToService(ACTION_START_OR_RESUME_RANDOM_SERVICE)
         initRoundProgressView()
         (activity as MainActivity).supportActionBar?.title = viewModel.workoutName
         viewModel.audioFileBaseDirectory = view.context.getExternalFilesDir(null)?.absolutePath + "/"
@@ -58,13 +58,13 @@ class RandomWorkoutScreen : BaseFragment() {
     override fun onResume() {
         super.onResume()
         // This is to ensure that the round progress bars update after the app has been backgrounded
-        if (viewModel.randomWorkoutStateLD.value == RandomWorkoutState.REST) {
+        if (viewModel.workoutStateLD.value == RandomWorkoutState.REST) {
             repeat(viewModel.getCurrentRound()) { index ->
                 val seekbar = round_progress_ll.getChildAt(index) as SeekBar?
                 seekbar?.thumb?.mutate()?.alpha = 255
                 seekbar?.progress = viewModel.getCountdownProgressBarMax(RandomWorkoutState.WORK)
             }
-        } else if (viewModel.randomWorkoutStateLD.value == RandomWorkoutState.WORK) {
+        } else if (viewModel.workoutStateLD.value == RandomWorkoutState.WORK) {
             repeat(viewModel.getCurrentRound()) { index ->
                 val seekbar = round_progress_ll.getChildAt(index - 1) as SeekBar?
                 seekbar?.thumb?.mutate()?.alpha = 255
@@ -98,7 +98,7 @@ class RandomWorkoutScreen : BaseFragment() {
             remaining_tv.text = DateTimeUtils.toMinuteSeconds(viewModel.totalWorkoutSecs - it)
         })
 
-        viewModel.randomWorkoutStateLD.observe(viewLifecycleOwner, Observer {
+        viewModel.workoutStateLD.observe(viewLifecycleOwner, Observer {
             workout_state_tv.text = it.toString()
             countdown_pb.max = viewModel.getCountdownProgressBarMax(it)
 

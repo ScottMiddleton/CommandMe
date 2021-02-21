@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
-import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
@@ -48,11 +47,11 @@ class WorkoutsAdapter(
             onClickWorkout(workoutsWithCombinations[position], workout!!.workout_type)
         }
         holder.dateTV.text = workout?.dateCreated?.let { DateTimeUtils.toDayMonthYear(it) }
-        holder.roundsCombosTV.text = context.getString(R.string.rounds_combos, workout?.numberOfRounds.toString(), exercises.size.toString())
-        workout?.intensity?.let {
-            holder.intensityPB.progress = it
-            holder.intensityTV.text = it.toString()
-        }
+        holder.roundsWorkoutTypeTV.text = context.getString(
+            R.string.rounds_and_time,
+            workout?.numberOfRounds.toString(),
+            context.getString(workout?.workout_type!!.displayNameResId)
+        )
     }
 
     class WorkoutsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -60,12 +59,10 @@ class WorkoutsAdapter(
         val parent: ConstraintLayout = view.findViewById(R.id.parent_cl)
         val editButton: ImageButton = view.findViewById(R.id.edit_btn)
         val dateTV: TextView = view.findViewById(R.id.date_created_tv)
-        val roundsCombosTV: TextView = view.findViewById(R.id.rounds_and_combos_tv)
-        val intensityPB: ProgressBar = view.findViewById(R.id.intensity_seekbar)
-        val intensityTV: TextView = view.findViewById(R.id.intensity_tv)
+        val roundsWorkoutTypeTV: TextView = view.findViewById(R.id.rounds_and_workout_type_tv)
     }
 
-    fun setAdapter(workoutsWithCombinations: List<WorkoutWithCommands>){
+    fun setAdapter(workoutsWithCombinations: List<WorkoutWithCommands>) {
         this.workoutsWithCombinations = workoutsWithCombinations as MutableList<WorkoutWithCommands>
         notifyDataSetChanged()
     }

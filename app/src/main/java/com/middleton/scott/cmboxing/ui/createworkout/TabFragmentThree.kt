@@ -117,10 +117,15 @@ class TabFragmentThree : BaseFragment() {
                 WorkoutType.RANDOM -> {
                     random_rv.visibility = VISIBLE
                     structured_rv.visibility = GONE
+                    total_length_ll.visibility = GONE
+                    round_rest_ll.visibility = GONE
+
                 }
                 WorkoutType.STRUCTURED -> {
                     random_rv.visibility = GONE
                     structured_rv.visibility = VISIBLE
+                    total_length_ll.visibility = VISIBLE
+                    round_rest_ll.visibility = VISIBLE
                 }
             }
         })

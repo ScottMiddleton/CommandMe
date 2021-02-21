@@ -1,14 +1,15 @@
 package com.middleton.scott.cmboxing.datasource.remote
 
-import com.google.firebase.auth.*
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.middleton.scott.cmboxing.R
+import com.middleton.scott.cmboxing.MainActivity
 import com.middleton.scott.cmboxing.datasource.local.model.User
 
-
 class RemoteDataSource {
-    val db = Firebase.firestore
+    private val db = Firebase.firestore
 
     interface CallbackWithError<S, E> {
         fun onSuccess(model: S)
@@ -18,52 +19,34 @@ class RemoteDataSource {
     fun createUserFirebaseAccount(
         email: String,
         password: String,
-        callback: CallbackWithError<Boolean, Int?>
+        callback: CallbackWithError<Boolean, String?>
     ) {
         FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     callback.onSuccess(true)
-                } else {
-                    try {
-                        throw task.exception!!
-                    } catch (e: FirebaseAuthWeakPasswordException) {
-                        callback.onError(R.string.weak_password_error)
-                    } catch (e: FirebaseAuthInvalidCredentialsException) {
-
-                    } catch (e: FirebaseAuthUserCollisionException) {
-                        callback.onError(R.string.email_collision_error)
-                    } catch (e: Exception) {
-                        callback.onError(R.string.create_account_error)
-                    }
                 }
-
+            }.addOnFailureListener {
+                callback.onError(it.localizedMessage)
             }
     }
 
     fun signIn(
         email: String,
         password: String,
-        callback: CallbackWithError<Boolean, Int?>
+        callback: CallbackWithError<Boolean, String?>
     ) {
         FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     callback.onSuccess(true)
-                } else {
-                    try {
-                        throw task.exception!!
-                    } catch (e: FirebaseAuthInvalidUserException) {
-                        callback.onError(R.string.invalid_user_exception)
-                    } catch (e: FirebaseAuthInvalidCredentialsException) {
-                        callback.onError(R.string.incorrect_password)
-                    }
                 }
+            }.addOnFailureListener {
+                callback.onError(it.localizedMessage)
             }
     }
 
-
-    fun addUser(user: User, callback: CallbackWithError<Boolean, Int?>) {
+    fun addUser(user: User, callback: CallbackWithError<Boolean, String?>) {
         val userHashMap = hashMapOf(
             "email" to user.email,
             "first" to user.first,
@@ -72,28 +55,40 @@ class RemoteDataSource {
         db.collection("users").document(user.email)
             .set(userHashMap)
             .addOnSuccessListener { callback.onSuccess(true) }
-            .addOnFailureListener { }
+            .addOnFailureListener {
+                callback.onError(it.localizedMessage)
+            }
     }
 
-    fun getUserByEmail(email: String, callback: CallbackWithError<User, Int?>) {
+    fun getUserByEmail(email: String, callback: CallbackWithError<User, String?>) {
         val docRef = db.collection("users").document(email)
 
         docRef.get()
             .addOnSuccessListener { document ->
                 if (document != null) {
-                    callback.onSuccess(User(
-                        document.data?.get("email") as String,
-                        document.data?.get("first") as String,
-                        document.data?.get("last") as String
-                    ))
+                    callback.onSuccess(
+                        User(
+                            document.data?.get("email") as String,
+                            document.data?.get("first") as String,
+                            document.data?.get("last") as String
+                        )
+                    )
                 }
             }
-            .addOnFailureListener { exception ->
-                // TODO
+            .addOnFailureListener {
+                callback.onError(it.localizedMessage)
             }
     }
 
     fun signOut() {
         FirebaseAuth.getInstance().signOut()
+
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestEmail()
+            .build()
+        val mGoogleSignInClient = GoogleSignIn.getClient(MainActivity.instance, gso)
+
+        mGoogleSignInClient.signOut().addOnCompleteListener(MainActivity.instance
+        ) { }
     }
 }

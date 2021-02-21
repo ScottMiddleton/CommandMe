@@ -1,5 +1,6 @@
 package com.middleton.scott.cmboxing.ui.workout
 
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.OvalShape
@@ -18,6 +19,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.middleton.scott.cmboxing.MainActivity
 import com.middleton.scott.cmboxing.R
+import com.middleton.scott.cmboxing.other.Constants.ACTION_START_OR_RESUME_STRUCTURED_SERVICE
+import com.middleton.scott.cmboxing.other.Constants.ACTION_STOP_SERVICE
+import com.middleton.scott.cmboxing.service.WorkoutService
 import com.middleton.scott.cmboxing.ui.base.BaseFragment
 import com.middleton.scott.cmboxing.utils.DateTimeUtils
 import kotlinx.android.synthetic.main.fragment_workout_screen.*
@@ -40,33 +44,33 @@ class StructuredWorkoutScreen : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         requireActivity().volumeControlStream = AudioManager.STREAM_MUSIC
-//        sendCommandToService(ACTION_START_OR_RESUME_SERVICE)
+        sendCommandToService(ACTION_START_OR_RESUME_STRUCTURED_SERVICE)
         initRoundProgressView()
         (activity as MainActivity).supportActionBar?.title = viewModel.workoutName
         viewModel.audioFileBaseDirectory =
             view.context.getExternalFilesDir(null)?.absolutePath + "/"
         total_rounds_count_tv.text = viewModel.numberOfRounds.toString()
-//        remaining_tv.text = DateTimeUtils.toMinuteSeconds(viewModel.totalWorkoutSecs)
+        remaining_tv.text = DateTimeUtils.toMinuteSeconds(viewModel.totalWorkoutLengthSecs)
         subscribeUI()
         setClickListeners()
     }
 
     override fun onResume() {
         super.onResume()
-//        // This is to ensure that the round progress bars update after the app has been backgrounded
-//        if (viewModel.workoutStateLD.value == RandomWorkoutState.REST) {
-//            repeat(viewModel.getCurrentRound()) { index ->
-//                val seekbar = round_progress_ll.getChildAt(index) as SeekBar?
-//                seekbar?.thumb?.mutate()?.alpha = 255
-//                seekbar?.progress = viewModel.getCountdownProgressBarMax(RandomWorkoutState.WORK)
-//            }
-//        } else if (viewModel.workoutStateLD.value == RandomWorkoutState.WORK) {
-//            repeat(viewModel.getCurrentRound()) { index ->
-//                val seekbar = round_progress_ll.getChildAt(index - 1) as SeekBar?
-//                seekbar?.thumb?.mutate()?.alpha = 255
-//                seekbar?.progress = viewModel.getCountdownProgressBarMax(RandomWorkoutState.WORK)
-//            }
-//        }
+        // This is to ensure that the round progress bars update after the app has been backgrounded
+        if (viewModel.workoutStateLD.value == RandomWorkoutState.REST) {
+            repeat(viewModel.currentRoundLD.value!!) { index ->
+                val seekbar = round_progress_ll.getChildAt(index) as SeekBar?
+                seekbar?.thumb?.mutate()?.alpha = 255
+                seekbar?.progress = viewModel.getCountdownProgressBarMax(RandomWorkoutState.WORK)
+            }
+        } else if (viewModel.workoutStateLD.value == RandomWorkoutState.WORK) {
+            repeat(viewModel.currentRoundLD.value!!) { index ->
+                val seekbar = round_progress_ll.getChildAt(index - 1) as SeekBar?
+                seekbar?.thumb?.mutate()?.alpha = 255
+                seekbar?.progress = viewModel.getCountdownProgressBarMax(RandomWorkoutState.WORK)
+            }
+        }
     }
 
     private fun subscribeUI() {
@@ -96,7 +100,6 @@ class StructuredWorkoutScreen : BaseFragment() {
         })
 
         viewModel.workoutStateLD.observe(viewLifecycleOwner, Observer {
-
             countdown_pb.max = viewModel.getCountdownProgressBarMax(it)
 
             when (it) {
@@ -116,8 +119,7 @@ class StructuredWorkoutScreen : BaseFragment() {
                     workout_state_tv.text = ""
                     command_count_ll.visibility = VISIBLE
                     command_label_tv.visibility = VISIBLE
-                    current_command_count_tv.text =
-                        (viewModel.currentCommandCrossRef.position_index + 1).toString()
+                    current_command_count_tv.text = (viewModel.currentCommandCrossRef.position_index + 1).toString()
                     total_commands_count_tv.text = viewModel.getNumberOfCommandsInRound().toString()
                     command_name_tv.visibility = VISIBLE
                     play_command_lottie.visibility = VISIBLE
@@ -235,17 +237,17 @@ class StructuredWorkoutScreen : BaseFragment() {
         }
     }
 
-//    private fun sendCommandToService(action: String) {
-//        Intent(requireContext(), WorkoutService::class.java).also {
-//            it.action = action
-//            requireContext().startService(it)
-//        }
-//    }
-//
-//    override fun onDestroy() {
-//        super.onDestroy()
-//        viewModel.onPause()
-//        sendCommandToService(ACTION_STOP_SERVICE)
-//    }
+    private fun sendCommandToService(action: String) {
+        Intent(requireContext(), WorkoutService::class.java).also {
+            it.action = action
+            requireContext().startService(it)
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        viewModel.onPause()
+        sendCommandToService(ACTION_STOP_SERVICE)
+    }
 
 }

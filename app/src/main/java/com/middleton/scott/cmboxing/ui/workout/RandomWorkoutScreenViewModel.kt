@@ -65,7 +65,7 @@ class RandomWorkoutScreenViewModel(
         get() = _currentRoundLD
 
     private val _workoutStateLD = MutableLiveData<RandomWorkoutState>()
-    val randomWorkoutStateLD: LiveData<RandomWorkoutState>
+    val workoutStateLD: LiveData<RandomWorkoutState>
         get() = _workoutStateLD
 
     private val _currentCombinationLD = MutableLiveData<Command>()
@@ -146,7 +146,7 @@ class RandomWorkoutScreenViewModel(
         workoutInProgress = true
         firstTick = true
 
-        if (randomWorkoutStateLD.value == RandomWorkoutState.WORK) {
+        if (workoutStateLD.value == RandomWorkoutState.WORK) {
             playStartBellLD.value = true
         }
 
@@ -159,7 +159,7 @@ class RandomWorkoutScreenViewModel(
 
                     millisUntilNextCombination = 0
 
-                    when (randomWorkoutStateLD.value) {
+                    when (workoutStateLD.value) {
                         RandomWorkoutState.PREPARE -> {
                             setCurrentRound(currentRound + 1)
                             initWorkoutState(RandomWorkoutState.WORK)
@@ -180,12 +180,13 @@ class RandomWorkoutScreenViewModel(
                 }
 
                 override fun onTick(millisUntilFinished: Long) {
-                    _countdownSecondsLD.value =
-                        (ceil(millisUntilFinished.toDouble() / 1000).toInt())
-
                     val countdownStr =
                         DateTimeUtils.toMinuteSeconds(ceil(millisUntilFinished.toDouble() / 1000).toInt())
                     serviceCountdownSecondsLD.value = countdownStr
+
+                    _countdownSecondsLD.value =
+                        (ceil(millisUntilFinished.toDouble() / 1000).toInt())
+
                     millisRemainingAtPause = millisUntilFinished
 
                     restartOnPrevious = countdownMillis - millisUntilFinished > 1000
@@ -195,7 +196,7 @@ class RandomWorkoutScreenViewModel(
                     }
                     firstTick = false
 
-                    if (randomWorkoutStateLD.value == RandomWorkoutState.WORK) {
+                    if (workoutStateLD.value == RandomWorkoutState.WORK) {
                         if (millisUntilNextCombination <= 0L) {
                             initNextCommand()
                         } else {
@@ -211,18 +212,18 @@ class RandomWorkoutScreenViewModel(
         val nextCommand: Command? = getRandomCombination()
         _currentCombinationLD.value = nextCommand
         serviceCommandAudioLD.value =
-            nextCommand?.file_name?.let { ServiceAudioCommand(it, audioFileBaseDirectory) }
+            nextCommand?.file_name?.let { ServiceAudioCommand(nextCommand.name, it, audioFileBaseDirectory) }
         val timeToCompleteCombination = nextCommand?.timeToCompleteSecs ?: 2
         millisUntilNextCombination = getTimeUntilNextCombination(timeToCompleteCombination)
     }
 
     private fun onSecondElapsed() {
-        if (randomWorkoutStateLD.value == RandomWorkoutState.WORK) {
+        if (workoutStateLD.value == RandomWorkoutState.WORK) {
             roundProgress++
             _roundProgressLD.value = roundProgress
         }
 
-        if (randomWorkoutStateLD.value != RandomWorkoutState.PREPARE) {
+        if (workoutStateLD.value != RandomWorkoutState.PREPARE) {
             totalSecondsElapsed++
             _totalSecondsElapsedLD.value = totalSecondsElapsed
         }
@@ -234,7 +235,7 @@ class RandomWorkoutScreenViewModel(
             countDownTimer?.cancel()
         }
 
-        when (randomWorkoutStateLD.value) {
+        when (workoutStateLD.value) {
             RandomWorkoutState.PREPARE -> {
                 setCurrentRound(currentRound + 1)
                 initWorkoutState(RandomWorkoutState.WORK)
@@ -269,7 +270,7 @@ class RandomWorkoutScreenViewModel(
             countDownTimer?.cancel()
         }
 
-        when (randomWorkoutStateLD.value) {
+        when (workoutStateLD.value) {
             RandomWorkoutState.PREPARE -> {
                 initWorkoutState(RandomWorkoutState.PREPARE)
             }
@@ -307,12 +308,12 @@ class RandomWorkoutScreenViewModel(
             initCountdown(millisRemainingAtPause)
         } else {
             var timeSecs = 0
-            when (randomWorkoutStateLD.value) {
+            when (workoutStateLD.value) {
                 RandomWorkoutState.PREPARE -> timeSecs = preparationTimeSecs
                 RandomWorkoutState.WORK -> timeSecs = workTimeSecs
                 RandomWorkoutState.REST -> timeSecs = restTimeSecs
             }
-            if (randomWorkoutStateLD.value != RandomWorkoutState.PREPARE) {
+            if (workoutStateLD.value != RandomWorkoutState.PREPARE) {
                 playStartBellLD.value = true
             }
             initCountdown(timeSecs * 1000L)
@@ -413,7 +414,7 @@ class RandomWorkoutScreenViewModel(
 
     private fun getTotalSecondsElapsed(): Int {
         var totalSecondsElapsed = 0
-        when (randomWorkoutStateLD.value) {
+        when (workoutStateLD.value) {
             RandomWorkoutState.PREPARE -> {
                 totalSecondsElapsed = 0
             }

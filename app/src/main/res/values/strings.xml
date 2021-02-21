@@ -21,7 +21,7 @@
     <string name="add_command">Add Command</string>
     <string name="new_command">New command</string>
     <string name="edit">Edit</string>
-    <string name="rounds_combos">%1$s rounds - %2$s combos </string>
+    <string name="rounds_and_time">%1$s rounds - %2$s</string>
     <string name="round_copied">Round %1$s copied</string>
     <string name="round_number">Round %1$s</string>
     <string name="name_and_save">Name and save</string>
@@ -125,4 +125,8 @@
     <string name="rest">Rest:</string>
     <string name="between_rounds">Between Rounds:</string>
     <string name="command">Command</string>
+    <string name="invalid_credentials_exception">Invalid credentials</string>
+    <string name="sign_in">Sign In</string>
+    <string name="first_name">First name</string>
+    <string name="sign_up">Sign Up</string>
 </resources>
