@@ -136,8 +136,6 @@ class RandomWorkoutScreen : BaseFragment() {
                     handlePlayAnimationLottie(true)
                     mediaPlayer.stop()
                     WorkoutCompleteDialog(
-                        viewModel.totalWorkoutSecs,
-                        viewModel.combinationsThrown,
                         {
                             initRoundProgressView()
                             viewModel.onRestart()

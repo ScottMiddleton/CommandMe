@@ -28,19 +28,18 @@ class RandomWorkoutScreenViewModel(
     var workoutHasPreparation = false
     var workoutHasBegun = false
     var workoutInProgress = false
-    var combinationsThrown = 0
     var firstTick = true
 
     var audioFileBaseDirectory = ""
-    private val workoutWithCommands: WorkoutWithCommands? =
+    private val workoutWithCommands: WorkoutWithCommands =
         dataRepository.getLocalDataSource().getWorkoutWithCommands(workoutId)
-    val workoutName = workoutWithCommands?.workout?.name
+    val workoutName = workoutWithCommands.workout?.name
     private var commands: List<Command>? = null
-    private val preparationTimeSecs = workoutWithCommands?.workout?.preparation_time_secs ?: 0
-    private val workTimeSecs = workoutWithCommands?.workout?.work_time_secs ?: 0
-    private val restTimeSecs = workoutWithCommands?.workout?.default_rest_time_secs ?: 0
-    private val numberOfRounds = workoutWithCommands?.workout?.numberOfRounds ?: 0
-    private val intensity = workoutWithCommands?.workout?.intensity
+    private val preparationTimeSecs = workoutWithCommands.workout?.preparation_time_secs ?: 0
+    private val workTimeSecs = workoutWithCommands.workout?.work_time_secs ?: 0
+    private val restTimeSecs = workoutWithCommands.workout?.default_rest_time_secs ?: 0
+    private val numberOfRounds = workoutWithCommands.workout?.numberOfRounds ?: 0
+    private val intensity = workoutWithCommands.workout?.intensity
 
     private var millisRemainingAtPause: Long = 0
     private var millisUntilNextCombination: Int = 0
@@ -209,7 +208,6 @@ class RandomWorkoutScreenViewModel(
     }
 
     private fun initNextCommand() {
-        combinationsThrown++
         val nextCommand: Command? = getRandomCombination()
         _currentCombinationLD.value = nextCommand
         serviceCommandAudioLD.value =
@@ -261,7 +259,6 @@ class RandomWorkoutScreenViewModel(
     fun onRestart() {
         workoutHasBegun = false
         workoutInProgress = false
-        combinationsThrown = 0
         initWorkout()
     }
 

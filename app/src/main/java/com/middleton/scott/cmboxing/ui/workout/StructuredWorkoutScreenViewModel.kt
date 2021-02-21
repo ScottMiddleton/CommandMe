@@ -94,6 +94,7 @@ class StructuredWorkoutScreenViewModel(
 
         when (state) {
             RandomWorkoutState.PREPARE -> {
+                _workoutStateLD.value = state
                 _countdownSecondsLD.value = preparationTimeSecs
 //                millisRemainingAtPause = preparationTimeSecs * 1000L
             }

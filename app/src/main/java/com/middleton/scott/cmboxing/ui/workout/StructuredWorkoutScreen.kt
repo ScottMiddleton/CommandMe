@@ -84,7 +84,8 @@ class StructuredWorkoutScreen : BaseFragment() {
         })
 
         viewModel.roundProgressLD.observe(viewLifecycleOwner, Observer {
-            val seekbar = round_progress_ll.getChildAt(viewModel.currentRoundLD.value!!.minus(1)) as SeekBar
+            val seekbar =
+                round_progress_ll.getChildAt(viewModel.currentRoundLD.value!!.minus(1)) as SeekBar
             seekbar.thumb.mutate().alpha = 255
             seekbar.progress = it
         })
@@ -115,7 +116,8 @@ class StructuredWorkoutScreen : BaseFragment() {
                     workout_state_tv.text = ""
                     command_count_ll.visibility = VISIBLE
                     command_label_tv.visibility = VISIBLE
-                    current_command_count_tv.text = (viewModel.currentCommandCrossRef.position_index + 1).toString()
+                    current_command_count_tv.text =
+                        (viewModel.currentCommandCrossRef.position_index + 1).toString()
                     total_commands_count_tv.text = viewModel.getNumberOfCommandsInRound().toString()
                     command_name_tv.visibility = VISIBLE
                     play_command_lottie.visibility = VISIBLE
@@ -149,8 +151,6 @@ class StructuredWorkoutScreen : BaseFragment() {
                     handlePlayAnimationLottie(true)
                     mediaPlayer.stop()
                     WorkoutCompleteDialog(
-                        viewModel.totalWorkoutLengthSecs,
-                        0,
                         {
                             initRoundProgressView()
                             viewModel.onRestart()
