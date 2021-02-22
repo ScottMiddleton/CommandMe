@@ -245,4 +245,8 @@ class RoundsAdapter(
         this.selectedCommands = selectedCommands as MutableList<Command>
         notifyDataSetChanged()
     }
+
+    override fun getItemViewType(position: Int): Int {
+        return position
+    }
 }
