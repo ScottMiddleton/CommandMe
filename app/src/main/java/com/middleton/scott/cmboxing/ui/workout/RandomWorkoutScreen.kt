@@ -58,17 +58,17 @@ class RandomWorkoutScreen : BaseFragment() {
     override fun onResume() {
         super.onResume()
         // This is to ensure that the round progress bars update after the app has been backgrounded
-        if (viewModel.workoutStateLD.value == RandomWorkoutState.REST) {
+        if (viewModel.workoutStateLD.value == WorkoutState.REST) {
             repeat(viewModel.getCurrentRound()) { index ->
                 val seekbar = round_progress_ll.getChildAt(index) as SeekBar?
                 seekbar?.thumb?.mutate()?.alpha = 255
-                seekbar?.progress = viewModel.getCountdownProgressBarMax(RandomWorkoutState.WORK)
+                seekbar?.progress = viewModel.getCountdownProgressBarMax(WorkoutState.WORK)
             }
-        } else if (viewModel.workoutStateLD.value == RandomWorkoutState.WORK) {
+        } else if (viewModel.workoutStateLD.value == WorkoutState.WORK) {
             repeat(viewModel.getCurrentRound()) { index ->
                 val seekbar = round_progress_ll.getChildAt(index - 1) as SeekBar?
                 seekbar?.thumb?.mutate()?.alpha = 255
-                seekbar?.progress = viewModel.getCountdownProgressBarMax(RandomWorkoutState.WORK)
+                seekbar?.progress = viewModel.getCountdownProgressBarMax(WorkoutState.WORK)
             }
         }
     }
@@ -101,9 +101,10 @@ class RandomWorkoutScreen : BaseFragment() {
         viewModel.workoutStateLD.observe(viewLifecycleOwner, Observer {
             workout_state_tv.text = it.toString()
             countdown_pb.max = viewModel.getCountdownProgressBarMax(it)
+            countdown_pb.progress = countdown_pb.max
 
             when (it) {
-                RandomWorkoutState.PREPARE -> {
+                WorkoutState.PREPARE -> {
                     play_command_lottie.visibility = GONE
                     countdown_pb.progressTintList = ColorStateList.valueOf(
                         ContextCompat.getColor(
@@ -112,7 +113,7 @@ class RandomWorkoutScreen : BaseFragment() {
                         )
                     )
                 }
-                RandomWorkoutState.WORK -> {
+                WorkoutState.WORK -> {
                     command_name_tv.visibility = VISIBLE
                     play_command_lottie.visibility = VISIBLE
                     countdown_pb.progressTintList = ColorStateList.valueOf(
@@ -122,7 +123,7 @@ class RandomWorkoutScreen : BaseFragment() {
                         )
                     )
                 }
-                RandomWorkoutState.REST -> {
+                WorkoutState.REST -> {
                     command_name_tv.visibility = INVISIBLE
                     play_command_lottie.visibility = VISIBLE
                     countdown_pb.progressTintList = ColorStateList.valueOf(
@@ -132,7 +133,7 @@ class RandomWorkoutScreen : BaseFragment() {
                         )
                     )
                 }
-                RandomWorkoutState.COMPLETE -> {
+                WorkoutState.COMPLETE -> {
                     handlePlayAnimationLottie(true)
                     mediaPlayer.stop()
                     WorkoutCompleteDialog(
@@ -207,7 +208,7 @@ class RandomWorkoutScreen : BaseFragment() {
             seekBar.setPadding(0, 0, 0, 0)
             seekBar.thumb = thumb
             seekBar.layoutParams = params
-            seekBar.max = viewModel.getCountdownProgressBarMax(RandomWorkoutState.WORK)
+            seekBar.max = viewModel.getCountdownProgressBarMax(WorkoutState.WORK)
             seekBar.scaleY = 12f
             seekBar.progress = 0
             seekBar.progressTintList = ColorStateList.valueOf(
@@ -230,8 +231,8 @@ class RandomWorkoutScreen : BaseFragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        viewModel.onPause()
         sendCommandToService(ACTION_STOP_SERVICE)
+        viewModel.onPause()
     }
 
 }

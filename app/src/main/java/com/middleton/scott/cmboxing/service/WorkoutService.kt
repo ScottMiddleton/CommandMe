@@ -29,7 +29,7 @@ import com.middleton.scott.cmboxing.other.Constants.NOTIFICATION_CHANNEL_ID
 import com.middleton.scott.cmboxing.other.Constants.NOTIFICATION_CHANNEL_NAME
 import com.middleton.scott.cmboxing.other.Constants.NOTIFICATION_ID
 import com.middleton.scott.cmboxing.ui.createworkout.WorkoutType
-import com.middleton.scott.cmboxing.ui.workout.RandomWorkoutState
+import com.middleton.scott.cmboxing.ui.workout.WorkoutState
 import java.io.IOException
 
 class WorkoutService : LifecycleService() {
@@ -47,7 +47,7 @@ class WorkoutService : LifecycleService() {
     lateinit var notificationManager: NotificationManager
 
     companion object {
-        val serviceWorkoutStateLD = MutableLiveData<RandomWorkoutState>()
+        val serviceWorkoutStateLD = MutableLiveData<WorkoutState>()
         val serviceCountdownSecondsLD = MutableLiveData<String>()
         val serviceCommandAudioLD = MutableLiveData<ServiceAudioCommand>()
         val playStartBellLD = MutableLiveData<Boolean>()
@@ -115,7 +115,7 @@ class WorkoutService : LifecycleService() {
 
         serviceWorkoutStateLD.observe(this, Observer {
             if (!serviceKilled) {
-                if (workoutType == WorkoutType.STRUCTURED && it == RandomWorkoutState.WORK) {
+                if (workoutType == WorkoutType.STRUCTURED && it == WorkoutState.WORK) {
 
                 } else {
                     notificationBuilder.setContentTitle(it.name)
@@ -145,8 +145,8 @@ class WorkoutService : LifecycleService() {
                 mediaPlayer.stop()
                 soundPool.play(
                     workEndAudioId,
-                    1.0f,
-                    1.0f,
+                    0.8f,
+                    0.8f,
                     0,
                     0,
                     1.0f
@@ -158,8 +158,8 @@ class WorkoutService : LifecycleService() {
             if (it) {
                 soundPool.play(
                     workStartAudioId,
-                    1.0f,
-                    1.0f,
+                    0.8f,
+                    0.8f,
                     0,
                     0,
                     1.0f

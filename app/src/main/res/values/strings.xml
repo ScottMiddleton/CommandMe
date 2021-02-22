@@ -62,7 +62,7 @@
     <string name="undo">Undo</string>
     <string name="cancel">Cancel</string>
     <string name="cancel_this_workout">Cancel changes?</string>
-    <string name="unsaved_dialog_message">The changes you have made to this workout are unsaved and will be lost.</string>
+    <string name="unsaved_dialog_message">Any changes you have made to this workout are unsaved and will be lost.</string>
     <string name="save_and_exit">Save and exit</string>
     <string name="yes_cancel">Yes, cancel</string>
     <string name="this_is_a_required_field">This is a required field.</string>
@@ -73,7 +73,8 @@
     <string name="record_a_command">Record a command!</string>
     <string name="shout_your_command_and_it_will_appear_here">Hold the record button below and shout a command.</string>
     <string name="exit">Exit</string>
-    <string name="no_command_dialog_message">Please add command to begin this workout</string>
+    <string name="no_command_dialog_message">Please add commands to begin this workout</string>
+    <string name="empty_rounds_dialog_message">Some of your rounds do not contain commands. These rounds will be skipped during your workout.</string>
     <string name="ok">Ok</string>
     <string name="time_elapsed">Time Elapsed:</string>
     <string name="edit_this_workout">Edit this workout?</string>
@@ -131,4 +132,6 @@
     <string name="sign_up">Sign Up</string>
     <string name="coming_soon">Coming Soon</string>
     <string name="packs_description">Our packs marketplace is coming soon. Interested in listing your own workouts for sale? Click below to get in touch via our website.</string>
+    <string name="yes">Yes</string>
+    <string name="are_you_sure">Are you sure?</string>
 </resources>

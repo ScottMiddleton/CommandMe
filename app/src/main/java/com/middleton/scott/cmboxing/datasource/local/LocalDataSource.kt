@@ -102,6 +102,10 @@ class LocalDataSource(
         database.selectedCommandCrossRefDao().deleteByWorkoutId(workoutId)
     }
 
+    suspend fun deleteSelectedCommandCrossRefByCommandId(commandId: Long) {
+        database.selectedCommandCrossRefDao().deleteByCommandId(commandId)
+    }
+
      fun getWorkoutByIdFlow(workoutId: Long): Flow<Workout?> {
         return database.workoutDao().getWorkoutByIdFlow(workoutId)
     }

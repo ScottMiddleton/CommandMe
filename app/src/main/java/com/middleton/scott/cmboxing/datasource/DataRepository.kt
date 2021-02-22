@@ -2,6 +2,7 @@ package com.middleton.scott.cmboxing.datasource
 
 import androidx.lifecycle.MutableLiveData
 import com.middleton.scott.cmboxing.datasource.local.LocalDataSource
+import com.middleton.scott.cmboxing.datasource.local.model.Command
 import com.middleton.scott.cmboxing.datasource.local.model.User
 import com.middleton.scott.cmboxing.datasource.remote.RemoteDataSource
 import com.middleton.scott.cmboxing.datasource.remote.ResponseData
@@ -98,5 +99,11 @@ class DataRepository(
                     responseLD.postValue(ResponseData(errorString = error))
                 }
             })
+    }
+
+    suspend fun deleteCommand(command: Command) {
+        localDataSource.deleteCommand(command)
+        localDataSource.deleteStructuredCommandCrossRefById(command.id)
+        localDataSource.deleteSelectedCommandCrossRefByCommandId(command.id)
     }
 }

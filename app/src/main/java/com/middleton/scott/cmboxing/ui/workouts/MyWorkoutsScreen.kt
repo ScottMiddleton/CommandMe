@@ -62,7 +62,7 @@ class MyWorkoutsScreen : BaseFragment() {
                         negativeBtnClick = {
                             val action = workoutWithCombinations.workout?.id?.let {
                                 MyWorkoutsScreenDirections.actionMyWorkoutsScreenToCreateWorkoutScreen(
-                                    it, true
+                                    it, false
                                 )
                             }
                             action?.let {

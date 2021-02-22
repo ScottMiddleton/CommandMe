@@ -349,4 +349,18 @@ class CreateWorkoutSharedViewModel(
 
         totalLengthSecsLD.value = totalTimeSecs + totalRestTime
     }
+
+    fun validateRoundsNotEmpty(): Boolean {
+        var round = 1
+        var valid = true
+        repeat(workout.numberOfRounds){
+            val filtered = structuredCommandCrossRefs.firstOrNull { it.round == round }
+            if (filtered == null){
+                valid = false
+            }
+            round ++
+        }
+
+        return valid
+    }
 }

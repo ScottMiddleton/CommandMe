@@ -58,17 +58,17 @@ class StructuredWorkoutScreen : BaseFragment() {
     override fun onResume() {
         super.onResume()
         // This is to ensure that the round progress bars update after the app has been backgrounded
-        if (viewModel.workoutStateLD.value == RandomWorkoutState.REST) {
+        if (viewModel.workoutStateLD.value == WorkoutState.REST) {
             repeat(viewModel.currentRoundLD.value!!) { index ->
                 val seekbar = round_progress_ll.getChildAt(index) as SeekBar?
                 seekbar?.thumb?.mutate()?.alpha = 255
-                seekbar?.progress = viewModel.getCountdownProgressBarMax(RandomWorkoutState.WORK)
+                seekbar?.progress = viewModel.getCountdownProgressBarMax(WorkoutState.WORK)
             }
-        } else if (viewModel.workoutStateLD.value == RandomWorkoutState.WORK) {
+        } else if (viewModel.workoutStateLD.value == WorkoutState.WORK) {
             repeat(viewModel.currentRoundLD.value!!) { index ->
                 val seekbar = round_progress_ll.getChildAt(index - 1) as SeekBar?
                 seekbar?.thumb?.mutate()?.alpha = 255
-                seekbar?.progress = viewModel.getCountdownProgressBarMax(RandomWorkoutState.WORK)
+                seekbar?.progress = viewModel.getCountdownProgressBarMax(WorkoutState.WORK)
             }
         }
     }
@@ -103,7 +103,7 @@ class StructuredWorkoutScreen : BaseFragment() {
             countdown_pb.max = viewModel.getCountdownProgressBarMax(it)
 
             when (it) {
-                RandomWorkoutState.PREPARE -> {
+                WorkoutState.PREPARE -> {
                     command_count_ll.visibility = GONE
                     command_label_tv.visibility = GONE
                     workout_state_tv.text = it.toString()
@@ -115,11 +115,12 @@ class StructuredWorkoutScreen : BaseFragment() {
                         )
                     )
                 }
-                RandomWorkoutState.WORK -> {
+                WorkoutState.WORK -> {
                     workout_state_tv.text = ""
                     command_count_ll.visibility = VISIBLE
                     command_label_tv.visibility = VISIBLE
-                    current_command_count_tv.text = (viewModel.currentCommandCrossRef.position_index + 1).toString()
+                    current_command_count_tv.text =
+                        (viewModel.currentCommandCrossRef.position_index + 1).toString()
                     total_commands_count_tv.text = viewModel.getNumberOfCommandsInRound().toString()
                     command_name_tv.visibility = VISIBLE
                     play_command_lottie.visibility = VISIBLE
@@ -130,7 +131,7 @@ class StructuredWorkoutScreen : BaseFragment() {
                         )
                     )
                 }
-                RandomWorkoutState.REST -> {
+                WorkoutState.REST -> {
                     workout_state_tv.text = it.toString()
                     command_count_ll.visibility = GONE
                     command_label_tv.visibility = GONE
@@ -144,7 +145,7 @@ class StructuredWorkoutScreen : BaseFragment() {
                     )
                 }
 
-                RandomWorkoutState.COMPLETE -> {
+                WorkoutState.COMPLETE -> {
                     command_count_ll.visibility = GONE
                     command_label_tv.visibility = GONE
                     workout_state_tv.text = it.toString()
@@ -164,7 +165,12 @@ class StructuredWorkoutScreen : BaseFragment() {
 
         viewModel.currentCommandLD.observe(viewLifecycleOwner, Observer {
             command_name_tv.text = it.name
-            play_command_lottie.playAnimation()
+        })
+
+        viewModel.playCommandAnimationLD.observe(viewLifecycleOwner, Observer {
+            if (it) {
+                play_command_lottie.playAnimation()
+            }
         })
     }
 

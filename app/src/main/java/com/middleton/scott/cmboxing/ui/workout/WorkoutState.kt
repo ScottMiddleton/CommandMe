@@ -1,6 +1,6 @@
 package com.middleton.scott.cmboxing.ui.workout
 
-enum class RandomWorkoutState {
+enum class WorkoutState {
     PREPARE,
     WORK,
     REST,

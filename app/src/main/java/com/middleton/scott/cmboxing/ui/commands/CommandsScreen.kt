@@ -61,7 +61,7 @@ class CommandsScreen : BaseFragment() {
             viewModel.audioFileBaseDirectory,
             parentFragmentManager,
             onEditCombination = {
-                viewModel.upsertCombination(it)
+                viewModel.upsertCommand(it)
             },
             onDeleteCombination = {
                 val file = File(viewModel.audioFileCompleteDirectory)
@@ -72,6 +72,7 @@ class CommandsScreen : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        next_btn_include.visibility = GONE
 
         setClickListeners()
 
@@ -93,9 +94,9 @@ class CommandsScreen : BaseFragment() {
                     undoSnackbarVisible = true
 
                     val position = viewHolder.adapterPosition
-                    val combination = viewModel.deleteCombination(position)
+                    val command = viewModel.deleteCommmand(position)
 
-                    undo_tv.text = getString(R.string.deleted_snackbar, combination.name)
+                    undo_tv.text = getString(R.string.deleted_snackbar, command.name)
 
                     handler.removeCallbacksAndMessages(null)
                     handler.postDelayed({
@@ -158,7 +159,7 @@ class CommandsScreen : BaseFragment() {
     }
 
     private fun subscribeUI() {
-        viewModel.getAllCombinationsLD().observe(viewLifecycleOwner, {
+        viewModel.getAllCommandsLD().observe(viewLifecycleOwner, {
             if (it.isNullOrEmpty()) {
                 combinationsEmpty = true
                 commands_RV.visibility = GONE
@@ -308,7 +309,7 @@ class CommandsScreen : BaseFragment() {
             false,
             Command("", 0, viewModel.audioFileName),
             { combination ->
-                viewModel.upsertCombination(combination)
+                viewModel.upsertCommand(combination)
             }, {
                 val file = File(viewModel.audioFileCompleteDirectory)
                 file.delete()
