@@ -14,8 +14,6 @@ import com.middleton.scott.cmboxing.utils.DateTimeUtils
 import kotlinx.android.synthetic.main.dialog_workout_complete.*
 
 class WorkoutCompleteDialog(
-    private val timeElapsedSecs: Int,
-    private val combinationsThrown: Int,
     private val onRestart: (() -> Unit),
     private val onExit: (() -> Unit)
 ) : DialogFragment() {
@@ -36,9 +34,6 @@ class WorkoutCompleteDialog(
         dialog?.setCanceledOnTouchOutside(false)
 
         setClickListeners()
-
-        elapsed_tv.text = DateTimeUtils.toMinuteSeconds(timeElapsedSecs)
-        combos_thrown_tv.text = combinationsThrown.toString()
     }
 
     private fun setClickListeners() {

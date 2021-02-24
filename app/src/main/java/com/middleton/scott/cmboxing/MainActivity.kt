@@ -1,5 +1,6 @@
 package com.middleton.scott.cmboxing
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
@@ -30,10 +31,12 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         var currentWorkoutId = -1L
+        lateinit var instance: MainActivity
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        instance = this
         setContentView(R.layout.activity_main)
         setupNavigationMenu()
         navigateToWorkoutScreenIfNeeded(intent)
@@ -43,7 +46,7 @@ class MainActivity : AppCompatActivity() {
         val topLevelMenuDestinations = setOf(
             R.id.myWorkoutsScreen,
             R.id.commandsScreen,
-            R.id.packs,
+            R.id.packsScreen,
         )
 
         val menuDestinations = mutableSetOf<Int>()
@@ -67,13 +70,13 @@ class MainActivity : AppCompatActivity() {
         navController.addOnDestinationChangedListener { _, destination, _ ->
             setupMenuVisibility(topLevelMenuDestinations.contains(destination.id))
 
-            if (destination.id == R.id.workoutScreen) {
+            if (destination.id == R.id.randomWorkoutScreen || destination.id == R.id.structuredWorkoutScreen) {
                 menu?.setGroupVisible(R.id.workout_menu, true)
             } else {
                 menu?.setGroupVisible(R.id.workout_menu, false)
             }
 
-            if (destination.id == R.id.splashScreen || destination.id == R.id.loginScreen || destination.id == R.id.createWorkoutScreen) {
+            if (destination.id == R.id.splashScreen || destination.id == R.id.loginScreen || destination.id == R.id.createAccountScreen || destination.id == R.id.createWorkoutScreen) {
                 supportActionBar?.hide()
             } else {
                 supportActionBar?.show()
@@ -125,11 +128,6 @@ class MainActivity : AppCompatActivity() {
                     })
                 true
             }
-//            R.id.home -> {
-//                onBackPressed()
-//                finish()
-//                true
-//            }
             else -> super.onOptionsItemSelected(item)
         }
     }

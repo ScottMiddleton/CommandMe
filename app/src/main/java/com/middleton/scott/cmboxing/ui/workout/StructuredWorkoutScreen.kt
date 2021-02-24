@@ -19,7 +19,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.middleton.scott.cmboxing.MainActivity
 import com.middleton.scott.cmboxing.R
-import com.middleton.scott.cmboxing.other.Constants.ACTION_START_OR_RESUME_SERVICE
+import com.middleton.scott.cmboxing.other.Constants.ACTION_START_OR_RESUME_STRUCTURED_SERVICE
 import com.middleton.scott.cmboxing.other.Constants.ACTION_STOP_SERVICE
 import com.middleton.scott.cmboxing.service.WorkoutService
 import com.middleton.scott.cmboxing.ui.base.BaseFragment
@@ -28,10 +28,9 @@ import kotlinx.android.synthetic.main.fragment_workout_screen.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-class WorkoutScreen : BaseFragment() {
-    private val args: WorkoutScreenArgs by navArgs()
-    private val viewModel: WorkoutScreenViewModel by viewModel { parametersOf(args.workoutId) }
-
+class StructuredWorkoutScreen : BaseFragment() {
+    private val args: StructuredWorkoutScreenArgs by navArgs()
+    private val viewModel: StructuredWorkoutScreenViewModel by viewModel { parametersOf(args.workoutId) }
     private var mediaPlayer = MediaPlayer()
 
     override fun onCreateView(
@@ -45,12 +44,13 @@ class WorkoutScreen : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         requireActivity().volumeControlStream = AudioManager.STREAM_MUSIC
-        sendCommandToService(ACTION_START_OR_RESUME_SERVICE)
+        sendCommandToService(ACTION_START_OR_RESUME_STRUCTURED_SERVICE)
         initRoundProgressView()
         (activity as MainActivity).supportActionBar?.title = viewModel.workoutName
-        viewModel.audioFileBaseDirectory = view.context.getExternalFilesDir(null)?.absolutePath + "/"
-        total_rounds_count_tv.text = viewModel.getTotalRounds().toString()
-        remaining_tv.text = DateTimeUtils.toMinuteSeconds(viewModel.totalWorkoutSecs)
+        viewModel.audioFileBaseDirectory =
+            view.context.getExternalFilesDir(null)?.absolutePath + "/"
+        total_rounds_count_tv.text = viewModel.numberOfRounds.toString()
+        remaining_tv.text = DateTimeUtils.toMinuteSeconds(viewModel.totalWorkoutLengthSecs)
         subscribeUI()
         setClickListeners()
     }
@@ -59,13 +59,13 @@ class WorkoutScreen : BaseFragment() {
         super.onResume()
         // This is to ensure that the round progress bars update after the app has been backgrounded
         if (viewModel.workoutStateLD.value == WorkoutState.REST) {
-            repeat(viewModel.getCurrentRound()) { index ->
+            repeat(viewModel.currentRoundLD.value!!) { index ->
                 val seekbar = round_progress_ll.getChildAt(index) as SeekBar?
                 seekbar?.thumb?.mutate()?.alpha = 255
                 seekbar?.progress = viewModel.getCountdownProgressBarMax(WorkoutState.WORK)
             }
         } else if (viewModel.workoutStateLD.value == WorkoutState.WORK) {
-            repeat(viewModel.getCurrentRound()) { index ->
+            repeat(viewModel.currentRoundLD.value!!) { index ->
                 val seekbar = round_progress_ll.getChildAt(index - 1) as SeekBar?
                 seekbar?.thumb?.mutate()?.alpha = 255
                 seekbar?.progress = viewModel.getCountdownProgressBarMax(WorkoutState.WORK)
@@ -88,22 +88,25 @@ class WorkoutScreen : BaseFragment() {
         })
 
         viewModel.roundProgressLD.observe(viewLifecycleOwner, Observer {
-            val seekbar = round_progress_ll.getChildAt(viewModel.getCurrentRound() - 1) as SeekBar
+            val seekbar =
+                round_progress_ll.getChildAt(viewModel.currentRoundLD.value!!.minus(1)) as SeekBar
             seekbar.thumb.mutate().alpha = 255
             seekbar.progress = it
         })
 
         viewModel.totalSecondsElapsedLD.observe(viewLifecycleOwner, Observer {
             elapsed_tv.text = DateTimeUtils.toMinuteSeconds(it)
-            remaining_tv.text = DateTimeUtils.toMinuteSeconds(viewModel.totalWorkoutSecs - it)
+            remaining_tv.text = DateTimeUtils.toMinuteSeconds(viewModel.totalWorkoutLengthSecs - it)
         })
 
         viewModel.workoutStateLD.observe(viewLifecycleOwner, Observer {
-            workout_state_tv.text = it.toString()
             countdown_pb.max = viewModel.getCountdownProgressBarMax(it)
 
             when (it) {
                 WorkoutState.PREPARE -> {
+                    command_count_ll.visibility = GONE
+                    command_label_tv.visibility = GONE
+                    workout_state_tv.text = it.toString()
                     play_command_lottie.visibility = GONE
                     countdown_pb.progressTintList = ColorStateList.valueOf(
                         ContextCompat.getColor(
@@ -113,6 +116,12 @@ class WorkoutScreen : BaseFragment() {
                     )
                 }
                 WorkoutState.WORK -> {
+                    workout_state_tv.text = ""
+                    command_count_ll.visibility = VISIBLE
+                    command_label_tv.visibility = VISIBLE
+                    current_command_count_tv.text =
+                        (viewModel.currentCommandCrossRef.position_index + 1).toString()
+                    total_commands_count_tv.text = viewModel.getNumberOfCommandsInRound().toString()
                     command_name_tv.visibility = VISIBLE
                     play_command_lottie.visibility = VISIBLE
                     countdown_pb.progressTintList = ColorStateList.valueOf(
@@ -123,8 +132,11 @@ class WorkoutScreen : BaseFragment() {
                     )
                 }
                 WorkoutState.REST -> {
+                    workout_state_tv.text = it.toString()
+                    command_count_ll.visibility = GONE
+                    command_label_tv.visibility = GONE
                     command_name_tv.visibility = INVISIBLE
-                    play_command_lottie.visibility = VISIBLE
+                    play_command_lottie.visibility = GONE
                     countdown_pb.progressTintList = ColorStateList.valueOf(
                         ContextCompat.getColor(
                             requireContext(),
@@ -132,12 +144,16 @@ class WorkoutScreen : BaseFragment() {
                         )
                     )
                 }
+
                 WorkoutState.COMPLETE -> {
+                    command_count_ll.visibility = GONE
+                    command_label_tv.visibility = GONE
+                    workout_state_tv.text = it.toString()
+                    command_name_tv.visibility = INVISIBLE
+                    play_command_lottie.visibility = GONE
                     handlePlayAnimationLottie(true)
                     mediaPlayer.stop()
                     WorkoutCompleteDialog(
-                        viewModel.totalWorkoutSecs,
-                        viewModel.combinationsThrown,
                         {
                             initRoundProgressView()
                             viewModel.onRestart()
@@ -149,7 +165,12 @@ class WorkoutScreen : BaseFragment() {
 
         viewModel.currentCommandLD.observe(viewLifecycleOwner, Observer {
             command_name_tv.text = it.name
-            play_command_lottie.playAnimation()
+        })
+
+        viewModel.playCommandAnimationLD.observe(viewLifecycleOwner, Observer {
+            if (it) {
+                play_command_lottie.playAnimation()
+            }
         })
     }
 
@@ -189,7 +210,6 @@ class WorkoutScreen : BaseFragment() {
     }
 
 
-
     private fun initRoundProgressView() {
         round_progress_ll.removeAllViews()
 
@@ -200,7 +220,7 @@ class WorkoutScreen : BaseFragment() {
         )
         params.marginEnd = 10
 
-        repeat(viewModel.getTotalRounds()) {
+        repeat(viewModel.numberOfRounds) {
             val seekBar = SeekBar(requireContext())
             val thumb = ShapeDrawable(OvalShape())
             thumb.setTint(ContextCompat.getColor(requireContext(), R.color.white))
@@ -209,7 +229,7 @@ class WorkoutScreen : BaseFragment() {
             seekBar.setPadding(0, 0, 0, 0)
             seekBar.thumb = thumb
             seekBar.layoutParams = params
-            seekBar.max = viewModel.getCountdownProgressBarMax(WorkoutState.WORK)
+            seekBar.max = viewModel.getLengthOfRoundSecs(it + 1)
             seekBar.scaleY = 12f
             seekBar.progress = 0
             seekBar.progressTintList = ColorStateList.valueOf(

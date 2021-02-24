@@ -2,15 +2,17 @@ package com.middleton.scott.cmboxing.ui.splash
 
 import android.os.Bundle
 import android.os.CountDownTimer
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.middleton.scott.cmboxing.R
+
 
 class SplashScreen : Fragment() {
 
@@ -32,8 +34,9 @@ class SplashScreen : Fragment() {
         object : CountDownTimer(2000, 1000){
             override fun onFinish() {
                 val currentUser = auth.currentUser
+                val account = GoogleSignIn.getLastSignedInAccount(context)
 
-                if(currentUser != null){
+                if(currentUser != null || account != null){
                     val action = SplashScreenDirections.actionSplashFragmentToWorkoutsScreen()
                     findNavController().navigate(
                         action

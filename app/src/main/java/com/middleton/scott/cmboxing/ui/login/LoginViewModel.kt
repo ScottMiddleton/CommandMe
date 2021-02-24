@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.middleton.scott.cmboxing.datasource.DataRepository
+import com.middleton.scott.cmboxing.datasource.local.model.User
 import com.middleton.scott.cmboxing.datasource.remote.ResponseData
 import kotlinx.coroutines.launch
 
@@ -16,6 +17,7 @@ class LoginViewModel(private val dataRepository: DataRepository) : ViewModel() {
     var password: String = ""
 
     val signInResponseLD = MutableLiveData<ResponseData>()
+    val addUserResponseLD = MutableLiveData<ResponseData>()
 
     val passwordValidLD = MutableLiveData<Boolean>()
     val emailValidLD = MutableLiveData<Boolean>()
@@ -38,5 +40,9 @@ class LoginViewModel(private val dataRepository: DataRepository) : ViewModel() {
 
             passwordValidLD.value = password.count() >= 7
         }
+    }
+
+    fun addUser(firstName: String, lastName: String, email: String) {
+        dataRepository.addUserToFireStore(User(email, firstName, lastName), addUserResponseLD)
     }
 }

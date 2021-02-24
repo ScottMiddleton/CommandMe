@@ -75,16 +75,16 @@ class CreateWorkoutSharedViewModel(
                     }.asLiveData()
 
                 selectedCommandCrossRefsFlow = dataRepository.getLocalDataSource()
-                    .getSelectedCombinationCrossRefsFlow(newWorkoutId)
+                    .getSelectedCommandCrossRefsFlow(newWorkoutId)
 
 
                 savedSelectedCommandCrossRefs =
                     dataRepository.getLocalDataSource()
-                        .getSelectedCombinationCrossRefs(newWorkoutId) as ArrayList<SelectedCommandCrossRef>
+                        .getSelectedCommandCrossRefs(newWorkoutId) as ArrayList<SelectedCommandCrossRef>
 
                 savedStructuredCommandCrossRefs =
                     dataRepository.getLocalDataSource()
-                        .getStructuredCombinationCrossRefs(workoutId) as ArrayList<StructuredCommandCrossRef>
+                        .getStructuredCommandCrossRefs(workoutId) as ArrayList<StructuredCommandCrossRef>
 
                 selectedCommandsLD =
                     commandsFlow.combine(selectedCommandCrossRefsFlow) { commands, it ->
@@ -105,7 +105,7 @@ class CreateWorkoutSharedViewModel(
 
                 structuredCommandCrossRefsLD =
                     dataRepository.getLocalDataSource()
-                        .getStructuredCombinationCrossRefsFlow(newWorkoutId).map {
+                        .getStructuredCommandCrossRefsFlow(newWorkoutId).map {
                             structuredCommandCrossRefs = it as ArrayList<StructuredCommandCrossRef>
                             it
                         }.asLiveData()
@@ -116,7 +116,7 @@ class CreateWorkoutSharedViewModel(
         } else {
             // If an existing workout
             selectedCommandCrossRefsFlow = dataRepository.getLocalDataSource()
-                .getSelectedCombinationCrossRefsFlow(workoutId)
+                .getSelectedCommandCrossRefsFlow(workoutId)
 
             workoutLD = dataRepository.getLocalDataSource().getWorkoutByIdFlow(workoutId).map {
                 it?.let {
@@ -132,11 +132,11 @@ class CreateWorkoutSharedViewModel(
 
             savedSelectedCommandCrossRefs =
                 dataRepository.getLocalDataSource()
-                    .getSelectedCombinationCrossRefs(workoutId) as ArrayList<SelectedCommandCrossRef>
+                    .getSelectedCommandCrossRefs(workoutId) as ArrayList<SelectedCommandCrossRef>
 
             savedStructuredCommandCrossRefs =
                 dataRepository.getLocalDataSource()
-                    .getStructuredCombinationCrossRefs(workoutId) as ArrayList<StructuredCommandCrossRef>
+                    .getStructuredCommandCrossRefs(workoutId) as ArrayList<StructuredCommandCrossRef>
 
             selectedCommandsLD =
                 commandsFlow.combine(selectedCommandCrossRefsFlow) { commands, it ->
@@ -157,7 +157,7 @@ class CreateWorkoutSharedViewModel(
 
             structuredCommandCrossRefsLD =
                 dataRepository.getLocalDataSource()
-                    .getStructuredCombinationCrossRefsFlow(workoutId).map {
+                    .getStructuredCommandCrossRefsFlow(workoutId).map {
                         structuredCommandCrossRefs = it as ArrayList<StructuredCommandCrossRef>
                         it
                     }.asLiveData()
@@ -335,13 +335,32 @@ class CreateWorkoutSharedViewModel(
         tabTwoValidatedLD.value = selectedCommandCrossRefs.isNotEmpty()
     }
 
-    fun setTotalLength(structuredCommandCrossRefs: List<StructuredCommandCrossRef>) {
+    fun setTotalLength() {
         var totalTimeSecs = 0
         if (structuredCommandCrossRefs.isNotEmpty()) {
             structuredCommandCrossRefs.forEach {
                 totalTimeSecs += it.time_allocated_secs
             }
         }
-        totalLengthSecsLD.value = totalTimeSecs
+
+        val restBetweenRounds = defaultRestTimeSecsLD.value ?: 0
+        val numberOfRounds = numberOfRoundsLD.value ?: 0
+        val totalRestTime = restBetweenRounds * (numberOfRounds -1)
+
+        totalLengthSecsLD.value = totalTimeSecs + totalRestTime
+    }
+
+    fun validateRoundsNotEmpty(): Boolean {
+        var round = 1
+        var valid = true
+        repeat(workout.numberOfRounds){
+            val filtered = structuredCommandCrossRefs.firstOrNull { it.round == round }
+            if (filtered == null){
+                valid = false
+            }
+            round ++
+        }
+
+        return valid
     }
 }

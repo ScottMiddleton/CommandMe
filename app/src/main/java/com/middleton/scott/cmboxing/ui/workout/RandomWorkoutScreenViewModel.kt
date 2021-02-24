@@ -19,28 +19,28 @@ import com.middleton.scott.cmboxing.utils.DateTimeUtils
 import kotlinx.coroutines.launch
 import kotlin.math.ceil
 
-class WorkoutScreenViewModel(
+class RandomWorkoutScreenViewModel(
     private val dataRepository: DataRepository,
     val workoutId: Long
 ) : ViewModel() {
 
     private var restartOnPrevious = false
-    var workoutHasPreparation = false
     var workoutHasBegun = false
     var workoutInProgress = false
-    var combinationsThrown = 0
     var firstTick = true
 
     var audioFileBaseDirectory = ""
-    private val workoutWithCommands: WorkoutWithCommands? =
-        dataRepository.getLocalDataSource().getWorkoutWithCombinations(workoutId)
-    val workoutName = workoutWithCommands?.workout?.name
+    private val workoutWithCommands: WorkoutWithCommands =
+        dataRepository.getLocalDataSource().getWorkoutWithCommands(workoutId)
+    val workoutName = workoutWithCommands.workout?.name
     private var commands: List<Command>? = null
-    private val preparationTimeSecs = workoutWithCommands?.workout?.preparation_time_secs ?: 0
-    private val workTimeSecs = workoutWithCommands?.workout?.work_time_secs ?: 0
-    private val restTimeSecs = workoutWithCommands?.workout?.default_rest_time_secs ?: 0
-    private val numberOfRounds = workoutWithCommands?.workout?.numberOfRounds ?: 0
-    private val intensity = workoutWithCommands?.workout?.intensity
+    private val preparationTimeSecs = workoutWithCommands.workout?.preparation_time_secs ?: 0
+    private val workTimeSecs = workoutWithCommands.workout?.work_time_secs ?: 0
+    private val restTimeSecs = workoutWithCommands.workout?.default_rest_time_secs ?: 0
+    private val numberOfRounds = workoutWithCommands.workout?.numberOfRounds ?: 0
+    private val intensity = workoutWithCommands.workout?.intensity
+
+    var workoutHasPreparation = preparationTimeSecs > 0
 
     private var millisRemainingAtPause: Long = 0
     private var millisUntilNextCombination: Int = 0
@@ -77,7 +77,6 @@ class WorkoutScreenViewModel(
 
     init {
         MainActivity.currentWorkoutId = workoutId
-        workoutHasPreparation = preparationTimeSecs > 0
         commands = workoutWithCommands?.commands
         handleCombinationFrequencies()
         initWorkout()
@@ -181,12 +180,13 @@ class WorkoutScreenViewModel(
                 }
 
                 override fun onTick(millisUntilFinished: Long) {
-                    _countdownSecondsLD.value =
-                        (ceil(millisUntilFinished.toDouble() / 1000).toInt())
-
                     val countdownStr =
                         DateTimeUtils.toMinuteSeconds(ceil(millisUntilFinished.toDouble() / 1000).toInt())
                     serviceCountdownSecondsLD.value = countdownStr
+
+                    _countdownSecondsLD.value =
+                        (ceil(millisUntilFinished.toDouble() / 1000).toInt())
+
                     millisRemainingAtPause = millisUntilFinished
 
                     restartOnPrevious = countdownMillis - millisUntilFinished > 1000
@@ -209,11 +209,10 @@ class WorkoutScreenViewModel(
     }
 
     private fun initNextCommand() {
-        combinationsThrown++
         val nextCommand: Command? = getRandomCombination()
         _currentCombinationLD.value = nextCommand
         serviceCommandAudioLD.value =
-            nextCommand?.file_name?.let { ServiceAudioCommand(it, audioFileBaseDirectory) }
+            nextCommand?.file_name?.let { ServiceAudioCommand(nextCommand.name, it, audioFileBaseDirectory) }
         val timeToCompleteCombination = nextCommand?.timeToCompleteSecs ?: 2
         millisUntilNextCombination = getTimeUntilNextCombination(timeToCompleteCombination)
     }
@@ -261,7 +260,6 @@ class WorkoutScreenViewModel(
     fun onRestart() {
         workoutHasBegun = false
         workoutInProgress = false
-        combinationsThrown = 0
         initWorkout()
     }
 
@@ -284,7 +282,7 @@ class WorkoutScreenViewModel(
                     restartOnPrevious = false
                 } else {
                     setCurrentRound(currentRound - 1)
-                    if (currentRound < 1) {
+                    if (currentRound < 1 && workoutHasPreparation) {
                         initWorkoutState(WorkoutState.PREPARE)
                     } else {
                         initWorkoutState(WorkoutState.REST)
@@ -351,7 +349,7 @@ class WorkoutScreenViewModel(
         viewModelScope.launch {
             val multipliedCombinationsList = mutableListOf<Command>()
             val selectedCombinationsCrossRefs =
-                dataRepository.getLocalDataSource().getSelectedCombinationCrossRefs(workoutId)
+                dataRepository.getLocalDataSource().getSelectedCommandCrossRefs(workoutId)
 
             commands?.forEach { combination ->
                 val frequencyType =

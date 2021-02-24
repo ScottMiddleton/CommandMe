@@ -22,16 +22,19 @@ import com.middleton.scott.cmboxing.MainActivity
 import com.middleton.scott.cmboxing.R
 import com.middleton.scott.cmboxing.other.Constants.ACTION_PAUSE_SERVICE
 import com.middleton.scott.cmboxing.other.Constants.ACTION_SHOW_WORKOUT_SCREEN
-import com.middleton.scott.cmboxing.other.Constants.ACTION_START_OR_RESUME_SERVICE
+import com.middleton.scott.cmboxing.other.Constants.ACTION_START_OR_RESUME_RANDOM_SERVICE
+import com.middleton.scott.cmboxing.other.Constants.ACTION_START_OR_RESUME_STRUCTURED_SERVICE
 import com.middleton.scott.cmboxing.other.Constants.ACTION_STOP_SERVICE
 import com.middleton.scott.cmboxing.other.Constants.NOTIFICATION_CHANNEL_ID
 import com.middleton.scott.cmboxing.other.Constants.NOTIFICATION_CHANNEL_NAME
 import com.middleton.scott.cmboxing.other.Constants.NOTIFICATION_ID
+import com.middleton.scott.cmboxing.ui.createworkout.WorkoutType
 import com.middleton.scott.cmboxing.ui.workout.WorkoutState
 import java.io.IOException
 
 class WorkoutService : LifecycleService() {
 
+    var workoutType = WorkoutType.STRUCTURED
     var isFirstRun = true
     var serviceKilled = false
 
@@ -51,16 +54,25 @@ class WorkoutService : LifecycleService() {
         val playEndBellLD = MutableLiveData<Boolean>()
     }
 
-    private fun postInitialValues(){
+    private fun postInitialValues() {
         serviceCountdownSecondsLD.value = ""
-        serviceCommandAudioLD.value = ServiceAudioCommand("","")
+        serviceCommandAudioLD.value = ServiceAudioCommand("", "", "")
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         intent?.let {
             when (it.action) {
-                ACTION_START_OR_RESUME_SERVICE -> {
+                ACTION_START_OR_RESUME_STRUCTURED_SERVICE -> {
                     if (isFirstRun) {
+                        workoutType = WorkoutType.STRUCTURED
+                        initSoundPool()
+                        startForegroundService()
+                        isFirstRun = false
+                    }
+                }
+                ACTION_START_OR_RESUME_RANDOM_SERVICE -> {
+                    if (isFirstRun) {
+                        workoutType = WorkoutType.RANDOM
                         initSoundPool()
                         startForegroundService()
                         isFirstRun = false
@@ -102,18 +114,29 @@ class WorkoutService : LifecycleService() {
         startForeground(NOTIFICATION_ID, notificationBuilder.build())
 
         serviceWorkoutStateLD.observe(this, Observer {
-            if(!serviceKilled){
-            notificationBuilder.setContentTitle(it.name)
-            notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build())}
+            if (!serviceKilled) {
+                if (workoutType == WorkoutType.STRUCTURED && it == WorkoutState.WORK) {
+
+                } else {
+                    notificationBuilder.setContentTitle(it.name)
+                }
+
+                notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build())
+            }
         })
 
         serviceCountdownSecondsLD.observe(this, Observer {
-            if(!serviceKilled){
-            notificationBuilder.setContentText(it)
-            notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build())}
+            if (!serviceKilled) {
+                notificationBuilder.setContentText(it)
+                notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build())
+            }
         })
 
         serviceCommandAudioLD.observe(this, Observer {
+            if (workoutType == WorkoutType.STRUCTURED) {
+                notificationBuilder.setContentTitle(it.name)
+                notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build())
+            }
             startPlayingCombinationAudio(it.fileName, it.audioBaseFileDirectory)
         })
 
@@ -122,8 +145,8 @@ class WorkoutService : LifecycleService() {
                 mediaPlayer.stop()
                 soundPool.play(
                     workEndAudioId,
-                    1.0f,
-                    1.0f,
+                    0.8f,
+                    0.8f,
                     0,
                     0,
                     1.0f
@@ -135,8 +158,8 @@ class WorkoutService : LifecycleService() {
             if (it) {
                 soundPool.play(
                     workStartAudioId,
-                    1.0f,
-                    1.0f,
+                    0.8f,
+                    0.8f,
                     0,
                     0,
                     1.0f
@@ -169,7 +192,7 @@ class WorkoutService : LifecycleService() {
         }
     }
 
-    private fun killService(){
+    private fun killService() {
         serviceKilled = true
         isFirstRun = true
         postInitialValues()
@@ -197,4 +220,8 @@ class WorkoutService : LifecycleService() {
 
 }
 
-data class ServiceAudioCommand(val fileName: String, val audioBaseFileDirectory: String)
+data class ServiceAudioCommand(
+    val name: String,
+    val fileName: String,
+    val audioBaseFileDirectory: String
+)

@@ -1,8 +1,8 @@
 package com.middleton.scott.cmboxing.datasource
 
 import androidx.lifecycle.MutableLiveData
-import com.google.firebase.auth.FirebaseAuth
 import com.middleton.scott.cmboxing.datasource.local.LocalDataSource
+import com.middleton.scott.cmboxing.datasource.local.model.Command
 import com.middleton.scott.cmboxing.datasource.local.model.User
 import com.middleton.scott.cmboxing.datasource.remote.RemoteDataSource
 import com.middleton.scott.cmboxing.datasource.remote.ResponseData
@@ -26,9 +26,10 @@ class DataRepository(
         remoteDataSource.createUserFirebaseAccount(
             userVMModel.email,
             userVMModel.password,
-            object : RemoteDataSource.CallbackWithError<Boolean, Int?> {
+            object : RemoteDataSource.CallbackWithError<Boolean, String?> {
                 override fun onSuccess(model: Boolean) {
                     localDataSource.userIsLoggedIn = true
+
                     responseLD.postValue(ResponseData(success = true))
                     GlobalScope.launch {
                         addUserToFireStore(
@@ -36,29 +37,30 @@ class DataRepository(
                                 userVMModel.email,
                                 userVMModel.first,
                                 userVMModel.last
-                            )
+                            ), responseLD
                         )
                     }
                 }
 
-                override fun onError(error: Int?) {
+                override fun onError(error: String?) {
                     localDataSource.userIsLoggedIn = false
-                    responseLD.postValue(ResponseData(errorResource = error))
+                    responseLD.postValue(ResponseData(errorString = error))
                 }
             }
         )
     }
 
-    fun addUserToFireStore(user: User) {
-        remoteDataSource.addUser(user, object : RemoteDataSource.CallbackWithError<Boolean, Int?> {
+    fun addUserToFireStore(user: User, responseLD: MutableLiveData<ResponseData>) {
+        remoteDataSource.addUser(user, object : RemoteDataSource.CallbackWithError<Boolean, String?> {
             override fun onSuccess(model: Boolean) {
                 GlobalScope.launch {
+                    responseLD.postValue(ResponseData(true))
                     localDataSource.insertCurrentUser(user)
                 }
             }
 
-            override fun onError(error: Int?) {
-                // TODO
+            override fun onError(error: String?) {
+                responseLD.postValue(ResponseData(errorString = error))
             }
         })
     }
@@ -71,30 +73,37 @@ class DataRepository(
     fun signIn(email: String, password: String, responseLD: MutableLiveData<ResponseData>) {
         remoteDataSource.signIn(email,
             password,
-            object : RemoteDataSource.CallbackWithError<Boolean, Int?> {
+            object : RemoteDataSource.CallbackWithError<Boolean, String?> {
                 override fun onSuccess(model: Boolean) {
                     localDataSource.userIsLoggedIn = true
 
                     GlobalScope.launch {
                         remoteDataSource.getUserByEmail(
                             email,
-                            object : RemoteDataSource.CallbackWithError<User, Int?> {
+                            object : RemoteDataSource.CallbackWithError<User, String?> {
                                 override fun onSuccess(model: User) {
                                     GlobalScope.launch {
                                         localDataSource.insertCurrentUser(model)
                                         responseLD.postValue(ResponseData(success = true))
                                     }
                                 }
-                                override fun onError(error: Int?) {
-                                    // TODO
+                                override fun onError(error: String?) {
+                                    responseLD.postValue(ResponseData(errorString = error))
                                 }
                             })
                     }
                 }
 
-                override fun onError(error: Int?) {
-                    responseLD.postValue(ResponseData(errorResource = error))
+                override fun onError(error: String?) {
+                    localDataSource.userIsLoggedIn = false
+                    responseLD.postValue(ResponseData(errorString = error))
                 }
             })
+    }
+
+    suspend fun deleteCommand(command: Command) {
+        localDataSource.deleteCommand(command)
+        localDataSource.deleteStructuredCommandCrossRefById(command.id)
+        localDataSource.deleteSelectedCommandCrossRefByCommandId(command.id)
     }
 }

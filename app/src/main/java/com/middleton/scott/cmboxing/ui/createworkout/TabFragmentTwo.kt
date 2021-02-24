@@ -62,7 +62,7 @@ class TabFragmentTwo : BaseFragment() {
                 viewModel.validateTabTwo()
             },
             {
-                viewModel.upsertCombination(it)
+                viewModel.upsertCommand(it)
             }, {
                 val file = File(viewModel.audioFileCompleteDirectory)
                 file.delete()
@@ -182,7 +182,7 @@ class TabFragmentTwo : BaseFragment() {
     }
 
     private fun subscribeUI() {
-        viewModel.getAllCombinationsLD().observe(viewLifecycleOwner, Observer {
+        viewModel.getAllCommandsLD().observe(viewLifecycleOwner, Observer {
             if (it.isNullOrEmpty()) {
                 combinationsEmpty = true
                 commands_RV.visibility = View.GONE
@@ -373,7 +373,7 @@ class TabFragmentTwo : BaseFragment() {
             false,
             Command("", 0, viewModel.audioFileName),
             { combination ->
-                viewModel.upsertCombination(combination)
+                viewModel.upsertCommand(combination)
             }, {
                 val file = File(viewModel.audioFileCompleteDirectory)
                 file.delete()

@@ -18,5 +18,5 @@ abstract class SelectedCommandCrossRefDao : BaseDao<SelectedCommandCrossRef>() {
     abstract suspend fun deleteByWorkoutId(workoutId: Long)
 
     @Query("DELETE FROM selected_commands WHERE command_id = :commandId")
-    abstract suspend fun deleteByCombinationId(commandId: Long)
+    abstract suspend fun deleteByCommandId(commandId: Long)
 }
