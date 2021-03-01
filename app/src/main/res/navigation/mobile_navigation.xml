@@ -55,7 +55,11 @@
         android:id="@+id/commandsScreen"
         android:name="com.middleton.scott.cmboxing.ui.commands.CommandsScreen"
         android:label="@string/commands"
-        tools:layout="@layout/fragment_commands" />
+        tools:layout="@layout/fragment_commands" >
+        <action
+            android:id="@+id/action_commandsScreen_to_recordCommandFragment"
+            app:destination="@id/recordCommandFragment" />
+    </fragment>
     <fragment
         android:id="@+id/createWorkoutScreen"
         android:name="com.middleton.scott.cmboxing.ui.createworkout.CreateWorkoutScreen"
@@ -147,4 +151,9 @@
         android:name="com.middleton.scott.cmboxing.PacksScreen"
         android:label="Packs Marketplace"
         tools:layout="@layout/fragment_packs_screen" />
+    <fragment
+        android:id="@+id/recordCommandFragment"
+        android:name="com.middleton.scott.cmboxing.ui.recordcommand.recorder.RecordCommandFragment"
+        android:label="@string/create_your_command"
+        tools:layout="@layout/fragment_record_command" />
 </navigation>

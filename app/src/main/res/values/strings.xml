@@ -134,4 +134,7 @@
     <string name="packs_description">Our packs marketplace is coming soon. Interested in listing your own workouts for sale? Click below to get in touch via our website.</string>
     <string name="yes">Yes</string>
     <string name="are_you_sure">Are you sure?</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="create_your_command">Create your command</string>
 </resources>

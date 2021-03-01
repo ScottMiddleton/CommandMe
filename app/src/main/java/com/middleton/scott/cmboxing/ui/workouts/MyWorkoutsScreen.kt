@@ -243,37 +243,37 @@ class MyWorkoutsScreen : BaseFragment() {
             when {
                 scrollY > oldScrollY -> {
                     fab_tv.visibility = View.GONE
-                    val params = LinearLayout.LayoutParams(
+                    val params1 = LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.WRAP_CONTENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT
                     ).apply {
                         gravity = Gravity.BOTTOM or Gravity.END
                     }
                     params.setMargins(80, 80, 80, 80)
-                    add_workouts_btn.layoutParams = params
+                    add_workouts_btn.layoutParams = params1
                 }
                 scrollX == scrollY -> {
                     fab_tv.visibility = View.VISIBLE
-                    val params = LinearLayout.LayoutParams(
+                    val params2 = LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.WRAP_CONTENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT
                     ).apply {
                         gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
                     }
                     params.setMargins(80, 80, 80, 80)
-                    add_workouts_btn.layoutParams = params
+                    add_workouts_btn.layoutParams = params2
 
                 }
                 else -> {
                     fab_tv.visibility = View.VISIBLE
-                    val params = LinearLayout.LayoutParams(
+                    val params3 = LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.WRAP_CONTENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT
                     ).apply {
                         gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
                     }
                     params.setMargins(80, 80, 80, 80)
-                    add_workouts_btn.layoutParams = params
+                    add_workouts_btn.layoutParams = params3
                 }
             }
 

@@ -2,34 +2,46 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.media.MediaPlayer
+import android.media.MediaRecorder
 import android.os.Bundle
+import android.os.SystemClock
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.annotation.Nullable
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.DialogFragment
 import com.airbnb.lottie.LottieAnimationView
 import com.middleton.scott.cmboxing.R
 import com.middleton.scott.cmboxing.datasource.local.model.Command
+import com.middleton.scott.cmboxing.ui.commands.CommandsViewModel
+import com.middleton.scott.cmboxing.ui.createworkout.CreateWorkoutSharedViewModel
 import com.middleton.scott.cmboxing.ui.createworkout.NumberPickerMinutesSecondsDialog
 import com.middleton.scott.cmboxing.ui.createworkout.NumberPickerSecondsDialog
 import com.middleton.scott.cmboxing.utils.DateTimeUtils
+import com.middleton.scott.cmboxing.utils.MediaRecorderManager
 import kotlinx.android.synthetic.main.dialog_save_command.*
+import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.getViewModel
+import java.io.File
 import java.io.IOException
 
 const val numberOfFieldsToValidate = 2
 
-class SaveCommandDialog(
+class AddCommandDialog(
     private val audioFileDirectory: String,
     private val isEditMode: Boolean,
     private val command: Command,
     private val onSave: ((Command) -> Unit),
     private val onDelete: (() -> Unit)
 ) : DialogFragment() {
+    private val viewModel by lazy { requireParentFragment().getViewModel<CommandsViewModel>() }
+    private var mediaRecorder = MediaRecorder()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -172,6 +184,40 @@ class SaveCommandDialog(
         mediaPlayer.reset()
     }
 
+    private fun startRecording() {
+        viewModel.resetRecordingTimer()
+        viewModel.recording = true
+        viewModel.setAudioFileOutput(System.currentTimeMillis())
+        MediaRecorderManager.startRecording(
+            mediaRecorder,
+            viewModel.audioFileCompleteDirectory
+        )
+        viewModel.startHTime = SystemClock.uptimeMillis();
+        viewModel.customHandler.postDelayed(viewModel.updateTimerThread, 0);
+    }
+
+    private fun stopRecording() {
+        if (viewModel.recording) {
+            MediaRecorderManager.stopRecording(mediaRecorder) { recordingComplete ->
+                if (recordingComplete) {
+                    viewModel.timeSwapBuff += viewModel.timeInMilliseconds
+                    viewModel.customHandler.removeCallbacks(viewModel.updateTimerThread)
+                    if(viewModel.timeSwapBuff > 500){
+//                        showSaveCombinationDialog()
+                    } else {
+                        val file = File(viewModel.audioFileCompleteDirectory)
+                        file.delete()
+                        Toast.makeText(context, "Recording too short. Hold the microphone to record a command.", Toast.LENGTH_LONG).show()
+                    }
+                } else {
+                    Toast.makeText(context, getString(R.string.recording_too_short), Toast.LENGTH_LONG).show()
+                    mediaRecorder = MediaRecorder()
+                }
+            }
+            viewModel.recording = false
+        }
+    }
+
     private fun handlePlayAnimationLottie(
         playInReverse: Boolean,
         playAudioLottie: LottieAnimationView?
@@ -184,4 +230,19 @@ class SaveCommandDialog(
             playAudioLottie?.playAnimation()
         }
     }
+
+    private fun handleRecordAudioAnimations(recording: Boolean) {
+        if (recording) {
+            record_audio_button.playAnimation()
+        } else {
+            record_audio_button.cancelAnimation()
+            record_audio_button.progress = 0.08f
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        stopRecording()
+    }
+
 }

@@ -1,34 +1,25 @@
 package com.middleton.scott.cmboxing.ui.commands
 
-import SaveCommandDialog
 import android.Manifest.permission.RECORD_AUDIO
 import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import android.content.pm.PackageManager
 import android.graphics.Canvas
-import android.graphics.ColorFilter
 import android.media.MediaRecorder
 import android.os.Bundle
 import android.os.Handler
-import android.os.SystemClock
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.View.GONE
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.airbnb.lottie.LottieProperty
-import com.airbnb.lottie.SimpleColorFilter
-import com.airbnb.lottie.model.KeyPath
-import com.airbnb.lottie.value.LottieValueCallback
 import com.middleton.scott.cmboxing.R
-import com.middleton.scott.cmboxing.datasource.local.model.Command
 import com.middleton.scott.cmboxing.other.Constants.REQUEST_AUDIO_PERMISSION_CODE
 import com.middleton.scott.cmboxing.ui.base.BaseFragment
-import com.middleton.scott.cmboxing.utils.MediaRecorderManager
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import kotlinx.android.synthetic.main.fragment_commands.*
 import org.koin.android.ext.android.inject
@@ -72,10 +63,9 @@ class CommandsScreen : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        requestPermission()
         next_btn_include.visibility = GONE
-
         setClickListeners()
-
         commands_RV.adapter = adapter
 
         val itemTouchHelperCallback =
@@ -185,107 +175,39 @@ class CommandsScreen : BaseFragment() {
     }
 
     private fun setClickListeners() {
+        add_command_btn.setOnClickListener {
+            val action = CommandsScreenDirections.actionCommandsScreenToRecordCommandFragment()
+            findNavController().navigate(action)
+        }
 
         undo_btn.setOnClickListener {
             undo_btn.visibility = GONE
             undo_tv.visibility = GONE
             viewModel.undoPreviouslyDeletedCombination()
         }
-
-        record_audio_button.setOnTouchListener { _, event ->
-            when (event.action) {
-                MotionEvent.ACTION_DOWN -> {
-                    if (recordingEnabled) {
-                        val yourColor = ContextCompat.getColor(requireContext(), R.color.red)
-                        val filter = SimpleColorFilter(yourColor)
-                        val keyPath = KeyPath("**")
-                        val callback: LottieValueCallback<ColorFilter> = LottieValueCallback(filter)
-                        record_audio_button.addValueCallback(
-                            keyPath,
-                            LottieProperty.COLOR_FILTER,
-                            callback
-                        )
-                        startRecording()
-                        handleRecordAudioAnimations(true)
-
-                    } else {
-                        requestPermission()
-                    }
-                }
-
-                MotionEvent.ACTION_UP -> {
-                    stopRecording()
-                    val yourColor = ContextCompat.getColor(requireContext(), R.color.transparent)
-                    val filter = SimpleColorFilter(yourColor)
-                    val keyPath = KeyPath("**")
-                    val callback: LottieValueCallback<ColorFilter> = LottieValueCallback(filter)
-                    record_audio_button.addValueCallback(
-                        keyPath,
-                        LottieProperty.COLOR_FILTER,
-                        callback
-                    )
-                    handleRecordAudioAnimations(false)
-                }
-            }
-            true
-        }
     }
 
-    private fun startRecording() {
-        viewModel.resetRecordingTimer()
-        viewModel.recording = true
-        viewModel.setAudioFileOutput(System.currentTimeMillis())
-        MediaRecorderManager.startRecording(
-            mediaRecorder,
-            viewModel.audioFileCompleteDirectory
-        )
-        viewModel.startHTime = SystemClock.uptimeMillis();
-        viewModel.customHandler.postDelayed(viewModel.updateTimerThread, 0);
-    }
-
-    private fun stopRecording() {
-        if (viewModel.recording) {
-            MediaRecorderManager.stopRecording(mediaRecorder) { recordingComplete ->
-                if (recordingComplete) {
-                    viewModel.timeSwapBuff += viewModel.timeInMilliseconds
-                    viewModel.customHandler.removeCallbacks(viewModel.updateTimerThread)
-                    if(viewModel.timeSwapBuff > 500){
-                        showSaveCombinationDialog()
-                    } else {
-                        val file = File(viewModel.audioFileCompleteDirectory)
-                        file.delete()
-                        Toast.makeText(context, "Recording too short. Hold the microphone to record a command.", Toast.LENGTH_LONG).show()
-                    }
-                } else {
-                    Toast.makeText(context, getString(R.string.recording_too_short), Toast.LENGTH_LONG).show()
-                    mediaRecorder = MediaRecorder()
-                }
-            }
-            viewModel.recording = false
-        }
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        when (requestCode) {
-            REQUEST_AUDIO_PERMISSION_CODE -> if (grantResults.isNotEmpty()) {
-                val permissionToRecord = grantResults[0] == PackageManager.PERMISSION_GRANTED
-                val permissionToStore = grantResults[1] == PackageManager.PERMISSION_GRANTED
-                if (permissionToRecord && permissionToStore) {
-                    recordingEnabled = true
-                    Toast.makeText(requireContext(), "Recording enabled.", Toast.LENGTH_LONG)
-                        .show()
-                } else {
-                    recordingEnabled = false
-                    Toast.makeText(requireContext(), "Recording and saving audio permissions have been denied. These both must be granted to record audio.", Toast.LENGTH_LONG)
-                        .show()
-                }
-            }
-        }
-    }
+//    override fun onRequestPermissionsResult(
+//        requestCode: Int,
+//        permissions: Array<out String>,
+//        grantResults: IntArray
+//    ) {
+//        when (requestCode) {
+//            REQUEST_AUDIO_PERMISSION_CODE -> if (grantResults.isNotEmpty()) {
+//                val permissionToRecord = grantResults[0] == PackageManager.PERMISSION_GRANTED
+//                val permissionToStore = grantResults[1] == PackageManager.PERMISSION_GRANTED
+//                if (permissionToRecord && permissionToStore) {
+//                    recordingEnabled = true
+//                    Toast.makeText(requireContext(), "Recording enabled.", Toast.LENGTH_LONG)
+//                        .show()
+//                } else {
+//                    recordingEnabled = false
+//                    Toast.makeText(requireContext(), "Recording and saving audio permissions have been denied. These both must be granted to record audio.", Toast.LENGTH_LONG)
+//                        .show()
+//                }
+//            }
+//        }
+//    }
 
     private fun checkPermissions(): Boolean {
         val result = ContextCompat.checkSelfPermission(
@@ -303,30 +225,16 @@ class CommandsScreen : BaseFragment() {
         )
     }
 
-    private fun showSaveCombinationDialog() {
-        SaveCommandDialog(
-            viewModel.audioFileCompleteDirectory,
-            false,
-            Command("", 0, viewModel.audioFileName),
-            { combination ->
-                viewModel.upsertCommand(combination)
-            }, {
-                val file = File(viewModel.audioFileCompleteDirectory)
-                file.delete()
-            }).show(childFragmentManager, "")
-    }
-
-    private fun handleRecordAudioAnimations(recording: Boolean) {
-        if (recording) {
-            record_audio_button.playAnimation()
-        } else {
-            record_audio_button.cancelAnimation()
-            record_audio_button.progress = 0.08f
-        }
-    }
-
-    override fun onPause() {
-        super.onPause()
-        stopRecording()
-    }
+//    private fun showAddCombinationDialog() {
+//        AddCommandDialog(
+//            viewModel.audioFileCompleteDirectory,
+//            false,
+//            Command("", 0, viewModel.audioFileName),
+//            { combination ->
+//                viewModel.upsertCommand(combination)
+//            }, {
+//                val file = File(viewModel.audioFileCompleteDirectory)
+//                file.delete()
+//            }).show(childFragmentManager, "")
+//    }
 }

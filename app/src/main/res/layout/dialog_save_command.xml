@@ -1,6 +1,5 @@
 <!-- fragment_edit_name.xml -->
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/edit_name"
     android:paddingTop="20dp"
@@ -111,6 +110,20 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/record_audio_button"
+        android:layout_width="110dp"
+        android:layout_height="110dp"
+        android:layout_gravity="center_horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/play_cl"
+        app:lottie_fileName="record_button_lottie.json"
+        app:lottie_loop="true"
+        app:lottie_progress="0.08"
+        app:lottie_speed="1.8"
+        app:tint="@color/white" />
+
     <Button
         android:id="@+id/save_btn"
         android:layout_width="wrap_content"
@@ -132,10 +145,9 @@
         android:text="@string/delete"
         android:textAllCaps="false"
         android:textColor="@color/white"
-        android:layout_marginTop="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/save_btn"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/play_cl" />
+        app:layout_constraintTop_toBottomOf="@+id/record_audio_button" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

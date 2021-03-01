@@ -1,26 +1,20 @@
 package com.middleton.scott.cmboxing.ui.createworkout
 
-import SaveCommandDialog
+import AddCommandDialog
 import android.Manifest
 import android.content.pm.PackageManager
-import android.graphics.ColorFilter
 import android.media.MediaRecorder
 import android.os.Bundle
 import android.os.SystemClock
-import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.animation.AnimationUtils
 import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.Observer
 import androidx.viewpager2.widget.ViewPager2
-import com.airbnb.lottie.LottieProperty
-import com.airbnb.lottie.SimpleColorFilter
-import com.airbnb.lottie.model.KeyPath
-import com.airbnb.lottie.value.LottieValueCallback
 import com.middleton.scott.cmboxing.R
 import com.middleton.scott.cmboxing.datasource.local.model.Command
 import com.middleton.scott.cmboxing.other.Constants
@@ -29,7 +23,13 @@ import com.middleton.scott.cmboxing.ui.commands.CommandsAdapter
 import com.middleton.scott.cmboxing.utils.DialogManager
 import com.middleton.scott.cmboxing.utils.MediaRecorderManager
 import kotlinx.android.synthetic.main.fragment_commands.*
+import kotlinx.android.synthetic.main.fragment_commands.empty_list_layout
+import kotlinx.android.synthetic.main.fragment_commands.fab_tv
+import kotlinx.android.synthetic.main.fragment_commands.nested_scroll_view
 import kotlinx.android.synthetic.main.fragment_commands.next_btn_include
+import kotlinx.android.synthetic.main.fragment_commands.undo_btn
+import kotlinx.android.synthetic.main.fragment_commands.undo_tv
+import kotlinx.android.synthetic.main.fragment_my_workouts.*
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import java.io.File
 
@@ -49,6 +49,7 @@ class TabFragmentTwo : BaseFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        handleFab()
         recordingEnabled = checkPermissions()
         adapter = CommandsAdapter(
             viewModel.audioFileBaseDirectory,
@@ -79,7 +80,6 @@ class TabFragmentTwo : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         commands_RV.adapter = adapter
 
 //        val itemTouchHelperCallback =
@@ -232,42 +232,7 @@ class TabFragmentTwo : BaseFragment() {
             }
         }
 
-        record_audio_button.setOnTouchListener { _, event ->
-            when (event.action) {
-                MotionEvent.ACTION_DOWN -> {
-                    if (recordingEnabled) {
-                        val yourColor = ContextCompat.getColor(requireContext(), R.color.red)
-                        val filter = SimpleColorFilter(yourColor)
-                        val keyPath = KeyPath("**")
-                        val callback: LottieValueCallback<ColorFilter> = LottieValueCallback(filter)
-                        record_audio_button.addValueCallback(
-                            keyPath,
-                            LottieProperty.COLOR_FILTER,
-                            callback
-                        )
-                        startRecording()
-                        handleRecordAudioAnimations(true)
-                    } else {
-                        requestPermission()
-                    }
-                }
 
-                MotionEvent.ACTION_UP -> {
-                    stopRecording()
-                    val yourColor = ContextCompat.getColor(requireContext(), R.color.transparent)
-                    val filter = SimpleColorFilter(yourColor)
-                    val keyPath = KeyPath("**")
-                    val callback: LottieValueCallback<ColorFilter> = LottieValueCallback(filter)
-                    record_audio_button.addValueCallback(
-                        keyPath,
-                        LottieProperty.COLOR_FILTER,
-                        callback
-                    )
-                    handleRecordAudioAnimations(false)
-                }
-            }
-            true
-        }
 
         undo_btn.setOnClickListener {
             undo_btn?.visibility = View.GONE
@@ -368,7 +333,7 @@ class TabFragmentTwo : BaseFragment() {
     }
 
     private fun showSaveCombinationDialog() {
-        SaveCommandDialog(
+        AddCommandDialog(
             viewModel.audioFileCompleteDirectory,
             false,
             Command("", 0, viewModel.audioFileName),
@@ -380,13 +345,57 @@ class TabFragmentTwo : BaseFragment() {
             }).show(childFragmentManager, "")
     }
 
-    private fun handleRecordAudioAnimations(recording: Boolean) {
-        if (recording) {
-            record_audio_button.playAnimation()
-        } else {
-            record_audio_button.cancelAnimation()
-            record_audio_button.progress = 0.08f
+
+
+    private fun handleFab() {
+        val params = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        ).apply {
+            gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
         }
+        params.setMargins(80, 80, 80, 80)
+        add_command_btn.layoutParams = params
+
+        nested_scroll_view.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
+            when {
+                scrollY > oldScrollY -> {
+                    fab_tv.visibility = View.GONE
+                    val params1 = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                    ).apply {
+                        gravity = Gravity.BOTTOM or Gravity.END
+                    }
+                    params.setMargins(80, 80, 80, 80)
+                    add_workouts_btn.layoutParams = params1
+                }
+                scrollX == scrollY -> {
+                    fab_tv.visibility = View.VISIBLE
+                    val params2 = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                    ).apply {
+                        gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
+                    }
+                    params.setMargins(80, 80, 80, 80)
+                    add_workouts_btn.layoutParams = params2
+
+                }
+                else -> {
+                    fab_tv.visibility = View.VISIBLE
+                    val params3 = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                    ).apply {
+                        gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
+                    }
+                    params.setMargins(80, 80, 80, 80)
+                    add_workouts_btn.layoutParams = params3
+                }
+            }
+
+        })
     }
 
     override fun onPause() {

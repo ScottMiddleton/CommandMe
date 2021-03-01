@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".ui.recordcommand.recorder.RecordCommandFragment">
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/name_til"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/command_name"
+        android:layout_margin="20dp"
+        app:hintTextColor="@color/white"
+        android:paddingBottom="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <EditText
+            android:id="@+id/name_et"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textCapWords"
+            android:imeOptions="actionDone" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/time_to_complete_til"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="0dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/time_to_complete"
+        android:paddingBottom="10dp"
+        app:hintTextColor="@color/white"
+        app:suffixTextColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/name_til">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/time_to_complete_et"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:foreground="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="false"
+            android:inputType="text" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.imn.iivisu.PlayerVisualizer
+        android:id="@+id/player_visualizer"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="visible"
+        app:approximateBarDuration="75"
+        app:backgroundBarPrimeColor="@color/gray"
+        app:barWidth="3dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="40dp"
+        app:layout_constraintBottom_toTopOf="@+id/timeline_tv"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/time_to_complete_til"
+        app:loadedBarPrimeColor="@color/colorPrimary"
+        app:maxAmp="100"
+        app:spaceBetweenBar="2dp" />
+
+    <com.imn.iivisu.RecorderVisualizer
+        android:id="@+id/recorder_visualizer"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:backgroundBarPrimeColor="@color/gray"
+        app:barWidth="3dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="40dp"
+        app:layout_constraintBottom_toTopOf="@+id/timeline_tv"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/time_to_complete_til"
+        app:loadedBarPrimeColor="@color/colorPrimary"
+        app:maxAmp="100"
+        app:spaceBetweenBar="2dp" />
+
+    <TextView
+        android:id="@+id/timeline_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="00:00"
+        android:textSize="24sp"
+        android:layout_margin="120dp"
+        app:layout_constraintBottom_toBottomOf="@+id/record_audio_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/record_audio_button"
+        android:layout_width="110dp"
+        android:layout_height="110dp"
+        android:layout_gravity="center_horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:lottie_fileName="record_button_lottie.json"
+        app:lottie_loop="true"
+        app:lottie_progress="0.08"
+        app:lottie_speed="1.8"
+        app:tint="@color/white" />
+
+    <include
+        android:id="@+id/include_play_recording"
+        layout="@layout/include_play_recording"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="22dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/record_audio_button" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

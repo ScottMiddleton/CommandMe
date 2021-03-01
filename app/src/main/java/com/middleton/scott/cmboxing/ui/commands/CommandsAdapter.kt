@@ -1,6 +1,6 @@
 package com.middleton.scott.cmboxing.ui.commands
 
-import SaveCommandDialog
+import AddCommandDialog
 import android.content.Context
 import android.media.MediaPlayer
 import android.util.Log
@@ -93,7 +93,7 @@ class CommandsAdapter(
         }
 
         holder.editButton.setOnClickListener {
-            SaveCommandDialog(
+            AddCommandDialog(
                 (audioFileBaseDirectory + combination.file_name),
                 true,
                 combination,
