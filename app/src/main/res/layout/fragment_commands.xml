@@ -99,7 +99,6 @@
             android:backgroundTint="@color/colorPrimary"
             android:clickable="true"
             android:clipToPadding="false"
-            android:layout_marginBottom="20dp"
             android:focusable="true"
             android:layout_gravity="center_horizontal"
             android:gravity="center_vertical"

@@ -6,10 +6,7 @@ import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
-import com.middleton.scott.cmboxing.utils.SingletonHolder
-import com.middleton.scott.cmboxing.utils.WAVE_HEADER_SIZE
-import com.middleton.scott.cmboxing.utils.recordFile
-import com.middleton.scott.cmboxing.utils.toMediaSource
+import com.middleton.scott.cmboxing.utils.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.collect
@@ -39,15 +36,17 @@ class AudioPlayer private constructor(context: Context) : Player.EventListener {
         }
     }
 
-    private val recordFile = context.recordFile
+    private lateinit var recordFile: File
     private val bufferSize = Recorder.getInstance(context).bufferSize
 
     private lateinit var player: ExoPlayer
 
-    fun init(): AudioPlayer {
+    fun init(recordFile: File): AudioPlayer {
         if (::player.isInitialized) {
             player.release()
         }
+
+        this.recordFile = recordFile
         player = SimpleExoPlayer.Builder(appContext).build().apply {
             setMediaSource(recordFile.toMediaSource())
             prepare()

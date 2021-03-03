@@ -11,6 +11,7 @@ import com.middleton.scott.cmboxing.ui.commands.CommandsViewModel
 import com.middleton.scott.cmboxing.ui.createworkout.CreateWorkoutSharedViewModel
 import com.middleton.scott.cmboxing.ui.login.CreateAccountViewModel
 import com.middleton.scott.cmboxing.ui.login.LoginViewModel
+import com.middleton.scott.cmboxing.ui.recordcommand.recorder.RecordCommandViewModel
 import com.middleton.scott.cmboxing.ui.workout.RandomWorkoutScreenViewModel
 import com.middleton.scott.cmboxing.ui.workout.StructuredWorkoutScreenViewModel
 import com.middleton.scott.cmboxing.ui.workouts.WorkoutsViewModel
@@ -39,5 +40,5 @@ val appModule = module {
     viewModel { (workoutId: Long) -> StructuredWorkoutScreenViewModel(get(), workoutId) }
     viewModel { CreateAccountViewModel(get()) }
     viewModel { LoginViewModel(get()) }
-
+    viewModel { RecordCommandViewModel(get()) }
 }

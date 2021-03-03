@@ -53,7 +53,7 @@
     <string name="very_rare">Very Rare</string>
     <string name="round">Round</string>
     <string name="of">of</string>
-    <string name="time_to_complete">Default time to complete</string>
+    <string name="time_to_complete">Time to complete</string>
     <string name="remaining">remaining</string>
     <string name="elapsed">Elapsed</string>
     <string name="restart">Restart</string>
@@ -134,7 +134,7 @@
     <string name="packs_description">Our packs marketplace is coming soon. Interested in listing your own workouts for sale? Click below to get in touch via our website.</string>
     <string name="yes">Yes</string>
     <string name="are_you_sure">Are you sure?</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="create_your_command">Create your command</string>
+    <string name="create_your_command">Create Your Command</string>
+    <string name="command_audio">Command audio</string>
+    <string name="zero_seconds">00:00</string>
 </resources>

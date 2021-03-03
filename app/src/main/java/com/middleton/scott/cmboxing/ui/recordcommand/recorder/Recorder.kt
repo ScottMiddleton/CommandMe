@@ -6,7 +6,6 @@ import android.media.AudioRecord
 import com.github.squti.androidwaverecorder.WaveConfig
 import com.github.squti.androidwaverecorder.WaveRecorder
 import com.middleton.scott.cmboxing.utils.SingletonHolder
-import com.middleton.scott.cmboxing.utils.recordFile
 
 class Recorder private constructor(context: Context) {
 
@@ -26,8 +25,8 @@ class Recorder private constructor(context: Context) {
     var isRecording = false
         private set
 
-    fun init(): Recorder {
-        recorder = WaveRecorder(appContext.recordFile.toString())
+    fun init(recordFilePath: String): Recorder {
+        recorder = WaveRecorder(recordFilePath)
             .apply { waveConfig = recordingConfig }
         return this
     }

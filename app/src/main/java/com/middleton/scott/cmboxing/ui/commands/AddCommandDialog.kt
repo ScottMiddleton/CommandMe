@@ -19,13 +19,10 @@ import com.airbnb.lottie.LottieAnimationView
 import com.middleton.scott.cmboxing.R
 import com.middleton.scott.cmboxing.datasource.local.model.Command
 import com.middleton.scott.cmboxing.ui.commands.CommandsViewModel
-import com.middleton.scott.cmboxing.ui.createworkout.CreateWorkoutSharedViewModel
 import com.middleton.scott.cmboxing.ui.createworkout.NumberPickerMinutesSecondsDialog
-import com.middleton.scott.cmboxing.ui.createworkout.NumberPickerSecondsDialog
 import com.middleton.scott.cmboxing.utils.DateTimeUtils
 import com.middleton.scott.cmboxing.utils.MediaRecorderManager
 import kotlinx.android.synthetic.main.dialog_save_command.*
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import java.io.File
 import java.io.IOException

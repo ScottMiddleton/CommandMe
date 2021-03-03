@@ -4,6 +4,7 @@ import AddCommandDialog
 import android.Manifest
 import android.content.pm.PackageManager
 import android.media.MediaRecorder
+import android.media.tv.TvContract.Programs.Genres.MUSIC
 import android.os.Bundle
 import android.os.SystemClock
 import android.view.*
@@ -170,7 +171,7 @@ class TabFragmentTwo : BaseFragment() {
 //        itemTouchHelper.attachToRecyclerView(combinations_RV)
 
         viewModel.audioFileBaseDirectory =
-            context?.getExternalFilesDir(null)?.absolutePath + "/"
+            context?.getExternalFilesDir(MUSIC)?.absolutePath + "/commandme"
 
         viewModel.subscribeLD.observe(viewLifecycleOwner, Observer {
             if (it) {

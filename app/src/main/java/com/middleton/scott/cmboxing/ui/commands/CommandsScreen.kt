@@ -7,13 +7,16 @@ import android.graphics.Canvas
 import android.media.MediaRecorder
 import android.os.Bundle
 import android.os.Handler
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.widget.NestedScrollView
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -63,6 +66,7 @@ class CommandsScreen : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        handleFab()
         requestPermission()
         next_btn_include.visibility = GONE
         setClickListeners()
@@ -143,8 +147,7 @@ class CommandsScreen : BaseFragment() {
 
         subscribeUI()
 
-        viewModel.audioFileBaseDirectory =
-            context?.getExternalFilesDir(null)?.absolutePath + "/"
+        viewModel.audioFileBaseDirectory = context?.getExternalFilesDir(null)?.absolutePath + "/"
 
     }
 
@@ -225,16 +228,54 @@ class CommandsScreen : BaseFragment() {
         )
     }
 
-//    private fun showAddCombinationDialog() {
-//        AddCommandDialog(
-//            viewModel.audioFileCompleteDirectory,
-//            false,
-//            Command("", 0, viewModel.audioFileName),
-//            { combination ->
-//                viewModel.upsertCommand(combination)
-//            }, {
-//                val file = File(viewModel.audioFileCompleteDirectory)
-//                file.delete()
-//            }).show(childFragmentManager, "")
-//    }
+    private fun handleFab() {
+        val params = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        ).apply {
+            gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
+        }
+        params.setMargins(80, 80, 80, 80)
+        add_command_btn.layoutParams = params
+
+        nested_scroll_view.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
+            when {
+                scrollY > oldScrollY -> {
+                    fab_tv.visibility = View.GONE
+                    val params1 = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                    ).apply {
+                        gravity = Gravity.BOTTOM or Gravity.END
+                    }
+                    params.setMargins(80, 80, 80, 80)
+                    add_command_btn.layoutParams = params1
+                }
+                scrollX == scrollY -> {
+                    fab_tv.visibility = View.VISIBLE
+                    val params2 = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                    ).apply {
+                        gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
+                    }
+                    params.setMargins(80, 80, 80, 80)
+                    add_command_btn.layoutParams = params2
+
+                }
+                else -> {
+                    fab_tv.visibility = View.VISIBLE
+                    val params3 = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                    ).apply {
+                        gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
+                    }
+                    params.setMargins(80, 80, 80, 80)
+                    add_command_btn.layoutParams = params3
+                }
+            }
+
+        })
+    }
 }
