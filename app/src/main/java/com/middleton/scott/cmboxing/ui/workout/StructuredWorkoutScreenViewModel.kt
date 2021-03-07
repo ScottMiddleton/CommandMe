@@ -170,8 +170,7 @@ class StructuredWorkoutScreenViewModel(
                             serviceCommandAudioLD.value = nextCommand?.file_name?.let {
                                 ServiceAudioCommand(
                                     nextCommand.name,
-                                    it,
-                                    audioFileBaseDirectory
+                                    it
                                 )
                             }
                             _playCommandAnimationLD.value = true

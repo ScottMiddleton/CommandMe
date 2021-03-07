@@ -24,7 +24,8 @@
         android:orientation="vertical"
         android:padding="48dp"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="40dp"
+        app:layout_constraintBottom_toBottomOf="@+id/linearLayout5"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
@@ -42,7 +43,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:fontFamily="@string/font_default_roboto_regular"
-            android:text="@string/shout_your_command_and_it_will_appear_here"
+            android:text="@string/add_a_command_and_it_will_show_up_here"
             android:textAlignment="center"
             android:textSize="18sp" />
 

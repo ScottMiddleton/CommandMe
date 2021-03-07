@@ -1,10 +1,7 @@
 package com.middleton.scott.cmboxing.ui.commands
 
-import android.Manifest.permission.RECORD_AUDIO
-import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
-import android.content.pm.PackageManager
+import android.content.Context
 import android.graphics.Canvas
-import android.media.MediaRecorder
 import android.os.Bundle
 import android.os.Handler
 import android.view.Gravity
@@ -14,14 +11,12 @@ import android.view.View.GONE
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.LinearLayout
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.widget.NestedScrollView
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.middleton.scott.cmboxing.R
-import com.middleton.scott.cmboxing.other.Constants.REQUEST_AUDIO_PERMISSION_CODE
 import com.middleton.scott.cmboxing.ui.base.BaseFragment
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import kotlinx.android.synthetic.main.fragment_commands.*
@@ -30,29 +25,17 @@ import java.io.File
 
 class CommandsScreen : BaseFragment() {
     private val viewModel: CommandsViewModel by inject()
-    private var mediaRecorder = MediaRecorder()
     var combinationsEmpty = true
     var undoSnackbarVisible = false
-    var recordingEnabled = false
+    private lateinit var mContext: Context
 
     private val handler = Handler()
 
     private lateinit var adapter: CommandsAdapter
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_commands, container, false)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        recordingEnabled = checkPermissions()
-        viewModel.audioFileBaseDirectory = context?.getExternalFilesDir(null)?.absolutePath + "/"
         adapter = CommandsAdapter(
-            viewModel.audioFileBaseDirectory,
             parentFragmentManager,
             onEditCombination = {
                 viewModel.upsertCommand(it)
@@ -64,10 +47,20 @@ class CommandsScreen : BaseFragment() {
 
     }
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.fragment_commands, container, false)
+    }
+
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        mContext = view.context
         handleFab()
-        requestPermission()
         next_btn_include.visibility = GONE
         setClickListeners()
         commands_RV.adapter = adapter
@@ -133,7 +126,7 @@ class CommandsScreen : BaseFragment() {
                     )
                         .addBackgroundColor(
                             ContextCompat.getColor(
-                                requireContext(), R.color.red
+                                mContext, R.color.red
                             )
                         )
                         .addActionIcon(R.drawable.ic_delete_sweep)
@@ -188,44 +181,6 @@ class CommandsScreen : BaseFragment() {
             undo_tv.visibility = GONE
             viewModel.undoPreviouslyDeletedCombination()
         }
-    }
-
-//    override fun onRequestPermissionsResult(
-//        requestCode: Int,
-//        permissions: Array<out String>,
-//        grantResults: IntArray
-//    ) {
-//        when (requestCode) {
-//            REQUEST_AUDIO_PERMISSION_CODE -> if (grantResults.isNotEmpty()) {
-//                val permissionToRecord = grantResults[0] == PackageManager.PERMISSION_GRANTED
-//                val permissionToStore = grantResults[1] == PackageManager.PERMISSION_GRANTED
-//                if (permissionToRecord && permissionToStore) {
-//                    recordingEnabled = true
-//                    Toast.makeText(requireContext(), "Recording enabled.", Toast.LENGTH_LONG)
-//                        .show()
-//                } else {
-//                    recordingEnabled = false
-//                    Toast.makeText(requireContext(), "Recording and saving audio permissions have been denied. These both must be granted to record audio.", Toast.LENGTH_LONG)
-//                        .show()
-//                }
-//            }
-//        }
-//    }
-
-    private fun checkPermissions(): Boolean {
-        val result = ContextCompat.checkSelfPermission(
-            requireContext(),
-            WRITE_EXTERNAL_STORAGE
-        )
-        val result1 = ContextCompat.checkSelfPermission(requireContext(), RECORD_AUDIO)
-        return result == PackageManager.PERMISSION_GRANTED && result1 == PackageManager.PERMISSION_GRANTED
-    }
-
-    private fun requestPermission() {
-        requestPermissions(
-            arrayOf(RECORD_AUDIO, WRITE_EXTERNAL_STORAGE),
-            REQUEST_AUDIO_PERMISSION_CODE
-        )
     }
 
     private fun handleFab() {

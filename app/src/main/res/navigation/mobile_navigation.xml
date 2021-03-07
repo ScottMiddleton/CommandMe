@@ -65,6 +65,9 @@
         android:name="com.middleton.scott.cmboxing.ui.createworkout.CreateWorkoutScreen"
         android:label="@string/create_workout"
         tools:layout="@layout/fragment_create_workout_screen">
+        <action
+            android:id="@+id/action_createWorkoutScreen_to_recordCommandFragment"
+            app:destination="@id/recordCommandFragment" />
         <argument
             android:name="workoutId"
             android:defaultValue="-1L"

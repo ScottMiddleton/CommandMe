@@ -212,7 +212,7 @@ class RandomWorkoutScreenViewModel(
         val nextCommand: Command? = getRandomCombination()
         _currentCombinationLD.value = nextCommand
         serviceCommandAudioLD.value =
-            nextCommand?.file_name?.let { ServiceAudioCommand(nextCommand.name, it, audioFileBaseDirectory) }
+            nextCommand?.file_name?.let { ServiceAudioCommand(nextCommand.name, it) }
         val timeToCompleteCombination = nextCommand?.timeToCompleteSecs ?: 2
         millisUntilNextCombination = getTimeUntilNextCombination(timeToCompleteCombination)
     }

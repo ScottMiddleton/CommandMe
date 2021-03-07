@@ -30,6 +30,7 @@ import com.middleton.scott.cmboxing.other.Constants.NOTIFICATION_CHANNEL_NAME
 import com.middleton.scott.cmboxing.other.Constants.NOTIFICATION_ID
 import com.middleton.scott.cmboxing.ui.createworkout.WorkoutType
 import com.middleton.scott.cmboxing.ui.workout.WorkoutState
+import com.middleton.scott.cmboxing.utils.getBaseFilePath
 import java.io.IOException
 
 class WorkoutService : LifecycleService() {
@@ -56,7 +57,7 @@ class WorkoutService : LifecycleService() {
 
     private fun postInitialValues() {
         serviceCountdownSecondsLD.value = ""
-        serviceCommandAudioLD.value = ServiceAudioCommand("", "", "")
+        serviceCommandAudioLD.value = ServiceAudioCommand("", "")
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -137,7 +138,7 @@ class WorkoutService : LifecycleService() {
                 notificationBuilder.setContentTitle(it.name)
                 notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build())
             }
-            startPlayingCombinationAudio(it.fileName, it.audioBaseFileDirectory)
+            startPlayingCombinationAudio(it.fileName)
         })
 
         playEndBellLD.observe(this, Observer {
@@ -176,12 +177,12 @@ class WorkoutService : LifecycleService() {
         notificationManager.createNotificationChannel(channel)
     }
 
-    private fun startPlayingCombinationAudio(fileName: String, audioBaseFileDirectory: String) {
+    private fun startPlayingCombinationAudio(fileName: String) {
         mediaPlayer.stop()
         mediaPlayer.reset()
         mediaPlayer = MediaPlayer().apply {
             try {
-                setDataSource(audioBaseFileDirectory + fileName)
+                setDataSource(getBaseFilePath() + fileName)
                 prepare()
                 this.setOnCompletionListener {
                 }
@@ -222,6 +223,5 @@ class WorkoutService : LifecycleService() {
 
 data class ServiceAudioCommand(
     val name: String,
-    val fileName: String,
-    val audioBaseFileDirectory: String
+    val fileName: String
 )

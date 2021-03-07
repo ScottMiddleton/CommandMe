@@ -1,6 +1,5 @@
 package com.middleton.scott.cmboxing.ui.commands
 
-import AddCommandDialog
 import android.content.Context
 import android.media.MediaPlayer
 import android.util.Log
@@ -19,10 +18,10 @@ import com.airbnb.lottie.LottieAnimationView
 import com.middleton.scott.cmboxing.R
 import com.middleton.scott.cmboxing.datasource.local.model.Command
 import com.middleton.scott.cmboxing.datasource.local.model.SelectedCommandCrossRef
+import com.middleton.scott.cmboxing.utils.getBaseFilePath
 import java.io.IOException
 
 class CommandsAdapter(
-    private val audioFileBaseDirectory: String,
     private val fragmentManager: FragmentManager,
     private val onCheckCombination: ((selectedCombinationCrossRef: SelectedCommandCrossRef, isChecked: Boolean) -> Unit)? = null,
     private val onEditCombination: ((Command) -> Unit),
@@ -93,15 +92,15 @@ class CommandsAdapter(
         }
 
         holder.editButton.setOnClickListener {
-            AddCommandDialog(
-                (audioFileBaseDirectory + combination.file_name),
-                true,
-                combination,
-                { combination ->
-                    onEditCombination(combination)
-                }, {
-                    onDeleteCombination(combination)
-                }).show(fragmentManager, "")
+//            AddCommandDialog(
+//                (MainActivity.baseFilePath + combination.file_name),
+//                true,
+//                combination,
+//                { combination ->
+//                    onEditCombination(combination)
+//                }, {
+//                    onDeleteCombination(combination)
+//                }).show(fragmentManager, "")
         }
     }
 
@@ -118,7 +117,8 @@ class CommandsAdapter(
         mediaPlayer.reset()
         mediaPlayer = MediaPlayer().apply {
             try {
-                setDataSource(audioFileBaseDirectory + fileName)
+                val filePath = getBaseFilePath() + fileName
+                setDataSource(filePath)
                 prepare()
                 this.setOnCompletionListener {
                     audioPlayingIndex = -1

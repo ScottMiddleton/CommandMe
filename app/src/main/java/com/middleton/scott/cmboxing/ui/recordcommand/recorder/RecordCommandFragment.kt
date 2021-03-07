@@ -1,39 +1,50 @@
 package com.middleton.scott.cmboxing.ui.recordcommand.recorder
 
+import android.Manifest.permission.RECORD_AUDIO
+import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import android.content.Context
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.*
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat.checkSelfPermission
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import com.middleton.scott.cmboxing.R
 import com.middleton.scott.cmboxing.ui.createworkout.NumberPickerMinutesSecondsDialog
 import com.middleton.scott.cmboxing.utils.DateTimeUtils
 import com.middleton.scott.cmboxing.utils.DateTimeUtils.formatAsTime
-import com.middleton.scott.cmboxing.utils.checkAudioPermission
+import com.middleton.scott.cmboxing.utils.DialogManager
 import com.middleton.scott.cmboxing.utils.getDrawableCompat
 import com.middleton.scott.cmboxing.utils.getRecordFile
+import kotlinx.android.synthetic.main.appbar_record_command.*
 import kotlinx.android.synthetic.main.fragment_record_command.*
+import kotlinx.android.synthetic.main.include_layout_save_btn.view.*
 import kotlinx.android.synthetic.main.include_play_recording.*
 import org.koin.android.ext.android.inject
-import java.io.File
 import kotlin.math.sqrt
+
+const val REQUEST_ID_MULTIPLE_PERMISSIONS = 1
 
 class RecordCommandFragment : Fragment() {
     private val viewModel: RecordCommandViewModel by inject()
     private lateinit var recorder: Recorder
     private lateinit var player: AudioPlayer
-    private var timeToCompleteSecs: Int = 0
-    private var saveAttempted = false
+    private var recordingEnabled = false
+    private lateinit var mContext: Context
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         // This callback will only be called when MyFragment is at least Started.
         val callback: OnBackPressedCallback =
             object : OnBackPressedCallback(true /* enabled by default */) {
@@ -56,51 +67,152 @@ class RecordCommandFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setClickListeners()
-        checkAudioPermission(AUDIO_PERMISSION_REQUEST_CODE)
+        mContext = view.context
+        if (checkAndRequestPermissions()) {
+            recordingEnabled = true
+        }
         initAudioRecorder()
         initRecorderUI()
+        setClickListeners()
+
+        viewModel.saveButtonEnabledLD.observe(viewLifecycleOwner, Observer {
+            save_btn_include.save_btn.isEnabled = it
+        })
+
+        viewModel.saveCompleteLD.observe(viewLifecycleOwner, Observer {
+            if(it) {
+            findNavController().navigateUp()}
+        })
+    }
+
+    private fun checkAndRequestPermissions(): Boolean {
+        val recordAudioPermission = checkSelfPermission(
+            mContext,
+            RECORD_AUDIO
+        )
+        val writeExternalPermission = checkSelfPermission(mContext, WRITE_EXTERNAL_STORAGE)
+
+        val listPermissionsNeeded: MutableList<String> = ArrayList()
+
+        if (recordAudioPermission != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(RECORD_AUDIO)
+        }
+
+        if (writeExternalPermission != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(WRITE_EXTERNAL_STORAGE)
+        }
+
+        if (listPermissionsNeeded.isNotEmpty()) {
+           requestPermissions(
+                listPermissionsNeeded.toTypedArray(),
+                REQUEST_ID_MULTIPLE_PERMISSIONS
+            )
+            return false
+        }
+        return true
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>, grantResults: IntArray
+    ) {
+        when (requestCode) {
+            REQUEST_ID_MULTIPLE_PERMISSIONS -> {
+                val perms: MutableMap<String, Int> = HashMap()
+                // Initialize the map with both permissions
+                perms[RECORD_AUDIO] = PackageManager.PERMISSION_GRANTED
+                perms[WRITE_EXTERNAL_STORAGE] = PackageManager.PERMISSION_GRANTED
+                // Fill with actual results from user
+                if (grantResults.isNotEmpty()) {
+                    var i = 0
+                    while (i < permissions.size) {
+                        perms[permissions[i]] = grantResults[i]
+                        i++
+                    }
+                    // Check for both permissions
+                    if (perms[RECORD_AUDIO] == PackageManager.PERMISSION_GRANTED
+                        && perms[WRITE_EXTERNAL_STORAGE] == PackageManager.PERMISSION_GRANTED
+                    ) {
+                        // Permissions granted
+                        // process the normal flow
+                        recordingEnabled = true
+                    } else {
+                        //permission is denied (this is the first time, when "never ask again" is not checked) so ask again explaining the usage of permission
+                        // shouldShowRequestPermissionRationale will return true
+                        // show the dialog or snackbar saying its necessary and try again otherwise proceed with setup.
+                        if (ActivityCompat.shouldShowRequestPermissionRationale(
+                                requireActivity(),
+                                RECORD_AUDIO
+                            ) || ActivityCompat.shouldShowRequestPermissionRationale(
+                                requireActivity(),
+                                WRITE_EXTERNAL_STORAGE
+                            )
+                        ) {
+                            DialogManager.showDialog(
+                                context = mContext,
+                                titleId = R.string.permissions_required,
+                                messageId = R.string.permissions_dialog_message,
+                                positiveBtnClick = { checkAndRequestPermissions() },
+                                negativeBtnClick = {})
+                        } else {
+                            Toast.makeText(
+                                mContext,
+                                getString(R.string.go_to_settings_to_enable_permissions),
+                                Toast.LENGTH_LONG
+                            )
+                                .show()
+                            recordingEnabled = false
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun setClickListeners() {
-        time_to_complete_et.setOnClickListener {
-            val imm: InputMethodManager =
-                requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.hideSoftInputFromWindow(requireView().windowToken, 0)
-
-            var secs = 20
-            if (!time_to_complete_et.text.isNullOrBlank()) {
-                secs = timeToCompleteSecs
-            }
-
-            NumberPickerMinutesSecondsDialog(
-                getString(R.string.time_to_complete),
-                secs,
-                { newSecs ->
-                    timeToCompleteSecs = newSecs
-                    time_to_complete_et.setText(DateTimeUtils.toMinuteSeconds(newSecs))
-                    name_et.clearFocus()
-                    if (saveAttempted) {
-                        if (timeToCompleteSecs <= 0) {
-                            time_to_complete_til.error = getString(R.string.greater_than_zero)
-                        } else {
-                            time_to_complete_til.isErrorEnabled = false
-                        }
-                    }
-                },
-                {
-
-                }).show(childFragmentManager, "")
+        save_btn_include.save_btn.setOnClickListener {
+            viewModel.upsertCommand()
         }
 
         delete_recording_btn.setOnClickListener {
             deleteRecording()
             initAudioRecorder()
+            viewModel.validate()
         }
 
-        close_btn.setOnClickListener {
+        activity?.close_btn?.setOnClickListener {
             deleteRecording()
             findNavController().navigateUp()
+        }
+
+        time_to_complete_et.setOnClickListener {
+            val imm: InputMethodManager =
+                requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(requireView().windowToken, 0)
+
+            var secs = 10
+            if (!time_to_complete_et.text.isNullOrBlank()) {
+                secs = viewModel.timeToCompleteSecs
+            }
+
+            NumberPickerMinutesSecondsDialog(getString(R.string.time_to_complete), secs, { newSecs ->
+                viewModel.timeToCompleteSecs = newSecs
+                viewModel.validate()
+                time_to_complete_et.setText(DateTimeUtils.toMinuteSeconds(newSecs))
+                name_et.clearFocus()
+                    if (viewModel.timeToCompleteSecs <= 0) {
+                        time_to_complete_til.error = getString(R.string.greater_than_zero)
+                    } else {
+                        time_to_complete_til.isErrorEnabled = false
+                    }
+            }, {
+
+            }).show(childFragmentManager, "")
+        }
+
+        name_et.doAfterTextChanged {
+            viewModel.name = it.toString()
+            viewModel.validate()
         }
     }
 
@@ -110,7 +222,13 @@ class RecordCommandFragment : Fragment() {
     }
 
     private fun initRecorderUI() {
-        record_audio_button.setOnClickListener { recorder.toggleRecording() }
+        record_audio_button.setOnClickListener {
+            if (recordingEnabled) {
+                recorder.toggleRecording()
+            } else {
+                checkAndRequestPermissions()
+            }
+        }
         recorder_visualizer.ampNormalizer = { sqrt(it.toFloat()).toInt() }
     }
 
@@ -144,28 +262,34 @@ class RecordCommandFragment : Fragment() {
     }
 
     private fun initAudioRecorder() {
-        timeline_tv.setText(getString(R.string.zero_seconds))
+        viewModel.hasAudioRecording = false
+        timeline_tv.text = getString(R.string.zero_seconds)
         viewModel.recordTimeMillis = System.currentTimeMillis()
-        recorder = Recorder.getInstance(requireContext())
+        recorder = Recorder.getInstance(mContext)
             .init(getRecordFile(viewModel.recordTimeMillis).toString())
+        record_command_audio_tv.visibility = VISIBLE
         player_visualizer.visibility = GONE
-        record_audio_button.visibility = VISIBLE
-        recorder_visualizer.visibility = VISIBLE
         include_play_recording.visibility = GONE
         delete_recording_btn.visibility = INVISIBLE
+        record_audio_button.visibility = VISIBLE
+        recorder_visualizer.visibility = VISIBLE
 
-        recorder.onStart = { handleRecordAudioAnimations(true) }
+        recorder.onStart = {
+            handleRecordAudioAnimations(true) }
         recorder.onStop = {
             handleRecordAudioAnimations(false)
             recorder_visualizer.clear()
             timeline_tv.text = 0L.formatAsTime()
             initAudioPlayer()
             initPlayerUI()
+            record_command_audio_tv.visibility = GONE
             player_visualizer.visibility = VISIBLE
             record_audio_button.visibility = INVISIBLE
             recorder_visualizer.visibility = GONE
             include_play_recording.visibility = VISIBLE
             delete_recording_btn.visibility = VISIBLE
+            viewModel.hasAudioRecording = true
+            viewModel.validate()
         }
 
         recorder.onAmpListener = {
@@ -179,20 +303,28 @@ class RecordCommandFragment : Fragment() {
     }
 
     private fun initAudioPlayer() {
-        player = AudioPlayer.getInstance(requireContext())
+        player = AudioPlayer.getInstance(mContext)
             .init(getRecordFile(viewModel.recordTimeMillis)).apply {
-            onStart =
-                { play_button.icon = requireContext().getDrawableCompat(R.drawable.ic_pause_24) }
-            onStop = {
-                play_button.icon = requireContext().getDrawableCompat(R.drawable.ic_play_arrow_24)
+                onStart =
+                    {
+                        play_button.icon =
+                            mContext.getDrawableCompat(R.drawable.ic_pause_24)
+                    }
+                onStop = {
+                    play_button.icon =
+                        mContext.getDrawableCompat(R.drawable.ic_play_arrow_24)
+                }
+                onPause = {
+                    play_button.icon =
+                        mContext.getDrawableCompat(R.drawable.ic_play_arrow_24)
+                }
+                onResume =
+                    {
+                        play_button.icon =
+                            mContext.getDrawableCompat(R.drawable.ic_pause_24)
+                    }
+                onProgress = { time, isPlaying -> updateTime(time, isPlaying) }
             }
-            onPause = {
-                play_button.icon = requireContext().getDrawableCompat(R.drawable.ic_play_arrow_24)
-            }
-            onResume =
-                { play_button.icon = requireContext().getDrawableCompat(R.drawable.ic_pause_24) }
-            onProgress = { time, isPlaying -> updateTime(time, isPlaying) }
-        }
     }
 
     private fun handleRecordAudioAnimations(recording: Boolean) {
@@ -217,17 +349,24 @@ class RecordCommandFragment : Fragment() {
 
     override fun onPause() {
         super.onPause()
-        player.pause()
+        try {
+            player.pause()
+        } catch (e: UninitializedPropertyAccessException) {
+            e.printStackTrace()
+        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
         recorder.release()
-        player.release()
+        try {
+            player.release()
+        } catch (e: UninitializedPropertyAccessException) {
+            e.printStackTrace()
+        }
     }
 
     companion object {
-        private const val AUDIO_PERMISSION_REQUEST_CODE = 1
         const val SEEK_OVER_AMOUNT = 5000
     }
 }

@@ -1,29 +1,32 @@
 package com.middleton.scott.cmboxing.ui.recordcommand.recorder
 
-import android.os.Handler
-import android.os.SystemClock
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.middleton.scott.cmboxing.MainActivity
+import androidx.lifecycle.viewModelScope
 import com.middleton.scott.cmboxing.datasource.DataRepository
-import com.middleton.scott.cmboxing.utils.getRecordFile
-import java.io.File
-import java.lang.Runnable as Runnable1
+import com.middleton.scott.cmboxing.datasource.local.model.Command
+import com.middleton.scott.cmboxing.utils.getRecordFileName
+import kotlinx.coroutines.launch
 
 open class RecordCommandViewModel(private val dataRepository: DataRepository) : ViewModel() {
-    var recording = false
+    var recordTimeMillis: Long = -1L
+    var timeToCompleteSecs: Int = -1
+    var name: String = ""
 
-    var startHTime = 0L
-    var customHandler: Handler = Handler()
-    var timeInMilliseconds = 0L
-    var timeSwapBuff = 0L
-    var updatedTime = 0L
-    var recordTimeMillis = 0L
+    var hasAudioRecording = false
 
-    val updateTimerThread: Runnable1 = object : Runnable1 {
-        override fun run() {
-            timeInMilliseconds = SystemClock.uptimeMillis() - startHTime
-            updatedTime = timeSwapBuff + timeInMilliseconds
-            customHandler.postDelayed(this, 0)
+    val saveButtonEnabledLD = MutableLiveData(false)
+    val saveCompleteLD = MutableLiveData(false)
+
+    fun validate() {
+        saveButtonEnabledLD.value = hasAudioRecording == true && timeToCompleteSecs != -1 && name != ""
+    }
+
+    fun upsertCommand() {
+        viewModelScope.launch {
+            val command = Command(name, timeToCompleteSecs, getRecordFileName(recordTimeMillis))
+            dataRepository.getLocalDataSource().upsertCommand(command)
+            saveCompleteLD.value = true
         }
     }
 }

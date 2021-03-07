@@ -14,7 +14,15 @@ import java.io.File
 const val WAVE_HEADER_SIZE = 44
 
 fun getRecordFile(timeInMillis: Long): File {
-    return File(MainActivity.baseFilePath, "audio_$timeInMillis.wav")
+    return File(getBaseFilePath(), getRecordFileName(timeInMillis))
+}
+
+fun getRecordFileName(timeInMillis: Long): String {
+    return "audio_$timeInMillis.wav"
+}
+
+fun getBaseFilePath(): String {
+    return MainActivity.instance.getExternalFilesDir(null)?.absolutePath.toString() + "/"
 }
 
 fun File.toMediaSource(): MediaSource =

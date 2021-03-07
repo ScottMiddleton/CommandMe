@@ -8,6 +8,8 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.widget.ImageView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -21,6 +23,7 @@ import com.google.firebase.crashlytics.internal.common.CommonUtils.hideKeyboard
 import com.middleton.scott.cmboxing.R
 import com.middleton.scott.cmboxing.ui.base.BaseFragment
 import com.middleton.scott.cmboxing.utils.DialogManager
+import kotlinx.android.synthetic.main.appbar_create_workout.*
 import kotlinx.android.synthetic.main.create_workout_tab_item_layout.view.*
 import kotlinx.android.synthetic.main.fragment_create_workout_screen.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -57,7 +60,7 @@ class CreateWorkoutScreen : BaseFragment() {
 
         mContext = view.context
 
-        close_btn.setOnClickListener {
+        activity?.findViewById<ImageView>(R.id.close_btn)?.setOnClickListener {
             hideKeyboard(view.context, view)
             viewModel.onCancel()
         }
@@ -133,8 +136,10 @@ class CreateWorkoutScreen : BaseFragment() {
             ) {
                 super.onPageScrolled(position, positionOffset, positionOffsetPixels)
 
-                for (i in 0 until tab_layout.tabCount) {
-                    val currentTab = tab_layout.getTabAt(i)?.customView
+                val tabLayout = requireActivity().tab_layout
+
+                for (i in 0 until tabLayout.tabCount) {
+                    val currentTab = tabLayout.getTabAt(i)?.customView
                     when {
                         i < position -> {
                             currentTab?.textView?.background = tabComplete
@@ -212,19 +217,21 @@ class CreateWorkoutScreen : BaseFragment() {
 
         create_boxing_workout_vp.registerOnPageChangeCallback(callback)
 
-        TabLayoutMediator(tab_layout, create_boxing_workout_vp) { tab, position ->
+        val tabLayout = requireActivity().tab_layout
+
+        TabLayoutMediator(tabLayout, create_boxing_workout_vp) { tab, position ->
             var title = ""
             when (position) {
-                0 -> title = "1"
-                1 -> title = "2"
-                2 -> title = "3"
+                0 -> title = 1.toString()
+                1 -> title = 2.toString()
+                2 -> title = 3.toString()
             }
             tab.text = title
         }.attach()
 
         // Set up custom view for tabs
-        for (i in 0 until tab_layout.tabCount) {
-            val tab: TabLayout.Tab? = tab_layout.getTabAt(i)
+        for (i in 0 until tabLayout.tabCount) {
+            val tab: TabLayout.Tab? = tabLayout.getTabAt(i)
             val customView = LayoutInflater.from(context).inflate(
                 R.layout.create_workout_tab_item_layout,
                 null
@@ -234,8 +241,8 @@ class CreateWorkoutScreen : BaseFragment() {
         }
 
         // Set touch listeners for tabs
-        for (i in 0 until tab_layout.tabCount) {
-            val currentTab = tab_layout.getTabAt(i)?.customView?.parent_cl
+        for (i in 0 until tabLayout.tabCount) {
+            val currentTab = tabLayout.getTabAt(i)?.customView?.parent_cl
             when (i) {
                 1 -> {
                     currentTab?.setOnClickListener {
@@ -270,9 +277,9 @@ class CreateWorkoutScreen : BaseFragment() {
             create_boxing_workout_vp.isUserInputEnabled = false
         }
 
-        tab_layout.getTabAt(0)?.customView?.divider_left?.visibility = GONE
-        tab_layout.getTabAt(2)?.customView?.divider_right?.visibility = GONE
-        tab_layout.tabRippleColor = null
+        tabLayout.getTabAt(0)?.customView?.divider_left?.visibility = GONE
+        tabLayout.getTabAt(2)?.customView?.divider_right?.visibility = GONE
+        tabLayout.tabRippleColor = null
 
         if (args.navigateToCombinations) {
             viewModel.tabOneValidatedLD.value = true
