@@ -40,5 +40,5 @@ val appModule = module {
     viewModel { (workoutId: Long) -> StructuredWorkoutScreenViewModel(get(), workoutId) }
     viewModel { CreateAccountViewModel(get()) }
     viewModel { LoginViewModel(get()) }
-    viewModel { RecordCommandViewModel(get()) }
+    viewModel { (commandId: Long) -> RecordCommandViewModel(get(), commandId) }
 }

@@ -158,5 +158,10 @@
         android:id="@+id/recordCommandFragment"
         android:name="com.middleton.scott.cmboxing.ui.recordcommand.recorder.RecordCommandFragment"
         android:label="@string/create_your_command"
-        tools:layout="@layout/fragment_record_command" />
+        tools:layout="@layout/fragment_record_command" >
+        <argument
+            android:name="commandId"
+            android:defaultValue="-1L"
+            app:argType="long" />
+    </fragment>
 </navigation>

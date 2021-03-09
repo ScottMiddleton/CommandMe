@@ -41,22 +41,17 @@ class TabFragmentTwo : BaseFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        adapter = CommandsAdapter(
-            parentFragmentManager,
-            { selectedCombinationCrossRef, isChecked ->
-                if (isChecked) {
-                    viewModel.addSelectedCommand(selectedCombinationCrossRef)
-                } else {
-                    viewModel.removeSelectedCommand(selectedCombinationCrossRef)
-                }
-                viewModel.validateTabTwo()
-            },
-            {
-                viewModel.upsertCommand(it)
-            }, {
-                val file = File(viewModel.audioFileCompleteDirectory)
-                file.delete()
-            })
+        adapter = CommandsAdapter(onCheckCommand = { selectedCombinationCrossRef, isChecked ->
+            if (isChecked) {
+                viewModel.addSelectedCommand(selectedCombinationCrossRef)
+            } else {
+                viewModel.removeSelectedCommand(selectedCombinationCrossRef)
+            }
+            viewModel.validateTabTwo()
+        }, onEditCommand = {
+            val action = CreateWorkoutScreenDirections.actionCreateWorkoutScreenToRecordCommandFragment(it)
+            findNavController().navigate(action)
+        })
     }
 
     override fun onCreateView(
@@ -133,7 +128,8 @@ class TabFragmentTwo : BaseFragment() {
         }
 
         add_command_btn.setOnClickListener {
-            val action = CreateWorkoutScreenDirections.actionCreateWorkoutScreenToRecordCommandFragment()
+            val action =
+                CreateWorkoutScreenDirections.actionCreateWorkoutScreenToRecordCommandFragment()
             findNavController().navigate(action)
         }
     }

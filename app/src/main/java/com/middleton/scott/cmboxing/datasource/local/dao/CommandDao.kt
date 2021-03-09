@@ -10,5 +10,8 @@ abstract class CommandDao: BaseDao<Command>() {
 
     @Query("SELECT * FROM command")
     abstract fun getCommands(): Flow<List<Command>>
+
+    @Query("SELECT * FROM command WHERE _id = :id")
+    abstract fun getCommandById(id: Long): Command
 }
 

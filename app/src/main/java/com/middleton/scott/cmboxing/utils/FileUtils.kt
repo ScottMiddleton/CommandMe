@@ -17,6 +17,10 @@ fun getRecordFile(timeInMillis: Long): File {
     return File(getBaseFilePath(), getRecordFileName(timeInMillis))
 }
 
+fun getRecordFileByFileName(fileName: String): File {
+    return File(getBaseFilePath(), fileName)
+}
+
 fun getRecordFileName(timeInMillis: Long): String {
     return "audio_$timeInMillis.wav"
 }

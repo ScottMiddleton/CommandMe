@@ -19,24 +19,28 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.middleton.scott.cmboxing.R
 import com.middleton.scott.cmboxing.ui.createworkout.NumberPickerMinutesSecondsDialog
-import com.middleton.scott.cmboxing.utils.DateTimeUtils
+import com.middleton.scott.cmboxing.utils.*
 import com.middleton.scott.cmboxing.utils.DateTimeUtils.formatAsTime
-import com.middleton.scott.cmboxing.utils.DialogManager
-import com.middleton.scott.cmboxing.utils.getDrawableCompat
-import com.middleton.scott.cmboxing.utils.getRecordFile
 import kotlinx.android.synthetic.main.appbar_record_command.*
 import kotlinx.android.synthetic.main.fragment_record_command.*
 import kotlinx.android.synthetic.main.include_layout_save_btn.view.*
 import kotlinx.android.synthetic.main.include_play_recording.*
-import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 import kotlin.math.sqrt
 
 const val REQUEST_ID_MULTIPLE_PERMISSIONS = 1
 
 class RecordCommandFragment : Fragment() {
-    private val viewModel: RecordCommandViewModel by inject()
+    private val args: RecordCommandFragmentArgs by navArgs()
+    private val viewModel: RecordCommandViewModel by viewModel {
+        parametersOf(
+            args.commandId
+        )
+    }
     private lateinit var recorder: Recorder
     private lateinit var player: AudioPlayer
     private var recordingEnabled = false
@@ -71,7 +75,6 @@ class RecordCommandFragment : Fragment() {
         if (checkAndRequestPermissions()) {
             recordingEnabled = true
         }
-        initAudioRecorder()
         initRecorderUI()
         setClickListeners()
 
@@ -80,8 +83,30 @@ class RecordCommandFragment : Fragment() {
         })
 
         viewModel.saveCompleteLD.observe(viewLifecycleOwner, Observer {
-            if(it) {
-            findNavController().navigateUp()}
+            if (it) {
+                findNavController().navigateUp()
+            }
+        })
+
+        viewModel.commandLD.observe(viewLifecycleOwner, Observer {
+            name_et.setText(it.name)
+            time_to_complete_et.setText(DateTimeUtils.toMinuteSeconds(it.timeToCompleteSecs))
+            initAudioPlayer()
+            initPlayerUI()
+            record_command_audio_tv.visibility = GONE
+            player_visualizer.visibility = VISIBLE
+            record_audio_button.visibility = INVISIBLE
+            recorder_visualizer.visibility = GONE
+            include_play_recording.visibility = VISIBLE
+            delete_recording_btn.visibility = VISIBLE
+            viewModel.hasAudioRecording = true
+            viewModel.validate()
+        })
+
+        viewModel.isEditModeLD.observe(viewLifecycleOwner, Observer {
+            if (!it) {
+                initAudioRecorder()
+            }
         })
     }
 
@@ -103,7 +128,7 @@ class RecordCommandFragment : Fragment() {
         }
 
         if (listPermissionsNeeded.isNotEmpty()) {
-           requestPermissions(
+            requestPermissions(
                 listPermissionsNeeded.toTypedArray(),
                 REQUEST_ID_MULTIPLE_PERMISSIONS
             )
@@ -195,19 +220,23 @@ class RecordCommandFragment : Fragment() {
                 secs = viewModel.timeToCompleteSecs
             }
 
-            NumberPickerMinutesSecondsDialog(getString(R.string.time_to_complete), secs, { newSecs ->
-                viewModel.timeToCompleteSecs = newSecs
-                viewModel.validate()
-                time_to_complete_et.setText(DateTimeUtils.toMinuteSeconds(newSecs))
-                name_et.clearFocus()
+            NumberPickerMinutesSecondsDialog(
+                getString(R.string.time_to_complete),
+                secs,
+                { newSecs ->
+                    viewModel.timeToCompleteSecs = newSecs
+                    viewModel.validate()
+                    time_to_complete_et.setText(DateTimeUtils.toMinuteSeconds(newSecs))
+                    name_et.clearFocus()
                     if (viewModel.timeToCompleteSecs <= 0) {
                         time_to_complete_til.error = getString(R.string.greater_than_zero)
                     } else {
                         time_to_complete_til.isErrorEnabled = false
                     }
-            }, {
+                },
+                {
 
-            }).show(childFragmentManager, "")
+                }).show(childFragmentManager, "")
         }
 
         name_et.doAfterTextChanged {
@@ -217,7 +246,12 @@ class RecordCommandFragment : Fragment() {
     }
 
     override fun onStop() {
-        recorder.release()
+        try {
+            player.release()
+            recorder.release()
+        } catch (e: UninitializedPropertyAccessException) {
+            e.printStackTrace()
+        }
         super.onStop()
     }
 
@@ -264,9 +298,9 @@ class RecordCommandFragment : Fragment() {
     private fun initAudioRecorder() {
         viewModel.hasAudioRecording = false
         timeline_tv.text = getString(R.string.zero_seconds)
-        viewModel.recordTimeMillis = System.currentTimeMillis()
+        viewModel.recordFileName = getRecordFileName(System.currentTimeMillis())
         recorder = Recorder.getInstance(mContext)
-            .init(getRecordFile(viewModel.recordTimeMillis).toString())
+            .init(getRecordFileByFileName(viewModel.recordFileName).toString())
         record_command_audio_tv.visibility = VISIBLE
         player_visualizer.visibility = GONE
         include_play_recording.visibility = GONE
@@ -275,7 +309,8 @@ class RecordCommandFragment : Fragment() {
         recorder_visualizer.visibility = VISIBLE
 
         recorder.onStart = {
-            handleRecordAudioAnimations(true) }
+            handleRecordAudioAnimations(true)
+        }
         recorder.onStop = {
             handleRecordAudioAnimations(false)
             recorder_visualizer.clear()
@@ -304,7 +339,7 @@ class RecordCommandFragment : Fragment() {
 
     private fun initAudioPlayer() {
         player = AudioPlayer.getInstance(mContext)
-            .init(getRecordFile(viewModel.recordTimeMillis)).apply {
+            .init(getRecordFileByFileName(viewModel.recordFileName)).apply {
                 onStart =
                     {
                         play_button.icon =
@@ -344,7 +379,7 @@ class RecordCommandFragment : Fragment() {
     }
 
     private fun deleteRecording() {
-        getRecordFile(viewModel.recordTimeMillis).delete()
+        getRecordFileByFileName(viewModel.recordFileName).delete()
     }
 
     override fun onPause() {
@@ -358,9 +393,9 @@ class RecordCommandFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        recorder.release()
         try {
             player.release()
+            recorder.release()
         } catch (e: UninitializedPropertyAccessException) {
             e.printStackTrace()
         }

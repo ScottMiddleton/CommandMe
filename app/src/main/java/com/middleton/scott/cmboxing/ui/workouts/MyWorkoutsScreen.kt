@@ -44,11 +44,9 @@ class MyWorkoutsScreen : BaseFragment() {
             val action = MyWorkoutsScreenDirections.actionMyWorkoutsScreenToCreateWorkoutScreen(
                 workoutId, false
             )
-            action.let {
-                findNavController().navigate(
-                    it
-                )
-            }
+            findNavController().navigate(
+                action
+            )
         },
             { workoutWithCombinations, workoutType ->
                 if (workoutWithCombinations.commands.isEmpty()) {

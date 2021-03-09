@@ -142,4 +142,5 @@
     <string name="go_to_settings_to_enable_permissions">Go to settings to enable audio recording.</string>
     <string name="permissions_dialog_message">Please allow both audio recording and media access permissions to create commands. CommandMe requires this to be able to record your voice and store the audio file on your device.</string>
     <string name="permissions_required">Permissions Required</string>
+    <string name="default_time_allocated">Default time allocated</string>
 </resources>

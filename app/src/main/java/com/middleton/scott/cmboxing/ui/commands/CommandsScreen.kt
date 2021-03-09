@@ -18,10 +18,10 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.middleton.scott.cmboxing.R
 import com.middleton.scott.cmboxing.ui.base.BaseFragment
+import com.middleton.scott.cmboxing.utils.getBaseFilePath
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import kotlinx.android.synthetic.main.fragment_commands.*
 import org.koin.android.ext.android.inject
-import java.io.File
 
 class CommandsScreen : BaseFragment() {
     private val viewModel: CommandsViewModel by inject()
@@ -36,15 +36,10 @@ class CommandsScreen : BaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         adapter = CommandsAdapter(
-            parentFragmentManager,
-            onEditCombination = {
-                viewModel.upsertCommand(it)
-            },
-            onDeleteCombination = {
-                val file = File(viewModel.audioFileCompleteDirectory)
-                file.delete()
+            onEditCommand = {
+               val action = CommandsScreenDirections.actionCommandsScreenToRecordCommandFragment(it)
+                findNavController().navigate(action)
             })
-
     }
 
     override fun onCreateView(
@@ -54,7 +49,6 @@ class CommandsScreen : BaseFragment() {
     ): View? {
         return inflater.inflate(R.layout.fragment_commands, container, false)
     }
-
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -140,7 +134,7 @@ class CommandsScreen : BaseFragment() {
 
         subscribeUI()
 
-        viewModel.audioFileBaseDirectory = context?.getExternalFilesDir(null)?.absolutePath + "/"
+        viewModel.audioFileBaseDirectory = getBaseFilePath()
 
     }
 
