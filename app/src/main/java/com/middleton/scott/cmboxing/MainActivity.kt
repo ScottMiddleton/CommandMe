@@ -90,6 +90,7 @@ class MainActivity : AppCompatActivity() {
                     supportActionBar?.setDisplayShowTitleEnabled(true)
                 }
                 R.id.loginScreen -> {
+                    supportActionBar?.hide()
                     menu?.setGroupVisible(R.id.workout_menu, false)
                     supportActionBar?.setDisplayShowCustomEnabled(false)
                     supportActionBar?.setDisplayShowTitleEnabled(true)

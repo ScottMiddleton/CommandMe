@@ -17,6 +17,7 @@ import com.middleton.scott.cmboxing.ui.base.BaseFragment
 import com.middleton.scott.cmboxing.ui.workouts.MyWorkoutsScreenDirections
 import com.middleton.scott.cmboxing.utils.DateTimeUtils
 import com.middleton.scott.cmboxing.utils.DialogManager
+import kotlinx.android.synthetic.main.alert_dialog_with_divider_layout.*
 import kotlinx.android.synthetic.main.fragment_tab_one.*
 import kotlinx.android.synthetic.main.fragment_tab_three.*
 import org.koin.androidx.viewmodel.ext.android.getViewModel
@@ -138,20 +139,16 @@ class TabFragmentThree : BaseFragment() {
         save_btn_include.findViewById<Button>(R.id.save_btn).setOnClickListener {
             hideKeyboard(context, view)
 
-            if (viewModel.validateRoundsNotEmpty()) {
-                viewModel.upsertWorkout()
-            } else {
+            if (!viewModel.validateRoundsNotEmpty()) {
                 DialogManager.showDialog(
                     context = requireContext(),
-                    titleId = R.string.are_you_sure,
+                    titleId = R.string.empty_rounds,
                     messageId = R.string.empty_rounds_dialog_message,
-                    positiveBtnTextId = R.string.yes,
-                    positiveBtnClick = { viewModel.upsertWorkout()},
-                    negativeBtnTextId = R.string.no,
-                    negativeBtnClick = {
-
-                    }
+                    negativeBtnTextId = R.string.ok,
+                    negativeBtnClick = {}
                 )
+            } else {
+                viewModel.upsertWorkout()
             }
         }
 

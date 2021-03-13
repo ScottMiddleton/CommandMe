@@ -9,6 +9,7 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.activity.OnBackPressedCallback
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -46,6 +47,16 @@ class CreateWorkoutScreen : BaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel.audioFileBaseDirectory = context?.getExternalFilesDir(null)?.absolutePath + "/"
+
+        // This callback will only be called when MyFragment is at least Started.
+        val callback: OnBackPressedCallback =
+            object : OnBackPressedCallback(true /* enabled by default */) {
+                override fun handleOnBackPressed() {
+                    viewModel.onCancel()
+                }
+            }
+
+        requireActivity().onBackPressedDispatcher.addCallback(this, callback)
     }
 
     override fun onCreateView(
@@ -89,11 +100,11 @@ class CreateWorkoutScreen : BaseFragment() {
                     R.string.cancel_this_workout,
                     R.string.unsaved_dialog_message,
                     R.string.yes_cancel,
-                    { viewModel.cancelChanges() },
+                    { viewModel.cancelChanges()},
                     R.string.no,
                     {})
             } else {
-                findNavController().popBackStack()
+                viewModel.cancelChanges()
             }
         })
 

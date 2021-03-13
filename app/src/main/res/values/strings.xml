@@ -74,7 +74,8 @@
     <string name="record_a_command">Record a command!</string>
     <string name="exit">Exit</string>
     <string name="no_command_dialog_message">Please add commands to begin this workout</string>
-    <string name="empty_rounds_dialog_message">Some of your rounds do not contain commands. These rounds will be skipped during your workout.</string>
+    <string name="empty_rounds_dialog_message">Some of your rounds do not contain commands. Please add at least one command to each round to save this workout </string>
+    <string name="empty_rounds_on_begin_workout_dialog_message">Some of your rounds do not contain commands. Please add at least one command to each round to begin this workout </string>
     <string name="ok">Ok</string>
     <string name="time_elapsed">Time Elapsed:</string>
     <string name="edit_this_workout">Edit this workout?</string>
@@ -143,4 +144,5 @@
     <string name="permissions_dialog_message">Please allow both audio recording and media access permissions to create commands. CommandMe requires this to be able to record your voice and store the audio file on your device.</string>
     <string name="permissions_required">Permissions Required</string>
     <string name="default_time_allocated">Default time allocated</string>
+    <string name="empty_rounds">Empty rounds</string>
 </resources>

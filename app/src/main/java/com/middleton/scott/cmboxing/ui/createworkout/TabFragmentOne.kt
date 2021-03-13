@@ -30,20 +30,6 @@ class TabFragmentOne : BaseFragment() {
             TabFragmentOne()
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        // This callback will only be called when MyFragment is at least Started.
-        val callback: OnBackPressedCallback =
-            object : OnBackPressedCallback(true /* enabled by default */) {
-                override fun handleOnBackPressed() {
-                    viewModel.onCancel()
-                }
-            }
-
-        requireActivity().onBackPressedDispatcher.addCallback(this, callback)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

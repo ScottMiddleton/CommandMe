@@ -16,20 +16,22 @@ class CreateWorkoutSharedViewModel(
     private val dataRepository: DataRepository,
     var workoutId: Long
 ) : CommandsViewModel(dataRepository) {
-
+    var isEditMode = false
     var subscribe = true
     var userHasAttemptedToProceedOne = false
     var userHasAttemptedToProceedTwo = false
 
     var selectedCommands = ArrayList<Command>()
+
+    var workout = Workout()
     var selectedCommandCrossRefs = ArrayList<SelectedCommandCrossRef>()
     var structuredCommandCrossRefs = ArrayList<StructuredCommandCrossRef>()
+
+    var savedWorkout = Workout()
     var savedSelectedCommandCrossRefs = ArrayList<SelectedCommandCrossRef>()
     var savedStructuredCommandCrossRefs = ArrayList<StructuredCommandCrossRef>()
-    var workout = Workout()
-    var savedWorkout = Workout()
 
-    private val commandsFlow = dataRepository.getLocalDataSource().getCommands()
+    private val commandsFlow = dataRepository.getLocalDataSource().getCommandsFlow()
 
     lateinit var selectedCommandCrossRefsFlow: Flow<List<SelectedCommandCrossRef>>
     lateinit var workoutLD: LiveData<Workout?>
@@ -56,10 +58,8 @@ class CreateWorkoutSharedViewModel(
         // If a new workout
         if (workoutId == -1L) {
             viewModelScope.launch {
-
                 // Insert a new workout
                 val newWorkoutId = dataRepository.getLocalDataSource().upsertWorkout(workout)
-
 
                 dataRepository.getLocalDataSource().getWorkoutById(newWorkoutId)
                     ?.let { savedWorkout = it }
@@ -76,15 +76,6 @@ class CreateWorkoutSharedViewModel(
 
                 selectedCommandCrossRefsFlow = dataRepository.getLocalDataSource()
                     .getSelectedCommandCrossRefsFlow(newWorkoutId)
-
-
-                savedSelectedCommandCrossRefs =
-                    dataRepository.getLocalDataSource()
-                        .getSelectedCommandCrossRefs(newWorkoutId) as ArrayList<SelectedCommandCrossRef>
-
-                savedStructuredCommandCrossRefs =
-                    dataRepository.getLocalDataSource()
-                        .getStructuredCommandCrossRefs(workoutId) as ArrayList<StructuredCommandCrossRef>
 
                 selectedCommandsLD =
                     commandsFlow.combine(selectedCommandCrossRefsFlow) { commands, it ->
@@ -115,6 +106,7 @@ class CreateWorkoutSharedViewModel(
             }
         } else {
             // If an existing workout
+            isEditMode = true
             selectedCommandCrossRefsFlow = dataRepository.getLocalDataSource()
                 .getSelectedCommandCrossRefsFlow(workoutId)
 
@@ -137,6 +129,8 @@ class CreateWorkoutSharedViewModel(
             savedStructuredCommandCrossRefs =
                 dataRepository.getLocalDataSource()
                     .getStructuredCommandCrossRefs(workoutId) as ArrayList<StructuredCommandCrossRef>
+
+            structuredCommandCrossRefs = savedStructuredCommandCrossRefs
 
             selectedCommandsLD =
                 commandsFlow.combine(selectedCommandCrossRefsFlow) { commands, it ->
@@ -311,13 +305,15 @@ class CreateWorkoutSharedViewModel(
 
     fun cancelChanges() {
         viewModelScope.launch {
-            dataRepository.getLocalDataSource().deleteWorkout(workout)
-            dataRepository.getLocalDataSource().deleteSelectedCommandCrossRefById(workout.id)
-            dataRepository.getLocalDataSource().upsertWorkout(savedWorkout)
-            dataRepository.getLocalDataSource()
-                .upsertWorkoutCommandsList(savedSelectedCommandCrossRefs)
-            dataRepository.getLocalDataSource()
-                .upsertStructuredCommandCrossRefs(savedStructuredCommandCrossRefs)
+            dataRepository.getLocalDataSource().deleteWorkoutAndCrossRefs(workout)
+
+            if (isEditMode) {
+                dataRepository.getLocalDataSource().upsertWorkout(savedWorkout)
+                dataRepository.getLocalDataSource()
+                    .upsertWorkoutCommandsList(savedSelectedCommandCrossRefs)
+                dataRepository.getLocalDataSource()
+                    .upsertStructuredCommandCrossRefs(savedStructuredCommandCrossRefs)
+            }
             dbUpdateLD.value = true
         }
     }
@@ -345,7 +341,7 @@ class CreateWorkoutSharedViewModel(
 
         val restBetweenRounds = defaultRestTimeSecsLD.value ?: 0
         val numberOfRounds = numberOfRoundsLD.value ?: 0
-        val totalRestTime = restBetweenRounds * (numberOfRounds -1)
+        val totalRestTime = restBetweenRounds * (numberOfRounds - 1)
 
         totalLengthSecsLD.value = totalTimeSecs + totalRestTime
     }
@@ -353,12 +349,16 @@ class CreateWorkoutSharedViewModel(
     fun validateRoundsNotEmpty(): Boolean {
         var round = 1
         var valid = true
-        repeat(workout.numberOfRounds){
+        repeat(workout.numberOfRounds) {
             val filtered = structuredCommandCrossRefs.firstOrNull { it.round == round }
-            if (filtered == null){
+            if (filtered == null) {
                 valid = false
             }
-            round ++
+            round++
+        }
+
+        if(workoutTypeLD.value == WorkoutType.RANDOM){
+            valid = true
         }
 
         return valid
