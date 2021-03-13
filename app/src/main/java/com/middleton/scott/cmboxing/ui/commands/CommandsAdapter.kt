@@ -1,6 +1,5 @@
 package com.middleton.scott.cmboxing.ui.commands
 
-import SaveCommandDialog
 import android.content.Context
 import android.media.MediaPlayer
 import android.util.Log
@@ -13,26 +12,23 @@ import android.widget.CheckBox
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
 import com.middleton.scott.cmboxing.R
 import com.middleton.scott.cmboxing.datasource.local.model.Command
 import com.middleton.scott.cmboxing.datasource.local.model.SelectedCommandCrossRef
+import com.middleton.scott.cmboxing.utils.getBaseFilePath
 import java.io.IOException
 
 class CommandsAdapter(
-    private val audioFileBaseDirectory: String,
-    private val fragmentManager: FragmentManager,
-    private val onCheckCombination: ((selectedCombinationCrossRef: SelectedCommandCrossRef, isChecked: Boolean) -> Unit)? = null,
-    private val onEditCombination: ((Command) -> Unit),
-    private val onDeleteCombination: ((Command) -> Unit)
+    private val onCheckCommand: ((selectedCombinationCrossRef: SelectedCommandCrossRef, isChecked: Boolean) -> Unit)? = null,
+    private val onEditCommand: ((Long) -> Unit),
 ) : RecyclerView.Adapter<CommandsAdapter.CommandsViewHolder>() {
 
     lateinit var context: Context
 
-    var selectedCombinations = mutableListOf<Command>()
-    private var allCombinations = mutableListOf<Command>()
+    var selectedCommands = mutableListOf<Command>()
+    private var allCommands = mutableListOf<Command>()
     private var mediaPlayer = MediaPlayer()
 
     private var audioPlayingIndex = -1
@@ -50,28 +46,28 @@ class CommandsAdapter(
     }
 
     override fun getItemCount(): Int {
-        return allCombinations.size
+        return allCommands.size
     }
 
     override fun onBindViewHolder(holder: CommandsViewHolder, position: Int) {
-        val combination = allCombinations[position]
-        holder.nameTV.text = allCombinations[position].name
+        val command = allCommands[position]
+        holder.nameTV.text = allCommands[position].name
 
-        val selectedCombination = selectedCombinations.firstOrNull {
-            it.id == combination.id
+        val selectedCommand = selectedCommands.firstOrNull {
+            it.id == command.id
         }
 
-        val isChecked = selectedCombination != null
+        val isChecked = selectedCommand != null
 
         holder.checkBox.isChecked = isChecked
 
-        if (onCheckCombination == null) {
+        if (onCheckCommand == null) {
             holder.checkBox.visibility = GONE
         } else {
             holder.checkBox.visibility = VISIBLE
             holder.checkBox.setOnCheckedChangeListener { _, checked ->
-                onCheckCombination.invoke(
-                    SelectedCommandCrossRef(workout_id = -1, command_id = combination.id),
+                onCheckCommand.invoke(
+                    SelectedCommandCrossRef(workout_id = -1, command_id = command.id),
                     checked
                 )
             }
@@ -84,7 +80,7 @@ class CommandsAdapter(
             if (!mediaPlayer.isPlaying || audioPlayingIndex != position) {
                 handlePlayAnimationLottie(true, currentPlayingAudioLottie)
                 handlePlayAnimationLottie(false, playAudioLottie)
-                startPlaying(allCombinations[position].file_name, playAudioLottie)
+                startPlaying(allCommands[position].file_name, playAudioLottie)
                 currentPlayingAudioLottie = playAudioLottie
                 audioPlayingIndex = position
             } else {
@@ -93,15 +89,7 @@ class CommandsAdapter(
         }
 
         holder.editButton.setOnClickListener {
-            SaveCommandDialog(
-                (audioFileBaseDirectory + combination.file_name),
-                true,
-                combination,
-                { combination ->
-                    onEditCombination(combination)
-                }, {
-                    onDeleteCombination(combination)
-                }).show(fragmentManager, "")
+            onEditCommand(command.id)
         }
     }
 
@@ -118,7 +106,8 @@ class CommandsAdapter(
         mediaPlayer.reset()
         mediaPlayer = MediaPlayer().apply {
             try {
-                setDataSource(audioFileBaseDirectory + fileName)
+                val filePath = getBaseFilePath() + fileName
+                setDataSource(filePath)
                 prepare()
                 this.setOnCompletionListener {
                     audioPlayingIndex = -1
@@ -157,9 +146,9 @@ class CommandsAdapter(
         allCommands: List<Command>,
         selectedCommands: List<Command>?
     ) {
-        this.allCombinations = allCommands as MutableList<Command>
+        this.allCommands = allCommands as MutableList<Command>
         selectedCommands?.let {
-            this.selectedCombinations = selectedCommands as MutableList<Command>
+            this.selectedCommands = selectedCommands as MutableList<Command>
         }
         this.notifyDataSetChanged()
     }

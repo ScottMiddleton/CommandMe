@@ -24,7 +24,8 @@
         android:orientation="vertical"
         android:padding="48dp"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="40dp"
+        app:layout_constraintBottom_toBottomOf="@+id/linearLayout5"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
@@ -42,7 +43,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:fontFamily="@string/font_default_roboto_regular"
-            android:text="@string/shout_your_command_and_it_will_appear_here"
+            android:text="@string/add_a_command_and_it_will_show_up_here"
             android:textAlignment="center"
             android:textSize="18sp" />
 
@@ -63,13 +64,22 @@
             android:background="@color/white_faded_20"
             app:layout_constraintTop_toTopOf="@+id/punch_bag_iv" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/commands_RV"
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/nested_scroll_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="visible"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/list_item_command" />
+            android:fillViewport="true"
+            android:visibility="visible">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/commands_RV"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="visible"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/list_item_command" />
+
+        </androidx.core.widget.NestedScrollView>
 
     </LinearLayout>
 
@@ -82,16 +92,51 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/record_audio_button"
-            android:layout_width="110dp"
-            android:layout_height="110dp"
+        <LinearLayout
+            android:id="@+id/add_command_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/fab_btn_corner"
+            android:backgroundTint="@color/colorPrimary"
+            android:clickable="true"
+            android:clipToPadding="false"
+            android:focusable="true"
             android:layout_gravity="center_horizontal"
-            app:lottie_fileName="record_button_lottie.json"
-            app:lottie_loop="true"
-            app:lottie_progress="0.08"
-            app:lottie_speed="1.8"
-            app:tint="@color/white" />
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:outlineProvider="none"
+            android:animateLayoutChanges="true"
+            android:outlineSpotShadowColor="@android:color/transparent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/chat_fab"
+                style="@style/FabButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:clickable="false"
+                android:src="@android:drawable/ic_input_add"
+                app:borderWidth="0dp"
+                app:elevation="0dp"
+                app:rippleColor="?colorControlHighlight" />
+
+            <TextView
+                android:id="@+id/fab_tv"
+                style="@style/FabButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:fontFamily="@string/font_roboto_medium"
+                android:paddingStart="0dp"
+                android:paddingEnd="30dp"
+                android:text="@string/add_command"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Button"
+                android:textColor="@color/white" />
+
+        </LinearLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/undo_cl"

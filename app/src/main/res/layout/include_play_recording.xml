@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/play_button"
+        style="@style/IIVisuApp.CircleIconButton"
+        app:icon="@drawable/ic_play_arrow_24"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:shapeAppearanceOverlay="@style/IIVisuApp.ShapeAppearanceOverlay.Button.Circle" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/seek_forward_button"
+        style="@style/IIVisuApp.CircleIconButton"
+        app:icon="@drawable/ic_forward_5_24"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/play_button"
+        app:shapeAppearanceOverlay="@style/IIVisuApp.ShapeAppearanceOverlay.Button.Circle" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/seek_backward_button"
+        style="@style/IIVisuApp.CircleIconButton"
+        app:icon="@drawable/ic_backward_5_24"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/play_button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:shapeAppearanceOverlay="@style/IIVisuApp.ShapeAppearanceOverlay.Button.Circle" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

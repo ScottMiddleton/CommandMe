@@ -110,7 +110,7 @@ class CreateAccountScreen : Fragment() {
             if (it.success) {
                 hideKeyboard()
                 val action =
-                    LoginScreenDirections.actionLoginScreenToMyWorkoutsScreen()
+                    CreateAccountScreenDirections.actionCreateAccountScreenToWorkoutsScreen()
                 findNavController().navigate(
                     action
                 )

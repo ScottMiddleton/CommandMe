@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:id="@+id/constraintLayout2"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/actionBarSize"
+    app:layout_constraintTop_toTopOf="parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tab_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:tabPaddingBottom="-1dp"
+        app:tabPaddingEnd="-1dp"
+        app:tabPaddingStart="-1dp"
+        app:tabPaddingTop="-1dp"
+        android:layout_centerInParent="true"
+        android:gravity="center_horizontal"
+        app:tabIndicatorHeight="0dp" />
+
+    <ImageView
+        android:id="@+id/close_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_gravity="center_vertical"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="0dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:padding="12dp"
+        android:src="@drawable/ic_close"
+        android:textAllCaps="true" />
+
+</RelativeLayout>

@@ -44,6 +44,10 @@ class LocalDataSource(
         return database.commandDao().getCommands()
     }
 
+    fun getCommandById(id: Long): Command {
+        return database.commandDao().getCommandById(id)
+    }
+
     fun getAllWorkoutsWithCommands(): Flow<List<WorkoutWithCommands>> {
         return database.workoutDao().getAllWorkoutsWithCombinations()
     }

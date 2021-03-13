@@ -53,7 +53,7 @@
     <string name="very_rare">Very Rare</string>
     <string name="round">Round</string>
     <string name="of">of</string>
-    <string name="time_to_complete">Default time to complete</string>
+    <string name="time_to_complete">Time to complete</string>
     <string name="remaining">remaining</string>
     <string name="elapsed">Elapsed</string>
     <string name="restart">Restart</string>
@@ -69,9 +69,9 @@
     <string name="add_commands_dialog_message">You need to add at least one command to progress</string>
     <string name="greater_than_zero">Must be greater than zero.</string>
     <string name="add_a_workout_and_it_will_show_up_here">Add a workout and it will show up here.</string>
+    <string name="add_a_command_and_it_will_show_up_here">Add a command and it will show up here.</string>
     <string name="create_a_workout">Create a Workout!</string>
     <string name="record_a_command">Record a command!</string>
-    <string name="shout_your_command_and_it_will_appear_here">Hold the record button below and shout a command.</string>
     <string name="exit">Exit</string>
     <string name="no_command_dialog_message">Please add commands to begin this workout</string>
     <string name="empty_rounds_dialog_message">Some of your rounds do not contain commands. These rounds will be skipped during your workout.</string>
@@ -134,4 +134,13 @@
     <string name="packs_description">Our packs marketplace is coming soon. Interested in listing your own workouts for sale? Click below to get in touch via our website.</string>
     <string name="yes">Yes</string>
     <string name="are_you_sure">Are you sure?</string>
+    <string name="create_your_command">Create Your Command</string>
+    <string name="command_audio">Command audio</string>
+    <string name="zero_seconds">00:00</string>
+    <string name="create_a_command">Create a Command</string>
+    <string name="record_command_audio">Record command audio</string>
+    <string name="go_to_settings_to_enable_permissions">Go to settings to enable audio recording.</string>
+    <string name="permissions_dialog_message">Please allow both audio recording and media access permissions to create commands. CommandMe requires this to be able to record your voice and store the audio file on your device.</string>
+    <string name="permissions_required">Permissions Required</string>
+    <string name="default_time_allocated">Default time allocated</string>
 </resources>

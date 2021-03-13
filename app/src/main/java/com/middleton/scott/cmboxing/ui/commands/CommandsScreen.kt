@@ -1,49 +1,46 @@
 package com.middleton.scott.cmboxing.ui.commands
 
-import SaveCommandDialog
-import android.Manifest.permission.RECORD_AUDIO
-import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
-import android.content.pm.PackageManager
+import android.content.Context
 import android.graphics.Canvas
-import android.graphics.ColorFilter
-import android.media.MediaRecorder
 import android.os.Bundle
 import android.os.Handler
-import android.os.SystemClock
+import android.view.Gravity
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.View.GONE
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
-import android.widget.Toast
+import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
+import androidx.core.widget.NestedScrollView
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.airbnb.lottie.LottieProperty
-import com.airbnb.lottie.SimpleColorFilter
-import com.airbnb.lottie.model.KeyPath
-import com.airbnb.lottie.value.LottieValueCallback
 import com.middleton.scott.cmboxing.R
-import com.middleton.scott.cmboxing.datasource.local.model.Command
-import com.middleton.scott.cmboxing.other.Constants.REQUEST_AUDIO_PERMISSION_CODE
 import com.middleton.scott.cmboxing.ui.base.BaseFragment
-import com.middleton.scott.cmboxing.utils.MediaRecorderManager
+import com.middleton.scott.cmboxing.utils.getBaseFilePath
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import kotlinx.android.synthetic.main.fragment_commands.*
 import org.koin.android.ext.android.inject
-import java.io.File
 
 class CommandsScreen : BaseFragment() {
     private val viewModel: CommandsViewModel by inject()
-    private var mediaRecorder = MediaRecorder()
     var combinationsEmpty = true
     var undoSnackbarVisible = false
-    var recordingEnabled = false
+    private lateinit var mContext: Context
 
     private val handler = Handler()
 
     private lateinit var adapter: CommandsAdapter
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        adapter = CommandsAdapter(
+            onEditCommand = {
+               val action = CommandsScreenDirections.actionCommandsScreenToRecordCommandFragment(it)
+                findNavController().navigate(action)
+            })
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -53,29 +50,13 @@ class CommandsScreen : BaseFragment() {
         return inflater.inflate(R.layout.fragment_commands, container, false)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        recordingEnabled = checkPermissions()
-        viewModel.audioFileBaseDirectory = context?.getExternalFilesDir(null)?.absolutePath + "/"
-        adapter = CommandsAdapter(
-            viewModel.audioFileBaseDirectory,
-            parentFragmentManager,
-            onEditCombination = {
-                viewModel.upsertCommand(it)
-            },
-            onDeleteCombination = {
-                val file = File(viewModel.audioFileCompleteDirectory)
-                file.delete()
-            })
-
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        mContext = view.context
+        handleFab()
         next_btn_include.visibility = GONE
-
         setClickListeners()
-
         commands_RV.adapter = adapter
 
         val itemTouchHelperCallback =
@@ -139,7 +120,7 @@ class CommandsScreen : BaseFragment() {
                     )
                         .addBackgroundColor(
                             ContextCompat.getColor(
-                                requireContext(), R.color.red
+                                mContext, R.color.red
                             )
                         )
                         .addActionIcon(R.drawable.ic_delete_sweep)
@@ -153,8 +134,7 @@ class CommandsScreen : BaseFragment() {
 
         subscribeUI()
 
-        viewModel.audioFileBaseDirectory =
-            context?.getExternalFilesDir(null)?.absolutePath + "/"
+        viewModel.audioFileBaseDirectory = getBaseFilePath()
 
     }
 
@@ -185,148 +165,66 @@ class CommandsScreen : BaseFragment() {
     }
 
     private fun setClickListeners() {
+        add_command_btn.setOnClickListener {
+            val action = CommandsScreenDirections.actionCommandsScreenToRecordCommandFragment()
+            findNavController().navigate(action)
+        }
 
         undo_btn.setOnClickListener {
             undo_btn.visibility = GONE
             undo_tv.visibility = GONE
             viewModel.undoPreviouslyDeletedCombination()
         }
+    }
 
-        record_audio_button.setOnTouchListener { _, event ->
-            when (event.action) {
-                MotionEvent.ACTION_DOWN -> {
-                    if (recordingEnabled) {
-                        val yourColor = ContextCompat.getColor(requireContext(), R.color.red)
-                        val filter = SimpleColorFilter(yourColor)
-                        val keyPath = KeyPath("**")
-                        val callback: LottieValueCallback<ColorFilter> = LottieValueCallback(filter)
-                        record_audio_button.addValueCallback(
-                            keyPath,
-                            LottieProperty.COLOR_FILTER,
-                            callback
-                        )
-                        startRecording()
-                        handleRecordAudioAnimations(true)
+    private fun handleFab() {
+        val params = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        ).apply {
+            gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
+        }
+        params.setMargins(80, 80, 80, 80)
+        add_command_btn.layoutParams = params
 
-                    } else {
-                        requestPermission()
+        nested_scroll_view.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
+            when {
+                scrollY > oldScrollY -> {
+                    fab_tv.visibility = View.GONE
+                    val params1 = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                    ).apply {
+                        gravity = Gravity.BOTTOM or Gravity.END
                     }
+                    params.setMargins(80, 80, 80, 80)
+                    add_command_btn.layoutParams = params1
                 }
-
-                MotionEvent.ACTION_UP -> {
-                    stopRecording()
-                    val yourColor = ContextCompat.getColor(requireContext(), R.color.transparent)
-                    val filter = SimpleColorFilter(yourColor)
-                    val keyPath = KeyPath("**")
-                    val callback: LottieValueCallback<ColorFilter> = LottieValueCallback(filter)
-                    record_audio_button.addValueCallback(
-                        keyPath,
-                        LottieProperty.COLOR_FILTER,
-                        callback
-                    )
-                    handleRecordAudioAnimations(false)
-                }
-            }
-            true
-        }
-    }
-
-    private fun startRecording() {
-        viewModel.resetRecordingTimer()
-        viewModel.recording = true
-        viewModel.setAudioFileOutput(System.currentTimeMillis())
-        MediaRecorderManager.startRecording(
-            mediaRecorder,
-            viewModel.audioFileCompleteDirectory
-        )
-        viewModel.startHTime = SystemClock.uptimeMillis();
-        viewModel.customHandler.postDelayed(viewModel.updateTimerThread, 0);
-    }
-
-    private fun stopRecording() {
-        if (viewModel.recording) {
-            MediaRecorderManager.stopRecording(mediaRecorder) { recordingComplete ->
-                if (recordingComplete) {
-                    viewModel.timeSwapBuff += viewModel.timeInMilliseconds
-                    viewModel.customHandler.removeCallbacks(viewModel.updateTimerThread)
-                    if(viewModel.timeSwapBuff > 500){
-                        showSaveCombinationDialog()
-                    } else {
-                        val file = File(viewModel.audioFileCompleteDirectory)
-                        file.delete()
-                        Toast.makeText(context, "Recording too short. Hold the microphone to record a command.", Toast.LENGTH_LONG).show()
+                scrollX == scrollY -> {
+                    fab_tv.visibility = View.VISIBLE
+                    val params2 = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                    ).apply {
+                        gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
                     }
-                } else {
-                    Toast.makeText(context, getString(R.string.recording_too_short), Toast.LENGTH_LONG).show()
-                    mediaRecorder = MediaRecorder()
+                    params.setMargins(80, 80, 80, 80)
+                    add_command_btn.layoutParams = params2
+
+                }
+                else -> {
+                    fab_tv.visibility = View.VISIBLE
+                    val params3 = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                    ).apply {
+                        gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
+                    }
+                    params.setMargins(80, 80, 80, 80)
+                    add_command_btn.layoutParams = params3
                 }
             }
-            viewModel.recording = false
-        }
-    }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        when (requestCode) {
-            REQUEST_AUDIO_PERMISSION_CODE -> if (grantResults.isNotEmpty()) {
-                val permissionToRecord = grantResults[0] == PackageManager.PERMISSION_GRANTED
-                val permissionToStore = grantResults[1] == PackageManager.PERMISSION_GRANTED
-                if (permissionToRecord && permissionToStore) {
-                    recordingEnabled = true
-                    Toast.makeText(requireContext(), "Recording enabled.", Toast.LENGTH_LONG)
-                        .show()
-                } else {
-                    recordingEnabled = false
-                    Toast.makeText(requireContext(), "Recording and saving audio permissions have been denied. These both must be granted to record audio.", Toast.LENGTH_LONG)
-                        .show()
-                }
-            }
-        }
-    }
-
-    private fun checkPermissions(): Boolean {
-        val result = ContextCompat.checkSelfPermission(
-            requireContext(),
-            WRITE_EXTERNAL_STORAGE
-        )
-        val result1 = ContextCompat.checkSelfPermission(requireContext(), RECORD_AUDIO)
-        return result == PackageManager.PERMISSION_GRANTED && result1 == PackageManager.PERMISSION_GRANTED
-    }
-
-    private fun requestPermission() {
-        requestPermissions(
-            arrayOf(RECORD_AUDIO, WRITE_EXTERNAL_STORAGE),
-            REQUEST_AUDIO_PERMISSION_CODE
-        )
-    }
-
-    private fun showSaveCombinationDialog() {
-        SaveCommandDialog(
-            viewModel.audioFileCompleteDirectory,
-            false,
-            Command("", 0, viewModel.audioFileName),
-            { combination ->
-                viewModel.upsertCommand(combination)
-            }, {
-                val file = File(viewModel.audioFileCompleteDirectory)
-                file.delete()
-            }).show(childFragmentManager, "")
-    }
-
-    private fun handleRecordAudioAnimations(recording: Boolean) {
-        if (recording) {
-            record_audio_button.playAnimation()
-        } else {
-            record_audio_button.cancelAnimation()
-            record_audio_button.progress = 0.08f
-        }
-    }
-
-    override fun onPause() {
-        super.onPause()
-        stopRecording()
+        })
     }
 }

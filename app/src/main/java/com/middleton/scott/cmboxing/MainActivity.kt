@@ -1,6 +1,5 @@
 package com.middleton.scott.cmboxing
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
@@ -22,6 +21,7 @@ import com.middleton.scott.cmboxing.utils.DialogManager
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
+
 class MainActivity : AppCompatActivity() {
     var menu: Menu? = null
     private lateinit var navController: NavController
@@ -40,6 +40,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setupNavigationMenu()
         navigateToWorkoutScreenIfNeeded(intent)
+
     }
 
     private fun setupNavigationMenu() {
@@ -47,6 +48,7 @@ class MainActivity : AppCompatActivity() {
             R.id.myWorkoutsScreen,
             R.id.commandsScreen,
             R.id.packsScreen,
+            R.id.splashScreen
         )
 
         val menuDestinations = mutableSetOf<Int>()
@@ -70,16 +72,65 @@ class MainActivity : AppCompatActivity() {
         navController.addOnDestinationChangedListener { _, destination, _ ->
             setupMenuVisibility(topLevelMenuDestinations.contains(destination.id))
 
-            if (destination.id == R.id.randomWorkoutScreen || destination.id == R.id.structuredWorkoutScreen) {
-                menu?.setGroupVisible(R.id.workout_menu, true)
-            } else {
-                menu?.setGroupVisible(R.id.workout_menu, false)
-            }
-
-            if (destination.id == R.id.splashScreen || destination.id == R.id.loginScreen || destination.id == R.id.createAccountScreen || destination.id == R.id.createWorkoutScreen) {
-                supportActionBar?.hide()
-            } else {
-                supportActionBar?.show()
+            when(destination.id){
+                R.id.randomWorkoutScreen -> {
+                    menu?.setGroupVisible(R.id.workout_menu, true)
+                    supportActionBar?.setDisplayShowCustomEnabled(false)
+                    supportActionBar?.setDisplayShowTitleEnabled(true)
+                }
+                R.id.structuredWorkoutScreen -> {
+                    menu?.setGroupVisible(R.id.workout_menu, true)
+                    supportActionBar?.setDisplayShowCustomEnabled(false)
+                    supportActionBar?.setDisplayShowTitleEnabled(true)
+                }
+                R.id.splashScreen -> {
+                    supportActionBar?.hide()
+                    menu?.setGroupVisible(R.id.workout_menu, false)
+                    supportActionBar?.setDisplayShowCustomEnabled(false)
+                    supportActionBar?.setDisplayShowTitleEnabled(true)
+                }
+                R.id.loginScreen -> {
+                    menu?.setGroupVisible(R.id.workout_menu, false)
+                    supportActionBar?.setDisplayShowCustomEnabled(false)
+                    supportActionBar?.setDisplayShowTitleEnabled(true)
+                }
+                R.id.createAccountScreen -> {
+                    supportActionBar?.hide()
+                    menu?.setGroupVisible(R.id.workout_menu, false)
+                    supportActionBar?.setDisplayShowCustomEnabled(false)
+                    supportActionBar?.setDisplayShowTitleEnabled(true)
+                }
+                R.id.recordCommandFragment -> {
+                    menu?.setGroupVisible(R.id.workout_menu, false)
+                    supportActionBar?.setDisplayHomeAsUpEnabled(false)
+                    supportActionBar?.setDisplayShowCustomEnabled(true)
+                    supportActionBar?.setDisplayShowTitleEnabled(false)
+                    val view: View = layoutInflater.inflate(R.layout.appbar_record_command, null)
+                    supportActionBar?.customView = view
+                    val parent: androidx.appcompat.widget.Toolbar = view.parent as androidx.appcompat.widget.Toolbar
+                    parent.setContentInsetsAbsolute(0, 0)
+                }
+                R.id.createWorkoutScreen -> {
+                    menu?.setGroupVisible(R.id.workout_menu, false)
+                    supportActionBar?.setDisplayHomeAsUpEnabled(false)
+                    supportActionBar?.setDisplayShowCustomEnabled(true)
+                    supportActionBar?.setDisplayShowTitleEnabled(false)
+                    val view: View = layoutInflater.inflate(R.layout.appbar_create_workout, null)
+                    supportActionBar?.customView = view
+                    val parent: androidx.appcompat.widget.Toolbar = view.parent as androidx.appcompat.widget.Toolbar
+                    parent.setContentInsetsAbsolute(0, 0)
+                }
+                R.id.myWorkoutsScreen -> {
+                    menu?.setGroupVisible(R.id.workout_menu, false)
+                    supportActionBar?.setDisplayShowCustomEnabled(false)
+                    supportActionBar?.setDisplayShowTitleEnabled(true)
+                    supportActionBar?.show()
+                }
+                R.id.commandsScreen -> {
+                    menu?.setGroupVisible(R.id.workout_menu, false)
+                    supportActionBar?.setDisplayShowCustomEnabled(false)
+                    supportActionBar?.setDisplayShowTitleEnabled(true)
+                }
             }
         }
 
