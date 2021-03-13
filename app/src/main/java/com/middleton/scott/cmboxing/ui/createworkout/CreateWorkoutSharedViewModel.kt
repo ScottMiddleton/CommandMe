@@ -60,19 +60,17 @@ class CreateWorkoutSharedViewModel(
             viewModelScope.launch {
                 // Insert a new workout
                 val newWorkoutId = dataRepository.getLocalDataSource().upsertWorkout(workout)
+                workout.id = newWorkoutId
 
                 dataRepository.getLocalDataSource().getWorkoutById(newWorkoutId)
                     ?.let { savedWorkout = it }
 
                 workoutLD =
-                    dataRepository.getLocalDataSource().getWorkoutByIdFlow(newWorkoutId).map {
-                        it?.let {
-                            workout = it
-                            workoutTypeLD.value = it.workout_type
-                            numberOfRoundsLD.value = it.numberOfRounds
-                        }
-                        it
-                    }.asLiveData()
+                    dataRepository.getLocalDataSource().getWorkoutByIdFlow(newWorkoutId)
+                        .asLiveData()
+
+                workoutTypeLD.value = WorkoutType.STRUCTURED
+                numberOfRoundsLD.value = 5
 
                 selectedCommandCrossRefsFlow = dataRepository.getLocalDataSource()
                     .getSelectedCommandCrossRefsFlow(newWorkoutId)
@@ -357,7 +355,7 @@ class CreateWorkoutSharedViewModel(
             round++
         }
 
-        if(workoutTypeLD.value == WorkoutType.RANDOM){
+        if (workoutTypeLD.value == WorkoutType.RANDOM) {
             valid = true
         }
 
