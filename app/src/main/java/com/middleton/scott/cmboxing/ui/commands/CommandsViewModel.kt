@@ -35,7 +35,7 @@ open class CommandsViewModel(private val dataRepository: DataRepository) : ViewM
     }
 
     fun getAllCommandsLD(): LiveData<List<Command>> {
-        return dataRepository.getLocalDataSource().getCommands().map {
+        return dataRepository.getLocalDataSource().getCommandsFlow().map {
             allCommands = it
             it
         }.asLiveData()

@@ -36,11 +36,13 @@ class LocalDataSource(
         return database.workoutDao().getWorkoutWithCombinations(workoutId)
     }
 
-    suspend fun deleteWorkout(workout: Workout) {
+    suspend fun deleteWorkoutAndCrossRefs(workout: Workout) {
         database.workoutDao().delete(workout)
+        database.structuredCommandCrossRefDao().deleteByWorkoutId(workout.id)
+        database.selectedCommandCrossRefDao().deleteByWorkoutId(workout.id)
     }
 
-    fun getCommands(): Flow<List<Command>> {
+    fun getCommandsFlow(): Flow<List<Command>> {
         return database.commandDao().getCommands()
     }
 

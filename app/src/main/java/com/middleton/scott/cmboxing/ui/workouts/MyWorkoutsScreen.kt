@@ -10,27 +10,23 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import android.widget.Toast
-import android.widget.Toast.LENGTH_LONG
 import androidx.core.content.ContextCompat
 import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.Observer
-import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.middleton.scott.cmboxing.R
 import com.middleton.scott.cmboxing.ui.base.BaseFragment
-import com.middleton.scott.cmboxing.ui.createworkout.CreateWorkoutType
 import com.middleton.scott.cmboxing.ui.createworkout.WorkoutType
-import com.middleton.scott.cmboxing.ui.createworkout.WorkoutTypeDialog
 import com.middleton.scott.cmboxing.utils.DialogManager
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import kotlinx.android.synthetic.main.fragment_my_workouts.*
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MyWorkoutsScreen : BaseFragment() {
-    private val viewModel: WorkoutsViewModel by inject()
+    private val viewModel: WorkoutsViewModel by viewModel()
     private lateinit var adapter: WorkoutsAdapter
     var undoSnackbarVisible = false
     var workoutsEmpty = true
@@ -49,6 +45,8 @@ class MyWorkoutsScreen : BaseFragment() {
             )
         },
             { workoutWithCombinations, workoutType ->
+                viewModel.previouslyClickedWorkout = workoutWithCombinations.workout!!
+
                 if (workoutWithCombinations.commands.isEmpty()) {
                     DialogManager.showDialog(
                         context = requireContext(),
@@ -71,32 +69,7 @@ class MyWorkoutsScreen : BaseFragment() {
                         }
                     )
                 } else {
-                    when (workoutType) {
-                        WorkoutType.STRUCTURED -> {
-                            val action = workoutWithCombinations.workout?.id?.let {
-                                MyWorkoutsScreenDirections.actionMyWorkoutsScreenToStructuredWorkoutScreen(
-                                    it
-                                )
-                            }
-                            if (action != null) {
-                                findNavController().navigate(
-                                    action
-                                )
-                            }
-                        }
-                        WorkoutType.RANDOM -> {
-                            val action = workoutWithCombinations.workout?.id?.let {
-                                MyWorkoutsScreenDirections.actionMyWorkoutsScreenToRandomWorkoutScreen(
-                                    it
-                                )
-                            }
-                            if (action != null) {
-                                findNavController().navigate(
-                                    action
-                                )
-                            }
-                        }
-                    }
+                    viewModel.validateWorkout(workoutWithCombinations.workout)
                 }
             })
     }
@@ -111,6 +84,50 @@ class MyWorkoutsScreen : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        viewModel.workoutValidatedLD.observe(viewLifecycleOwner, Observer {
+            if (it == WORKOUT_VALID_TRUE) {
+                when (viewModel.previouslyClickedWorkout.workout_type) {
+                    WorkoutType.STRUCTURED -> {
+                        val action =
+                            MyWorkoutsScreenDirections.actionMyWorkoutsScreenToStructuredWorkoutScreen(
+                                viewModel.previouslyClickedWorkout.id
+                            )
+
+                        findNavController().navigate(
+                            action
+                        )
+                    }
+                    WorkoutType.RANDOM -> {
+                        val action =
+                            MyWorkoutsScreenDirections.actionMyWorkoutsScreenToRandomWorkoutScreen(
+                                viewModel.previouslyClickedWorkout.id
+                            )
+
+                        findNavController().navigate(
+                            action
+                        )
+                    }
+                }
+            } else if (it == WORKOUT_VALID_FALSE) {
+                DialogManager.showDialog(
+                    context = requireContext(),
+                    messageId = R.string.empty_rounds_on_begin_workout_dialog_message,
+                    positiveBtnTextId = R.string.exit,
+                    positiveBtnClick = {},
+                    negativeBtnTextId = R.string.ok,
+                    negativeBtnClick = {
+                        val action = MyWorkoutsScreenDirections.actionMyWorkoutsScreenToCreateWorkoutScreen(
+                            viewModel.previouslyClickedWorkout.id, false
+                            )
+
+                        findNavController().navigate(
+                            action
+                        )
+                    }
+                )
+            }
+        })
 
         handleFab()
 
@@ -211,7 +228,7 @@ class MyWorkoutsScreen : BaseFragment() {
     }
 
     private fun subscribeUI() {
-        viewModel.getWorkoutsWithCombinationsLD().observe(viewLifecycleOwner, Observer {
+        viewModel.getWorkoutsWithCommandsLD().observe(viewLifecycleOwner, Observer {
             if (it.isNullOrEmpty()) {
                 workoutsEmpty = true
                 if (!undoSnackbarVisible) {
@@ -276,5 +293,10 @@ class MyWorkoutsScreen : BaseFragment() {
             }
 
         })
+    }
+
+    override fun onPause() {
+        super.onPause()
+        viewModel.workoutValidatedLD.value = WORKOUT_NOT_YET_VALIDATED
     }
 }

@@ -146,8 +146,8 @@ class WorkoutService : LifecycleService() {
                 mediaPlayer.stop()
                 soundPool.play(
                     workEndAudioId,
-                    0.8f,
-                    0.8f,
+                    0.2f,
+                    0.2f,
                     0,
                     0,
                     1.0f
@@ -159,8 +159,8 @@ class WorkoutService : LifecycleService() {
             if (it) {
                 soundPool.play(
                     workStartAudioId,
-                    0.8f,
-                    0.8f,
+                    0.2f,
+                    0.2f,
                     0,
                     0,
                     1.0f
@@ -197,7 +197,11 @@ class WorkoutService : LifecycleService() {
         serviceKilled = true
         isFirstRun = true
         postInitialValues()
-        soundPool.release()
+        try {
+            soundPool.release()
+        } catch (e: UninitializedPropertyAccessException) {
+            e.printStackTrace()
+        }
         stopForeground(true)
         stopSelf()
     }
