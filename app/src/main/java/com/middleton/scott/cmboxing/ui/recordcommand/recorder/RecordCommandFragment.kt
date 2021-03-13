@@ -53,7 +53,8 @@ class RecordCommandFragment : Fragment() {
         val callback: OnBackPressedCallback =
             object : OnBackPressedCallback(true /* enabled by default */) {
                 override fun handleOnBackPressed() {
-                    deleteRecording()
+                    // If it is a new command and back is press delete the recording
+                    viewModel.deleteRecordings(false)
                     findNavController().navigateUp()
                 }
             }
@@ -196,17 +197,18 @@ class RecordCommandFragment : Fragment() {
 
     private fun setClickListeners() {
         save_btn_include.save_btn.setOnClickListener {
+            viewModel.deleteRecordings(true)
             viewModel.upsertCommand()
         }
 
         delete_recording_btn.setOnClickListener {
-            deleteRecording()
+            viewModel.recordFileNamesToBeDeleted.add(viewModel.recordFileName)
             initAudioRecorder()
             viewModel.validate()
         }
 
         activity?.close_btn?.setOnClickListener {
-            deleteRecording()
+            viewModel.deleteRecordings(false)
             findNavController().navigateUp()
         }
 
@@ -378,9 +380,6 @@ class RecordCommandFragment : Fragment() {
         player_visualizer.updateTime(time, isPlaying)
     }
 
-    private fun deleteRecording() {
-        getRecordFileByFileName(viewModel.recordFileName).delete()
-    }
 
     override fun onPause() {
         super.onPause()
