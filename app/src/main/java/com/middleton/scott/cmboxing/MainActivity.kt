@@ -101,16 +101,6 @@ class MainActivity : AppCompatActivity() {
                     supportActionBar?.setDisplayShowCustomEnabled(false)
                     supportActionBar?.setDisplayShowTitleEnabled(true)
                 }
-                R.id.recordCommandFragment -> {
-                    menu?.setGroupVisible(R.id.workout_menu, false)
-                    supportActionBar?.setDisplayHomeAsUpEnabled(false)
-                    supportActionBar?.setDisplayShowCustomEnabled(true)
-                    supportActionBar?.setDisplayShowTitleEnabled(false)
-                    val view: View = layoutInflater.inflate(R.layout.appbar_record_command, null)
-                    supportActionBar?.customView = view
-                    val parent: androidx.appcompat.widget.Toolbar = view.parent as androidx.appcompat.widget.Toolbar
-                    parent.setContentInsetsAbsolute(0, 0)
-                }
                 R.id.createWorkoutScreen -> {
                     menu?.setGroupVisible(R.id.workout_menu, false)
                     supportActionBar?.setDisplayHomeAsUpEnabled(false)

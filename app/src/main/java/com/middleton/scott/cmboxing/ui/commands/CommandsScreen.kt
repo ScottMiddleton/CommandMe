@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.middleton.scott.cmboxing.R
 import com.middleton.scott.cmboxing.ui.base.BaseFragment
+import com.middleton.scott.cmboxing.ui.recordcommand.recorder.RecordCommandFragment
 import com.middleton.scott.cmboxing.utils.getBaseFilePath
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import kotlinx.android.synthetic.main.fragment_commands.*
@@ -37,8 +38,7 @@ class CommandsScreen : BaseFragment() {
         super.onCreate(savedInstanceState)
         adapter = CommandsAdapter(
             onEditCommand = {
-               val action = CommandsScreenDirections.actionCommandsScreenToRecordCommandFragment(it)
-                findNavController().navigate(action)
+                RecordCommandFragment(it).show(childFragmentManager, "")
             })
     }
 
@@ -166,8 +166,7 @@ class CommandsScreen : BaseFragment() {
 
     private fun setClickListeners() {
         add_command_btn.setOnClickListener {
-            val action = CommandsScreenDirections.actionCommandsScreenToRecordCommandFragment()
-            findNavController().navigate(action)
+            RecordCommandFragment(-1L).show(childFragmentManager, "")
         }
 
         undo_btn.setOnClickListener {

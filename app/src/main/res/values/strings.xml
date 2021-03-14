@@ -145,4 +145,5 @@
     <string name="permissions_required">Permissions Required</string>
     <string name="default_time_allocated">Default time allocated</string>
     <string name="empty_rounds">Empty rounds</string>
+    <string name="get_in_touch">Get in touch</string>
 </resources>

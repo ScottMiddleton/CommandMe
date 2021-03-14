@@ -2,6 +2,7 @@ package com.middleton.scott.cmboxing.ui.recordcommand.recorder
 
 import android.Manifest.permission.RECORD_AUDIO
 import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+import android.app.Dialog
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -9,17 +10,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.*
 import android.view.ViewGroup
+import android.view.Window
 import android.view.inputmethod.InputMethodManager
+import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat.checkSelfPermission
 import androidx.core.widget.doAfterTextChanged
-import androidx.fragment.app.Fragment
+import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
+import com.middleton.scott.cmboxing.MainActivity
 import com.middleton.scott.cmboxing.R
 import com.middleton.scott.cmboxing.ui.createworkout.NumberPickerMinutesSecondsDialog
 import com.middleton.scott.cmboxing.utils.*
@@ -32,19 +34,38 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import kotlin.math.sqrt
 
+
 const val REQUEST_ID_MULTIPLE_PERMISSIONS = 1
 
-class RecordCommandFragment : Fragment() {
-    private val args: RecordCommandFragmentArgs by navArgs()
+class RecordCommandFragment(commandId: Long) : DialogFragment() {
     private val viewModel: RecordCommandViewModel by viewModel {
         parametersOf(
-            args.commandId
+            commandId
         )
     }
+
     private lateinit var recorder: Recorder
     private lateinit var player: AudioPlayer
     private var recordingEnabled = false
     private lateinit var mContext: Context
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val root = RelativeLayout(activity)
+        root.layoutParams = ViewGroup.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.MATCH_PARENT
+        )
+
+        // creating the fullscreen dialog
+        val dialog = Dialog(MainActivity.instance)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(root)
+        dialog.window!!.setLayout(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.MATCH_PARENT
+        )
+        return dialog
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,7 +76,7 @@ class RecordCommandFragment : Fragment() {
                 override fun handleOnBackPressed() {
                     // If it is a new command and back is press delete the recording
                     viewModel.deleteRecordings(false)
-                    findNavController().navigateUp()
+                    dismiss()
                 }
             }
 
@@ -85,7 +106,7 @@ class RecordCommandFragment : Fragment() {
 
         viewModel.saveCompleteLD.observe(viewLifecycleOwner, Observer {
             if (it) {
-                findNavController().navigateUp()
+                dismiss()
             }
         })
 
@@ -207,9 +228,9 @@ class RecordCommandFragment : Fragment() {
             viewModel.validate()
         }
 
-        activity?.close_btn?.setOnClickListener {
+        close_btn?.setOnClickListener {
             viewModel.deleteRecordings(false)
-            findNavController().navigateUp()
+            dismiss()
         }
 
         time_to_complete_et.setOnClickListener {
@@ -223,7 +244,7 @@ class RecordCommandFragment : Fragment() {
             }
 
             NumberPickerMinutesSecondsDialog(
-                getString(R.string.time_to_complete),
+                getString(R.string.default_time_allocated),
                 secs,
                 { newSecs ->
                     viewModel.timeToCompleteSecs = newSecs
@@ -379,7 +400,6 @@ class RecordCommandFragment : Fragment() {
         timeline_tv.text = time.formatAsTime()
         player_visualizer.updateTime(time, isPlaying)
     }
-
 
     override fun onPause() {
         super.onPause()

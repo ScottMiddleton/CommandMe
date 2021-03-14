@@ -10,22 +10,14 @@ import android.widget.Button
 import android.widget.LinearLayout
 import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.middleton.scott.cmboxing.R
 import com.middleton.scott.cmboxing.ui.base.BaseFragment
 import com.middleton.scott.cmboxing.ui.commands.CommandsAdapter
-import com.middleton.scott.cmboxing.ui.commands.CommandsScreenDirections
+import com.middleton.scott.cmboxing.ui.recordcommand.recorder.RecordCommandFragment
 import com.middleton.scott.cmboxing.utils.DialogManager
 import kotlinx.android.synthetic.main.fragment_commands.*
-import kotlinx.android.synthetic.main.fragment_commands.empty_list_layout
-import kotlinx.android.synthetic.main.fragment_commands.fab_tv
-import kotlinx.android.synthetic.main.fragment_commands.nested_scroll_view
-import kotlinx.android.synthetic.main.fragment_commands.undo_btn
-import kotlinx.android.synthetic.main.fragment_commands.undo_tv
-import kotlinx.android.synthetic.main.fragment_my_workouts.*
 import org.koin.androidx.viewmodel.ext.android.getViewModel
-import java.io.File
 
 class TabFragmentTwo : BaseFragment() {
     private val viewModel by lazy { requireParentFragment().getViewModel<CreateWorkoutSharedViewModel>() }
@@ -49,8 +41,7 @@ class TabFragmentTwo : BaseFragment() {
             }
             viewModel.validateTabTwo()
         }, onEditCommand = {
-            val action = CreateWorkoutScreenDirections.actionCreateWorkoutScreenToRecordCommandFragment(it)
-            findNavController().navigate(action)
+            RecordCommandFragment(it).show(childFragmentManager, "")
         })
     }
 
@@ -128,9 +119,7 @@ class TabFragmentTwo : BaseFragment() {
         }
 
         add_command_btn.setOnClickListener {
-            val action =
-                CreateWorkoutScreenDirections.actionCreateWorkoutScreenToRecordCommandFragment()
-            findNavController().navigate(action)
+            RecordCommandFragment(-1L).show(childFragmentManager, "")
         }
     }
 
