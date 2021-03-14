@@ -62,13 +62,13 @@ class StructuredWorkoutScreen : BaseFragment() {
             repeat(viewModel.currentRoundLD.value!!) { index ->
                 val seekbar = round_progress_ll.getChildAt(index) as SeekBar?
                 seekbar?.thumb?.mutate()?.alpha = 255
-                seekbar?.progress = viewModel.getCountdownProgressBarMax(WorkoutState.WORK)
+                seekbar?.progress = viewModel.getLengthOfRoundSecs(index + 1)
             }
         } else if (viewModel.workoutStateLD.value == WorkoutState.WORK) {
             repeat(viewModel.currentRoundLD.value!!) { index ->
                 val seekbar = round_progress_ll.getChildAt(index - 1) as SeekBar?
                 seekbar?.thumb?.mutate()?.alpha = 255
-                seekbar?.progress = viewModel.getCountdownProgressBarMax(WorkoutState.WORK)
+                seekbar?.progress = viewModel.getLengthOfRoundSecs(index + 1)
             }
         }
     }
