@@ -107,7 +107,7 @@ class TabFragmentTwo : BaseFragment() {
                     DialogManager.showDialog(
                         context = requireContext(),
                         messageId = R.string.add_commands_dialog_message,
-                        negativeBtnTextId = R.string.add_command,
+                        negativeBtnTextId = R.string.ok,
                         negativeBtnClick = {})
                     viewModel.userHasAttemptedToProceedTwo = false
                 }
@@ -141,7 +141,7 @@ class TabFragmentTwo : BaseFragment() {
         ).apply {
             gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
         }
-        params.setMargins(80, 80, 80, 80)
+        params.setMargins(60, 60, 60, 60)
         add_command_btn.layoutParams = params
 
         nested_scroll_view.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
@@ -154,8 +154,8 @@ class TabFragmentTwo : BaseFragment() {
                     ).apply {
                         gravity = Gravity.BOTTOM or Gravity.END
                     }
-                    params.setMargins(80, 80, 80, 80)
-                    add_workouts_btn.layoutParams = params1
+                    params1.setMargins(60, 60, 60, 60)
+                    add_command_btn.layoutParams = params1
                 }
                 scrollX == scrollY -> {
                     fab_tv.visibility = View.VISIBLE
@@ -165,8 +165,8 @@ class TabFragmentTwo : BaseFragment() {
                     ).apply {
                         gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
                     }
-                    params.setMargins(80, 80, 80, 80)
-                    add_workouts_btn.layoutParams = params2
+                    params2.setMargins(60, 60, 60, 60)
+                    add_command_btn.layoutParams = params2
 
                 }
                 else -> {
@@ -177,11 +177,10 @@ class TabFragmentTwo : BaseFragment() {
                     ).apply {
                         gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
                     }
-                    params.setMargins(80, 80, 80, 80)
-                    add_workouts_btn.layoutParams = params3
+                    params3.setMargins(60, 60, 60, 60)
+                    add_command_btn.layoutParams = params3
                 }
             }
-
         })
     }
 }

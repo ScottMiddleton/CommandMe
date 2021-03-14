@@ -6,15 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/punch_bag_iv"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="centerCrop"
-        android:src="@drawable/ic_punch_bag"
-        app:layout_constraintTop_toTopOf="parent"
-        app:tint="@color/black_faded_30" />
-
     <LinearLayout
         android:id="@+id/empty_list_layout"
         android:layout_width="match_parent"
