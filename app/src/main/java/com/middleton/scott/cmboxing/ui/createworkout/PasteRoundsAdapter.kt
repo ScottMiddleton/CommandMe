@@ -37,10 +37,14 @@ class PasteRoundsAdapter(
         holder.nameTV.text = context.getString(R.string.round_number, (rounds[position]).toString())
 
         holder.checkBox.setOnCheckedChangeListener { _, isChecked ->
-            if(isChecked){
-                selectedRounds.add(rounds[position])
+            if (isChecked) {
+                if (!selectedRounds.contains(rounds[position])) {
+                    selectedRounds.add(rounds[position])
+                }
             } else {
-                selectedRounds.remove(rounds[position])
+                if (selectedRounds.contains(rounds[position])) {
+                    selectedRounds.remove(rounds[position])
+                }
             }
             onSelectedRoundsChanged(selectedRounds)
         }
@@ -61,9 +65,14 @@ class PasteRoundsAdapter(
         return position
     }
 
-    fun selectAllChecked(isChecked: Boolean){
+    fun selectAllChecked(isChecked: Boolean) {
         isSelectAll = isChecked
+        selectedRounds.clear()
+        if(isChecked){
+            rounds.forEach {
+                selectedRounds.add(it)
+            }
+        }
         notifyDataSetChanged()
     }
-
 }
