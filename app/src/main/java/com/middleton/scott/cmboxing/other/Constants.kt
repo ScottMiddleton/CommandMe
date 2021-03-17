@@ -17,4 +17,6 @@ object Constants {
     const val MIN_PASSWORD_LENGTH = 7
 
     const val GOOGLE_SIGN_IN = 111
+
+    const val PRODUCT_UNLIMITED_COMMANDS = "unlimited_commands_pro"
 }

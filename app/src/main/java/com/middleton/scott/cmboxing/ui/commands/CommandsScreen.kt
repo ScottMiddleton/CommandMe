@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Canvas
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -13,10 +14,12 @@ import android.view.animation.AnimationUtils
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.core.widget.NestedScrollView
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.android.billingclient.api.*
 import com.middleton.scott.cmboxing.R
+import com.middleton.scott.cmboxing.billing.PurchasePremiumDialog
+import com.middleton.scott.cmboxing.other.Constants.PRODUCT_UNLIMITED_COMMANDS
 import com.middleton.scott.cmboxing.ui.base.BaseFragment
 import com.middleton.scott.cmboxing.ui.recordcommand.recorder.RecordCommandFragment
 import com.middleton.scott.cmboxing.utils.getBaseFilePath
@@ -29,6 +32,8 @@ class CommandsScreen : BaseFragment() {
     var combinationsEmpty = true
     var undoSnackbarVisible = false
     private lateinit var mContext: Context
+
+    private var billingClient: BillingClient? = null
 
     private val handler = Handler()
 
@@ -53,6 +58,7 @@ class CommandsScreen : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setUpBillingClient()
         mContext = view.context
         handleFab()
         next_btn_include.visibility = GONE
@@ -225,5 +231,95 @@ class CommandsScreen : BaseFragment() {
             }
 
         })
+    }
+
+    private fun setUpBillingClient() {
+        billingClient = BillingClient.newBuilder(requireActivity())
+            .setListener(purchaseUpdateListener)
+            .enablePendingPurchases()
+            .build()
+        startConnection()
+    }
+
+    private val purchaseUpdateListener =
+        PurchasesUpdatedListener { billingResult, purchases ->
+            Log.v("TAG_INAPP", "billingResult responseCode : ${billingResult.responseCode}")
+
+            if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
+                for (purchase in purchases) {
+                    handleNonConsumablePurchase(purchase)
+                }
+            } else if (billingResult.responseCode == BillingClient.BillingResponseCode.USER_CANCELED) {
+                // Handle an error caused by a user cancelling the purchase flow.
+            } else {
+                // Handle any other error codes.
+            }
+        }
+
+    private fun startConnection() {
+        billingClient?.startConnection(object : BillingClientStateListener {
+            override fun onBillingSetupFinished(billingResult: BillingResult) {
+                if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+                    Log.v("TAG_INAPP", "Setup Billing Done")
+                    // The BillingClient is ready. You can query purchases here.
+                    queryAvailableProducts()
+                }
+            }
+
+            override fun onBillingServiceDisconnected() {
+                Log.v("TAG_INAPP", "Billing client Disconnected")
+                // Try to restart the connection on the next request to
+                // Google Play by calling the startConnection() method.
+            }
+        })
+    }
+
+    private fun queryAvailableProducts() {
+        val skuList = ArrayList<String>()
+        skuList.add(PRODUCT_UNLIMITED_COMMANDS)
+        val params = SkuDetailsParams.newBuilder()
+        params.setSkusList(skuList).setType(BillingClient.SkuType.INAPP)
+
+        billingClient?.querySkuDetailsAsync(params.build()) { billingResult, skuDetailsList ->
+            // Process the result.
+            if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && !skuDetailsList.isNullOrEmpty()) {
+                for (skuDetails in skuDetailsList) {
+                    Log.v("TAG_INAPP", "skuDetailsList : $skuDetailsList")
+                    //This list should contain the products added above
+                    PurchasePremiumDialog(skuDetails.title, skuDetails.description) {
+                        skuDetails?.let {
+                            val billingFlowParams = BillingFlowParams.newBuilder()
+                                .setSkuDetails(it)
+                                .build()
+                            billingClient?.launchBillingFlow(
+                                requireActivity(),
+                                billingFlowParams
+                            )?.responseCode
+                        } ?: "noSKUMessage()"
+                    }.show(
+                        childFragmentManager,
+                        ""
+                    )
+                }
+            }
+        }
+    }
+
+    private fun handleNonConsumablePurchase(purchase: Purchase) {
+        Log.v("TAG_INAPP", "handlePurchase : $purchase")
+        if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
+            if (!purchase.isAcknowledged) {
+                val acknowledgePurchaseParams = AcknowledgePurchaseParams.newBuilder()
+                    .setPurchaseToken(purchase.purchaseToken).build()
+                billingClient?.acknowledgePurchase(acknowledgePurchaseParams) { billingResult ->
+                    val billingResponseCode = billingResult.responseCode
+                    val billingDebugMessage = billingResult.debugMessage
+
+                    Log.v("TAG_INAPP", "response code: $billingResponseCode")
+                    Log.v("TAG_INAPP", "debugMessage : $billingDebugMessage")
+
+                }
+            }
+        }
     }
 }
