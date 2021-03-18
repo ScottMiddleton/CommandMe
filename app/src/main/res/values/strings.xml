@@ -12,7 +12,7 @@
     <string name="workout_information">Workout Information</string>
     <string name="workout_name">Workout Name</string>
     <string name="preparation_time">Preparation Time</string>
-    <string name="work_time">Work Time</string>
+    <string name="round_length">Round Length</string>
     <string name="intensity">Intensity</string>
     <string name="rest_between_rounds">Rest Between Rounds</string>
     <string name="rounds">Rounds</string>

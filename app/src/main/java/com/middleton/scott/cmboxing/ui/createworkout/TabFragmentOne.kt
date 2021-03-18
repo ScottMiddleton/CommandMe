@@ -8,15 +8,12 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.Button
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.Observer
-import androidx.viewpager2.widget.ViewPager2
 import com.middleton.scott.cmboxing.R
 import com.middleton.scott.cmboxing.ui.base.BaseFragment
 import com.middleton.scott.cmboxing.utils.DateTimeUtils
-import kotlinx.android.synthetic.main.fragment_create_workout_screen.*
 import kotlinx.android.synthetic.main.fragment_tab_one.*
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
@@ -128,7 +125,7 @@ class TabFragmentOne : BaseFragment() {
 
         work_time_et.setOnClickListener {
             NumberPickerMinutesSecondsDialog(
-                getString(R.string.work_time),
+                getString(R.string.round_length),
                 viewModel.workout.work_time_secs,
                 { seconds ->
                     viewModel.setWorkTime(seconds)
