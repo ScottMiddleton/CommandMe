@@ -12,30 +12,51 @@
     android:background="@drawable/list_item_background"
     app:layout_constraintTop_toTopOf="parent">
 
-    <ImageButton
+    <TextView
         android:id="@+id/copy_btn"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:background="@drawable/edit_btn_background"
         android:padding="12dp"
-        android:src="@drawable/ic_copy"
-        android:text="@string/edit"
+        android:text="@string/copy"
+        android:textAlignment="gravity"
+        android:gravity="center"
         android:textAllCaps="false"
-        android:textSize="12sp"
+        android:textSize="13sp"
         app:layout_constraintBottom_toBottomOf="@+id/expand_collapse_button"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <View
+        android:id="@+id/view"
+        android:layout_width="1dp"
+        android:layout_height="0dp"
+        android:background="@color/white_faded_10"
+        android:elevation="5dp"
+        app:layout_constraintBottom_toBottomOf="@+id/copy_btn"
+        app:layout_constraintStart_toEndOf="@+id/copy_btn"
+        app:layout_constraintTop_toTopOf="@+id/copy_btn" />
+
+    <View
+        android:layout_width="1dp"
+        android:layout_height="0dp"
+        android:background="@color/white_faded_10"
+        android:elevation="5dp"
+        app:layout_constraintBottom_toBottomOf="@+id/expand_collapse_button"
+        app:layout_constraintEnd_toEndOf="@+id/round_tv"
+        app:layout_constraintTop_toTopOf="@+id/expand_collapse_button" />
+
     <TextView
         android:id="@+id/round_tv"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:ellipsize="end"
         android:fontFamily="@string/font_roboto_medium"
         android:maxLines="1"
         android:paddingStart="12dp"
         android:paddingEnd="6dp"
         android:textSize="18sp"
+        android:gravity="center_vertical"
         app:layout_constraintBottom_toTopOf="@+id/expandable_layout"
         app:layout_constraintEnd_toStartOf="@+id/expand_collapse_button"
         app:layout_constraintStart_toEndOf="@+id/copy_btn"
@@ -80,7 +101,7 @@
                 android:id="@+id/reorder_instruction_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
+                android:layout_marginTop="8dp"
                 android:text="@string/press_and_hold_to_reorder_commands"
                 android:textSize="14sp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -105,7 +126,7 @@
                 android:id="@+id/round_commands_rv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
+                android:layout_marginTop="8dp"
                 android:visibility="visible"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintBottom_toTopOf="@+id/divider2"

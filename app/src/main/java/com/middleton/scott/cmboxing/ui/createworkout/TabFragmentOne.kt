@@ -9,7 +9,6 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
-import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.Observer
@@ -17,6 +16,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.middleton.scott.cmboxing.R
 import com.middleton.scott.cmboxing.ui.base.BaseFragment
 import com.middleton.scott.cmboxing.utils.DateTimeUtils
+import kotlinx.android.synthetic.main.fragment_create_workout_screen.*
 import kotlinx.android.synthetic.main.fragment_tab_one.*
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
@@ -98,17 +98,6 @@ class TabFragmentOne : BaseFragment() {
         random_tv.setOnClickListener {
             handleWorkoutTypeUI(WorkoutType.RANDOM)
             viewModel.setWorkoutType(WorkoutType.RANDOM)
-        }
-
-        next_btn_include.findViewById<Button>(R.id.next_btn).setOnClickListener {
-            if (viewModel.tabOneValidatedLD.value == true) {
-                val viewPager =
-                    parentFragment?.view?.findViewById(R.id.create_boxing_workout_vp) as ViewPager2
-                viewPager.currentItem = 1
-            } else {
-                viewModel.userHasAttemptedToProceedOne = true
-                viewModel.validateTabOne()
-            }
         }
 
         workout_name_et.doAfterTextChanged {

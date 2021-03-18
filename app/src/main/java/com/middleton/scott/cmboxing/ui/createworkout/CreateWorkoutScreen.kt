@@ -10,7 +10,6 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.activity.OnBackPressedCallback
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -20,10 +19,10 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import com.google.firebase.crashlytics.internal.common.CommonUtils.hideKeyboard
 import com.middleton.scott.cmboxing.R
 import com.middleton.scott.cmboxing.ui.base.BaseFragment
 import com.middleton.scott.cmboxing.utils.DialogManager
+import com.middleton.scott.cmboxing.utils.hideKeyboard
 import kotlinx.android.synthetic.main.appbar_create_workout.*
 import kotlinx.android.synthetic.main.create_workout_tab_item_layout.view.*
 import kotlinx.android.synthetic.main.fragment_create_workout_screen.*
@@ -72,7 +71,7 @@ class CreateWorkoutScreen : BaseFragment() {
         mContext = view.context
 
         activity?.findViewById<ImageView>(R.id.close_btn)?.setOnClickListener {
-            hideKeyboard(view.context, view)
+            hideKeyboard()
             viewModel.onCancel()
         }
 
@@ -202,23 +201,61 @@ class CreateWorkoutScreen : BaseFragment() {
 
                 when (position) {
                     0 -> {
-                        instruction_tv.text = ""
-                        instruction_tv.visibility = GONE
+                        prev_btn.visibility = GONE
+                        next_btn.text = getString(R.string.next)
+                        next_btn.setOnClickListener {
+                            if (viewModel.tabOneValidatedLD.value == true) {
+                                val viewPager =
+                                    parentFragment?.view?.findViewById(R.id.create_boxing_workout_vp) as ViewPager2
+                                viewPager.currentItem = 1
+                            } else {
+                                viewModel.userHasAttemptedToProceedOne = true
+                                viewModel.validateTabOne()
+                            }
+                        }
                     }
                     1 -> {
-                        instruction_tv.text = getString(R.string.tab_two_instructions)
-                        instruction_tv.visibility = VISIBLE
+                        prev_btn.visibility = VISIBLE
+                        prev_btn.setOnClickListener {
+                            val viewPager =
+                                parentFragment?.view?.findViewById(R.id.create_boxing_workout_vp) as ViewPager2
+                            viewPager.currentItem = 0
+                        }
+
+                        next_btn.text = getString(R.string.next)
+                        next_btn.setOnClickListener {
+                            viewModel.userHasAttemptedToProceedTwo = true
+                            if (viewModel.tabTwoValidatedLD.value == true) {
+                                val viewPager =
+                                    parentFragment?.view?.findViewById(R.id.create_boxing_workout_vp) as ViewPager2
+                                viewPager.currentItem = 2
+                            } else {
+                                viewModel.validateTabTwo()
+                            }
+                        }
                     }
                     2 -> {
-                        instruction_tv.visibility = VISIBLE
-                        when (viewModel.workout.workout_type) {
-                            WorkoutType.STRUCTURED -> {
-                                instruction_tv.text =
-                                    getString(R.string.tab_three_structured_instructions)
-                            }
-                            WorkoutType.RANDOM -> {
-                                instruction_tv.text =
-                                    getString(R.string.tab_three_random_instructions)
+                        prev_btn.visibility = VISIBLE
+                        prev_btn.setOnClickListener {
+                            val viewPager =
+                                parentFragment?.view?.findViewById(R.id.create_boxing_workout_vp) as ViewPager2
+                            viewPager.currentItem = 1
+                        }
+
+                        next_btn.text = getString(R.string.save)
+                        next_btn.setOnClickListener {
+                            hideKeyboard()
+
+                            if (!viewModel.validateRoundsNotEmpty()) {
+                                DialogManager.showDialog(
+                                    context = requireContext(),
+                                    titleId = R.string.empty_rounds,
+                                    messageId = R.string.empty_rounds_dialog_message,
+                                    negativeBtnTextId = R.string.ok,
+                                    negativeBtnClick = {}
+                                )
+                            } else {
+                                viewModel.upsertWorkout()
                             }
                         }
                     }

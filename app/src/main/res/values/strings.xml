@@ -123,7 +123,7 @@
     <string name="check_the_rounds_you_would_like_to_paste">Check the rounds you would like to paste</string>
     <string name="select_all">Select All</string>
     <string name="paste">Paste</string>
-    <string name="total">Total:</string>
+    <string name="total">Total Length:</string>
     <string name="rest">Rest:</string>
     <string name="between_rounds">Between Rounds:</string>
     <string name="command">Command</string>
@@ -146,4 +146,6 @@
     <string name="default_time_allocated">Default time allocated</string>
     <string name="empty_rounds">Empty rounds</string>
     <string name="get_in_touch">Get in touch</string>
+    <string name="previous">Prev</string>
+    <string name="copy">Copy</string>
 </resources>

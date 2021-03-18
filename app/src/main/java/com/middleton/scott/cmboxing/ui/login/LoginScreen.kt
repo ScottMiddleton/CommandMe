@@ -170,7 +170,7 @@ class LoginScreen : Fragment() {
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
             Log.w("TAG", "signInResult:failed code=" + e.statusCode)
             Toast.makeText(
-                requireContext(), e.localizedMessage,
+                requireContext(), e.message,
                 Toast.LENGTH_LONG
             ).show()
             google_login_progress_bar.visibility = GONE

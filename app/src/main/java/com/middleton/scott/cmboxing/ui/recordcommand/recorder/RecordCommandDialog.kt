@@ -5,6 +5,8 @@ import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import android.app.Dialog
 import android.content.Context
 import android.content.pm.PackageManager
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -37,7 +39,7 @@ import kotlin.math.sqrt
 
 const val REQUEST_ID_MULTIPLE_PERMISSIONS = 1
 
-class RecordCommandFragment(commandId: Long) : DialogFragment() {
+class RecordCommandDialog(commandId: Long) : DialogFragment() {
     private val viewModel: RecordCommandViewModel by viewModel {
         parametersOf(
             commandId
@@ -51,6 +53,7 @@ class RecordCommandFragment(commandId: Long) : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val root = RelativeLayout(activity)
+
         root.layoutParams = ViewGroup.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.MATCH_PARENT
@@ -93,6 +96,8 @@ class RecordCommandFragment(commandId: Long) : DialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
         mContext = view.context
         if (checkAndRequestPermissions()) {
             recordingEnabled = true

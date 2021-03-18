@@ -60,6 +60,16 @@ class RoundsAdapter(
             }
         }
 
+        holder.roundTV.setOnClickListener {
+            if (holder.expandableLayout.isExpanded) {
+                holder.expandableLayout.collapse(true)
+                holder.frequencyIB.setImageResource(R.drawable.ic_add)
+            } else {
+                holder.expandableLayout.expand(true)
+                holder.frequencyIB.setImageResource(R.drawable.ic_remove)
+            }
+        }
+
         holder.roundTV.text = context.getString(R.string.round_number, (position + 1).toString())
 
         val structuredCommandCrossRefsCopy = structuredCommandCrossRefs
@@ -102,7 +112,7 @@ class RoundsAdapter(
         val roundTV: TextView = view.findViewById(R.id.round_tv)
         val instructionTV: TextView = view.findViewById(R.id.reorder_instruction_tv)
         val addCommandsBtn: LinearLayout = view.findViewById(R.id.add_commands_btn)
-        val copyBtn: ImageButton = view.findViewById(R.id.copy_btn)
+        val copyBtn: TextView = view.findViewById(R.id.copy_btn)
 
         lateinit var adapter: RoundCommandsAdapter
 

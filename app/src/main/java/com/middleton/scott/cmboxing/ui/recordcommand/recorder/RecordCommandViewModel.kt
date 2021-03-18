@@ -9,10 +9,10 @@ import com.middleton.scott.cmboxing.utils.getRecordFileByFileName
 import kotlinx.coroutines.launch
 import java.util.ArrayList
 
-open class RecordCommandViewModel(private val dataRepository: DataRepository, var commandId: Long) :
+open class RecordCommandViewModel(private val dataRepository: DataRepository, commandId: Long) :
     ViewModel() {
     var name = ""
-    var timeToCompleteSecs = 0
+    var timeToCompleteSecs = -1
     var savedRecordFileName = ""
     var recordFileName = ""
     var recordFileNamesToBeDeleted = ArrayList<String>()
@@ -43,7 +43,7 @@ open class RecordCommandViewModel(private val dataRepository: DataRepository, va
 
     fun validate() {
         saveButtonEnabledLD.value =
-            hasAudioRecording == true && timeToCompleteSecs != -1 && name != ""
+            hasAudioRecording == true && timeToCompleteSecs > 0 && name != ""
     }
 
     fun upsertCommand() {

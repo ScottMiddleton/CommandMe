@@ -6,19 +6,10 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
-import android.widget.Button
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
-import com.google.firebase.crashlytics.internal.common.CommonUtils.hideKeyboard
 import com.middleton.scott.cmboxing.R
-import com.middleton.scott.cmboxing.datasource.local.model.Command
-import com.middleton.scott.cmboxing.datasource.local.model.StructuredCommandCrossRef
 import com.middleton.scott.cmboxing.ui.base.BaseFragment
-import com.middleton.scott.cmboxing.ui.workouts.MyWorkoutsScreenDirections
 import com.middleton.scott.cmboxing.utils.DateTimeUtils
-import com.middleton.scott.cmboxing.utils.DialogManager
-import kotlinx.android.synthetic.main.alert_dialog_with_divider_layout.*
-import kotlinx.android.synthetic.main.fragment_tab_one.*
 import kotlinx.android.synthetic.main.fragment_tab_three.*
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
@@ -51,6 +42,17 @@ class TabFragmentThree : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        when (viewModel.workout.workout_type) {
+            WorkoutType.STRUCTURED -> {
+                instruction_tv.text =
+                    getString(R.string.tab_three_structured_instructions)
+            }
+            WorkoutType.RANDOM -> {
+                instruction_tv.text =
+                    getString(R.string.tab_three_random_instructions)
+            }
+        }
+
         roundsAdapter = RoundsAdapter(viewModel.audioFileBaseDirectory, {
             viewModel.upsertStructuredCommandCrossRefs(it)
         },
@@ -82,7 +84,6 @@ class TabFragmentThree : BaseFragment() {
                 subscribeUI()
             }
         })
-        setClickListeners()
     }
 
     private fun subscribeUI() {
@@ -111,10 +112,6 @@ class TabFragmentThree : BaseFragment() {
             roundsAdapter.setRoundCount(it)
         })
 
-        viewModel.defaultRestTimeSecsLD.observe(viewLifecycleOwner, Observer {
-            viewModel.setTotalLength()
-            round_rest_tv.text = DateTimeUtils.toMinuteSeconds(it)
-        })
 
         viewModel.workoutTypeLD.observe(viewLifecycleOwner, Observer {
             when (it) {
@@ -122,47 +119,14 @@ class TabFragmentThree : BaseFragment() {
                     random_rv.visibility = VISIBLE
                     structured_rv.visibility = GONE
                     total_length_ll.visibility = GONE
-                    round_rest_ll.visibility = GONE
 
                 }
                 WorkoutType.STRUCTURED -> {
                     random_rv.visibility = GONE
                     structured_rv.visibility = VISIBLE
                     total_length_ll.visibility = VISIBLE
-                    round_rest_ll.visibility = VISIBLE
                 }
             }
         })
-    }
-
-    private fun setClickListeners() {
-        save_btn_include.findViewById<Button>(R.id.save_btn).setOnClickListener {
-            hideKeyboard(context, view)
-
-            if (!viewModel.validateRoundsNotEmpty()) {
-                DialogManager.showDialog(
-                    context = requireContext(),
-                    titleId = R.string.empty_rounds,
-                    messageId = R.string.empty_rounds_dialog_message,
-                    negativeBtnTextId = R.string.ok,
-                    negativeBtnClick = {}
-                )
-            } else {
-                viewModel.upsertWorkout()
-            }
-        }
-
-        round_rest_ll.setOnClickListener {
-            NumberPickerMinutesSecondsDialog(
-                getString(R.string.rest_between_rounds),
-                viewModel.workout.default_rest_time_secs,
-                { seconds ->
-                    viewModel.setDefaultRestTime(seconds)
-                },
-                {}).show(
-                childFragmentManager,
-                null
-            )
-        }
     }
 }

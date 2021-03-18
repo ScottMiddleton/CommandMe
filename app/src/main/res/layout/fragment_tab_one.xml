@@ -22,7 +22,7 @@
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:animateLayoutChanges="true"
-        app:layout_constraintBottom_toTopOf="@+id/next_btn_include"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/dividerTop">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -230,10 +230,5 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </ScrollView>
-
-    <include
-        android:id="@+id/next_btn_include"
-        layout="@layout/include_layout_next_btn"
-        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -21,7 +21,7 @@ import com.middleton.scott.cmboxing.R
 import com.middleton.scott.cmboxing.billing.PurchasePremiumDialog
 import com.middleton.scott.cmboxing.other.Constants.PRODUCT_UNLIMITED_COMMANDS
 import com.middleton.scott.cmboxing.ui.base.BaseFragment
-import com.middleton.scott.cmboxing.ui.recordcommand.recorder.RecordCommandFragment
+import com.middleton.scott.cmboxing.ui.recordcommand.recorder.RecordCommandDialog
 import com.middleton.scott.cmboxing.utils.getBaseFilePath
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import kotlinx.android.synthetic.main.fragment_commands.*
@@ -43,7 +43,7 @@ class CommandsScreen : BaseFragment() {
         super.onCreate(savedInstanceState)
         adapter = CommandsAdapter(
             onEditCommand = {
-                RecordCommandFragment(it).show(childFragmentManager, "")
+                RecordCommandDialog(it).show(childFragmentManager, "")
             })
     }
 
@@ -61,9 +61,10 @@ class CommandsScreen : BaseFragment() {
         setUpBillingClient()
         mContext = view.context
         handleFab()
-        next_btn_include.visibility = GONE
         setClickListeners()
         commands_RV.adapter = adapter
+
+        instruction_tv.visibility = GONE
 
         val itemTouchHelperCallback =
             object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
@@ -172,7 +173,7 @@ class CommandsScreen : BaseFragment() {
 
     private fun setClickListeners() {
         add_command_btn.setOnClickListener {
-            RecordCommandFragment(-1L).show(childFragmentManager, "")
+            RecordCommandDialog(-1L).show(childFragmentManager, "")
         }
 
         undo_btn.setOnClickListener {
@@ -282,25 +283,28 @@ class CommandsScreen : BaseFragment() {
 
         billingClient?.querySkuDetailsAsync(params.build()) { billingResult, skuDetailsList ->
             // Process the result.
-            if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && !skuDetailsList.isNullOrEmpty()) {
-                for (skuDetails in skuDetailsList) {
+            if (billingResult.responseCode == BillingClient.BillingResponseCode.OK
+//                && !skuDetailsList.isNullOrEmpty()
+
+            ) {
+//                for (skuDetails in skuDetailsList) {
                     Log.v("TAG_INAPP", "skuDetailsList : $skuDetailsList")
                     //This list should contain the products added above
-                    PurchasePremiumDialog(skuDetails.title, skuDetails.description) {
-                        skuDetails?.let {
+                    PurchasePremiumDialog("skuDetails.title", "skuDetails.description") {
+//                        skuDetails?.let {
                             val billingFlowParams = BillingFlowParams.newBuilder()
-                                .setSkuDetails(it)
+                                .setSkuDetails(SkuDetails("details"))
                                 .build()
                             billingClient?.launchBillingFlow(
                                 requireActivity(),
                                 billingFlowParams
                             )?.responseCode
-                        } ?: "noSKUMessage()"
+//                        } ?: "noSKUMessage()"
                     }.show(
                         childFragmentManager,
                         ""
                     )
-                }
+//                }
             }
         }
     }

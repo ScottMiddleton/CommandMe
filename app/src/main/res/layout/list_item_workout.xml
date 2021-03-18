@@ -49,6 +49,15 @@
             app:layout_constraintTop_toBottomOf="@+id/name_tv"
             tools:text="6 Rounds · Random" />
 
+        <View
+            android:layout_width="1dp"
+            android:layout_height="0dp"
+            android:background="@color/white_faded_10"
+            android:elevation="5dp"
+            app:layout_constraintBottom_toBottomOf="@+id/edit_btn"
+            app:layout_constraintStart_toStartOf="@id/edit_btn"
+            app:layout_constraintTop_toTopOf="@+id/edit_btn" />
+
         <ImageButton
             android:id="@+id/edit_btn"
             android:layout_width="wrap_content"

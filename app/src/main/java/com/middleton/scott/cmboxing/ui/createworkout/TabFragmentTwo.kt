@@ -6,15 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
-import android.widget.Button
 import android.widget.LinearLayout
 import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.Observer
-import androidx.viewpager2.widget.ViewPager2
 import com.middleton.scott.cmboxing.R
 import com.middleton.scott.cmboxing.ui.base.BaseFragment
 import com.middleton.scott.cmboxing.ui.commands.CommandsAdapter
-import com.middleton.scott.cmboxing.ui.recordcommand.recorder.RecordCommandFragment
+import com.middleton.scott.cmboxing.ui.recordcommand.recorder.RecordCommandDialog
 import com.middleton.scott.cmboxing.utils.DialogManager
 import kotlinx.android.synthetic.main.fragment_commands.*
 import org.koin.androidx.viewmodel.ext.android.getViewModel
@@ -41,7 +39,7 @@ class TabFragmentTwo : BaseFragment() {
             }
             viewModel.validateTabTwo()
         }, onEditCommand = {
-            RecordCommandFragment(it).show(childFragmentManager, "")
+            RecordCommandDialog(it).show(childFragmentManager, "")
         })
     }
 
@@ -107,19 +105,8 @@ class TabFragmentTwo : BaseFragment() {
     }
 
     private fun setClickListeners() {
-        next_btn_include.findViewById<Button>(R.id.next_btn).setOnClickListener {
-            viewModel.userHasAttemptedToProceedTwo = true
-            if (viewModel.tabTwoValidatedLD.value == true) {
-                val viewPager =
-                    parentFragment?.view?.findViewById(R.id.create_boxing_workout_vp) as ViewPager2
-                viewPager.currentItem = 2
-            } else {
-                viewModel.validateTabTwo()
-            }
-        }
-
         add_command_btn.setOnClickListener {
-            RecordCommandFragment(-1L).show(childFragmentManager, "")
+            RecordCommandDialog(-1L).show(childFragmentManager, "")
         }
     }
 

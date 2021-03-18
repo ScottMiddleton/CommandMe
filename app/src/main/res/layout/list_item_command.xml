@@ -44,6 +44,15 @@
 
     </FrameLayout>
 
+    <View
+        android:layout_width="1dp"
+        android:layout_height="0dp"
+        android:background="@color/white_faded_10"
+        android:elevation="5dp"
+        app:layout_constraintBottom_toBottomOf="@+id/edit_btn"
+        app:layout_constraintStart_toStartOf="@id/edit_btn"
+        app:layout_constraintTop_toTopOf="@+id/edit_btn" />
+
     <TextView
         android:id="@+id/command_name_tv"
         android:layout_width="0dp"
