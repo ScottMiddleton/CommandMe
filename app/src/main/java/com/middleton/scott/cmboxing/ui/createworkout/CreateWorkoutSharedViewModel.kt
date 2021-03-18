@@ -17,6 +17,7 @@ class CreateWorkoutSharedViewModel(
     var workoutId: Long
 ) : CommandsViewModel(dataRepository) {
     var isEditMode = false
+    var isCancelling = false
     var subscribe = true
     var userHasAttemptedToProceedOne = false
     var userHasAttemptedToProceedTwo = false
@@ -305,6 +306,7 @@ class CreateWorkoutSharedViewModel(
 
     fun cancelChanges() {
         viewModelScope.launch {
+            isCancelling = true
             dataRepository.getLocalDataSource().deleteWorkoutAndCrossRefs(workout)
 
             if (isEditMode) {

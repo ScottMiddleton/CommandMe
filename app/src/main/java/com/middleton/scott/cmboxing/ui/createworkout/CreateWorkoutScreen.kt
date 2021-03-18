@@ -99,7 +99,7 @@ class CreateWorkoutScreen : BaseFragment() {
                     R.string.cancel_this_workout,
                     R.string.unsaved_dialog_message,
                     R.string.yes_cancel,
-                    { viewModel.cancelChanges()},
+                    { viewModel.cancelChanges() },
                     R.string.no,
                     {})
             } else {
@@ -108,7 +108,9 @@ class CreateWorkoutScreen : BaseFragment() {
         })
 
         viewModel.selectedCommandsLD.observe(viewLifecycleOwner, Observer {
-            viewModel.validateTabTwo()
+            if (!viewModel.isCancelling) {
+                viewModel.validateTabTwo()
+            }
         })
 
         viewModel.requiredSummaryFieldLD.observe(viewLifecycleOwner, Observer {

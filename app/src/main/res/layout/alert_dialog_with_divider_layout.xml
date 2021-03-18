@@ -59,6 +59,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:lines="1"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 tools:text="Positive" />
@@ -67,7 +69,8 @@
                 android:id="@+id/negative_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="40dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
                 android:lines="1"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
