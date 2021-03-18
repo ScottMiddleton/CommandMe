@@ -1,213 +1,239 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
-    android:background="@color/primaryBackground"
-    tools:context=".ui.recordcommand.recorder.RecordCommandFragment">
+    android:background="@color/primaryBackground">
 
     <include
         android:id="@+id/app_bar"
-        layout="@layout/appbar_record_command"/>
+        layout="@layout/appbar_record_command" />
 
     <View
         android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/white_faded_20"
-        app:layout_constraintTop_toBottomOf ="@id/app_bar" />
+        app:layout_constraintTop_toBottomOf="@id/app_bar" />
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/name_til"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="20dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="10dp"
-        android:hint="@string/command_name"
-        android:paddingBottom="10dp"
-        app:hintTextColor="@color/white"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/divider">
-
-        <EditText
-            android:id="@+id/name_et"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:imeOptions="actionDone"
-            android:inputType="textCapWords" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/time_to_complete_til"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:hint="@string/default_time_allocated"
-        android:paddingBottom="10dp"
-        app:hintTextColor="@color/white"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/name_til"
-        app:suffixTextColor="@color/white">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/time_to_complete_et"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:focusable="false"
-            android:foreground="?attr/selectableItemBackground"
-            android:inputType="text" />
-
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <TextView
-        android:id="@+id/command_audio_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        app:layout_constraintTop_toTopOf="@id/visualiser_fl"
-        android:text="@string/command_audio"
-        android:elevation="2dp"
-        android:layout_marginTop="8dp"
-        android:textSize="16sp"
-        android:textColor="@color/primary_text_color_faded"
-        app:layout_constraintStart_toStartOf="@+id/visualiser_fl"
-        app:layout_constraintTop_toBottomOf="@+id/time_to_complete_til" />
-
-    <FrameLayout
-        android:id="@+id/visualiser_fl"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginTop="10dp"
-        android:background="@drawable/rounded_stroke_background_dark"
-        android:paddingBottom="20dp"
-        android:paddingTop="36dp"
-        app:layout_constraintBottom_toTopOf="@+id/record_audio_button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/time_to_complete_til">
-
-        <View
-            android:id="@+id/divider2"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_gravity="center_vertical"
-            android:background="@color/white_faded_60"
-            app:layout_constraintTop_toBottomOf="@id/title_bar_cl" />
-
-        <com.imn.iivisu.PlayerVisualizer
-            android:id="@+id/player_visualizer"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="visible"
-            app:approximateBarDuration="75"
-            app:backgroundBarPrimeColor="@color/gray"
-            app:barWidth="3dp"
-            app:loadedBarPrimeColor="@color/colorPrimary"
-            app:maxAmp="200"
-            app:spaceBetweenBar="2dp" />
-
-        <com.imn.iivisu.RecorderVisualizer
-            android:id="@+id/recorder_visualizer"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:backgroundBarPrimeColor="@color/gray"
-            app:barWidth="3dp"
-            app:loadedBarPrimeColor="@color/colorPrimary"
-            app:maxAmp="200"
-            app:spaceBetweenBar="2dp" />
-
-    </FrameLayout>
-
-    <View
-        android:id="@+id/divider3"
-        android:layout_width="0dp"
-        android:layout_height="1dp"
-        android:background="@color/white_faded_20"
-        app:layout_constraintEnd_toEndOf="@+id/visualiser_fl"
-        app:layout_constraintStart_toStartOf="@+id/visualiser_fl"
-        app:layout_constraintTop_toBottomOf="@+id/delete_recording_btn" />
-
-    <ImageButton
-        android:id="@+id/delete_recording_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:padding="6dp"
-        android:visibility="invisible"
-        android:src="@drawable/ic_delete_outline"
-        app:layout_constraintEnd_toEndOf="@+id/visualiser_fl"
-        app:layout_constraintTop_toTopOf="@+id/visualiser_fl" />
-
-    <TextView
-        android:id="@+id/timeline_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:text="00:00"
-        app:layout_constraintBottom_toBottomOf="@+id/visualiser_fl"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/record_audio_button"
-        android:layout_width="110dp"
-        android:layout_height="110dp"
-        android:layout_gravity="center_horizontal"
         app:layout_constraintBottom_toTopOf="@+id/save_btn_include"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:lottie_fileName="record_button_lottie.json"
-        app:lottie_loop="true"
-        app:lottie_progress="0.08"
-        app:lottie_speed="1.8"
-        app:tint="@color/white" />
+        app:layout_constraintTop_toBottomOf="@+id/app_bar">
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/stop_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="26dp"
-        android:clickable="false"
-        android:focusable="false"
-        android:src="@drawable/ic_stop"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/save_btn_include"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:tint="@color/white" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-    <include
-        android:id="@+id/include_play_recording"
-        layout="@layout/include_play_recording"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/save_btn_include" />
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/name_til"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="20dp"
+                android:hint="@string/command_name"
+                android:paddingBottom="10dp"
+                app:hintTextColor="@color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-    <TextView
-        android:id="@+id/record_command_audio_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/record_command_audio"
-        android:textColor="@color/primary_text_color_faded"
-        app:layout_constraintBottom_toBottomOf="@+id/record_audio_button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+                <EditText
+                    android:id="@+id/name_et"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionDone"
+                    android:inputType="textCapWords" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/time_to_complete_til"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:hint="@string/default_time_allocated"
+                android:paddingBottom="10dp"
+                app:hintTextColor="@color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/name_til"
+                app:suffixTextColor="@color/white">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/time_to_complete_et"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="false"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:inputType="text" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <FrameLayout
+                android:id="@+id/visualiser_fl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/rounded_stroke_background_dark"
+                android:minHeight="120dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/time_to_complete_til">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/command_audio_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:elevation="2dp"
+                        android:text="@string/command_audio"
+                        android:textColor="@color/primary_text_color_faded"
+                        android:textSize="16sp"
+                        app:layout_constraintBottom_toTopOf="@+id/player_visualizer"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <View
+                        android:id="@+id/divider3"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/white_faded_20"
+                        app:layout_constraintTop_toBottomOf="@+id/delete_recording_btn" />
+
+                    <ImageButton
+                        android:id="@+id/delete_recording_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:padding="6dp"
+                        android:src="@drawable/ic_delete_outline"
+                        android:visibility="invisible"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <View
+                        android:id="@+id/divider2"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_gravity="center_vertical"
+                        android:background="@color/white_faded_60"
+                        app:layout_constraintBottom_toBottomOf="@+id/player_visualizer"
+                        app:layout_constraintTop_toTopOf="@id/player_visualizer" />
+
+                    <com.imn.iivisu.PlayerVisualizer
+                        android:id="@+id/player_visualizer"
+                        android:layout_width="match_parent"
+                        android:layout_height="160dp"
+                        android:minHeight="120dp"
+                        android:paddingBottom="20dp"
+                        android:visibility="visible"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
+                        app:approximateBarDuration="75"
+                        app:backgroundBarPrimeColor="@color/gray"
+                        app:barWidth="3dp"
+                        app:layout_constraintTop_toTopOf="@+id/divider3"
+                        app:loadedBarPrimeColor="@color/colorPrimary"
+                        app:layout_constraintBottom_toTopOf="@id/divider4"
+                        app:maxAmp="200"
+                        app:spaceBetweenBar="2dp" />
+
+                    <com.imn.iivisu.RecorderVisualizer
+                        android:id="@+id/recorder_visualizer"
+                        android:layout_width="match_parent"
+                        android:layout_height="160dp"
+                        android:minHeight="120dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
+                        app:backgroundBarPrimeColor="@color/gray"
+                        app:barWidth="3dp"
+                        app:layout_constraintBottom_toBottomOf="@+id/player_visualizer"
+                        app:layout_constraintTop_toTopOf="@+id/player_visualizer"
+                        app:loadedBarPrimeColor="@color/colorPrimary"
+                        app:maxAmp="200"
+                        app:spaceBetweenBar="2dp" />
+
+                    <include
+                        android:id="@+id/include_play_recording"
+                        layout="@layout/include_play_recording"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="invisible"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/divider4" />
+
+                    <com.airbnb.lottie.LottieAnimationView
+                        android:id="@+id/record_audio_button"
+                        android:layout_width="86dp"
+                        android:layout_height="86dp"
+                        android:layout_gravity="center_horizontal"
+                        app:layout_constraintBottom_toBottomOf="@+id/include_play_recording"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/include_play_recording"
+                        app:lottie_fileName="record_button_lottie.json"
+                        app:lottie_loop="true"
+                        app:lottie_progress="0.08"
+                        app:lottie_speed="1.8"
+                        app:tint="@color/white" />
+
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:id="@+id/stop_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:clickable="false"
+                        android:focusable="false"
+                        android:src="@drawable/ic_stop"
+                        android:visibility="invisible"
+                        app:fabSize="mini"
+                        app:layout_constraintBottom_toBottomOf="@+id/record_audio_button"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/record_audio_button"
+                        app:tint="@color/white" />
+
+                    <View
+                        android:id="@+id/divider4"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="30dp"
+                        android:background="@color/white_faded_20"
+                        app:layout_constraintTop_toBottomOf="@+id/player_visualizer" />
+
+                    <TextView
+                        android:id="@+id/timeline_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="8dp"
+                        android:text="00:00"
+                        app:layout_constraintBottom_toTopOf="@+id/divider4"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent" />
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </FrameLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
 
     <include
         android:id="@+id/save_btn_include"

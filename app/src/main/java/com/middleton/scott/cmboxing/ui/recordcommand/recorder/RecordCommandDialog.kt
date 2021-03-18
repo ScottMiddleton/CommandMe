@@ -8,11 +8,8 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
+import android.view.*
 import android.view.View.*
-import android.view.ViewGroup
-import android.view.Window
 import android.view.inputmethod.InputMethodManager
 import android.widget.RelativeLayout
 import android.widget.Toast
@@ -54,10 +51,7 @@ class RecordCommandDialog(commandId: Long) : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val root = RelativeLayout(activity)
 
-        root.layoutParams = ViewGroup.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.MATCH_PARENT
-        )
+
 
         // creating the fullscreen dialog
         val dialog = Dialog(MainActivity.instance)
@@ -120,10 +114,9 @@ class RecordCommandDialog(commandId: Long) : DialogFragment() {
             time_to_complete_et.setText(DateTimeUtils.toMinuteSeconds(it.timeToCompleteSecs))
             initAudioPlayer()
             initPlayerUI()
-            record_command_audio_tv.visibility = GONE
             player_visualizer.visibility = VISIBLE
             record_audio_button.visibility = INVISIBLE
-            recorder_visualizer.visibility = GONE
+            recorder_visualizer.visibility = INVISIBLE
             include_play_recording.visibility = VISIBLE
             delete_recording_btn.visibility = VISIBLE
             viewModel.hasAudioRecording = true
@@ -329,9 +322,9 @@ class RecordCommandDialog(commandId: Long) : DialogFragment() {
         viewModel.recordFileName = getRecordFileName(System.currentTimeMillis())
         recorder = Recorder.getInstance(mContext)
             .init(getRecordFileByFileName(viewModel.recordFileName).toString())
-        record_command_audio_tv.visibility = VISIBLE
-        player_visualizer.visibility = GONE
-        include_play_recording.visibility = GONE
+//        record_command_audio_tv.visibility = VISIBLE
+        player_visualizer.visibility = INVISIBLE
+        include_play_recording.visibility = INVISIBLE
         delete_recording_btn.visibility = INVISIBLE
         record_audio_button.visibility = VISIBLE
         recorder_visualizer.visibility = VISIBLE
@@ -345,10 +338,9 @@ class RecordCommandDialog(commandId: Long) : DialogFragment() {
             timeline_tv.text = 0L.formatAsTime()
             initAudioPlayer()
             initPlayerUI()
-            record_command_audio_tv.visibility = GONE
             player_visualizer.visibility = VISIBLE
             record_audio_button.visibility = INVISIBLE
-            recorder_visualizer.visibility = GONE
+            recorder_visualizer.visibility = INVISIBLE
             include_play_recording.visibility = VISIBLE
             delete_recording_btn.visibility = VISIBLE
             viewModel.hasAudioRecording = true
@@ -395,7 +387,7 @@ class RecordCommandDialog(commandId: Long) : DialogFragment() {
             record_audio_button.playAnimation()
             stop_button.visibility = VISIBLE
         } else {
-            stop_button.visibility = GONE
+            stop_button.visibility = INVISIBLE
             record_audio_button.cancelAnimation()
             record_audio_button.progress = 0.08f
         }
