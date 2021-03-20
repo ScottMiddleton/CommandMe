@@ -196,7 +196,7 @@ class CommandsScreen : BaseFragment() {
         nested_scroll_view.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
             when {
                 scrollY > oldScrollY -> {
-                    fab_tv.visibility = View.GONE
+                    fab_tv.visibility = GONE
                     val params1 = LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.WRAP_CONTENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT
@@ -284,14 +284,14 @@ class CommandsScreen : BaseFragment() {
         billingClient?.querySkuDetailsAsync(params.build()) { billingResult, skuDetailsList ->
             // Process the result.
             if (billingResult.responseCode == BillingClient.BillingResponseCode.OK
-//                && !skuDetailsList.isNullOrEmpty()
+                && !skuDetailsList.isNullOrEmpty()
 
             ) {
-//                for (skuDetails in skuDetailsList) {
+                for (skuDetails in skuDetailsList) {
                     Log.v("TAG_INAPP", "skuDetailsList : $skuDetailsList")
                     //This list should contain the products added above
-                    PurchasePremiumDialog("skuDetails.title", "skuDetails.description") {
-//                        skuDetails?.let {
+                    PurchasePremiumDialog(skuDetails.title, skuDetails.description) {
+                        skuDetails?.let {
                             val billingFlowParams = BillingFlowParams.newBuilder()
                                 .setSkuDetails(SkuDetails("details"))
                                 .build()
@@ -299,12 +299,12 @@ class CommandsScreen : BaseFragment() {
                                 requireActivity(),
                                 billingFlowParams
                             )?.responseCode
-//                        } ?: "noSKUMessage()"
+                        }
                     }.show(
                         childFragmentManager,
                         ""
                     )
-//                }
+                }
             }
         }
     }

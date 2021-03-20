@@ -99,17 +99,17 @@ class RecordCommandDialog(commandId: Long) : DialogFragment() {
         initRecorderUI()
         setClickListeners()
 
-        viewModel.saveButtonEnabledLD.observe(viewLifecycleOwner, Observer {
+        viewModel.saveButtonEnabledLD.observe(viewLifecycleOwner, {
             save_btn_include.save_btn.isEnabled = it
         })
 
-        viewModel.saveCompleteLD.observe(viewLifecycleOwner, Observer {
+        viewModel.saveCompleteLD.observe(viewLifecycleOwner, {
             if (it) {
                 dismiss()
             }
         })
 
-        viewModel.commandLD.observe(viewLifecycleOwner, Observer {
+        viewModel.commandLD.observe(viewLifecycleOwner, {
             name_et.setText(it.name)
             time_to_complete_et.setText(DateTimeUtils.toMinuteSeconds(it.timeToCompleteSecs))
             initAudioPlayer()
@@ -123,7 +123,7 @@ class RecordCommandDialog(commandId: Long) : DialogFragment() {
             viewModel.validate()
         })
 
-        viewModel.isEditModeLD.observe(viewLifecycleOwner, Observer {
+        viewModel.isEditModeLD.observe(viewLifecycleOwner, {
             if (!it) {
                 initAudioRecorder()
             }
@@ -322,7 +322,6 @@ class RecordCommandDialog(commandId: Long) : DialogFragment() {
         viewModel.recordFileName = getRecordFileName(System.currentTimeMillis())
         recorder = Recorder.getInstance(mContext)
             .init(getRecordFileByFileName(viewModel.recordFileName).toString())
-//        record_command_audio_tv.visibility = VISIBLE
         player_visualizer.visibility = INVISIBLE
         include_play_recording.visibility = INVISIBLE
         delete_recording_btn.visibility = INVISIBLE
