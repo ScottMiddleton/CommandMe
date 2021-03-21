@@ -113,7 +113,8 @@ class TabFragmentTwo : BaseFragment() {
         search_view.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
             androidx.appcompat.widget.SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(searchStr: String?): Boolean {
-                searchStr?.let {adapter.setSearchString(searchStr)  }
+                searchStr?.let {adapter.setSearchString(searchStr)}
+                search_view.clearFocus()
                 return true
             }
 
