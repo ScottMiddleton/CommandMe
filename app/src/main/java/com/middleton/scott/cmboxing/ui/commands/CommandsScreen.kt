@@ -12,6 +12,7 @@ import android.view.View.GONE
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.LinearLayout
+import android.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -181,6 +182,19 @@ class CommandsScreen : BaseFragment() {
             undo_tv.visibility = GONE
             viewModel.undoPreviouslyDeletedCombination()
         }
+
+        search_view.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
+            androidx.appcompat.widget.SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(searchStr: String?): Boolean {
+                searchStr?.let {adapter.setSearchString(searchStr)  }
+                return true
+            }
+
+            override fun onQueryTextChange(searchStr: String?): Boolean {
+                searchStr?.let {adapter.setSearchString(searchStr)  }
+                return true
+            }
+        })
     }
 
     private fun handleFab() {

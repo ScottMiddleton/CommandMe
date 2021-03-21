@@ -19,6 +19,7 @@ import com.middleton.scott.cmboxing.datasource.local.model.Command
 import com.middleton.scott.cmboxing.datasource.local.model.SelectedCommandCrossRef
 import com.middleton.scott.cmboxing.utils.getBaseFilePath
 import java.io.IOException
+import java.util.*
 
 class CommandsAdapter(
     private val onCheckCommand: ((selectedCombinationCrossRef: SelectedCommandCrossRef, isChecked: Boolean) -> Unit)? = null,
@@ -29,6 +30,7 @@ class CommandsAdapter(
 
     var selectedCommands = mutableListOf<Command>()
     private var allCommands = mutableListOf<Command>()
+    private var filteredCommands = mutableListOf<Command>()
     private var mediaPlayer = MediaPlayer()
 
     private var audioPlayingIndex = -1
@@ -46,12 +48,12 @@ class CommandsAdapter(
     }
 
     override fun getItemCount(): Int {
-        return allCommands.size
+        return filteredCommands.size
     }
 
     override fun onBindViewHolder(holder: CommandsViewHolder, position: Int) {
-        val command = allCommands[position]
-        holder.nameTV.text = allCommands[position].name
+        val command = filteredCommands[position]
+        holder.nameTV.text = filteredCommands[position].name
 
         val selectedCommand = selectedCommands.firstOrNull {
             it.id == command.id
@@ -66,8 +68,9 @@ class CommandsAdapter(
         } else {
             holder.checkBox.visibility = VISIBLE
             holder.checkBox.setOnCheckedChangeListener { _, checked ->
+                val currentCommand = filteredCommands[position]
                 onCheckCommand.invoke(
-                    SelectedCommandCrossRef(workout_id = -1, command_id = command.id),
+                    SelectedCommandCrossRef(workout_id = -1, command_id = currentCommand.id),
                     checked
                 )
             }
@@ -150,14 +153,18 @@ class CommandsAdapter(
         selectedCommands?.let {
             this.selectedCommands = selectedCommands as MutableList<Command>
         }
+        filteredCommands = allCommands
         this.notifyDataSetChanged()
     }
 
-    override fun getItemId(position: Int): Long {
-        return position.toLong()
-    }
-
-    override fun getItemViewType(position: Int): Int {
-        return position
+    fun setSearchString(searchString: String) {
+        if (searchString != "") {
+            filteredCommands = allCommands.filter {
+                it.name.toLowerCase(Locale.getDefault()).contains(searchString.toLowerCase(Locale.getDefault()))
+            } as MutableList
+        } else {
+            filteredCommands = allCommands
+        }
+        notifyDataSetChanged()
     }
 }

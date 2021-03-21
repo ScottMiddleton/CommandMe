@@ -66,14 +66,14 @@
             android:layout_height="wrap_content"
             android:fontFamily="@string/font_roboto_medium"
             android:text="@string/total"
-            android:textSize="15sp" />
+            android:textSize="17sp" />
 
         <TextView
             android:id="@+id/total_length_tv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:textSize="15sp"
+            android:textSize="17sp"
             tools:text="00:00:00" />
 
     </LinearLayout>

@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.LinearLayout
+import android.widget.SearchView
 import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.Observer
 import com.middleton.scott.cmboxing.R
@@ -108,6 +109,19 @@ class TabFragmentTwo : BaseFragment() {
         add_command_btn.setOnClickListener {
             RecordCommandDialog(-1L).show(childFragmentManager, "")
         }
+
+        search_view.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
+            androidx.appcompat.widget.SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(searchStr: String?): Boolean {
+                searchStr?.let {adapter.setSearchString(searchStr)  }
+                return true
+            }
+
+            override fun onQueryTextChange(searchStr: String?): Boolean {
+                searchStr?.let {adapter.setSearchString(searchStr)  }
+                return true
+            }
+        })
     }
 
     private fun handleFab() {
