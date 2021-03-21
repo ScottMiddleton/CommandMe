@@ -33,7 +33,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import kotlin.math.sqrt
 
-
 const val REQUEST_ID_MULTIPLE_PERMISSIONS = 1
 
 class RecordCommandDialog(commandId: Long) : DialogFragment() {

@@ -264,7 +264,7 @@ class MyWorkoutsScreen : BaseFragment() {
                     ).apply {
                         gravity = Gravity.BOTTOM or Gravity.END
                     }
-                    params1.setMargins(60, 60, 60, 60)
+                    params1.setMargins(80, 80, 120, 80)
                     add_workouts_btn.layoutParams = params1
                 }
                 scrollX == scrollY -> {
@@ -275,7 +275,7 @@ class MyWorkoutsScreen : BaseFragment() {
                     ).apply {
                         gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
                     }
-                    params2.setMargins(60, 60, 60, 60)
+                    params2.setMargins(80, 80, 80, 80)
                     add_workouts_btn.layoutParams = params2
 
                 }
@@ -287,7 +287,7 @@ class MyWorkoutsScreen : BaseFragment() {
                     ).apply {
                         gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
                     }
-                    params3.setMargins(60, 60, 60, 60)
+                    params3.setMargins(80, 80, 80, 80)
                     add_workouts_btn.layoutParams = params3
                 }
             }

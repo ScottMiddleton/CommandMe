@@ -9,7 +9,7 @@
     android:layout_marginStart="12dp"
     android:layout_marginTop="6dp"
     android:layout_marginEnd="12dp"
-    android:background="@drawable/list_item_background_dark_faded">
+    android:background="@drawable/rounded_stroke_background_dark">
 
     <FrameLayout
         android:id="@+id/play_fl"

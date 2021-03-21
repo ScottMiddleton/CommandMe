@@ -190,7 +190,7 @@ class CommandsScreen : BaseFragment() {
         ).apply {
             gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
         }
-        params.setMargins(60, 60, 60, 60)
+        params.setMargins(80, 80, 80, 80)
         add_command_btn.layoutParams = params
 
         nested_scroll_view.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
@@ -203,7 +203,7 @@ class CommandsScreen : BaseFragment() {
                     ).apply {
                         gravity = Gravity.BOTTOM or Gravity.END
                     }
-                    params1.setMargins(60, 60, 60, 60)
+                    params1.setMargins(80, 80, 120, 80)
                     add_command_btn.layoutParams = params1
                 }
                 scrollX == scrollY -> {
@@ -214,7 +214,7 @@ class CommandsScreen : BaseFragment() {
                     ).apply {
                         gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
                     }
-                    params2.setMargins(60, 60, 60, 60)
+                    params2.setMargins(80, 80, 80, 80)
                     add_command_btn.layoutParams = params2
 
                 }
@@ -226,7 +226,7 @@ class CommandsScreen : BaseFragment() {
                     ).apply {
                         gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
                     }
-                    params3.setMargins(60, 60, 60, 60)
+                    params3.setMargins(80, 80, 80, 80)
                     add_command_btn.layoutParams = params3
                 }
             }

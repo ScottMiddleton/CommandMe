@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@drawable/dialog_background"
+    android:background="@drawable/rounded_stroke_background_dark"
     android:paddingBottom="6dp">
 
     <LinearLayout
@@ -29,8 +29,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
             android:textAlignment="center"
             android:textSize="16sp"
             android:visibility="gone"
@@ -40,10 +40,8 @@
             android:id="@+id/divider"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:background="@color/white_faded_40" />
+            android:background="@color/white_faded_20" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -57,7 +55,7 @@
             <Button
                 android:id="@+id/positive_btn"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:lines="1"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
@@ -68,7 +66,7 @@
             <Button
                 android:id="@+id/negative_btn"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
                 android:lines="1"
