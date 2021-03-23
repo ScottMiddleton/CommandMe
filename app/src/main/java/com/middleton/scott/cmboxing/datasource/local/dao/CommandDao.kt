@@ -9,7 +9,10 @@ import kotlinx.coroutines.flow.Flow
 abstract class CommandDao: BaseDao<Command>() {
 
     @Query("SELECT * FROM command")
-    abstract fun getCommands(): Flow<List<Command>>
+    abstract fun getCommandsFlow(): Flow<List<Command>>
+
+    @Query("SELECT * FROM command")
+    abstract fun getCommands(): List<Command>
 
     @Query("SELECT * FROM command WHERE _id = :id")
     abstract fun getCommandById(id: Long): Command

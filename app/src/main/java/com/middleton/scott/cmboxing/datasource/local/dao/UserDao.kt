@@ -9,7 +9,10 @@ import com.middleton.scott.cmboxing.datasource.local.model.User
 abstract class UserDao: BaseDao<User>() {
 
     @Query("SELECT * FROM user")
-    abstract fun getUser(): LiveData<User>
+    abstract fun getUserLD(): LiveData<User>
+
+    @Query("SELECT * FROM user")
+    abstract fun getUser(): User
 
     @Query("DELETE FROM user")
     abstract fun nukeTable()

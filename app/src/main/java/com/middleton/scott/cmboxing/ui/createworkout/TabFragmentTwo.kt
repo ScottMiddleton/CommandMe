@@ -1,6 +1,7 @@
 package com.middleton.scott.cmboxing.ui.createworkout
 
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -11,10 +12,13 @@ import android.widget.SearchView
 import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.Observer
 import com.middleton.scott.cmboxing.R
+import com.middleton.scott.cmboxing.billing.PurchasePremiumDialog
 import com.middleton.scott.cmboxing.ui.base.BaseFragment
 import com.middleton.scott.cmboxing.ui.commands.CommandsAdapter
-import com.middleton.scott.cmboxing.ui.recordcommand.recorder.RecordCommandDialog
+import com.middleton.scott.cmboxing.ui.recordcommand.recorder.RecordCommandDialogFragment
 import com.middleton.scott.cmboxing.utils.DialogManager
+import com.middleton.scott.cmboxing.utils.launchBillingFlow
+import com.middleton.scott.cmboxing.utils.startConnectionForProducts
 import kotlinx.android.synthetic.main.fragment_commands.*
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
@@ -40,7 +44,7 @@ class TabFragmentTwo : BaseFragment() {
             }
             viewModel.validateTabTwo()
         }, onEditCommand = {
-            RecordCommandDialog(it).show(childFragmentManager, "")
+            RecordCommandDialogFragment(it).show(childFragmentManager, "")
         })
     }
 
@@ -107,7 +111,22 @@ class TabFragmentTwo : BaseFragment() {
 
     private fun setClickListeners() {
         add_command_btn.setOnClickListener {
-            RecordCommandDialog(-1L).show(childFragmentManager, "")
+            if (viewModel.userCanAddMoreCommands()) {
+                RecordCommandDialogFragment(-1L).show(childFragmentManager, "")
+            } else {
+                startConnectionForProducts {
+                    for (skuDetails in it) {
+                        Log.v("TAG_INAPP", "skuDetailsList : $it")
+                        //This list should contain the products added above
+                        PurchasePremiumDialog(skuDetails.title, skuDetails.description) {
+                            launchBillingFlow(skuDetails)
+                        }.show(
+                            childFragmentManager,
+                            ""
+                        )
+                    }
+                }
+            }
         }
 
         search_view.setOnQueryTextListener(object : SearchView.OnQueryTextListener,

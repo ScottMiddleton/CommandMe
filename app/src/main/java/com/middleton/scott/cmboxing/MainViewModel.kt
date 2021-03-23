@@ -8,7 +8,7 @@ import com.middleton.scott.cmboxing.datasource.local.model.User
 class MainViewModel(val dataRepository: DataRepository): ViewModel() {
 
     fun getUserLD(): LiveData<User> {
-        return dataRepository.getLocalDataSource().getCurrentUser()
+        return dataRepository.getLocalDataSource().getCurrentUserLD()
     }
 
     fun logout() {

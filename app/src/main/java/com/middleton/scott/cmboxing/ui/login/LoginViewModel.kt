@@ -43,6 +43,19 @@ class LoginViewModel(private val dataRepository: DataRepository) : ViewModel() {
     }
 
     fun addUser(firstName: String, lastName: String, email: String) {
-        dataRepository.addUserToFireStore(User(email, firstName, lastName), addUserResponseLD)
+        dataRepository.userHasPurchasedUnlimitedCommands {
+            val hasPurchasedUnlimitedCommands = it
+            viewModelScope.launch {
+                dataRepository.addUser(
+                    User(
+                        email,
+                        firstName,
+                        lastName,
+                        hasPurchasedUnlimitedCommands
+                    ), addUserResponseLD
+                )
+            }
+        }
+
     }
 }

@@ -19,4 +19,6 @@ object Constants {
     const val GOOGLE_SIGN_IN = 111
 
     const val PRODUCT_UNLIMITED_COMMANDS = "unlimited_commands_pro"
+
+    const val NON_PREMIUM_USER_MAXIMUM_NUMBER_OF_COMMANDS = 5
 }

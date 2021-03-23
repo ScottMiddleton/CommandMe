@@ -21,6 +21,7 @@ import com.google.android.material.navigation.NavigationView
 import com.middleton.scott.cmboxing.other.Constants.ACTION_SHOW_WORKOUT_SCREEN
 import com.middleton.scott.cmboxing.utils.DialogManager
 import com.middleton.scott.cmboxing.utils.hideKeyboard
+import com.middleton.scott.cmboxing.utils.setUpBillingClient
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -39,6 +40,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setUpBillingClient()
         instance = this
         setContentView(R.layout.activity_main)
         setupNavigationMenu()

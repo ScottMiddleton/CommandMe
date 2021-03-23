@@ -12,20 +12,11 @@ import kotlinx.coroutines.launch
 open class CommandsViewModel(private val dataRepository: DataRepository) : ViewModel() {
     var listAnimationShownOnce = false
     var audioFileBaseDirectory = ""
-    var audioFileName = ""
-    var audioFileCompleteDirectory = ""
 
     lateinit var allCommands: List<Command>
     lateinit var previouslyDeletedCommand: Command
 
-
-    fun upsertCommand(command: Command) {
-        viewModelScope.launch {
-            dataRepository.getLocalDataSource().upsertCommand(command)
-        }
-    }
-
-    fun deleteCommmand(combinationIndex: Int): Command {
+    fun deleteCommand(combinationIndex: Int): Command {
         val command = allCommands[combinationIndex]
         viewModelScope.launch {
             dataRepository.deleteCommand(command)
@@ -41,14 +32,13 @@ open class CommandsViewModel(private val dataRepository: DataRepository) : ViewM
         }.asLiveData()
     }
 
-    fun setAudioFileOutput(timeInMillis: Long) {
-        audioFileName = "audio_$timeInMillis.mp3"
-        audioFileCompleteDirectory = audioFileBaseDirectory + audioFileName
-    }
-
     fun undoPreviouslyDeletedCombination() {
         viewModelScope.launch {
             dataRepository.getLocalDataSource().upsertCommand(previouslyDeletedCommand)
         }
+    }
+
+    fun userCanAddMoreCommands(): Boolean {
+        return dataRepository.userCanAddMoreCommands()
     }
 }

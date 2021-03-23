@@ -46,11 +46,12 @@ class RemoteDataSource {
             }
     }
 
-    fun addUser(user: User, callback: CallbackWithError<Boolean, String?>) {
+    fun addUserToFirestore(user: User, callback: CallbackWithError<Boolean, String?>) {
         val userHashMap = hashMapOf(
             "email" to user.email,
             "first" to user.first,
-            "last" to user.last
+            "last" to user.last,
+            "hasPurchasedUnlimitedCommands" to user.hasPurchasedUnlimitedCommands
         )
         db.collection("users").document(user.email)
             .set(userHashMap)
@@ -88,7 +89,8 @@ class RemoteDataSource {
             .build()
         val mGoogleSignInClient = GoogleSignIn.getClient(MainActivity.instance, gso)
 
-        mGoogleSignInClient.signOut().addOnCompleteListener(MainActivity.instance
+        mGoogleSignInClient.signOut().addOnCompleteListener(
+            MainActivity.instance
         ) { }
     }
 }

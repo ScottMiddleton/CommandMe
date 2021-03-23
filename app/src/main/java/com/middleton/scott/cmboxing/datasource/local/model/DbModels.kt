@@ -27,5 +27,6 @@ data class Command constructor(
 data class User constructor(
     var email: String = "",
     var first: String = "",
-    var last: String = ""
+    var last: String = "",
+    var hasPurchasedUnlimitedCommands: Boolean = false
     ) : BaseDbModel()

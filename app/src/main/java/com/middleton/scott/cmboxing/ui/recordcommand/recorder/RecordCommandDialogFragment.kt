@@ -35,7 +35,7 @@ import kotlin.math.sqrt
 
 const val REQUEST_ID_MULTIPLE_PERMISSIONS = 1
 
-class RecordCommandDialog(commandId: Long) : DialogFragment() {
+class RecordCommandDialogFragment(commandId: Long) : DialogFragment() {
     private val viewModel: RecordCommandViewModel by viewModel {
         parametersOf(
             commandId
@@ -49,14 +49,11 @@ class RecordCommandDialog(commandId: Long) : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val root = RelativeLayout(activity)
-
-
-
         // creating the fullscreen dialog
         val dialog = Dialog(MainActivity.instance)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(root)
-        dialog.window!!.setLayout(
+        dialog.window?.setLayout(
             ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.MATCH_PARENT
         )
@@ -89,7 +86,6 @@ class RecordCommandDialog(commandId: Long) : DialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
         mContext = view.context
         if (checkAndRequestPermissions()) {
@@ -222,6 +218,7 @@ class RecordCommandDialog(commandId: Long) : DialogFragment() {
         delete_recording_btn.setOnClickListener {
             viewModel.recordFileNamesToBeDeleted.add(viewModel.recordFileName)
             initAudioRecorder()
+            timeline_tv.text = getString(R.string.zero_seconds)
             viewModel.validate()
         }
 

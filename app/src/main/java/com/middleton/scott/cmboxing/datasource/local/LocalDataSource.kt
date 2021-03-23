@@ -4,7 +4,6 @@ import android.content.SharedPreferences
 import androidx.lifecycle.LiveData
 import com.middleton.scott.cmboxing.datasource.local.model.*
 import kotlinx.coroutines.flow.Flow
-import java.util.ArrayList
 
 class LocalDataSource(
     private val sharedPreferences: SharedPreferences,
@@ -23,8 +22,12 @@ class LocalDataSource(
             editor.apply()
         }
 
-    fun getCurrentUser() : LiveData<User> {
-       return database.userDao().getUser()
+    fun getCurrentUserLD() : LiveData<User> {
+       return database.userDao().getUserLD()
+    }
+
+    fun userHasPurchasedUnlimitedCommands(): Boolean{
+        return database.userDao().getUser().hasPurchasedUnlimitedCommands
     }
 
     suspend fun insertCurrentUser(user: User){
@@ -43,6 +46,10 @@ class LocalDataSource(
     }
 
     fun getCommandsFlow(): Flow<List<Command>> {
+        return database.commandDao().getCommandsFlow()
+    }
+
+    fun getCommands(): List<Command> {
         return database.commandDao().getCommands()
     }
 

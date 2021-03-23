@@ -3,14 +3,16 @@ package com.middleton.scott.cmboxing.ui.login
 import androidx.core.util.PatternsCompat
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.middleton.scott.cmboxing.datasource.DataRepository
 import com.middleton.scott.cmboxing.datasource.local.model.User
 import com.middleton.scott.cmboxing.datasource.remote.ResponseData
 import com.middleton.scott.cmboxing.other.Constants.MIN_PASSWORD_LENGTH
+import kotlinx.coroutines.launch
 
 class CreateAccountViewModel(private val dataRepository: DataRepository) : ViewModel() {
 
-    var user = UserVMModel("", "", "", "")
+    var user = UserVMModel("", "", "", "", false)
 
     val createAccountResponseLD = MutableLiveData<ResponseData>()
     val addUserResponseLD = MutableLiveData<ResponseData>()
@@ -44,9 +46,23 @@ class CreateAccountViewModel(private val dataRepository: DataRepository) : ViewM
     }
 
     fun addUser(firstName: String, lastName: String, email: String) {
-        dataRepository.addUserToFireStore(User(email, firstName, lastName), addUserResponseLD)
+        dataRepository.userHasPurchasedUnlimitedCommands {
+            val hasPurchasedUnlimitedCommands = it
+            viewModelScope.launch {
+                dataRepository.addUser(
+                    User(email, firstName, lastName, hasPurchasedUnlimitedCommands),
+                    addUserResponseLD
+                )
+            }
+        }
     }
 
-    data class UserVMModel(var email: String, var first: String, var last: String, var password: String)
+    data class UserVMModel(
+        var email: String,
+        var first: String,
+        var last: String,
+        var password: String,
+        var hasPurchasedUnlimitedCommands: Boolean
+    )
 
 }
