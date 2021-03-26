@@ -160,13 +160,13 @@ class CreateAccountScreen : Fragment() {
     private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
         try {
             val account = completedTask.getResult(ApiException::class.java)
-            viewModel.addUser(account?.givenName?: "", account?.familyName?: "", account?.email?: "")
+            viewModel.insertCurrentUser(account?.givenName?: "", account?.familyName?: "", account?.email?: "")
         } catch (e: ApiException) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
             Log.w("TAG", "signInResult:failed code=" + e.statusCode)
             Toast.makeText(
-                requireContext(), e.localizedMessage,
+                requireContext(), getString(R.string.google_sign_in_error),
                 Toast.LENGTH_LONG
             ).show()
         }

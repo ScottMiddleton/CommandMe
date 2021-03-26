@@ -31,7 +31,7 @@ class RemoteDataSource {
             }
     }
 
-    fun signIn(
+    fun signInWithEmailPassword(
         email: String,
         password: String,
         callback: CallbackWithError<Boolean, String?>
@@ -61,6 +61,17 @@ class RemoteDataSource {
             }
     }
 
+    fun updateUserPurchasedUnlimitedCommands(user: User) {
+        val userHashMap = hashMapOf(
+            "email" to user.email,
+            "first" to user.first,
+            "last" to user.last,
+            "hasPurchasedUnlimitedCommands" to user.hasPurchasedUnlimitedCommands
+        )
+        db.collection("users").document(user.email)
+            .set(userHashMap)
+    }
+
     fun getUserByEmail(email: String, callback: CallbackWithError<User, String?>) {
         val docRef = db.collection("users").document(email)
 
@@ -77,7 +88,7 @@ class RemoteDataSource {
                 }
             }
             .addOnFailureListener {
-                callback.onError(it.localizedMessage)
+                callback.onError(it.message)
             }
     }
 

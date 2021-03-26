@@ -42,13 +42,13 @@ android {
 
     buildTypes {
         release {
-            debuggable true
+            debuggable false
             minifyEnabled false
             signingConfig signingConfigs.command_me_signing_config
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
         debug {
-            debuggable true
+            debuggable false
             minifyEnabled false
             applicationIdSuffix '.debug'
         }

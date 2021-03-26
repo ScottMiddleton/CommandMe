@@ -5,8 +5,6 @@ import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import android.app.Dialog
 import android.content.Context
 import android.content.pm.PackageManager
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.*
 import android.view.View.*
@@ -18,7 +16,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat.checkSelfPermission
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.DialogFragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import com.middleton.scott.cmboxing.MainActivity
 import com.middleton.scott.cmboxing.R
@@ -50,8 +47,7 @@ class RecordCommandDialogFragment(commandId: Long) : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val root = RelativeLayout(activity)
         // creating the fullscreen dialog
-        val dialog = Dialog(MainActivity.instance)
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        val dialog = Dialog(MainActivity.instance, R.style.FullScreenDialog)
         dialog.setContentView(root)
         dialog.window?.setLayout(
             ViewGroup.LayoutParams.MATCH_PARENT,

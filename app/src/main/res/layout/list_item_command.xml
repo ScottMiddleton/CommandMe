@@ -85,6 +85,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="12dp"
             android:layout_gravity="end"
+            android:buttonTint="@color/white_faded_70"
             android:minWidth="0dp"
             android:minHeight="0dp"
             android:scaleX="1.1"

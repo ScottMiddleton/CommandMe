@@ -26,6 +26,10 @@ class LocalDataSource(
        return database.userDao().getUserLD()
     }
 
+    fun getCurrentUser() : User {
+        return database.userDao().getUser()
+    }
+
     fun userHasPurchasedUnlimitedCommands(): Boolean{
         return database.userDao().getUser().hasPurchasedUnlimitedCommands
     }

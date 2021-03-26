@@ -8,27 +8,12 @@ import com.middleton.scott.cmboxing.other.Constants
 
 lateinit var billingClient: BillingClient
 
-fun Activity.setUpBillingClient() {
+fun Activity.setUpBillingClient(purchaseUpdateListener: PurchasesUpdatedListener) {
     billingClient = BillingClient.newBuilder(this)
         .setListener(purchaseUpdateListener)
         .enablePendingPurchases()
         .build()
 }
-
-private val purchaseUpdateListener =
-    PurchasesUpdatedListener { billingResult, purchases ->
-        Log.v("TAG_INAPP", "billingResult responseCode : ${billingResult.responseCode}")
-
-        if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
-            for (purchase in purchases) {
-                handleNonConsumablePurchase(purchase)
-            }
-        } else if (billingResult.responseCode == BillingClient.BillingResponseCode.USER_CANCELED) {
-            // Handle an error caused by a user cancelling the purchase flow.
-        } else {
-            // Handle any other error codes.
-        }
-    }
 
 fun startConnectionForProducts(onSkuDetailsListResponse: ((List<SkuDetails>)) -> Unit) {
     billingClient.startConnection(object : BillingClientStateListener {
@@ -94,24 +79,6 @@ fun Fragment.launchBillingFlow(skuDetails: SkuDetails) {
         ).responseCode
 
         billingClient.launchBillingFlow(it, billingFlowParams)
-    }
-}
-
-private fun handleNonConsumablePurchase(purchase: Purchase) {
-    Log.v("TAG_INAPP", "handlePurchase : $purchase")
-    if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
-        if (!purchase.isAcknowledged) {
-            val acknowledgePurchaseParams = AcknowledgePurchaseParams.newBuilder()
-                .setPurchaseToken(purchase.purchaseToken).build()
-            billingClient.acknowledgePurchase(acknowledgePurchaseParams) { billingResult ->
-                val billingResponseCode = billingResult.responseCode
-                val billingDebugMessage = billingResult.debugMessage
-
-                Log.v("TAG_INAPP", "response code: $billingResponseCode")
-                Log.v("TAG_INAPP", "debugMessage : $billingDebugMessage")
-
-            }
-        }
     }
 }
 

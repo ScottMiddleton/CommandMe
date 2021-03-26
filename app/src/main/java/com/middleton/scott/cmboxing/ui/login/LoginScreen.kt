@@ -20,7 +20,6 @@ import com.google.android.gms.tasks.Task
 import com.middleton.scott.cmboxing.R
 import com.middleton.scott.cmboxing.other.Constants.GOOGLE_SIGN_IN
 import com.middleton.scott.cmboxing.utils.hideKeyboard
-import kotlinx.android.synthetic.main.fragment_create_account_screen.*
 import kotlinx.android.synthetic.main.fragment_login_screen.*
 import kotlinx.android.synthetic.main.fragment_login_screen.create_account_btn
 import kotlinx.android.synthetic.main.fragment_login_screen.email_et
@@ -55,7 +54,7 @@ class LoginScreen : Fragment() {
             hideKeyboard()
             login_progress_bar.visibility = VISIBLE
             login_btn.text = ""
-            viewModel.login()
+            viewModel.signInWithEmailPassword()
         }
 
         google_login_btn.setOnClickListener {
@@ -170,7 +169,7 @@ class LoginScreen : Fragment() {
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
             Log.w("TAG", "signInResult:failed code=" + e.statusCode)
             Toast.makeText(
-                requireContext(), e.message,
+                requireContext(), getString(R.string.google_sign_in_error),
                 Toast.LENGTH_LONG
             ).show()
             google_login_progress_bar.visibility = GONE

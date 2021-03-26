@@ -2,6 +2,7 @@ package com.middleton.scott.cmboxing
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -17,11 +18,13 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.android.billingclient.api.AcknowledgePurchaseParams
+import com.android.billingclient.api.BillingClient
+import com.android.billingclient.api.Purchase
+import com.android.billingclient.api.PurchasesUpdatedListener
 import com.google.android.material.navigation.NavigationView
 import com.middleton.scott.cmboxing.other.Constants.ACTION_SHOW_WORKOUT_SCREEN
-import com.middleton.scott.cmboxing.utils.DialogManager
-import com.middleton.scott.cmboxing.utils.hideKeyboard
-import com.middleton.scott.cmboxing.utils.setUpBillingClient
+import com.middleton.scott.cmboxing.utils.*
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -33,6 +36,21 @@ class MainActivity : AppCompatActivity() {
 
     private val viewModel: MainViewModel by viewModel()
 
+    private val purchaseUpdateListener =
+        PurchasesUpdatedListener { billingResult, purchases ->
+            Log.v("TAG_INAPP", "billingResult responseCode : ${billingResult.responseCode}")
+
+            if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
+                for (purchase in purchases) {
+                    handleNonConsumablePurchase(purchase)
+                }
+            } else if (billingResult.responseCode == BillingClient.BillingResponseCode.USER_CANCELED) {
+                // Handle an error caused by a user cancelling the purchase flow.
+            } else {
+                // Handle any other error codes.
+            }
+        }
+
     companion object {
         var currentWorkoutId = -1L
         lateinit var instance: MainActivity
@@ -40,12 +58,30 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setUpBillingClient()
+        setUpBillingClient(purchaseUpdateListener)
         instance = this
         setContentView(R.layout.activity_main)
         setupNavigationMenu()
         navigateToWorkoutScreenIfNeeded(intent)
+    }
 
+    fun handleNonConsumablePurchase(purchase: Purchase) {
+        Log.v("TAG_INAPP", "handlePurchase : $purchase")
+        if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
+            if (!purchase.isAcknowledged) {
+                val acknowledgePurchaseParams = AcknowledgePurchaseParams.newBuilder()
+                    .setPurchaseToken(purchase.purchaseToken).build()
+                billingClient.acknowledgePurchase(acknowledgePurchaseParams) { billingResult ->
+                    val billingResponseCode = billingResult.responseCode
+                    val billingDebugMessage = billingResult.debugMessage
+
+                    Log.v("TAG_INAPP", "response code: $billingResponseCode")
+                    Log.v("TAG_INAPP", "debugMessage : $billingDebugMessage")
+
+                    viewModel.updateUserPurchasedUnlimitedCommands()
+                }
+            }
+        }
     }
 
     private fun setupNavigationMenu() {
@@ -186,4 +222,5 @@ class MainActivity : AppCompatActivity() {
             nav_host_fragment.findNavController().navigate(R.id.action_global_workout_screen)
         }
     }
+
 }

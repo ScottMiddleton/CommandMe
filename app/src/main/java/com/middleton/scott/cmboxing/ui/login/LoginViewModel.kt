@@ -22,12 +22,12 @@ class LoginViewModel(private val dataRepository: DataRepository) : ViewModel() {
     val passwordValidLD = MutableLiveData<Boolean>()
     val emailValidLD = MutableLiveData<Boolean>()
 
-    fun login() {
+    fun signInWithEmailPassword() {
         loginAttempted = true
         validate()
         if (emailValidLD.value == true && passwordValidLD.value == true) {
             viewModelScope.launch {
-                dataRepository.signIn(email, password, signInResponseLD)
+                dataRepository.signInWithEmailPassword(email, password, signInResponseLD)
             }
         }
     }
@@ -45,17 +45,15 @@ class LoginViewModel(private val dataRepository: DataRepository) : ViewModel() {
     fun addUser(firstName: String, lastName: String, email: String) {
         dataRepository.userHasPurchasedUnlimitedCommands {
             val hasPurchasedUnlimitedCommands = it
-            viewModelScope.launch {
-                dataRepository.addUser(
-                    User(
-                        email,
-                        firstName,
-                        lastName,
-                        hasPurchasedUnlimitedCommands
-                    ), addUserResponseLD
-                )
-            }
+            val user = User(
+                email,
+                firstName,
+                lastName,
+                hasPurchasedUnlimitedCommands
+            )
+            viewModelScope.launch { dataRepository.insertCurrentUser(user) }
+            dataRepository.addUserToFirestore(user)
+            addUserResponseLD.value = ResponseData(true)
         }
-
     }
 }

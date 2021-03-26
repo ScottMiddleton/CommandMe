@@ -9,8 +9,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:animateLayoutChanges="true"
-        android:background="@color/primaryBackground">
+        android:animateLayoutChanges="true">
 
         <include
             android:id="@+id/app_bar"
@@ -99,7 +98,8 @@
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                        android:layout_height="match_parent"
+                        android:background="@drawable/rounded_stroke_background_dark">
 
                         <TextView
                             android:id="@+id/command_audio_tv"

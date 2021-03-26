@@ -45,15 +45,14 @@ class CreateAccountViewModel(private val dataRepository: DataRepository) : ViewM
         }
     }
 
-    fun addUser(firstName: String, lastName: String, email: String) {
+    fun insertCurrentUser(firstName: String, lastName: String, email: String) {
         dataRepository.userHasPurchasedUnlimitedCommands {
             val hasPurchasedUnlimitedCommands = it
+            val user = User(email, firstName, lastName, hasPurchasedUnlimitedCommands)
             viewModelScope.launch {
-                dataRepository.addUser(
-                    User(email, firstName, lastName, hasPurchasedUnlimitedCommands),
-                    addUserResponseLD
-                )
+                dataRepository.insertCurrentUser(user)
             }
+            dataRepository.addUserToFirestore(user)
         }
     }
 

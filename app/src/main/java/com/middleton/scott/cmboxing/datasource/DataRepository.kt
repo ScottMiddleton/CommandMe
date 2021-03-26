@@ -1,7 +1,6 @@
 package com.middleton.scott.cmboxing.datasource
 
 import androidx.lifecycle.MutableLiveData
-import com.android.billingclient.api.PurchaseHistoryRecord
 import com.middleton.scott.cmboxing.datasource.local.LocalDataSource
 import com.middleton.scott.cmboxing.datasource.local.model.Command
 import com.middleton.scott.cmboxing.datasource.local.model.User
@@ -13,7 +12,6 @@ import com.middleton.scott.cmboxing.ui.login.CreateAccountViewModel
 import com.middleton.scott.cmboxing.utils.startConnectionPurchaseHistory
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-
 
 class DataRepository(
     private val localDataSource: LocalDataSource,
@@ -37,17 +35,18 @@ class DataRepository(
 
                     userHasPurchasedUnlimitedCommands {
                         val hasPurchasedUnlimitedCommands = it
+                        val user = User(
+                            userVMModel.email,
+                            userVMModel.first,
+                            userVMModel.last,
+                            hasPurchasedUnlimitedCommands
+                        )
 
                         GlobalScope.launch {
-                            addUser(
-                                User(
-                                    userVMModel.email,
-                                    userVMModel.first,
-                                    userVMModel.last,
-                                    hasPurchasedUnlimitedCommands
-                                ), responseLD
-                            )
+                            insertCurrentUser(user)
                         }
+
+                        addUserToFirestore(user)
                     }
                     responseLD.postValue(ResponseData(success = true))
                 }
@@ -60,21 +59,27 @@ class DataRepository(
         )
     }
 
-    suspend fun addUser(user: User, responseLD: MutableLiveData<ResponseData>?) {
+    suspend fun insertCurrentUser(user: User) {
         localDataSource.insertCurrentUser(user)
+    }
+
+    fun addUserToFirestore(user: User) {
         remoteDataSource.addUserToFirestore(
             user,
             object : RemoteDataSource.CallbackWithError<Boolean, String?> {
                 override fun onSuccess(model: Boolean) {
-                    GlobalScope.launch {
-                        responseLD?.postValue(ResponseData(true))
-                    }
                 }
 
                 override fun onError(error: String?) {
-                    responseLD?.postValue(ResponseData(errorString = error))
                 }
             })
+    }
+
+    suspend fun updateUserPurchaseUnlimitedCommands() {
+        val user = localDataSource.getCurrentUser()
+        user.hasPurchasedUnlimitedCommands = true
+        localDataSource.insertCurrentUser(user)
+        remoteDataSource.updateUserPurchasedUnlimitedCommands(user)
     }
 
     fun userHasPurchasedUnlimitedCommands(onPurchasedResponse: ((hasPurchased: Boolean) -> Unit)) {
@@ -94,13 +99,11 @@ class DataRepository(
         localDataSource.userIsLoggedIn = false
     }
 
-    fun signIn(email: String, password: String, responseLD: MutableLiveData<ResponseData>) {
-        remoteDataSource.signIn(email,
+    fun signInWithEmailPassword(email: String, password: String, responseLD: MutableLiveData<ResponseData>) {
+        remoteDataSource.signInWithEmailPassword(email,
             password,
             object : RemoteDataSource.CallbackWithError<Boolean, String?> {
                 override fun onSuccess(model: Boolean) {
-                    localDataSource.userIsLoggedIn = true
-
                     GlobalScope.launch {
                         remoteDataSource.getUserByEmail(
                             email,
@@ -108,12 +111,14 @@ class DataRepository(
                                 override fun onSuccess(model: User) {
                                     userHasPurchasedUnlimitedCommands {
                                         val hasPurchasedUnlimitedCommands = it
+                                        model.hasPurchasedUnlimitedCommands =
+                                            hasPurchasedUnlimitedCommands
                                         GlobalScope.launch {
-                                            model.hasPurchasedUnlimitedCommands = hasPurchasedUnlimitedCommands
-                                            addUser(model, null)
-                                            responseLD.postValue(ResponseData(success = true))
+                                            insertCurrentUser(model)
                                         }
+                                        addUserToFirestore(model)
                                     }
+                                    responseLD.postValue(ResponseData(success = true))
                                 }
 
                                 override fun onError(error: String?) {

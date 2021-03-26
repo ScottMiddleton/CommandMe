@@ -34,7 +34,7 @@ class SplashScreen : Fragment() {
         object : CountDownTimer(2000, 1000){
             override fun onFinish() {
                 val currentUser = auth.currentUser
-                val account = GoogleSignIn.getLastSignedInAccount(context)
+                val account = GoogleSignIn.getLastSignedInAccount(view.context)
 
                 if(currentUser != null || account != null){
                     val action = SplashScreenDirections.actionSplashFragmentToWorkoutsScreen()
