@@ -41,6 +41,7 @@ class RandomWorkoutScreenViewModel(
     private val intensity = workoutWithCommands.workout?.intensity
 
     var workoutHasPreparation = preparationTimeSecs > 0
+    var workoutHasRest = restTimeSecs > 0
 
     private var millisRemainingAtPause: Long = 0
     private var millisUntilNextCombination: Int = 0
@@ -166,8 +167,13 @@ class RandomWorkoutScreenViewModel(
                         }
 
                         WorkoutState.WORK -> {
-                            initWorkoutState(WorkoutState.REST)
-                            playEndBellLD.value = true
+                            if (workoutHasRest) {
+                                initWorkoutState(WorkoutState.REST)
+                                playEndBellLD.value = true
+                            } else {
+                                setCurrentRound(currentRound + 1)
+                                initWorkoutState(WorkoutState.WORK)
+                            }
                         }
 
                         WorkoutState.REST -> {
@@ -244,7 +250,16 @@ class RandomWorkoutScreenViewModel(
             WorkoutState.WORK -> {
                 roundProgress = getCountdownProgressBarMax(WorkoutState.WORK)
                 _roundProgressLD.value = roundProgress
-                initWorkoutState(WorkoutState.REST)
+                if (workoutHasRest) {
+                    initWorkoutState(WorkoutState.REST)
+                } else {
+                    if (currentRound >= numberOfRounds) {
+                        onComplete()
+                    } else {
+                        setCurrentRound(currentRound + 1)
+                        initWorkoutState(WorkoutState.WORK)
+                    }
+                }
             }
 
             WorkoutState.REST -> {
@@ -281,11 +296,17 @@ class RandomWorkoutScreenViewModel(
                     initWorkoutState(WorkoutState.WORK)
                     restartOnPrevious = false
                 } else {
-                    setCurrentRound(currentRound - 1)
+                    if (currentRound > 1) {
+                        setCurrentRound(currentRound - 1)
+                    }
                     if (currentRound < 1 && workoutHasPreparation) {
                         initWorkoutState(WorkoutState.PREPARE)
                     } else {
-                        initWorkoutState(WorkoutState.REST)
+                        if (workoutHasRest) {
+                            initWorkoutState(WorkoutState.REST)
+                        } else {
+                            initWorkoutState(WorkoutState.WORK)
+                        }
                     }
                 }
             }

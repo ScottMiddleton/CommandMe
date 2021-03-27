@@ -304,8 +304,8 @@ class StructuredWorkoutScreenViewModel(
                             // If first command in workout
                             initWorkoutState(WorkoutState.PREPARE)
                         }
-                        currentCommandCrossRefIndex != 0 && currentCommandCrossRef.position_index == 0 -> {
-                            // If first command in round
+                        currentCommandCrossRefIndex != 0 && currentCommandCrossRef.position_index == 0 && workoutHasRest-> {
+                            // If first command in round and workout has rest between rounds
                             _currentRoundLD.value = _currentRoundLD.value!! - 1
                             initWorkoutState(WorkoutState.REST)
                         }

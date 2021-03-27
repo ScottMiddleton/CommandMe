@@ -48,7 +48,8 @@ class RandomWorkoutScreen : BaseFragment() {
         sendCommandToService(ACTION_START_OR_RESUME_RANDOM_SERVICE)
         initRoundProgressView()
         (activity as MainActivity).supportActionBar?.title = viewModel.workoutName
-        viewModel.audioFileBaseDirectory = view.context.getExternalFilesDir(null)?.absolutePath + "/"
+        viewModel.audioFileBaseDirectory =
+            view.context.getExternalFilesDir(null)?.absolutePath + "/"
         total_rounds_count_tv.text = viewModel.getTotalRounds().toString()
         remaining_tv.text = DateTimeUtils.toMinuteSeconds(viewModel.totalWorkoutSecs)
         subscribeUI()
@@ -88,9 +89,13 @@ class RandomWorkoutScreen : BaseFragment() {
         })
 
         viewModel.roundProgressLD.observe(viewLifecycleOwner, Observer {
-            val seekbar = round_progress_ll.getChildAt(viewModel.getCurrentRound() - 1) as SeekBar
-            seekbar.thumb.mutate().alpha = 255
-            seekbar.progress = it
+            val currentRound = viewModel.getCurrentRound()
+            if (currentRound >= 1 && currentRound <= viewModel.getTotalRounds()) {
+                val seekbar =
+                    round_progress_ll.getChildAt(viewModel.getCurrentRound() - 1) as SeekBar
+                seekbar.thumb.mutate().alpha = 255
+                seekbar.progress = it
+            }
         })
 
         viewModel.totalSecondsElapsedLD.observe(viewLifecycleOwner, Observer {
@@ -186,7 +191,6 @@ class RandomWorkoutScreen : BaseFragment() {
             start_workout_lottie.playAnimation()
         }
     }
-
 
 
     private fun initRoundProgressView() {

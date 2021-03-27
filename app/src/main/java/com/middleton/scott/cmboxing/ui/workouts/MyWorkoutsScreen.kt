@@ -22,7 +22,6 @@ import com.middleton.scott.cmboxing.ui.createworkout.WorkoutType
 import com.middleton.scott.cmboxing.utils.DialogManager
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import kotlinx.android.synthetic.main.fragment_my_workouts.*
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MyWorkoutsScreen : BaseFragment() {
@@ -51,7 +50,7 @@ class MyWorkoutsScreen : BaseFragment() {
                     DialogManager.showDialog(
                         context = requireContext(),
                         messageId = R.string.no_command_dialog_message,
-                        positiveBtnTextId = R.string.exit,
+                        positiveBtnTextId = R.string.dismiss,
                         positiveBtnClick = {
                         },
                         negativeBtnTextId = R.string.ok,
@@ -113,7 +112,7 @@ class MyWorkoutsScreen : BaseFragment() {
                 DialogManager.showDialog(
                     context = requireContext(),
                     messageId = R.string.empty_rounds_on_begin_workout_dialog_message,
-                    positiveBtnTextId = R.string.exit,
+                    positiveBtnTextId = R.string.dismiss,
                     positiveBtnClick = {},
                     negativeBtnTextId = R.string.ok,
                     negativeBtnClick = {

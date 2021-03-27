@@ -110,7 +110,7 @@ class TabFragmentOne : BaseFragment() {
 
         preparation_time_et.setOnClickListener {
             NumberPickerMinutesSecondsDialog(
-                getString(R.string.preparation_time),
+                getString(R.string.preparation_length),
                 viewModel.workout.preparation_time_secs,
                 { seconds ->
                     viewModel.setPreparationTime(seconds)

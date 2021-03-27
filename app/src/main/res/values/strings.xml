@@ -4,14 +4,14 @@
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
     <string name="commands">Commands</string>
-    <string name="my_workouts">My Workouts</string>
+    <string name="my_workouts">Workouts</string>
     <string name="close">Close</string>
     <string name="stats">Stats</string>
     <string name="add_workout">Add Workout</string>
     <string name="your_presets">Your presets</string>
     <string name="workout_information">Workout Information</string>
     <string name="workout_name">Workout Name</string>
-    <string name="preparation_time">Preparation Time</string>
+    <string name="preparation_length">Preparation Length</string>
     <string name="round_length">Round Length</string>
     <string name="intensity">Intensity</string>
     <string name="rest_between_rounds">Rest Between Rounds</string>
@@ -72,7 +72,7 @@
     <string name="add_a_command_and_it_will_show_up_here">Add a command and it will show up here.</string>
     <string name="create_a_workout">Create a Workout!</string>
     <string name="record_a_command">Record a command!</string>
-    <string name="exit">Exit</string>
+    <string name="dismiss">Dismiss</string>
     <string name="no_command_dialog_message">Please add commands to begin this workout.</string>
     <string name="empty_rounds_dialog_message">Some of your rounds do not contain commands. Please add at least one command to each round to save this workout.</string>
     <string name="empty_rounds_on_begin_workout_dialog_message">Some of your rounds do not contain commands. Please add at least one command to each round to begin this workout.</string>
