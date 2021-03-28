@@ -44,7 +44,6 @@ class LoginScreen : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         setClickListeners()
         subscribeUI()
     }
@@ -95,7 +94,7 @@ class LoginScreen : Fragment() {
             if (it.success) {
                 hideKeyboard()
                 val action =
-                    LoginScreenDirections.actionLoginScreenToMyWorkoutsScreen()
+                    LoginScreenDirections.actionLoginScreenToMyWorkoutsScreen(true)
                 findNavController().navigate(
                     action
                 )
@@ -113,7 +112,7 @@ class LoginScreen : Fragment() {
             if (it.success) {
                 hideKeyboard()
                 val action =
-                    LoginScreenDirections.actionLoginScreenToMyWorkoutsScreen()
+                    LoginScreenDirections.actionLoginScreenToMyWorkoutsScreen(true)
                 findNavController().navigate(
                     action
                 )

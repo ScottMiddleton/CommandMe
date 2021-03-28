@@ -71,4 +71,8 @@ class WorkoutsViewModel(private val dataRepository: DataRepository) : ViewModel(
             workoutValidatedLD.value = response
         }
     }
+
+    fun userHasPurchasedUnlimitedCommands(): Boolean {
+        return dataRepository.getLocalDataSource().userHasPurchasedUnlimitedCommands()
+    }
 }

@@ -3,6 +3,7 @@ package com.middleton.scott.cmboxing.ui.workouts
 import android.graphics.Canvas
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -14,17 +15,22 @@ import androidx.core.content.ContextCompat
 import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.middleton.scott.cmboxing.R
+import com.middleton.scott.cmboxing.billing.PurchasePremiumDialog
 import com.middleton.scott.cmboxing.ui.base.BaseFragment
 import com.middleton.scott.cmboxing.ui.createworkout.WorkoutType
 import com.middleton.scott.cmboxing.utils.DialogManager
+import com.middleton.scott.cmboxing.utils.launchBillingFlow
+import com.middleton.scott.cmboxing.utils.startConnectionForProducts
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import kotlinx.android.synthetic.main.fragment_my_workouts.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MyWorkoutsScreen : BaseFragment() {
+    private val args: MyWorkoutsScreenArgs by navArgs()
     private val viewModel: WorkoutsViewModel by viewModel()
     private lateinit var adapter: WorkoutsAdapter
     var undoSnackbarVisible = false
@@ -84,6 +90,23 @@ class MyWorkoutsScreen : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        if (args.navFromLogin) {
+            if (!viewModel.userHasPurchasedUnlimitedCommands()) {
+                startConnectionForProducts {
+                    for (skuDetails in it) {
+                        Log.v("TAG_INAPP", "skuDetailsList : $it")
+                        //This list should contain the products added above
+                        PurchasePremiumDialog(skuDetails.title, skuDetails.description) {
+                            launchBillingFlow(skuDetails)
+                        }.show(
+                            childFragmentManager,
+                            ""
+                        )
+                    }
+                }
+            }
+        }
+
         viewModel.workoutValidatedLD.observe(viewLifecycleOwner, Observer {
             if (it == WORKOUT_VALID_TRUE) {
                 when (viewModel.previouslyClickedWorkout.workout_type) {
@@ -116,8 +139,9 @@ class MyWorkoutsScreen : BaseFragment() {
                     positiveBtnClick = {},
                     negativeBtnTextId = R.string.ok,
                     negativeBtnClick = {
-                        val action = MyWorkoutsScreenDirections.actionMyWorkoutsScreenToCreateWorkoutScreen(
-                            viewModel.previouslyClickedWorkout.id, false
+                        val action =
+                            MyWorkoutsScreenDirections.actionMyWorkoutsScreenToCreateWorkoutScreen(
+                                viewModel.previouslyClickedWorkout.id, false
                             )
 
                         findNavController().navigate(

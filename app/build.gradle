@@ -27,8 +27,8 @@ android {
         applicationId "com.middleton.scott.cmboxing"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 3
-        versionName "1.0.1"
+        versionCode 4
+        versionName "1.0.2"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -42,7 +42,7 @@ android {
 
     buildTypes {
         release {
-            debuggable false
+            debuggable true
             minifyEnabled false
             signingConfig signingConfigs.command_me_signing_config
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'

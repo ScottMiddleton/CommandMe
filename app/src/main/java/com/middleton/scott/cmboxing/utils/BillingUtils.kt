@@ -82,6 +82,20 @@ fun Fragment.launchBillingFlow(skuDetails: SkuDetails) {
     }
 }
 
+fun Activity.launchBillingFlow(skuDetails: SkuDetails) {
+    val billingFlowParams = BillingFlowParams.newBuilder()
+        .setSkuDetails(skuDetails)
+        .build()
+    this.let {
+        billingClient.launchBillingFlow(
+            it,
+            billingFlowParams
+        ).responseCode
+
+        billingClient.launchBillingFlow(it, billingFlowParams)
+    }
+}
+
 private fun queryPurchaseHistory(onPurchaseListResponse: ((List<PurchaseHistoryRecord>)) -> Unit) {
     billingClient.queryPurchaseHistoryAsync(
         BillingClient.SkuType.INAPP

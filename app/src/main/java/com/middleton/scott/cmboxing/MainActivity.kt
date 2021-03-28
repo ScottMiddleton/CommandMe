@@ -7,10 +7,14 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
+import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
@@ -23,9 +27,12 @@ import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.PurchasesUpdatedListener
 import com.google.android.material.navigation.NavigationView
+import com.middleton.scott.cmboxing.billing.PurchasePremiumDialog
 import com.middleton.scott.cmboxing.other.Constants.ACTION_SHOW_WORKOUT_SCREEN
 import com.middleton.scott.cmboxing.utils.*
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.menu_header.*
+import kotlinx.android.synthetic.main.menu_header.view.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
@@ -63,6 +70,18 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setupNavigationMenu()
         navigateToWorkoutScreenIfNeeded(intent)
+
+        viewModel.getUserLD().observe(this, Observer {
+            if (it != null) {
+                if (it.hasPurchasedUnlimitedCommands) {
+                    showPremiumMenuItem(false)
+                    nav_view.getHeaderView(0).premium_tv.visibility = VISIBLE
+                } else {
+                    showPremiumMenuItem(true)
+                    nav_view.getHeaderView(0).premium_tv.visibility = GONE
+                }
+            }
+        })
     }
 
     fun handleNonConsumablePurchase(purchase: Purchase) {
@@ -113,7 +132,7 @@ class MainActivity : AppCompatActivity() {
         navController.addOnDestinationChangedListener { _, destination, _ ->
             setupMenuVisibility(topLevelMenuDestinations.contains(destination.id))
 
-            when(destination.id){
+            when (destination.id) {
                 R.id.randomWorkoutScreen -> {
                     menu?.setGroupVisible(R.id.workout_menu, true)
                     supportActionBar?.setDisplayShowCustomEnabled(false)
@@ -149,7 +168,8 @@ class MainActivity : AppCompatActivity() {
                     supportActionBar?.setDisplayShowTitleEnabled(false)
                     val view: View = layoutInflater.inflate(R.layout.appbar_create_workout, null)
                     supportActionBar?.customView = view
-                    val parent: androidx.appcompat.widget.Toolbar = view.parent as androidx.appcompat.widget.Toolbar
+                    val parent: androidx.appcompat.widget.Toolbar =
+                        view.parent as androidx.appcompat.widget.Toolbar
                     parent.setContentInsetsAbsolute(0, 0)
                 }
                 R.id.myWorkoutsScreen -> {
@@ -164,6 +184,24 @@ class MainActivity : AppCompatActivity() {
                     supportActionBar?.setDisplayShowTitleEnabled(true)
                 }
             }
+
+            nav_view.menu.findItem(R.id.premium)
+                .setOnMenuItemClickListener {
+                    startConnectionForProducts {
+                        for (skuDetails in it) {
+                            Log.v("TAG_INAPP", "skuDetailsList : $it")
+                            //This list should contain the products added above
+                            PurchasePremiumDialog(skuDetails.title, skuDetails.description) {
+                                launchBillingFlow(skuDetails)
+                            }.show(
+                                supportFragmentManager,
+                                ""
+                            )
+                        }
+                    }
+                    drawer_layout.closeDrawer(GravityCompat.START)
+                    true
+                }
         }
 
         drawer_layout.addDrawerListener(object : DrawerLayout.DrawerListener {
@@ -223,4 +261,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun showPremiumMenuItem(show: Boolean) {
+        nav_view.menu.findItem(R.id.premium).isVisible = show
+    }
 }

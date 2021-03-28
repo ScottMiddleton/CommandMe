@@ -148,4 +148,7 @@
     <string name="copy">Copy</string>
     <string name="search">Search</string>
     <string name="google_sign_in_error">There was an error signing in with your google account, please check your internet connection and try again</string>
+    <string name="preview_upgrade">Preview upgrade</string>
+    <string name="premium_upgrade">Premium upgrade</string>
+    <string name="premium">(Premium)</string>
 </resources>

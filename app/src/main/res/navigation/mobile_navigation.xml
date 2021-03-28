@@ -50,13 +50,16 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
+        <argument
+            android:name="navFromLogin"
+            android:defaultValue="false"
+            app:argType="boolean" />
     </fragment>
     <fragment
         android:id="@+id/commandsScreen"
         android:name="com.middleton.scott.cmboxing.ui.commands.CommandsScreen"
         android:label="@string/commands"
-        tools:layout="@layout/fragment_commands" >
-    </fragment>
+        tools:layout="@layout/fragment_commands"></fragment>
     <fragment
         android:id="@+id/createWorkoutScreen"
         android:name="com.middleton.scott.cmboxing.ui.createworkout.CreateWorkoutScreen"

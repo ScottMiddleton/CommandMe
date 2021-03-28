@@ -9,11 +9,8 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.annotation.Nullable
 import androidx.fragment.app.DialogFragment
-import com.android.billingclient.api.BillingFlowParams
-import com.android.billingclient.api.SkuDetails
 import com.middleton.scott.cmboxing.R
 import kotlinx.android.synthetic.main.dialog_premium_purchase.*
-import kotlinx.android.synthetic.main.dialog_workout_complete.*
 
 class PurchasePremiumDialog(
     private val title: String, private val description: String, private val onBuy: (() -> Unit),
@@ -32,7 +29,7 @@ class PurchasePremiumDialog(
             WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE
         )
 
-        dialog?.setCanceledOnTouchOutside(false)
+        dialog?.setCanceledOnTouchOutside(true)
 
         setClickListeners()
 
@@ -43,6 +40,10 @@ class PurchasePremiumDialog(
     private fun setClickListeners() {
         buy_tv.setOnClickListener {
             onBuy()
+            dismiss()
+        }
+
+        close_btn.setOnClickListener {
             dismiss()
         }
     }

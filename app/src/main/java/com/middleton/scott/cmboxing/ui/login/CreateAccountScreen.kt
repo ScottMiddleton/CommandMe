@@ -95,7 +95,7 @@ class CreateAccountScreen : Fragment() {
         viewModel.createAccountResponseLD.observe(viewLifecycleOwner, {
             if(it.success){
                 hideKeyboard()
-                val action = CreateAccountScreenDirections.actionCreateAccountScreenToWorkoutsScreen()
+                val action = CreateAccountScreenDirections.actionCreateAccountScreenToWorkoutsScreen(true)
                 findNavController().navigate(
                     action
                 )
@@ -110,7 +110,7 @@ class CreateAccountScreen : Fragment() {
             if (it.success) {
                 hideKeyboard()
                 val action =
-                    CreateAccountScreenDirections.actionCreateAccountScreenToWorkoutsScreen()
+                    CreateAccountScreenDirections.actionCreateAccountScreenToWorkoutsScreen(true)
                 findNavController().navigate(
                     action
                 )

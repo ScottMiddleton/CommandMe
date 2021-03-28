@@ -10,7 +10,6 @@ import com.middleton.scott.cmboxing.datasource.remote.ResponseData
 import kotlinx.coroutines.launch
 
 class LoginViewModel(private val dataRepository: DataRepository) : ViewModel() {
-
     var loginAttempted = false
 
     var email: String = ""
