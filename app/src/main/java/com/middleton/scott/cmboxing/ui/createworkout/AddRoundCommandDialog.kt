@@ -62,7 +62,7 @@ class AddRoundCommandDialog(
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
         val back = ColorDrawable(Color.TRANSPARENT)
-        val inset = InsetDrawable(back, 20, 40, 20, 40)
+        val inset = InsetDrawable(back, 40, 40, 40, 40)
         dialog?.window?.setBackgroundDrawable(inset)
 
         round_tv.text = getString(R.string.round_number, round.toString())

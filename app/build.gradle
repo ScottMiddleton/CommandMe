@@ -27,8 +27,8 @@ android {
         applicationId "com.middleton.scott.cmboxing"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 4
-        versionName "1.0.2"
+        versionCode 5
+        versionName "1.0.3"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -42,7 +42,7 @@ android {
 
     buildTypes {
         release {
-            debuggable true
+            debuggable false
             minifyEnabled false
             signingConfig signingConfigs.command_me_signing_config
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
@@ -155,4 +155,8 @@ dependencies {
 
     // billing
     implementation "com.android.billingclient:billing-ktx:$billing_version"
+
+    // Leak canary
+//    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.5'
+//    releaseImplementation 'com.squareup.leakcanary:leakcanary-android:2.5'
 }

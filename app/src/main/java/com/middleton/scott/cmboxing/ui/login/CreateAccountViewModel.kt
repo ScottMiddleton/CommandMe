@@ -45,14 +45,17 @@ class CreateAccountViewModel(private val dataRepository: DataRepository) : ViewM
         }
     }
 
-    fun insertCurrentUser(firstName: String, lastName: String, email: String) {
+    fun handleGoogleSignInResult(firstName: String, lastName: String, email: String) {
         dataRepository.userHasPurchasedUnlimitedCommands {
             val hasPurchasedUnlimitedCommands = it
-            val user = User(email, firstName, lastName, hasPurchasedUnlimitedCommands)
-            viewModelScope.launch {
-                dataRepository.insertCurrentUser(user)
-            }
-            dataRepository.addUserToFirestore(user)
+            val user = User(
+                email,
+                firstName,
+                lastName,
+                hasPurchasedUnlimitedCommands
+            )
+            viewModelScope.launch { dataRepository.insertCurrentUser(user) }
+            addUserResponseLD.value = ResponseData(true)
         }
     }
 

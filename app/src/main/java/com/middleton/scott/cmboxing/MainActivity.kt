@@ -191,7 +191,10 @@ class MainActivity : AppCompatActivity() {
                         for (skuDetails in it) {
                             Log.v("TAG_INAPP", "skuDetailsList : $it")
                             //This list should contain the products added above
-                            PurchasePremiumDialog(skuDetails.title, skuDetails.description) {
+
+                            // Had to add this to remove random new line google was adding
+                            val description = skuDetails.description.replace(" \n", " ")
+                            PurchasePremiumDialog(skuDetails.title, description) {
                                 launchBillingFlow(skuDetails)
                             }.show(
                                 supportFragmentManager,
@@ -263,5 +266,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun showPremiumMenuItem(show: Boolean) {
         nav_view.menu.findItem(R.id.premium).isVisible = show
+    }
+
+    override fun onDestroy() {
+        billingClient.endConnection()
+        super.onDestroy()
     }
 }

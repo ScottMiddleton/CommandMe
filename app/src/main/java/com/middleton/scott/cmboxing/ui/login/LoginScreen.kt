@@ -17,17 +17,12 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
 import com.middleton.scott.cmboxing.R
 import com.middleton.scott.cmboxing.other.Constants.GOOGLE_SIGN_IN
 import com.middleton.scott.cmboxing.utils.hideKeyboard
 import kotlinx.android.synthetic.main.fragment_login_screen.*
-import kotlinx.android.synthetic.main.fragment_login_screen.create_account_btn
-import kotlinx.android.synthetic.main.fragment_login_screen.email_et
-import kotlinx.android.synthetic.main.fragment_login_screen.email_til
-import kotlinx.android.synthetic.main.fragment_login_screen.google_login_btn
-import kotlinx.android.synthetic.main.fragment_login_screen.google_login_progress_bar
-import kotlinx.android.synthetic.main.fragment_login_screen.password_et
-import kotlinx.android.synthetic.main.fragment_login_screen.password_til
 import org.koin.android.ext.android.inject
 
 
@@ -53,12 +48,13 @@ class LoginScreen : Fragment() {
             hideKeyboard()
             login_progress_bar.visibility = VISIBLE
             login_btn.text = ""
-            viewModel.signInWithEmailPassword()
+            viewModel.authSignInWithEmailPassword()
         }
 
         google_login_btn.setOnClickListener {
             hideKeyboard()
             val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build()
 
@@ -162,7 +158,12 @@ class LoginScreen : Fragment() {
     private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
         try {
             val account = completedTask.getResult(ApiException::class.java)
-            viewModel.addUser(account?.givenName?: "", account?.familyName?: "", account?.email?: "")
+            viewModel.handleGoogleSignInResult(
+                account?.givenName ?: "",
+                account?.familyName ?: "",
+                account?.email ?: ""
+            )
+            firebaseAuthWithGoogle(account?.idToken!!)
         } catch (e: ApiException) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
@@ -174,5 +175,19 @@ class LoginScreen : Fragment() {
             google_login_progress_bar.visibility = GONE
             google_login_btn.text = getString(R.string.sign_in)
         }
+    }
+
+    private fun firebaseAuthWithGoogle(idToken: String) {
+        val credential = GoogleAuthProvider.getCredential(idToken, null)
+        FirebaseAuth.getInstance().signInWithCredential(credential)
+            .addOnCompleteListener(requireActivity()) { task ->
+                if (task.isSuccessful) {
+                    // Sign in success, update UI with the signed-in user's information
+                    Log.d("TAG", "signInWithCredential:success")
+                } else {
+                    // If sign in fails, display a message to the user.
+                    Log.w("TAG", "signInWithCredential:failure", task.exception)
+                }
+            }
     }
 }

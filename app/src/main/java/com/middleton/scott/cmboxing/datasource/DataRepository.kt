@@ -1,6 +1,7 @@
 package com.middleton.scott.cmboxing.datasource
 
 import androidx.lifecycle.MutableLiveData
+import com.google.firebase.auth.FirebaseAuth
 import com.middleton.scott.cmboxing.datasource.local.LocalDataSource
 import com.middleton.scott.cmboxing.datasource.local.model.Command
 import com.middleton.scott.cmboxing.datasource.local.model.User
@@ -31,8 +32,6 @@ class DataRepository(
             userVMModel.password,
             object : RemoteDataSource.CallbackWithError<Boolean, String?> {
                 override fun onSuccess(model: Boolean) {
-                    localDataSource.userIsLoggedIn = true
-
                     userHasPurchasedUnlimitedCommands {
                         val hasPurchasedUnlimitedCommands = it
                         val user = User(
@@ -45,14 +44,11 @@ class DataRepository(
                         GlobalScope.launch {
                             insertCurrentUser(user)
                         }
-
-                        addUserToFirestore(user)
                     }
                     responseLD.postValue(ResponseData(success = true))
                 }
 
                 override fun onError(error: String?) {
-                    localDataSource.userIsLoggedIn = false
                     responseLD.postValue(ResponseData(errorString = error))
                 }
             }
@@ -63,23 +59,13 @@ class DataRepository(
         localDataSource.insertCurrentUser(user)
     }
 
-    fun addUserToFirestore(user: User) {
-        remoteDataSource.addUserToFirestore(
-            user,
-            object : RemoteDataSource.CallbackWithError<Boolean, String?> {
-                override fun onSuccess(model: Boolean) {
-                }
-
-                override fun onError(error: String?) {
-                }
-            })
-    }
-
     suspend fun updateUserPurchaseUnlimitedCommands() {
         val user = localDataSource.getCurrentUser()
-        user.hasPurchasedUnlimitedCommands = true
-        localDataSource.insertCurrentUser(user)
-        remoteDataSource.updateUserPurchasedUnlimitedCommands(user)
+        user?.let {
+            it.hasPurchasedUnlimitedCommands = true
+            localDataSource.insertCurrentUser(it)
+            remoteDataSource.updateUserPurchasedUnlimitedCommands(it)
+        }
     }
 
     fun userHasPurchasedUnlimitedCommands(onPurchasedResponse: ((hasPurchased: Boolean) -> Unit)) {
@@ -96,40 +82,35 @@ class DataRepository(
 
     fun signOut() {
         remoteDataSource.signOut()
-        localDataSource.userIsLoggedIn = false
     }
 
-    fun signInWithEmailPassword(email: String, password: String, responseLD: MutableLiveData<ResponseData>) {
-        remoteDataSource.signInWithEmailPassword(email,
+    fun authSignInWithEmailPassword(
+        email: String,
+        password: String,
+        responseLD: MutableLiveData<ResponseData>
+    ) {
+        remoteDataSource.authSignInWithEmailPassword(email,
             password,
             object : RemoteDataSource.CallbackWithError<Boolean, String?> {
                 override fun onSuccess(model: Boolean) {
-                    GlobalScope.launch {
-                        remoteDataSource.getUserByEmail(
-                            email,
-                            object : RemoteDataSource.CallbackWithError<User, String?> {
-                                override fun onSuccess(model: User) {
-                                    userHasPurchasedUnlimitedCommands {
-                                        val hasPurchasedUnlimitedCommands = it
-                                        model.hasPurchasedUnlimitedCommands =
-                                            hasPurchasedUnlimitedCommands
-                                        GlobalScope.launch {
-                                            insertCurrentUser(model)
-                                        }
-                                        addUserToFirestore(model)
-                                    }
-                                    responseLD.postValue(ResponseData(success = true))
-                                }
+                    userHasPurchasedUnlimitedCommands {
+                        val authUser = FirebaseAuth.getInstance().currentUser
+                        if (authUser != null) {
+                            val user = authUser.email?.let { email ->
+                                User(
+                                    email = email,
+                                    hasPurchasedUnlimitedCommands = it
+                                )
+                            }
 
-                                override fun onError(error: String?) {
-                                    responseLD.postValue(ResponseData(errorString = error))
-                                }
-                            })
+                            GlobalScope.launch {
+                                user?.let { user -> insertCurrentUser(user) }
+                            }
+                        }
                     }
                 }
 
                 override fun onError(error: String?) {
-                    localDataSource.userIsLoggedIn = false
                     responseLD.postValue(ResponseData(errorString = error))
                 }
             })

@@ -12,7 +12,7 @@ abstract class UserDao: BaseDao<User>() {
     abstract fun getUserLD(): LiveData<User>
 
     @Query("SELECT * FROM user")
-    abstract fun getUser(): User
+    abstract fun getUser(): User?
 
     @Query("DELETE FROM user")
     abstract fun nukeTable()

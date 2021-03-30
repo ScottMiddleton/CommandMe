@@ -33,24 +33,6 @@ fun startConnectionForProducts(onSkuDetailsListResponse: ((List<SkuDetails>)) ->
     })
 }
 
-fun startConnectionPurchaseHistory(onPurchaseListResponse: ((List<PurchaseHistoryRecord>)) -> Unit) {
-    billingClient.startConnection(object : BillingClientStateListener {
-        override fun onBillingSetupFinished(billingResult: BillingResult) {
-            if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                Log.v("TAG_INAPP", "Setup Billing Done")
-                // The BillingClient is ready. You can query purchases here.
-                queryPurchaseHistory(onPurchaseListResponse)
-            }
-        }
-
-        override fun onBillingServiceDisconnected() {
-            Log.v("TAG_INAPP", "Billing client Disconnected")
-            // Try to restart the connection on the next request to
-            // Google Play by calling the startConnection() method.
-        }
-    })
-}
-
 private fun queryAvailableProducts(onSkuDetailsListResponse: ((List<SkuDetails>)) -> Unit) {
     val skuList = ArrayList<String>()
     skuList.add(Constants.PRODUCT_UNLIMITED_COMMANDS)
@@ -64,6 +46,42 @@ private fun queryAvailableProducts(onSkuDetailsListResponse: ((List<SkuDetails>)
 
         ) {
             onSkuDetailsListResponse(skuDetailsList)
+        } else {
+            onSkuDetailsListResponse(emptyList())
+        }
+    }
+}
+
+fun startConnectionPurchaseHistory(onPurchaseListResponse: ((List<PurchaseHistoryRecord>)) -> Unit) {
+    billingClient.startConnection(object : BillingClientStateListener {
+        override fun onBillingSetupFinished(billingResult: BillingResult) {
+            if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+                Log.v("TAG_INAPP", "Setup Billing Done")
+                // The BillingClient is ready. You can query purchases here.
+                queryPurchaseHistory(onPurchaseListResponse)
+            } else {
+                onPurchaseListResponse(emptyList())
+            }
+        }
+
+        override fun onBillingServiceDisconnected() {
+            Log.v("TAG_INAPP", "Billing client Disconnected")
+            // Try to restart the connection on the next request to
+            // Google Play by calling the startConnection() method.
+        }
+    })
+}
+
+private fun queryPurchaseHistory(onPurchaseListResponse: ((List<PurchaseHistoryRecord>)) -> Unit) {
+    billingClient.queryPurchaseHistoryAsync(
+        BillingClient.SkuType.INAPP
+    ) { billingResult, purchasesList ->
+        if (billingResult.responseCode == BillingClient.BillingResponseCode.OK
+            && purchasesList != null
+        ) {
+            onPurchaseListResponse(purchasesList)
+        } else {
+            onPurchaseListResponse(emptyList())
         }
     }
 }
@@ -93,18 +111,6 @@ fun Activity.launchBillingFlow(skuDetails: SkuDetails) {
         ).responseCode
 
         billingClient.launchBillingFlow(it, billingFlowParams)
-    }
-}
-
-private fun queryPurchaseHistory(onPurchaseListResponse: ((List<PurchaseHistoryRecord>)) -> Unit) {
-    billingClient.queryPurchaseHistoryAsync(
-        BillingClient.SkuType.INAPP
-    ) { billingResult, purchasesList ->
-        if (billingResult.responseCode == BillingClient.BillingResponseCode.OK
-            && purchasesList != null
-        ) {
-            onPurchaseListResponse(purchasesList)
-        }
     }
 }
 

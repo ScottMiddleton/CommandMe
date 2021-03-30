@@ -10,28 +10,16 @@ class LocalDataSource(
     private val database: AppDatabase
 ) {
 
-    companion object {
-        private const val USER_IS_LOGGED_IN_KEY = "user_is_logged_in"
-    }
-
-    var userIsLoggedIn: Boolean?
-        get() = sharedPreferences.getBoolean(USER_IS_LOGGED_IN_KEY, false)
-        set(value) {
-            val editor = sharedPreferences.edit()
-            editor.putBoolean(USER_IS_LOGGED_IN_KEY, value ?: false)
-            editor.apply()
-        }
-
     fun getCurrentUserLD() : LiveData<User> {
        return database.userDao().getUserLD()
     }
 
-    fun getCurrentUser() : User {
+    fun getCurrentUser() : User? {
         return database.userDao().getUser()
     }
 
-    fun userHasPurchasedUnlimitedCommands(): Boolean{
-        return database.userDao().getUser().hasPurchasedUnlimitedCommands
+    fun userHasPurchasedUnlimitedCommands(): Boolean {
+        return database.userDao().getUser()?.hasPurchasedUnlimitedCommands ?: false
     }
 
     suspend fun insertCurrentUser(user: User){

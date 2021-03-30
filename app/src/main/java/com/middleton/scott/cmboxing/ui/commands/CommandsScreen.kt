@@ -178,7 +178,8 @@ class CommandsScreen : BaseFragment() {
                     for (skuDetails in it) {
                         Log.v("TAG_INAPP", "skuDetailsList : $it")
                         //This list should contain the products added above
-                        PurchasePremiumDialog(skuDetails.title, skuDetails.description) {
+                        val description = skuDetails.description.replace(" \n", " ")
+                        PurchasePremiumDialog(skuDetails.title, description) {
                             launchBillingFlow(skuDetails)
                         }.show(
                             childFragmentManager,

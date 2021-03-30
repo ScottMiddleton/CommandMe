@@ -21,12 +21,12 @@ class LoginViewModel(private val dataRepository: DataRepository) : ViewModel() {
     val passwordValidLD = MutableLiveData<Boolean>()
     val emailValidLD = MutableLiveData<Boolean>()
 
-    fun signInWithEmailPassword() {
+    fun authSignInWithEmailPassword() {
         loginAttempted = true
         validate()
         if (emailValidLD.value == true && passwordValidLD.value == true) {
             viewModelScope.launch {
-                dataRepository.signInWithEmailPassword(email, password, signInResponseLD)
+                dataRepository.authSignInWithEmailPassword(email, password, signInResponseLD)
             }
         }
     }
@@ -41,7 +41,7 @@ class LoginViewModel(private val dataRepository: DataRepository) : ViewModel() {
         }
     }
 
-    fun addUser(firstName: String, lastName: String, email: String) {
+    fun handleGoogleSignInResult(firstName: String, lastName: String, email: String) {
         dataRepository.userHasPurchasedUnlimitedCommands {
             val hasPurchasedUnlimitedCommands = it
             val user = User(
@@ -51,7 +51,6 @@ class LoginViewModel(private val dataRepository: DataRepository) : ViewModel() {
                 hasPurchasedUnlimitedCommands
             )
             viewModelScope.launch { dataRepository.insertCurrentUser(user) }
-            dataRepository.addUserToFirestore(user)
             addUserResponseLD.value = ResponseData(true)
         }
     }

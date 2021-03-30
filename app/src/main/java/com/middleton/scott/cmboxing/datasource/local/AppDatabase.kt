@@ -11,7 +11,7 @@ import com.middleton.scott.cmboxing.datasource.local.typeconverters.WorkoutTypeC
 
 @Database(
     entities = [Workout::class, Command::class, SelectedCommandCrossRef::class, StructuredCommandCrossRef::class, User::class],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 
