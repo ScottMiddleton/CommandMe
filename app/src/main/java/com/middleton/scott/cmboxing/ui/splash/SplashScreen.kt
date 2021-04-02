@@ -18,6 +18,28 @@ class SplashScreen : Fragment() {
 
     private lateinit var auth: FirebaseAuth
 
+    private val countDownTimer = object : CountDownTimer(2000, 1000) {
+        override fun onFinish() {
+            val currentUser = auth.currentUser
+            val account = GoogleSignIn.getLastSignedInAccount(requireContext())
+
+            if (currentUser != null || account != null) {
+                val action = SplashScreenDirections.actionSplashFragmentToWorkoutsScreen()
+                findNavController().navigate(
+                    action
+                )
+            } else {
+                val action = SplashScreenDirections.actionSplashFragmentToLoginScreen()
+                findNavController().navigate(
+                    action
+                )
+            }
+        }
+
+        override fun onTick(millisUntilFinished: Long) {
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -26,33 +48,15 @@ class SplashScreen : Fragment() {
         return inflater.inflate(R.layout.fragment_splash, container, false)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
+    override fun onResume() {
+        super.onResume()
         auth = Firebase.auth
+        countDownTimer.start()
+    }
 
-        object : CountDownTimer(2000, 1000){
-            override fun onFinish() {
-                val currentUser = auth.currentUser
-                val account = GoogleSignIn.getLastSignedInAccount(view.context)
-
-                if(currentUser != null || account != null){
-                    val action = SplashScreenDirections.actionSplashFragmentToWorkoutsScreen()
-                    findNavController().navigate(
-                        action
-                    )
-                } else {
-                    val action = SplashScreenDirections.actionSplashFragmentToLoginScreen()
-                    findNavController().navigate(
-                        action
-                    )
-                }
-            }
-
-            override fun onTick(millisUntilFinished: Long) {
-            }
-
-        }.start()
+    override fun onPause() {
+        super.onPause()
+        countDownTimer.cancel()
     }
 
 }

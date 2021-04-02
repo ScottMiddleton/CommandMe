@@ -11,6 +11,7 @@ import com.middleton.scott.cmboxing.datasource.local.model.StructuredCommandCros
 import com.middleton.scott.cmboxing.datasource.local.model.WorkoutWithCommands
 import com.middleton.scott.cmboxing.service.ServiceAudioCommand
 import com.middleton.scott.cmboxing.service.WorkoutService.Companion.playEndBellLD
+import com.middleton.scott.cmboxing.service.WorkoutService.Companion.playStartBellLD
 import com.middleton.scott.cmboxing.service.WorkoutService.Companion.serviceCommandAudioLD
 import com.middleton.scott.cmboxing.service.WorkoutService.Companion.serviceCountdownSecondsLD
 import com.middleton.scott.cmboxing.service.WorkoutService.Companion.serviceWorkoutStateLD
@@ -145,65 +146,68 @@ class StructuredWorkoutScreenViewModel(
     private fun initCountdown(countdownMillis: Long) {
         workoutInProgress = true
         firstTick = true
-
         millisRemainingAtPause = countdownMillis
 
-        countDownTimer =
-            object : CountDownTimer(countdownMillis, 1000) {
+        if (workoutStateLD.value == WorkoutState.WORK && currentCommandCrossRef.position_index == 0){
+            playStartBellLD.value = true
+        }
 
-                override fun onTick(millisUntilFinished: Long) {
-                    _countdownSecondsLD.value =
-                        (ceil(millisUntilFinished.toDouble() / 1000).toInt())
+            countDownTimer =
+                object : CountDownTimer(countdownMillis, 1000) {
 
-                    val countdownStr =
-                        DateTimeUtils.toMinuteSeconds(ceil(millisUntilFinished.toDouble() / 1000).toInt())
-                    serviceCountdownSecondsLD.value = countdownStr
+                    override fun onTick(millisUntilFinished: Long) {
+                        _countdownSecondsLD.value =
+                            (ceil(millisUntilFinished.toDouble() / 1000).toInt())
 
-                    restartCommandOnPrevious = countdownMillis - millisUntilFinished > 1000
+                        val countdownStr =
+                            DateTimeUtils.toMinuteSeconds(ceil(millisUntilFinished.toDouble() / 1000).toInt())
+                        serviceCountdownSecondsLD.value = countdownStr
 
-                    if (!firstTick) {
-                        onSecondElapsed()
-                    } else {
-                        if (workoutStateLD.value == WorkoutState.WORK && millisRemainingAtPause == currentCommandCrossRef.time_allocated_secs * 1000L) {
-                            val nextCommand =
-                                commands.firstOrNull { it.id == currentCommandCrossRef.command_id }
-                            serviceCommandAudioLD.value = nextCommand?.file_name?.let {
-                                ServiceAudioCommand(
-                                    nextCommand.name,
-                                    it
-                                )
+                        restartCommandOnPrevious = countdownMillis - millisUntilFinished > 1000
+
+                        if (!firstTick) {
+                            onSecondElapsed()
+                        } else {
+                            if (workoutStateLD.value == WorkoutState.WORK && millisRemainingAtPause == currentCommandCrossRef.time_allocated_secs * 1000L) {
+                                val nextCommand =
+                                    commands.firstOrNull { it.id == currentCommandCrossRef.command_id }
+                                serviceCommandAudioLD.value = nextCommand?.file_name?.let {
+                                    ServiceAudioCommand(
+                                        nextCommand.name,
+                                        it
+                                    )
+                                }
+                                _playCommandAnimationLD.value = true
                             }
-                            _playCommandAnimationLD.value = true
                         }
+
+                        millisRemainingAtPause = millisUntilFinished
+
+                        firstTick = false
                     }
 
-                    millisRemainingAtPause = millisUntilFinished
+                    override fun onFinish() {
+                        onSecondElapsed()
 
-                    firstTick = false
-                }
+                        when (workoutStateLD.value) {
+                            WorkoutState.PREPARE -> {
+                                initWorkoutState(WorkoutState.WORK)
+                            }
 
-                override fun onFinish() {
-                    onSecondElapsed()
+                            WorkoutState.WORK -> {
+                                currentCommandCrossRefIndex++
+                                initCommand()
+                            }
 
-                    when (workoutStateLD.value) {
-                        WorkoutState.PREPARE -> {
-                            initWorkoutState(WorkoutState.WORK)
+                            WorkoutState.REST -> {
+                                _currentRoundLD.value = currentRoundLD.value!! + 1
+                                initWorkoutState(WorkoutState.WORK)
+                            }
                         }
 
-                        WorkoutState.WORK -> {
-                            currentCommandCrossRefIndex++
-                            initCommand()
-                        }
-
-                        WorkoutState.REST -> {
-                            _currentRoundLD.value = currentRoundLD.value!! + 1
-                            initWorkoutState(WorkoutState.WORK)
-                        }
+                        serviceCountdownSecondsLD.value = DateTimeUtils.toMinuteSeconds(0)
                     }
-
-                    serviceCountdownSecondsLD.value = DateTimeUtils.toMinuteSeconds(0)
-                }
-            }.start()
+                }.start()
     }
 
     private fun initCommand() {
@@ -304,7 +308,7 @@ class StructuredWorkoutScreenViewModel(
                             // If first command in workout
                             initWorkoutState(WorkoutState.PREPARE)
                         }
-                        currentCommandCrossRefIndex != 0 && currentCommandCrossRef.position_index == 0 && workoutHasRest-> {
+                        currentCommandCrossRefIndex != 0 && currentCommandCrossRef.position_index == 0 && workoutHasRest -> {
                             // If first command in round and workout has rest between rounds
                             _currentRoundLD.value = _currentRoundLD.value!! - 1
                             initWorkoutState(WorkoutState.REST)
@@ -332,8 +336,8 @@ class StructuredWorkoutScreenViewModel(
     }
 
     fun onPlay() {
-            initCountdown(millisRemainingAtPause)
-            workoutHasBegun = true
+        initCountdown(millisRemainingAtPause)
+        workoutHasBegun = true
         workoutInProgress = true
     }
 

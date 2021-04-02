@@ -107,7 +107,9 @@
             app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_splashFragment_to_loginScreen"
-            app:destination="@id/loginScreen" />
+            app:destination="@id/loginScreen"
+            app:popUpTo="@+id/mobile_navigation"
+            app:popUpToInclusive="true"/>
     </fragment>
     <fragment
         android:id="@+id/loginScreen"
