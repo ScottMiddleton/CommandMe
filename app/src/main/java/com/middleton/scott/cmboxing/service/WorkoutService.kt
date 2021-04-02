@@ -43,6 +43,7 @@ class WorkoutService : LifecycleService() {
     private lateinit var soundPool: SoundPool
     private var workStartAudioId: Int = 0
     private var workEndAudioId: Int = 0
+    private var workoutCompleteAudioId: Int = 0
 
     lateinit var notificationBuilder: NotificationCompat.Builder
     lateinit var notificationManager: NotificationManager
@@ -51,8 +52,9 @@ class WorkoutService : LifecycleService() {
         val serviceWorkoutStateLD = MutableLiveData<WorkoutState>()
         val serviceCountdownSecondsLD = MutableLiveData<String>()
         val serviceCommandAudioLD = MutableLiveData<ServiceAudioCommand>()
-        val playStartBellLD = MutableLiveData<Boolean>()
-        val playEndBellLD = MutableLiveData<Boolean>()
+        val playStartAudioLD = MutableLiveData<Boolean>()
+        val playEndAudioLD = MutableLiveData<Boolean>()
+        val playWorkoutCompleteAudioLD = MutableLiveData<Boolean>()
     }
 
     private fun postInitialValues() {
@@ -141,11 +143,24 @@ class WorkoutService : LifecycleService() {
             startPlayingCombinationAudio(it.fileName)
         })
 
-        playEndBellLD.observe(this, Observer {
+        playEndAudioLD.observe(this, Observer {
             if (it) {
                 mediaPlayer.stop()
                 soundPool.play(
                     workEndAudioId,
+                    0.7f,
+                    0.7f,
+                    0,
+                    0,
+                    1.0f
+                )
+            }
+        })
+
+        playStartAudioLD.observe(this, Observer {
+            if (it) {
+                soundPool.play(
+                    workStartAudioId,
                     0.5f,
                     0.5f,
                     0,
@@ -155,12 +170,12 @@ class WorkoutService : LifecycleService() {
             }
         })
 
-        playStartBellLD.observe(this, Observer {
+        playWorkoutCompleteAudioLD.observe(this, Observer {
             if (it) {
                 soundPool.play(
-                    workStartAudioId,
-                    0.5f,
-                    0.5f,
+                    workoutCompleteAudioId,
+                    0.6f,
+                    0.6f,
                     0,
                     0,
                     1.0f
@@ -221,6 +236,7 @@ class WorkoutService : LifecycleService() {
 
         workStartAudioId = soundPool.load(this, R.raw.work_start, 1)
         workEndAudioId = soundPool.load(this, R.raw.work_end, 1)
+        workoutCompleteAudioId = soundPool.load(this, R.raw.workout_complete, 1)
     }
 
 }

@@ -10,8 +10,9 @@ import com.middleton.scott.cmboxing.datasource.local.model.Command
 import com.middleton.scott.cmboxing.datasource.local.model.StructuredCommandCrossRef
 import com.middleton.scott.cmboxing.datasource.local.model.WorkoutWithCommands
 import com.middleton.scott.cmboxing.service.ServiceAudioCommand
-import com.middleton.scott.cmboxing.service.WorkoutService.Companion.playEndBellLD
-import com.middleton.scott.cmboxing.service.WorkoutService.Companion.playStartBellLD
+import com.middleton.scott.cmboxing.service.WorkoutService.Companion.playEndAudioLD
+import com.middleton.scott.cmboxing.service.WorkoutService.Companion.playStartAudioLD
+import com.middleton.scott.cmboxing.service.WorkoutService.Companion.playWorkoutCompleteAudioLD
 import com.middleton.scott.cmboxing.service.WorkoutService.Companion.serviceCommandAudioLD
 import com.middleton.scott.cmboxing.service.WorkoutService.Companion.serviceCountdownSecondsLD
 import com.middleton.scott.cmboxing.service.WorkoutService.Companion.serviceWorkoutStateLD
@@ -149,7 +150,7 @@ class StructuredWorkoutScreenViewModel(
         millisRemainingAtPause = countdownMillis
 
         if (workoutStateLD.value == WorkoutState.WORK && currentCommandCrossRef.position_index == 0){
-            playStartBellLD.value = true
+            playStartAudioLD.value = true
         }
 
             countDownTimer =
@@ -227,7 +228,7 @@ class StructuredWorkoutScreenViewModel(
 
                 // initiate rest
                 if (workoutInProgress) {
-                    playEndBellLD.value = true
+                    playEndAudioLD.value = true
                 }
                 initWorkoutState(WorkoutState.REST)
             }
@@ -355,6 +356,7 @@ class StructuredWorkoutScreenViewModel(
         _countdownSecondsLD.value = 0
         _workoutStateLD.value = WorkoutState.COMPLETE
         serviceWorkoutStateLD.value = WorkoutState.COMPLETE
+        playWorkoutCompleteAudioLD.value = true
     }
 
     fun getCountdownProgressBarMax(workoutState: WorkoutState): Int {

@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.SearchView
 import androidx.core.widget.NestedScrollView
@@ -134,16 +135,23 @@ class TabFragmentTwo : BaseFragment() {
         search_view.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
             androidx.appcompat.widget.SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(searchStr: String?): Boolean {
-                searchStr?.let {adapter.setSearchString(searchStr)}
+                searchStr?.let { adapter.setSearchString(searchStr) }
                 search_view.clearFocus()
                 return true
             }
 
             override fun onQueryTextChange(searchStr: String?): Boolean {
-                searchStr?.let {adapter.setSearchString(searchStr)  }
+                searchStr?.let { adapter.setSearchString(searchStr) }
                 return true
             }
         })
+
+        val clearButton: ImageView =
+            search_view.findViewById(androidx.appcompat.R.id.search_close_btn)
+        clearButton.setOnClickListener { _ ->
+            search_view.clearFocus()
+            search_view.setQuery("", true)
+        }
     }
 
     private fun handleFab() {

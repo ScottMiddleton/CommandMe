@@ -104,7 +104,12 @@ class RandomWorkoutScreen : BaseFragment() {
         })
 
         viewModel.workoutStateLD.observe(viewLifecycleOwner, Observer {
-            workout_state_tv.text = it.toString()
+            if(it != WorkoutState.COMPLETE){
+                workout_state_tv.text = it.toString()
+            } else {
+                workout_state_tv.text = ""
+            }
+
             countdown_pb.max = viewModel.getCountdownProgressBarMax(it)
             countdown_pb.progress = countdown_pb.max
 

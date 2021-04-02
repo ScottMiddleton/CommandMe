@@ -10,8 +10,9 @@ import com.middleton.scott.cmboxing.datasource.DataRepository
 import com.middleton.scott.cmboxing.datasource.local.model.Command
 import com.middleton.scott.cmboxing.datasource.local.model.WorkoutWithCommands
 import com.middleton.scott.cmboxing.service.ServiceAudioCommand
-import com.middleton.scott.cmboxing.service.WorkoutService.Companion.playEndBellLD
-import com.middleton.scott.cmboxing.service.WorkoutService.Companion.playStartBellLD
+import com.middleton.scott.cmboxing.service.WorkoutService.Companion.playEndAudioLD
+import com.middleton.scott.cmboxing.service.WorkoutService.Companion.playStartAudioLD
+import com.middleton.scott.cmboxing.service.WorkoutService.Companion.playWorkoutCompleteAudioLD
 import com.middleton.scott.cmboxing.service.WorkoutService.Companion.serviceCommandAudioLD
 import com.middleton.scott.cmboxing.service.WorkoutService.Companion.serviceCountdownSecondsLD
 import com.middleton.scott.cmboxing.service.WorkoutService.Companion.serviceWorkoutStateLD
@@ -148,7 +149,7 @@ class RandomWorkoutScreenViewModel(
         firstTick = true
 
         if (workoutStateLD.value == WorkoutState.WORK) {
-            playStartBellLD.value = true
+            playStartAudioLD.value = true
         }
 
         millisRemainingAtPause = countdownMillis
@@ -168,11 +169,19 @@ class RandomWorkoutScreenViewModel(
 
                         WorkoutState.WORK -> {
                             if (workoutHasRest) {
-                                initWorkoutState(WorkoutState.REST)
-                                playEndBellLD.value = true
+                                if (currentRound >= numberOfRounds) {
+                                    onComplete()
+                                } else {
+                                    initWorkoutState(WorkoutState.REST)
+                                    playEndAudioLD.value = true
+                                }
                             } else {
-                                setCurrentRound(currentRound + 1)
-                                initWorkoutState(WorkoutState.WORK)
+                                if (currentRound >= numberOfRounds) {
+                                    onComplete()
+                                } else {
+                                    setCurrentRound(currentRound + 1)
+                                    initWorkoutState(WorkoutState.WORK)
+                                }
                             }
                         }
 
@@ -335,7 +344,7 @@ class RandomWorkoutScreenViewModel(
                 WorkoutState.REST -> timeSecs = restTimeSecs
             }
             if (workoutStateLD.value != WorkoutState.PREPARE) {
-                playStartBellLD.value = true
+                playStartAudioLD.value = true
             }
             initCountdown(timeSecs * 1000L)
             workoutHasBegun = true
@@ -355,6 +364,7 @@ class RandomWorkoutScreenViewModel(
         workoutInProgress = false
         _workoutStateLD.value = WorkoutState.COMPLETE
         serviceWorkoutStateLD.value = WorkoutState.COMPLETE
+        playWorkoutCompleteAudioLD.value = true
     }
 
     fun getCountdownProgressBarMax(workoutState: WorkoutState): Int {

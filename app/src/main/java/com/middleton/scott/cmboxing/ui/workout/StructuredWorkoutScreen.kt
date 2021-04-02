@@ -148,7 +148,7 @@ class StructuredWorkoutScreen : BaseFragment() {
                 WorkoutState.COMPLETE -> {
                     command_count_ll.visibility = GONE
                     command_label_tv.visibility = GONE
-                    workout_state_tv.text = it.toString()
+                    workout_state_tv.text = ""
                     command_name_tv.visibility = INVISIBLE
                     play_command_lottie.visibility = GONE
                     handlePlayAnimationLottie(true)

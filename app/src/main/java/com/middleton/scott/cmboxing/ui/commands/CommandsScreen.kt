@@ -11,6 +11,7 @@ import android.view.View
 import android.view.View.GONE
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.SearchView
 import androidx.core.content.ContextCompat
@@ -209,6 +210,13 @@ class CommandsScreen : BaseFragment() {
                 return true
             }
         })
+
+        val clearButton: ImageView =
+            search_view.findViewById(androidx.appcompat.R.id.search_close_btn)
+        clearButton.setOnClickListener { _ ->
+            search_view.clearFocus()
+            search_view.setQuery("", true)
+        }
     }
 
     private fun handleFab() {
