@@ -89,7 +89,7 @@ class RoundCommandsAdapter(
                             onPositionsChanged(structuredCommandCrossRefs)
                             holder.timeTV.text = DateTimeUtils.toMinuteSeconds(newSecs)
                         },
-                        {}).show((context as AppCompatActivity).supportFragmentManager, null)
+                        {}, command.file_name).show((context as AppCompatActivity).supportFragmentManager, null)
                 }
             }
         }

@@ -141,7 +141,7 @@
     <string name="go_to_settings_to_enable_permissions">Go to settings to enable audio recording.</string>
     <string name="permissions_dialog_message">Please allow both audio recording and media access permissions to create commands. CommandMe requires this to be able to record your voice and store the audio file on your device.</string>
     <string name="permissions_required">Permissions Required</string>
-    <string name="default_time_allocated">Default time allocated</string>
+    <string name="default_time_allocated">Default Time Allocated</string>
     <string name="empty_rounds">Empty rounds</string>
     <string name="get_in_touch">Get in touch</string>
     <string name="previous">Prev</string>
@@ -152,4 +152,5 @@
     <string name="premium_upgrade">Premium upgrade</string>
     <string name="premium">(Premium)</string>
     <string name="exit">Exit</string>
+    <string name="audio_length_info_message">Be aware that if the allocated time is less than the audio length, the audio may be cut off during your workout.</string>
 </resources>

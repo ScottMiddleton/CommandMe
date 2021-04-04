@@ -38,7 +38,7 @@ class TabFragmentOne : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
         mContext = view.context
 
-        viewModel.subscribeLD.observe(viewLifecycleOwner, Observer {
+        viewModel.subscribeLD.observe(viewLifecycleOwner, {
             if (it) {
                 subscribeUI()
             }
@@ -48,31 +48,31 @@ class TabFragmentOne : BaseFragment() {
     }
 
     private fun subscribeUI() {
-        viewModel.preparationTimeLD.observe(viewLifecycleOwner, Observer {
+        viewModel.preparationTimeLD.observe(viewLifecycleOwner, {
             preparation_time_et.setText(DateTimeUtils.toMinuteSeconds(it))
         })
 
-        viewModel.numberOfRoundsLD.observe(viewLifecycleOwner, Observer {
+        viewModel.numberOfRoundsLD.observe(viewLifecycleOwner, {
             number_of_rounds_et.setText(it.toString())
         })
 
-        viewModel.workTimeSecsLD.observe(viewLifecycleOwner, Observer {
+        viewModel.workTimeSecsLD.observe(viewLifecycleOwner, {
             work_time_et.setText(DateTimeUtils.toMinuteSeconds(it))
         })
 
-        viewModel.defaultRestTimeSecsLD.observe(viewLifecycleOwner, Observer {
+        viewModel.defaultRestTimeSecsLD.observe(viewLifecycleOwner, {
             rest_between_rounds_et.setText(DateTimeUtils.toMinuteSeconds(it))
         })
 
-        viewModel.intensityLD.observe(viewLifecycleOwner, Observer {
+        viewModel.intensityLD.observe(viewLifecycleOwner, {
             intensity_et.setText(it.toString())
         })
 
-        viewModel.workoutLD.observe(viewLifecycleOwner, Observer {
+        viewModel.workoutLD.observe(viewLifecycleOwner, {
             populateFields()
         })
 
-        viewModel.tabOneValidatedLD.observe(viewLifecycleOwner, Observer {
+        viewModel.tabOneValidatedLD.observe(viewLifecycleOwner, {
             if (it) {
                 if (viewModel.userHasAttemptedToProceedOne) {
                     workout_name_til.isErrorEnabled = false
@@ -116,7 +116,7 @@ class TabFragmentOne : BaseFragment() {
                     viewModel.setPreparationTime(seconds)
                     preparation_time_et.setText(DateTimeUtils.toMinuteSeconds(seconds))
                 },
-                {}).show(
+                {}, null).show(
                 childFragmentManager,
                 null
             )
@@ -131,7 +131,7 @@ class TabFragmentOne : BaseFragment() {
                     viewModel.setWorkTime(seconds)
                     work_time_et.setText(DateTimeUtils.toMinuteSeconds(seconds))
                 },
-                {}).show(
+                {}, null).show(
                 childFragmentManager,
                 null
             )
@@ -146,7 +146,7 @@ class TabFragmentOne : BaseFragment() {
                     viewModel.setDefaultRestTime(seconds)
                     rest_between_rounds_et.setText(DateTimeUtils.toMinuteSeconds(seconds))
                 },
-                {}).show(
+                {}, null).show(
                 childFragmentManager,
                 null
             )

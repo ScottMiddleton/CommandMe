@@ -249,7 +249,7 @@ class RecordCommandDialogFragment(commandId: Long) : DialogFragment() {
                 },
                 {
 
-                }).show(childFragmentManager, "")
+                }, viewModel.recordFileName).show(childFragmentManager, "")
         }
 
         name_et.doAfterTextChanged {

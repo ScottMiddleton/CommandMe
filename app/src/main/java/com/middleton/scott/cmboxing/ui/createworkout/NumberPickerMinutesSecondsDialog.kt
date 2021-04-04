@@ -5,18 +5,23 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.annotation.Nullable
 import androidx.fragment.app.DialogFragment
 import com.middleton.scott.cmboxing.R
+import com.middleton.scott.cmboxing.utils.DialogManager
+import com.middleton.scott.cmboxing.utils.getAudioLengthToOneDP
 import kotlinx.android.synthetic.main.dialog_number_picker_mins_secs.*
 
 class NumberPickerMinutesSecondsDialog(
     private val title: String,
     private val seconds: Int,
     private val onSave: ((Int) -> Unit),
-    private val onCancel: (() -> Unit)
+    private val onCancel: (() -> Unit),
+    private val commandFileName: String?
 ) : DialogFragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,6 +43,27 @@ class NumberPickerMinutesSecondsDialog(
             WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE
         )
         setClickListeners()
+
+        if (commandFileName != null) {
+            val audioLength = getAudioLengthToOneDP(commandFileName)
+
+            if (audioLength != null) {
+                command_audio_length_tv.visibility = VISIBLE
+                command_audio_length_tv.text = "Audio Length: $audioLength seconds"
+                command_audio_length_tv.setOnClickListener {
+                    context?.let { context ->
+                        DialogManager.showDialog(
+                            context = context,
+                            messageId = R.string.audio_length_info_message,
+                            positiveBtnClick = {})
+                    }
+                }
+            } else {
+                command_audio_length_tv.visibility = GONE
+            }
+        } else {
+            command_audio_length_tv.visibility = GONE
+        }
     }
 
     private fun setClickListeners() {
