@@ -28,7 +28,7 @@ class LocalDataSource(
     }
 
     fun getWorkoutWithCommands(workoutId: Long): WorkoutWithCommands {
-        return database.workoutDao().getWorkoutWithCombinations(workoutId)
+        return database.workoutDao().getWorkoutWithCommands(workoutId)
     }
 
     suspend fun deleteWorkoutAndCrossRefs(workout: Workout) {
@@ -50,7 +50,7 @@ class LocalDataSource(
     }
 
     fun getAllWorkoutsWithCommands(): Flow<List<WorkoutWithCommands>> {
-        return database.workoutDao().getAllWorkoutsWithCombinations()
+        return database.workoutDao().getAllWorkoutsWithCommands()
     }
 
     fun getSelectedCommandCrossRefsFlow(workoutId: Long): Flow<List<SelectedCommandCrossRef>> {

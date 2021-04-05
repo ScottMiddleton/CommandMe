@@ -9,16 +9,10 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 abstract class WorkoutDao : BaseDao<Workout>() {
     @Query("SELECT * FROM workout ORDER BY dateCreated DESC")
-    abstract fun getAllWorkoutsWithCombinations(): Flow<List<WorkoutWithCommands>>
-
-    @Query("SELECT * FROM workout")
-    abstract fun getWorkouts(): Flow<List<Workout>>
+    abstract fun getAllWorkoutsWithCommands(): Flow<List<WorkoutWithCommands>>
 
     @Query("SELECT * FROM workout WHERE _id = :id")
-    abstract fun getWorkoutWithCombinationsFlow(id: Long): Flow<WorkoutWithCommands?>
-
-    @Query("SELECT * FROM workout WHERE _id = :id")
-    abstract fun getWorkoutWithCombinations(id: Long): WorkoutWithCommands
+    abstract fun getWorkoutWithCommands(id: Long): WorkoutWithCommands
 
     @Query("SELECT * FROM workout WHERE _id = :id")
     abstract fun getWorkoutByIdFlow(id: Long): Flow<Workout?>
