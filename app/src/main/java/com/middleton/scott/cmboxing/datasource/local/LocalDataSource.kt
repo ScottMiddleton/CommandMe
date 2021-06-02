@@ -99,8 +99,12 @@ class LocalDataSource(
         database.selectedCommandCrossRefDao().delete(selectedCommandCrossRef)
     }
 
-     suspend fun deleteStructuredCommandCrossRefById(commandId: Long) {
+     suspend fun deleteStructuredCommandCrossRefByCommandId(commandId: Long) {
         database.structuredCommandCrossRefDao().deleteByCommandId(commandId)
+    }
+
+    suspend fun deleteStructuredCommandCrossRefForWorkout(commandId: Long, workoutId: Long) {
+        database.structuredCommandCrossRefDao().deleteForSpecificWorkoutByCommandId(commandId, workoutId)
     }
 
     suspend fun deleteSelectedCommandCrossRefById(workoutId: Long) {

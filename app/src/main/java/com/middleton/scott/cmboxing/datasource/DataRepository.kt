@@ -76,7 +76,8 @@ class DataRepository(
                     hasPurchased = true
                 }
             }
-            onPurchasedResponse(hasPurchased)
+            // Setting as true to remove billing for now. set as hasPurchased for billing
+            onPurchasedResponse(true)
         }
     }
 
@@ -118,7 +119,7 @@ class DataRepository(
 
     suspend fun deleteCommand(command: Command) {
         localDataSource.deleteCommand(command)
-        localDataSource.deleteStructuredCommandCrossRefById(command.id)
+        localDataSource.deleteStructuredCommandCrossRefByCommandId(command.id)
         localDataSource.deleteSelectedCommandCrossRefByCommandId(command.id)
     }
 

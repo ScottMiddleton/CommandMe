@@ -74,11 +74,11 @@ class MainActivity : AppCompatActivity() {
         viewModel.getUserLD().observe(this, Observer {
             if (it != null) {
                 if (it.hasPurchasedUnlimitedCommands) {
-                    showPremiumMenuItem(false)
-                    nav_view.getHeaderView(0).premium_tv.visibility = VISIBLE
+//                    showPremiumMenuItem(false)
+//                    nav_view.getHeaderView(0).premium_tv.visibility = VISIBLE
                 } else {
-                    showPremiumMenuItem(true)
-                    nav_view.getHeaderView(0).premium_tv.visibility = GONE
+//                    showPremiumMenuItem(true)
+//                    nav_view.getHeaderView(0).premium_tv.visibility = GONE
                 }
             }
         })
@@ -185,26 +185,26 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            nav_view.menu.findItem(R.id.premium)
-                .setOnMenuItemClickListener {
-                    startConnectionForProducts {
-                        for (skuDetails in it) {
-                            Log.v("TAG_INAPP", "skuDetailsList : $it")
-                            //This list should contain the products added above
-
-                            // Had to add this to remove random new line google was adding
-                            val description = skuDetails.description.replace(" \n", " ")
-                            PurchasePremiumDialog(skuDetails.title, description) {
-                                launchBillingFlow(skuDetails)
-                            }.show(
-                                supportFragmentManager,
-                                ""
-                            )
-                        }
-                    }
-                    drawer_layout.closeDrawer(GravityCompat.START)
-                    true
-                }
+//            nav_view.menu.findItem(R.id.premium)
+//                .setOnMenuItemClickListener {
+//                    startConnectionForProducts {
+//                        for (skuDetails in it) {
+//                            Log.v("TAG_INAPP", "skuDetailsList : $it")
+//                            //This list should contain the products added above
+//
+//                            // Had to add this to remove random new line google was adding
+//                            val description = skuDetails.description.replace(" \n", " ")
+//                            PurchasePremiumDialog(skuDetails.title, description) {
+//                                launchBillingFlow(skuDetails)
+//                            }.show(
+//                                supportFragmentManager,
+//                                ""
+//                            )
+//                        }
+//                    }
+//                    drawer_layout.closeDrawer(GravityCompat.START)
+//                    true
+//                }
         }
 
         drawer_layout.addDrawerListener(object : DrawerLayout.DrawerListener {
@@ -264,9 +264,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun showPremiumMenuItem(show: Boolean) {
-        nav_view.menu.findItem(R.id.premium).isVisible = show
-    }
+//    private fun showPremiumMenuItem(show: Boolean) {
+//        nav_view.menu.findItem(R.id.premium).isVisible = show
+//    }
 
     override fun onDestroy() {
         billingClient.endConnection()

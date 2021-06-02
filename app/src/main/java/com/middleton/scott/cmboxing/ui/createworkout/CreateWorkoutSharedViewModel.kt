@@ -196,7 +196,7 @@ class CreateWorkoutSharedViewModel(
             dataRepository.getLocalDataSource()
                 .deleteSelectedCommandCrossRef(selectedCommandCrossRef)
             dataRepository.getLocalDataSource()
-                .deleteStructuredCommandCrossRefById(selectedCommandCrossRef.command_id)
+                .deleteStructuredCommandCrossRefForWorkout(selectedCommandCrossRef.command_id, workoutId)
         }
     }
 

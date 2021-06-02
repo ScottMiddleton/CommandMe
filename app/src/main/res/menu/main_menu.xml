@@ -16,10 +16,10 @@
             android:icon="@drawable/ic_packs"
             android:id="@+id/packsScreen"
             android:title="@string/packs" />
-        <item
-            android:icon="@drawable/ic_baseline_arrow_circle_up_24"
-            android:id="@+id/premium"
-            android:title="@string/premium_upgrade" />
+<!--        <item-->
+<!--            android:icon="@drawable/ic_baseline_arrow_circle_up_24"-->
+<!--            android:id="@+id/premium"-->
+<!--            android:title="@string/premium_upgrade" />-->
     </group>
 
 </menu>

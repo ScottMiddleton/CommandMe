@@ -28,6 +28,9 @@ abstract class StructuredCommandCrossRefDao : BaseDao<StructuredCommandCrossRef>
     @Query("DELETE FROM structured_commands WHERE command_id = :commandId")
     abstract suspend fun deleteByCommandId(commandId: Long)
 
+    @Query("DELETE FROM structured_commands WHERE command_id = :commandId AND workout_id = :workoutId")
+    abstract suspend fun deleteForSpecificWorkoutByCommandId(commandId: Long, workoutId: Long)
+
     @Query("DELETE FROM structured_commands WHERE round = :round AND workout_id = :workoutId")
     abstract suspend fun deleteByRound(round: Int, workoutId: Long)
 }
