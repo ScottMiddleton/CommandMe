@@ -2,15 +2,18 @@ package com.middleton.scott.cmboxing.datasource.remote
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
 import com.middleton.scott.cmboxing.MainActivity
 import com.middleton.scott.cmboxing.datasource.local.model.User
+import java.io.File
+
 
 class RemoteDataSource {
     private val db = Firebase.firestore
+    var storage = FirebaseStorage.getInstance()
 
     interface CallbackWithError<S, E> {
         fun onSuccess(model: S)
@@ -47,6 +50,31 @@ class RemoteDataSource {
             }
     }
 
+    fun downloadWorkout(callback: CallbackWithError<Boolean, String?>) {
+        db.collection("workouts")
+            .get()
+            .addOnSuccessListener { result ->
+                for (document in result) {
+                    document.data
+                }
+            }
+            .addOnFailureListener { exception ->
+
+            }
+
+        val storageRef = storage.reference
+        val audio = storageRef.child("workouts/Changer.mp3")
+
+        val localFile = File.createTempFile("audio", "mp3")
+
+        audio.getFile(localFile).addOnSuccessListener {
+            // Local temp file has been created
+            it
+        }.addOnFailureListener {
+            // Handle any errors
+        }
+    }
+
 //    fun addUserToFirestore(user: User, callback: CallbackWithError<Boolean, String?>) {
 //        val userHashMap = hashMapOf(
 //            "email" to user.email,
@@ -76,21 +104,6 @@ class RemoteDataSource {
 //    fun getUserByEmail(email: String, callback: CallbackWithError<User, String?>) {
 //        val docRef = db.collection("users").document(email)
 //
-//        docRef.get()
-//            .addOnSuccessListener { document ->
-//                if (document.data != null) {
-//                    callback.onSuccess(
-//                        User(
-//                            document.data?.get("email") as String,
-//                            document.data?.get("first") as String,
-//                            document.data?.get("last") as String
-//                        )
-//                    )
-//                }
-//            }
-//            .addOnFailureListener {
-//                callback.onError(it.message)
-//            }
 //    }
 
     fun signOut() {

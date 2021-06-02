@@ -75,4 +75,8 @@ class WorkoutsViewModel(private val dataRepository: DataRepository) : ViewModel(
     fun userHasPurchasedUnlimitedCommands(): Boolean {
         return dataRepository.getLocalDataSource().userHasPurchasedUnlimitedCommands()
     }
+
+    fun downloadWorkouts(){
+        dataRepository.downloadWorkout()
+    }
 }

@@ -129,4 +129,15 @@ class DataRepository(
             localDataSource.getCommands().size < NON_PREMIUM_USER_MAXIMUM_NUMBER_OF_COMMANDS
         }
     }
+
+    fun downloadWorkout() {
+        return remoteDataSource.downloadWorkout(object : RemoteDataSource.CallbackWithError<Boolean, String?> {
+            override fun onSuccess(model: Boolean) {
+
+            }
+
+            override fun onError(error: String?) {
+            }
+        })
+    }
 }

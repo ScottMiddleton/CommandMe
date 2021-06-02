@@ -9,7 +9,7 @@ apply plugin: 'com.google.firebase.crashlytics'
 android {
     signingConfigs {
         command_me_signing_config {
-            storeFile file('/Users/scott/CommandMeRelease/c')
+            storeFile file('/Users/scott/AndroidProjects/CommandMe/c')
             storePassword 'Jackson28'
             keyPassword 'Jackson28'
             keyAlias 'key0'
@@ -42,13 +42,13 @@ android {
 
     buildTypes {
         release {
-            debuggable false
+            debuggable true
             minifyEnabled false
             signingConfig signingConfigs.command_me_signing_config
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
         debug {
-            debuggable false
+            debuggable true
             minifyEnabled false
             applicationIdSuffix '.debug'
         }
@@ -136,11 +136,16 @@ dependencies {
 
     //Firestore
     // Import the BoM for the Firebase platform
-    implementation platform('com.google.firebase:firebase-bom:26.1.1')
+    implementation platform('com.google.firebase:firebase-bom:27.1.0')
 
     // Declare the dependency for the Cloud Firestore library
     // When using the BoM, you don't specify versions in Firebase library dependencies
     implementation 'com.google.firebase:firebase-firestore-ktx'
+
+    // Firebase Storage
+    // Declare the dependency for the Cloud Storage library
+    // When using the BoM, you don't specify versions in Firebase library dependencies
+    implementation 'com.google.firebase:firebase-storage'
 
     //Crashlytics
     implementation 'com.google.firebase:firebase-crashlytics'
