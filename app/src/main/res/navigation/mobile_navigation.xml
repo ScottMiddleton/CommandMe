@@ -6,8 +6,28 @@
     app:startDestination="@+id/splashScreen">
 
     <action
-        android:id="@+id/action_global_workout_screen"
+        android:id="@+id/action_global_random_workout_screen"
         app:destination="@id/randomWorkoutScreen"
+        app:launchSingleTop="true" />
+
+    <action
+        android:id="@+id/action_global_structured_workout_screen"
+        app:destination="@id/structuredWorkoutScreen"
+        app:launchSingleTop="true" />
+
+    <action
+        android:id="@+id/action_global_my_workouts_screen"
+        app:destination="@id/myWorkoutsScreen"
+        app:launchSingleTop="true" />
+
+    <action
+        android:id="@+id/action_global_commands_screen"
+        app:destination="@id/commandsScreen"
+        app:launchSingleTop="true" />
+
+    <action
+        android:id="@+id/action_global_packs_screen"
+        app:destination="@id/packsScreen"
         app:launchSingleTop="true" />
 
     <action

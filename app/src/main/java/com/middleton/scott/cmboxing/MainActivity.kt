@@ -12,7 +12,6 @@ import android.view.View.VISIBLE
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
-import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
@@ -26,15 +25,16 @@ import com.android.billingclient.api.AcknowledgePurchaseParams
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.PurchasesUpdatedListener
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
-import com.middleton.scott.cmboxing.billing.PurchasePremiumDialog
-import com.middleton.scott.cmboxing.other.Constants.ACTION_SHOW_WORKOUT_SCREEN
-import com.middleton.scott.cmboxing.utils.*
+import com.middleton.scott.cmboxing.other.Constants.ACTION_SHOW_RANDOM_WORKOUT_SCREEN
+import com.middleton.scott.cmboxing.other.Constants.ACTION_SHOW_STRUCTURED_WORKOUT_SCREEN
+import com.middleton.scott.cmboxing.utils.DialogManager
+import com.middleton.scott.cmboxing.utils.billingClient
+import com.middleton.scott.cmboxing.utils.hideKeyboard
+import com.middleton.scott.cmboxing.utils.setUpBillingClient
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.menu_header.*
-import kotlinx.android.synthetic.main.menu_header.view.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
-
 
 class MainActivity : AppCompatActivity() {
     var menu: Menu? = null
@@ -69,7 +69,7 @@ class MainActivity : AppCompatActivity() {
         instance = this
         setContentView(R.layout.activity_main)
         setupNavigationMenu()
-        navigateToWorkoutScreenIfNeeded(intent)
+//        navigateToWorkoutScreenIfNeeded(intent)
 
         viewModel.getUserLD().observe(this, Observer {
             if (it != null) {
@@ -107,8 +107,7 @@ class MainActivity : AppCompatActivity() {
         val topLevelMenuDestinations = setOf(
             R.id.myWorkoutsScreen,
             R.id.commandsScreen,
-            R.id.packsScreen,
-            R.id.splashScreen
+            R.id.packsScreen
         )
 
         val menuDestinations = mutableSetOf<Int>()
@@ -118,11 +117,23 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.setIcon(R.drawable.ic_menu)
 
         val navView: NavigationView = findViewById(R.id.nav_view)
+        val bottomNavView: BottomNavigationView = findViewById(R.id.bottom_nav_view)
         appBarConfiguration = AppBarConfiguration(menuDestinations, drawer_layout)
-        navController = findNavController(R.id.nav_host_fragment)
 
+        navController = findNavController(R.id.nav_host_fragment)
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+        bottomNavView.setupWithNavController(navController)
+
+        bottomNavView.setOnNavigationItemSelectedListener {
+            when (it.itemId) {
+                R.id.myWorkoutsScreen -> navController.navigate(R.id.action_global_my_workouts_screen)
+                R.id.commandsScreen -> navController.navigate(R.id.action_global_commands_screen)
+                R.id.packsScreen -> navController.navigate(R.id.action_global_packs_screen)
+
+            }
+            true
+        }
 
         navView.findViewById<TextView>(R.id.logout_tv).setOnClickListener {
             viewModel.logout()
@@ -135,33 +146,39 @@ class MainActivity : AppCompatActivity() {
             when (destination.id) {
                 R.id.randomWorkoutScreen -> {
                     menu?.setGroupVisible(R.id.workout_menu, true)
+                    bottomNavView.visibility = GONE
                     supportActionBar?.setDisplayShowCustomEnabled(false)
                     supportActionBar?.setDisplayShowTitleEnabled(true)
                 }
                 R.id.structuredWorkoutScreen -> {
                     menu?.setGroupVisible(R.id.workout_menu, true)
+                    bottomNavView.visibility = GONE
                     supportActionBar?.setDisplayShowCustomEnabled(false)
                     supportActionBar?.setDisplayShowTitleEnabled(true)
                 }
                 R.id.splashScreen -> {
                     supportActionBar?.hide()
+                    bottomNavView.visibility = GONE
                     menu?.setGroupVisible(R.id.workout_menu, false)
                     supportActionBar?.setDisplayShowCustomEnabled(false)
                     supportActionBar?.setDisplayShowTitleEnabled(true)
                 }
                 R.id.loginScreen -> {
                     supportActionBar?.hide()
+                    bottomNavView.visibility = GONE
                     menu?.setGroupVisible(R.id.workout_menu, false)
                     supportActionBar?.setDisplayShowCustomEnabled(false)
                     supportActionBar?.setDisplayShowTitleEnabled(true)
                 }
                 R.id.createAccountScreen -> {
                     supportActionBar?.hide()
+                    bottomNavView.visibility = GONE
                     menu?.setGroupVisible(R.id.workout_menu, false)
                     supportActionBar?.setDisplayShowCustomEnabled(false)
                     supportActionBar?.setDisplayShowTitleEnabled(true)
                 }
                 R.id.createWorkoutScreen -> {
+                    bottomNavView.visibility = GONE
                     menu?.setGroupVisible(R.id.workout_menu, false)
                     supportActionBar?.setDisplayHomeAsUpEnabled(false)
                     supportActionBar?.setDisplayShowCustomEnabled(true)
@@ -173,12 +190,20 @@ class MainActivity : AppCompatActivity() {
                     parent.setContentInsetsAbsolute(0, 0)
                 }
                 R.id.myWorkoutsScreen -> {
+                    bottomNavView.visibility = VISIBLE
                     menu?.setGroupVisible(R.id.workout_menu, false)
                     supportActionBar?.setDisplayShowCustomEnabled(false)
                     supportActionBar?.setDisplayShowTitleEnabled(true)
                     supportActionBar?.show()
                 }
                 R.id.commandsScreen -> {
+                    bottomNavView.visibility = VISIBLE
+                    menu?.setGroupVisible(R.id.workout_menu, false)
+                    supportActionBar?.setDisplayShowCustomEnabled(false)
+                    supportActionBar?.setDisplayShowTitleEnabled(true)
+                }
+                R.id.packsScreen -> {
+                    bottomNavView.visibility = VISIBLE
                     menu?.setGroupVisible(R.id.workout_menu, false)
                     supportActionBar?.setDisplayShowCustomEnabled(false)
                     supportActionBar?.setDisplayShowTitleEnabled(true)
@@ -258,11 +283,13 @@ class MainActivity : AppCompatActivity() {
 
     override fun onSupportNavigateUp() = NavigationUI.navigateUp(navController, appBarConfiguration)
 
-    private fun navigateToWorkoutScreenIfNeeded(intent: Intent?) {
-        if (intent?.action == ACTION_SHOW_WORKOUT_SCREEN) {
-            nav_host_fragment.findNavController().navigate(R.id.action_global_workout_screen)
-        }
-    }
+//    private fun navigateToWorkoutScreenIfNeeded(intent: Intent?) {
+//        if (intent?.action == ACTION_SHOW_RANDOM_WORKOUT_SCREEN) {
+//            nav_host_fragment.findNavController().navigate(R.id.action_global_random_workout_screen)
+//        } else if (intent?.action == ACTION_SHOW_STRUCTURED_WORKOUT_SCREEN) {
+//            nav_host_fragment.findNavController().navigate(R.id.action_myWorkoutsScreen_to_structuredWorkoutScreen)
+//        }
+//    }
 
 //    private fun showPremiumMenuItem(show: Boolean) {
 //        nav_view.menu.findItem(R.id.premium).isVisible = show
@@ -272,4 +299,5 @@ class MainActivity : AppCompatActivity() {
         billingClient.endConnection()
         super.onDestroy()
     }
+
 }

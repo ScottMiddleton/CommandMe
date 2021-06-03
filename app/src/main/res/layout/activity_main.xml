@@ -1,50 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.drawerlayout.widget.DrawerLayout
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:animateLayoutChanges="true"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/drawer_layout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:openDrawer="start">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <fragment
-        android:id="@+id/nav_host_fragment"
-        android:name="androidx.navigation.fragment.NavHostFragment"
+    <androidx.drawerlayout.widget.DrawerLayout
+        android:id="@+id/drawer_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:defaultNavHost="true"
-        app:navGraph="@navigation/mobile_navigation" />
+        android:layout_height="0dp"
+        android:animateLayoutChanges="true"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_nav_view"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:openDrawer="start">
 
-    <com.google.android.material.navigation.NavigationView
-        android:id="@+id/nav_view"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:background="@drawable/primary_gradient_background"
-        android:fitsSystemWindows="true"
-        app:headerLayout="@layout/menu_header"
-        app:itemIconTint="@color/selector_nav_drawer_item_bg"
-        app:itemTextColor="@color/selector_nav_drawer_item_bg"
-        app:itemBackground="@drawable/selector_nav_drawer_item_background"
-        app:menu="@menu/main_menu">
+        <fragment
+            android:id="@+id/nav_host_fragment"
+            android:name="androidx.navigation.fragment.NavHostFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:defaultNavHost="true"
+            app:navGraph="@navigation/mobile_navigation" />
 
-        <TextView
-            android:id="@+id/logout_tv"
+        <com.google.android.material.navigation.NavigationView
+            android:id="@+id/nav_view"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:drawablePadding="8dp"
-            app:drawableStartCompat="@drawable/ic_logout"
-            app:drawableTint="@color/white"
-            android:text="@string/log_out"
-            android:padding="10dp"
-            android:layout_marginBottom="10dp"
-            android:layout_gravity="center|bottom"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:background="@drawable/primary_gradient_background"
+            android:fitsSystemWindows="true"
+            app:headerLayout="@layout/menu_header"
+            app:itemBackground="@drawable/selector_nav_drawer_item_background"
+            app:itemIconTint="@color/selector_nav_drawer_item_bg"
+            app:itemTextColor="@color/selector_nav_drawer_item_bg"
+            app:menu="@menu/main_menu">
 
-    </com.google.android.material.navigation.NavigationView>
+            <TextView
+                android:id="@+id/logout_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|bottom"
+                android:layout_marginBottom="10dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:drawablePadding="8dp"
+                android:padding="10dp"
+                android:text="@string/log_out"
+                app:drawableStartCompat="@drawable/ic_logout"
+                app:drawableTint="@color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
 
-</androidx.drawerlayout.widget.DrawerLayout>
+        </com.google.android.material.navigation.NavigationView>
+
+    </androidx.drawerlayout.widget.DrawerLayout>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_nav_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
+        android:visibility="gone"
+        android:background="@drawable/stroke_background_dark"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:menu="@menu/main_menu" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
